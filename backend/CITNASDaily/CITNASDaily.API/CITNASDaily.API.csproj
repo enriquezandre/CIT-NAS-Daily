@@ -15,4 +15,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CITNASDaily.Services\CITNASDaily.Services.csproj" />
+  </ItemGroup>
+
 </Project>
