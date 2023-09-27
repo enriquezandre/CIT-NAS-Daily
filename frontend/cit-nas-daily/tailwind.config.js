@@ -7,12 +7,11 @@ export default {
   ],
 
   theme: {
-    extend: {
-      colors: {
-        primary: "8A353C",
-        secondary: "FFDD5A",
-      },
+    colors: {
+      primary: "#8A353C",
+      secondary: "#E9C434",
     },
+    extend: {},
   },
-  plugins: [],
+  plugins: ["flowbite/plugin"],
 };
