@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CITNASDaily.Entities.Models;
+﻿using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Context;
 using CITNASDaily.Repositories.Contracts;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace CITNASDaily.Repositories.Repositories
