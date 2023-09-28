@@ -21,6 +21,7 @@ builder.Services.AddDbContext<NASContext>(options =>
 
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<INASRepository, NASRepository>();
 builder.Services.AddAutoMapper(typeof(RoleProfile));
 
 var app = builder.Build();

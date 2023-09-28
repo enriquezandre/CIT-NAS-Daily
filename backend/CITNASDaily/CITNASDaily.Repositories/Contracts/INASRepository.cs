@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CITNASDaily.Entities.Models;
 
 namespace CITNASDaily.Repositories.Contracts
 {
-    internal class INASRepository
+    public interface INASRepository
     {
+        Task<IQueryable<NAS>> GetAllNASByOfficeId(int officeId);
     }
 }
