@@ -8,12 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CITNASDaily.Entities.Models
 {
+	/// <summary>
+	/// this is the class for NAS model
+	/// </summary>
     public class NAS
     {
         public int NASId { get; set; }
 
 		[ForeignKey("UserId"), DeleteBehavior(DeleteBehavior.Cascade)]
-		public int UserId { get; set; }
+		public int UserId { get; set; }  
         public User? User { get; set; }
 
 		[ForeignKey("OfficeId"), DeleteBehavior(DeleteBehavior.Cascade)]
@@ -30,6 +33,31 @@ namespace CITNASDaily.Entities.Models
         public int UnitsAllowed { get; set; }
         public DateOnly DateStarted { get; set; }
 
-        //all the other FKs add here
+		//fks with delete cascade behavior
+		[ForeignKey("Activitiesd"), DeleteBehavior(DeleteBehavior.Cascade)]
+		public int ActivitiesId { get; set; }
+		public ActivitiesSummary? ActivitiesSummary { get; set; }
+
+		[ForeignKey("SummaryEvaluationId"), DeleteBehavior(DeleteBehavior.Cascade)]
+		public int SummaryEvaluationId { get; set; }
+		public SummaryEvaluation? SummaryEvaluation { get; set; }
+		[ForeignKey("TimekeepingId"), DeleteBehavior(DeleteBehavior.Cascade)]
+		public int TimekeepingId { get; set; }
+		public TimekeepingSummary? TimekeepingSummary { get; set;}
+		[ForeignKey("BiometricsLogId"), DeleteBehavior(DeleteBehavior.Cascade)]
+		public int BiometricsLogId { get; set; }
+		public BiometricsLog? BiometricsLog { get; set; }
+		[ForeignKey("ScheduleId"), DeleteBehavior(DeleteBehavior.Cascade)]
+		public int ScheduleId { get; set; }
+		public Schedule? Schedule { get; set; }
+		[ForeignKey("GradesId"), DeleteBehavior(DeleteBehavior.Cascade)]
+		public int GradesId { get; set; }
+		public Grades? Grades { get; set; }
+		[ForeignKey("ValidationId"), DeleteBehavior(DeleteBehavior.Cascade)]
+		public int ValidationId { get; set; }
+		public Validation? Validation { get; set; }
+		[ForeignKey("SuperiorEvaluationId"), DeleteBehavior(DeleteBehavior.Cascade)]
+		public int SuperiorValidationId { get; set; }
+		public SuperiorEvaluationRating? SuperiorEvaluationRating { get; set; }
     }
 }
