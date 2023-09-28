@@ -14,7 +14,7 @@ namespace CITNASDaily.Repositories.Migrations
                 table: "Role",
                 columns: new[] { "RoleId", "RoleName" },
                 values: new object[] { 1, "OAS" });
-        }
+		}
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
