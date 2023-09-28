@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace CITNASDaily.Repositories.Repositories
 {
-    internal class NASRepository
+    public class NASRepository
     {
+
     }
 }
