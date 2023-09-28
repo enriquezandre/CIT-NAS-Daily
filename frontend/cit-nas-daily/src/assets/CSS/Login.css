@@ -8,6 +8,7 @@
   }
   
   .main-container {
+    margin-top: 7em;
     color: #e9c434;
     font-family: 'Barlow', sans-serif;
     display: flex;

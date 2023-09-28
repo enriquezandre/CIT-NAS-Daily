@@ -1,0 +1,11 @@
+.evaluation-container{
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+    margin-top: 1.5em;
+    padding: 1.5em;
+    border: 2px solid rgb(188, 188, 188);
+    border-radius: 10px;
+    height: 65vh;
+    width: auto;
+    overflow-y: auto;
+}
