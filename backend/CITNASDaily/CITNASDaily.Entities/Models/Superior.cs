@@ -11,10 +11,10 @@ namespace CITNASDaily.Entities.Models
 	public class Superior
 	{
 		public int SuperiorId { get; set; }
-		[ForeignKey("UserId"), DeleteBehavior(DeleteBehavior.Cascade)]
+		[ForeignKey("UserId")]
 		public int UserId { get; set; }
 		public User? User { get; set; }
-		[ForeignKey("OfficeId"), DeleteBehavior(DeleteBehavior.Cascade)]
+		[ForeignKey("OfficeId")]
 		public int OfficeId { get; set; }
 		public Office? Office { get; set; }
 		public string? FirstName { get; set; }

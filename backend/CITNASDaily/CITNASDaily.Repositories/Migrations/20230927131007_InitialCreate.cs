@@ -24,6 +24,59 @@ namespace CITNASDaily.Repositories.Migrations
                 });
 
 			migrationBuilder.CreateTable(
+			name: "Superior",
+			columns: table => new
+			{
+				SuperiorId = table.Column<int>(nullable: false)
+					.Annotation("SqlServer:Identity", "1, 1"),
+				UserId = table.Column<int>(nullable: false),
+				OfficeId = table.Column<int>(nullable: false),
+				FirstName = table.Column<string>(nullable: true),
+				LastName = table.Column<string>(nullable: true)
+			},
+			constraints: table =>
+			{
+				table.PrimaryKey("PK_Superiors", x => x.SuperiorId);
+				table.ForeignKey(
+					name: "FK_Superior_Office_OfficeId",
+					column: x => x.OfficeId,
+					principalTable: "Offices",
+					principalColumn: "OfficeId",
+					onDelete: ReferentialAction.Cascade);
+				table.ForeignKey(
+					name: "FK_Superior_User_UserId",
+					column: x => x.UserId,
+					principalTable: "Users",
+					principalColumn: "Id",
+					onDelete: ReferentialAction.Cascade);
+			});
+
+			migrationBuilder.CreateTable(
+			name: "SuperiorEvaluationRating",
+			columns: table => new
+			{
+				SuperiorEvaluationId = table.Column<int>(nullable: false)
+					.Annotation("SqlServer:Identity", "1, 1"),
+				SuperiorId = table.Column<int>(nullable: false),
+				AttendanceAndPunctuality = table.Column<float>(nullable: false),
+				QualOfWorkOutput = table.Column<float>(nullable: false),
+				QualOfWorkInput = table.Column<float>(nullable: false),
+				AttitudeAndWorkBehaviour = table.Column<float>(nullable: false),
+				OverallAssessment = table.Column<float>(nullable: false),
+				OverallRating = table.Column<float>(nullable: false)
+			},
+			constraints: table =>
+			{
+				table.PrimaryKey("PK_SuperiorEvaluationRating", x => x.SuperiorEvaluationId);
+				table.ForeignKey(
+						name: "FK_SuperiorEvaluationRating_Superior_SuperiorId",
+						column: x => x.SuperiorId,
+						principalTable: "Superior",
+						principalColumn: "SuperiorId",
+						onDelete: ReferentialAction.Cascade);
+			});
+
+			migrationBuilder.CreateTable(
 			name: "User",
 			columns: table => new
 			{
@@ -74,7 +127,8 @@ namespace CITNASDaily.Repositories.Migrations
 					YearLevel = table.Column<int>(type: "int", nullable: false),
 					UnitsAllowed = table.Column<int>(type: "int", nullable: false),
 					DateStarted = table.Column<DateOnly>(type: "dateonly", nullable: true),
-					SummaryEvaluationId = table.Column<int>(type: "int", nullable: false)
+					SuperiorEvaluationId = table.Column<int>(type: "int", nullable: false)
+					//may kulang pa here na mga fk :>>
 				},
 				constraints: table =>
 				{
@@ -92,18 +146,67 @@ namespace CITNASDaily.Repositories.Migrations
 						principalColumn: "OfficeId",
 						onDelete: ReferentialAction.Cascade);
 					table.ForeignKey(
-						name: "FK_NAS_SummaryEvaluation_SummaryEvaluationId",
-						column: x => x.SummaryEvaluationId,
-						principalTable: "SummaryEvaluation",
-						principalColumn: "SummaryEvaluationId",
+						name: "FK_NAS_SuperiorEvaluation_SuperiorEvaluationId",
+						column: x => x.SuperiorEvaluationId,
+						principalTable: "SuperiorEvaluationRating",
+						principalColumn: "SuperiorEvaluationId",
 						onDelete: ReferentialAction.Cascade);
 				});
+
+			// Create an index for the Superior table
+			migrationBuilder.CreateIndex(
+				name: "IX_Superior_UserId",
+				table: "Superior",
+				column: "UserId");
+
+			migrationBuilder.CreateIndex(
+				name: "IX_Superior_OfficeId",
+				table: "Superior",
+				column: "OfficeId");
+
+			// Create an index for the NAS table
+			migrationBuilder.CreateIndex(
+				name: "IX_NAS_UserId",
+				table: "NAS",
+				column: "UserId");
+
+			migrationBuilder.CreateIndex(
+				name: "IX_NAS_OfficeId",
+				table: "NAS",
+				column: "OfficeId");
+
+			migrationBuilder.CreateIndex(
+				name: "IX_NAS_SuperiorEvaluationId",
+				table: "NAS",
+				column: "SuperiorEvaluationId");
+
+			// Create an index for the Office table
+			migrationBuilder.CreateIndex(
+				name: "IX_Office_SuperiorId",
+				table: "Office",
+				column: "SuperiorId");
+
+			// Create an index for the SuperiorEvaluationRating table
+			migrationBuilder.CreateIndex(
+				name: "IX_SuperiorEvaluationRating_SuperiorId",
+				table: "SuperiorEvaluationRating",
+				column: "SuperiorId");
 		}
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+			migrationBuilder.DropTable(
+				name: "NAS");
+			migrationBuilder.DropTable(
+				name: "Office");
+			migrationBuilder.DropTable(
+				name: "SuperiorEvaluationRating");
+			migrationBuilder.DropTable(
+				name: "User");
+			migrationBuilder.DropTable(
+				name: "Superior");
+			migrationBuilder.DropTable(
                 name: "Role");
         }
     }

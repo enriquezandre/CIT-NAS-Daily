@@ -14,7 +14,7 @@ namespace CITNASDaily.Entities.Models
 	public class Office
 	{
 		public int OfficeId { get; set; }
-		[ForeignKey("SuperiorId"), DeleteBehavior(DeleteBehavior.Cascade)]
+		[ForeignKey("SuperiorId")]
 		public int SuperiorId { get; set; }
 		public Superior? Superior { get; set; }
 		public List<NAS>? Nas { get; set; }
