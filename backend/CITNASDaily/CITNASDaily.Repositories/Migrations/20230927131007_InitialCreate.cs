@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using CITNASDaily.Entities.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -22,13 +24,13 @@ namespace CITNASDaily.Repositories.Migrations
                 {
                     table.PrimaryKey("PK_Role", x => x.RoleId);
                 });
-        }
+		}
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
+			migrationBuilder.DropTable(
                 name: "Role");
         }
-    }
+	}
 }
