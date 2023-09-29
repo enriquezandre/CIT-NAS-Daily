@@ -10,7 +10,7 @@ namespace CITNASDaily.Entities.Models
 {
 	public class SuperiorEvaluationRating
 	{
-		public int SuperiorEvaluationId { get; set; }
+		public int Id { get; set; }
 		[ForeignKey("SuperiorId")]
 		public int SuperiorId { get; set; }
 		public Superior? Superior { get; set; }

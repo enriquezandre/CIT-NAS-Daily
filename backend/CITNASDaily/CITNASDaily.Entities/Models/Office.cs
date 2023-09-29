@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CITNASDaily.Entities.Models
 {
@@ -13,7 +7,7 @@ namespace CITNASDaily.Entities.Models
 	/// </summary>
 	public class Office
 	{
-		public int OfficeId { get; set; }
+		public int Id { get; set; }
 		[ForeignKey("SuperiorId")]
 		public int SuperiorId { get; set; }
 		public Superior? Superior { get; set; }
