@@ -9,7 +9,6 @@ namespace CITNASDaily.Utils.Mappings
         public RoleProfile() {
 
             CreateMap<Role, RoleDto>().ReverseMap();
-
         }
     }
 }
