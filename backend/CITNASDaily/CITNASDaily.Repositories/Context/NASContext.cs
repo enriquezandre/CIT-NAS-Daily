@@ -9,7 +9,7 @@ namespace CITNASDaily.Repositories.Context
         public NASContext(DbContextOptions <NASContext> options) : base(options) { }
         //tables sa db
         public DbSet<Role> Roles { get; set; }
-        //DbSet<OAS> OAS { get; set; }
+        public DbSet<Superior> Superiors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
