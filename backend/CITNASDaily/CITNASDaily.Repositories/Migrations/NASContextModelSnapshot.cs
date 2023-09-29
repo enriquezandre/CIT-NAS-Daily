@@ -193,7 +193,6 @@ namespace CITNASDaily.Repositories.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
@@ -274,6 +273,22 @@ namespace CITNASDaily.Repositories.Migrations
             modelBuilder.Entity("CITNASDaily.Entities.Models.Superior", b =>
                 {
                     b.Navigation("Office");
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("OfficeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Superior");
                 });
 #pragma warning restore 612, 618
         }

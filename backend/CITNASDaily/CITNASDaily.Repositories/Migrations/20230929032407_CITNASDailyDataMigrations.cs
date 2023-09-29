@@ -27,28 +27,6 @@ namespace CITNASDaily.Repositories.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Superior",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    OfficeId = table.Column<int>(type: "int", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Superior", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Superior_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Office",
                 columns: table => new
                 {
@@ -152,11 +130,6 @@ namespace CITNASDaily.Repositories.Migrations
                 table: "Office",
                 column: "SuperiorId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Superior_UserId",
-                table: "Superior",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SuperiorEvaluationRating_SuperiorId",

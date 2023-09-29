@@ -14,7 +14,6 @@ namespace CITNASDaily.Repositories.Context
 		public DbSet<Superior> Superiors { get; set; }
 		public DbSet<SuperiorEvaluationRating> SuperiorEvaluationRatings { get; set; }
 		public DbSet<User> Users { get; set; }
-		//DbSet<OAS> OAS { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
