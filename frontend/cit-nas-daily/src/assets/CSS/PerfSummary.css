@@ -1,0 +1,22 @@
+.border{
+    border: 1px solid #000000;
+}
+
+.equal-width-table th,
+.equal-width-table td {
+  width: 25%;
+}
+
+.custom-width-table th:nth-child(1),
+.custom-width-table td:nth-child(1),
+.custom-width-table th:nth-child(3),
+.custom-width-table td:nth-child(3) {
+  width: 30%;
+}
+
+.custom-width-table th:nth-child(2),
+.custom-width-table td:nth-child(2),
+.custom-width-table th:nth-child(4),
+.custom-width-table td:nth-child(4) {
+  width: 20%;
+}

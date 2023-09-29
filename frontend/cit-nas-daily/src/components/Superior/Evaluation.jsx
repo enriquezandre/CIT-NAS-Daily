@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import "../../assets/CSS/Evaluation.css"
+import PerfSummary from './PerfSummary';
 
 export const Evaluation = () => {
     const [selectedOptions, setSelectedOptions] = useState({});
+    const [viewPerfSummary, setViewPerfSummary] = useState(false);
 
     const handleOptionChange = (rowName, selectedValue) => {
         setSelectedOptions({
@@ -53,6 +55,15 @@ export const Evaluation = () => {
     ];
     return(
         <>
+            {/* "ViewPerfSummary" component */}
+            {viewPerfSummary && (
+                <div className="overlay">
+                    <div className="popup">
+                        <PerfSummary />
+                        <button type="button" class="eval-button mt-1 mb-4" onClick={() => setViewPerfSummary(false)}>CLOSE</button>
+                    </div>
+                </div>
+            )}
             <div className='flex content-center items-center m-0'>
                 <div className='eval-container'>
                     <div class="grid grid-cols-1 sm:grid-cols-2">
@@ -78,7 +89,7 @@ export const Evaluation = () => {
                         </p>
                     </div>
                     <div class="button-container">
-                        <button type="button" class="eval-button mt-1 mb-4">VIEW PERFORMANCE SUMMARY</button>
+                        <button type="button" class="eval-button mt-1 mb-4" onClick={() => setViewPerfSummary(true)}>VIEW PERFORMANCE SUMMARY</button>
                     </div>
                     <hr />
                     <p class="my-3 text-justify text-gray-500 dark:text-gray-400">
