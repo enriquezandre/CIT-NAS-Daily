@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using CITNASDaily.Entities.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -24,6 +26,25 @@ namespace CITNASDaily.Repositories.Migrations
                 });
 
 			migrationBuilder.CreateTable(
+				name: "Office",
+				columns: table => new
+				{
+					OfficeId = table.Column<int>(type: "int", nullable: false)
+						.Annotation("SqlServer:Identity", "1, 1"),
+					SuperiorId = table.Column<int>(type: "int", nullable: false),
+				},
+				constraints: table =>
+				{
+					table.PrimaryKey("PK_Office", x => x.OfficeId);
+					table.ForeignKey(
+						name: "FK_Office_Superior_SuperiorId",
+						column: x => x.SuperiorId,
+						principalTable: "Superior",
+						principalColumn: "SuperiorId",
+						onDelete: ReferentialAction.Cascade);
+				});
+
+			migrationBuilder.CreateTable(
 			name: "Superior",
 			columns: table => new
 			{
@@ -40,13 +61,13 @@ namespace CITNASDaily.Repositories.Migrations
 				table.ForeignKey(
 					name: "FK_Superior_Office_OfficeId",
 					column: x => x.OfficeId,
-					principalTable: "Offices",
+					principalTable: "Office",
 					principalColumn: "OfficeId",
 					onDelete: ReferentialAction.Cascade);
 				table.ForeignKey(
 					name: "FK_Superior_User_UserId",
 					column: x => x.UserId,
-					principalTable: "Users",
+					principalTable: "User",
 					principalColumn: "Id",
 					onDelete: ReferentialAction.Cascade);
 			});
@@ -92,25 +113,6 @@ namespace CITNASDaily.Repositories.Migrations
 			});
 
 			migrationBuilder.CreateTable(
-				name: "Office",
-				columns: table => new
-				{
-					OfficeId = table.Column<int>(type: "int", nullable: false)
-						.Annotation("SqlServer:Identity", "1, 1"),
-					SuperiorId = table.Column<int>(type: "int", nullable: false),
-				},
-				constraints: table =>
-				{
-					table.PrimaryKey("PK_Office", x => x.OfficeId);
-					table.ForeignKey(
-						name: "FK_Office_Superior_SuperiorId",
-						column: x => x.SuperiorId,
-						principalTable: "Superior",
-						principalColumn: "SuperiorId",
-						onDelete: ReferentialAction.Cascade);
-				});
-
-			migrationBuilder.CreateTable(
 				name: "NAS",
 				columns: table => new
 				{
@@ -122,11 +124,11 @@ namespace CITNASDaily.Repositories.Migrations
 					MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: false),
 					LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
 					Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-					BirthDate = table.Column<DateOnly>(type: "dateonly", nullable: true),
+					BirthDate = table.Column<DateTime>(type: "datetime", nullable: true),
 					Course = table.Column<string>(type: "nvarchar(max)", nullable: false),
 					YearLevel = table.Column<int>(type: "int", nullable: false),
 					UnitsAllowed = table.Column<int>(type: "int", nullable: false),
-					DateStarted = table.Column<DateOnly>(type: "dateonly", nullable: true),
+					DateStarted = table.Column<DateTime>(type: "datetime", nullable: true),
 					SuperiorEvaluationId = table.Column<int>(type: "int", nullable: false)
 					//may kulang pa here na mga fk :>>
 				},
@@ -209,5 +211,5 @@ namespace CITNASDaily.Repositories.Migrations
 			migrationBuilder.DropTable(
                 name: "Role");
         }
-    }
+	}
 }
