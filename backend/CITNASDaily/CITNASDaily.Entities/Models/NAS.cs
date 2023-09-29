@@ -33,7 +33,7 @@ namespace CITNASDaily.Entities.Models
         public DateTime DateStarted { get; set; }
 
 		//fks with delete cascade behavior
-		/*[ForeignKey("Activitiesd")]
+		[ForeignKey("Activitiesd")]
 		public int ActivitiesId { get; set; }
 		public ActivitiesSummary? ActivitiesSummary { get; set; }
 
@@ -54,7 +54,7 @@ namespace CITNASDaily.Entities.Models
 		public Grades? Grades { get; set; }
 		[ForeignKey("ValidationId")]
 		public int ValidationId { get; set; }
-		public Validation? Validation { get; set; }*/
+		public Validation? Validation { get; set; }
 		[ForeignKey("SuperiorEvaluationId")]
 		public int SuperiorValidationId { get; set; }
 		public SuperiorEvaluationRating? SuperiorEvaluationRating { get; set; }
