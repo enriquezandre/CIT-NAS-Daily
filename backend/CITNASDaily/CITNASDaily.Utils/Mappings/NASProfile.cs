@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using CITNASDaily.Entities.Dtos;
 using CITNASDaily.Entities.Dtos.NASDto;
 using CITNASDaily.Entities.Models;
 
-namespace CITNASDaily.Services.Contracts
+namespace CITNASDaily.Utils.Mappings
 {
-	public interface INASService
+	public class NASProfile : Profile
 	{
-		Task<int> CreateNAS(NASCreationDto nasDto);
-		Task<List<NAS>> GetAllNASByOfficeId(int officeId);
+		public NASProfile() 
+		{
+			CreateMap<NAS, NASCreationDto>().ReverseMap();
+		}
 	}
 }

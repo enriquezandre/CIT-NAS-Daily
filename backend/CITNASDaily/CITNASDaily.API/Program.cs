@@ -19,13 +19,21 @@ builder.Services.AddDbContext<NASContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnection"));
 });
 
+//Repositories
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<INASRepository, NASRepository>();
 builder.Services.AddScoped<ISuperiorRepository, SuperiorRepository>();
+
+//Services
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<INASService, NASService>();
 builder.Services.AddScoped<ISuperiorService, SuperiorService>();
+
+//Mappings
 builder.Services.AddAutoMapper(typeof(RoleProfile));
 builder.Services.AddAutoMapper(typeof(SuperiorProfile));
+builder.Services.AddAutoMapper(typeof(SuperiorProfile));
+builder.Services.AddAutoMapper(typeof(NASProfile));
 
 var app = builder.Build();
 

@@ -9,6 +9,7 @@ namespace CITNASDaily.Repositories.Contracts
 {
     public interface INASRepository
     {
+        Task CreateNAS(NAS nas);
         Task<IQueryable<NAS>> GetAllNASByOfficeId(int officeId);
     }
 }
