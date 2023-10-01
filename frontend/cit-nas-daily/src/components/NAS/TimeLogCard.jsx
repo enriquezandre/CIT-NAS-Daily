@@ -50,8 +50,16 @@ export const TimeLogCard = () => {
             </div>
           </div>
           {/* To be implemented: From biometrics, read time-in log and show here */}
-          <div className="mr-28 text-2xl font-bold text-gray">
-            NOT YET TIMED IN
+          <div>
+            <div className="mt-10 mr-28 text-2xl font-bold text-gray">
+              NOT YET TIMED IN
+            </div>
+            {/* To be implemented: This will show only if naka time out na */}
+            <div className="mt-7 text-xl">
+              <button className="bg-primary text-white text-white py-2 px-4 rounded">
+                Fill-up Activities Form
+              </button>
+            </div>
           </div>
         </div>
       </div>
