@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
+import { ActivitiesFormModal } from "./ActivitiesFormModal";
 
 export const TimeLogCard = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [formIsOpen, setFormIsOpen] = useState(false);
+
+  const openForm = () => {
+    setFormIsOpen(true);
+  };
+
+  const closeForm = () => {
+    setFormIsOpen(false);
+  };
 
   useEffect(() => {
     // Update the current date and time every second
@@ -56,9 +66,13 @@ export const TimeLogCard = () => {
             </div>
             {/* To be implemented: This will show only if naka time out na */}
             <div className="mt-7 text-xl">
-              <button className="bg-primary text-white text-white py-2 px-4 rounded">
+              <button
+                onClick={openForm}
+                className="bg-primary text-white py-2 px-4 rounded"
+              >
                 Fill-up Activities Form
               </button>
+              <ActivitiesFormModal isOpen={formIsOpen} closeModal={closeForm} />
             </div>
           </div>
         </div>
