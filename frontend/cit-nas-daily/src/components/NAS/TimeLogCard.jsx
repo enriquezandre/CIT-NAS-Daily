@@ -36,16 +36,22 @@ export const TimeLogCard = () => {
   return (
     <div className="flex justify-center items-center mx-14 mb-6">
       <div className="bg-[url('/src/assets/glebuilding.png')] bg-cover bg-center rounded h-screen w-screen">
-        <div className="ml-10 mt-10">
-          <div className="text-5xl font-bold mb-10 text-primary">
-            Hello, NAS Name!
-          </div>
-          <div className="border-l-2 border-primary">
-            <div className="text-2xl ml-4">
-              <div>{formatDay(currentDateTime)}</div>
-              <div>{formatDate(currentDateTime)}</div>
-              <div>{formatTime(currentDateTime)}</div>
+        <div className="flex items-center justify-between">
+          <div className="ml-10 mt-10">
+            <div className="text-5xl font-bold mb-10 text-primary">
+              Hello, NAS Name!
             </div>
+            <div className="border-l-2 border-primary">
+              <div className="text-2xl ml-4">
+                <div>{formatDay(currentDateTime)}</div>
+                <div>{formatDate(currentDateTime)}</div>
+                <div>{formatTime(currentDateTime)}</div>
+              </div>
+            </div>
+          </div>
+          {/* To be implemented: From biometrics, read time-in log and show here */}
+          <div className="mr-28 text-2xl font-bold text-gray">
+            NOT YET TIMED IN
           </div>
         </div>
       </div>
