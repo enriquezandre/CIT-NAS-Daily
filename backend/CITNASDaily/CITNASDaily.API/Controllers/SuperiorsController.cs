@@ -18,32 +18,33 @@ namespace CITNASDaily.API.Controllers
             _logger = logger;
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetSuperior(int superiorId)
-        //{
-        //    try
-        //    {
-        //        var superior = await _superiorService.GetSuperiorAsync(superiorId);
-        //        if (superior == null) return NotFound();
+        [HttpGet("{superiorId}", Name = "GetSuperior")]
+        public async Task<IActionResult> GetSuperior(int superiorId)
+        {
+            try
+            {
+                var superior = await _superiorService.GetSuperiorAsync(superiorId);
+                if (superior == null) return NotFound();
 
-        //        return Ok(superior);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Error getting superior.");
+                return Ok(superior);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting superior.");
 
-        //        return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-        //    }
-        //}
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
 
         [HttpPost]
+        [ProducesResponseType(typeof(SuperiorDto), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateSuperior([FromBody] SuperiorCreateDto superiorCreate)
         {
             try
             {
                 var createdSuperior = await _superiorService.CreateSuperiorsAsync(superiorCreate);
 
-                return CreatedAtRoute("GetSuperior", new { createdSuperior });
+                return CreatedAtRoute("GetSuperior", new { superiorId = createdSuperior.Id }, createdSuperior );
             }
             catch (Exception ex)
             {
