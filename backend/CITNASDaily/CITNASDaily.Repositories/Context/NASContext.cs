@@ -14,8 +14,14 @@ namespace CITNASDaily.Repositories.Context
 		public DbSet<Superior> Superiors { get; set; }
 		public DbSet<SuperiorEvaluationRating> SuperiorEvaluationRatings { get; set; }
 		public DbSet<User> Users { get; set; }
+        public DbSet<ActivitiesSummary> ActivitiesSummaries { get; set; }
+		public DbSet<OAS> OAS { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<SummaryEvaluation> SummaryEvaluations { get; set; }
+        public DbSet<TimekeepingSummary> TimekeepingSummaries { get; set; }
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -25,7 +31,7 @@ namespace CITNASDaily.Repositories.Context
                 entityType.SetTableName(entityType.DisplayName());
             }
 
-            modelBuilder.Entity<Role>().HasData(new Role { RoleId = 1, RoleName = "OAS" });
+            modelBuilder.Entity<Role>().HasData(new Role { Id = 1, Name = "OAS" });
 
 			// configuration for the office and superior relationship
 			modelBuilder.Entity<Office>()
@@ -41,8 +47,14 @@ namespace CITNASDaily.Repositories.Context
 			.HasForeignKey<Office>(s => s.SuperiorId)
 			.OnDelete(DeleteBehavior.Cascade);
 
-			// set pk for superior evaluation rating because EFC doesnt recognize it
-			modelBuilder.Entity<SuperiorEvaluationRating>()
+            modelBuilder.Entity<NAS>()
+            .HasOne(n => n.User)
+            .WithMany()
+            .HasForeignKey(n => n.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+            // set pk for superior evaluation rating because EFC doesnt recognize it
+            modelBuilder.Entity<SuperiorEvaluationRating>()
 			.HasKey(rating => rating.Id);
 
 		}
