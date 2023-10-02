@@ -1,7 +1,6 @@
 "use client";
 import PropTypes from "prop-types";
-import { Button, Modal } from "flowbite-react";
-import { Textarea } from "flowbite-react";
+import { Modal } from "flowbite-react";
 
 export function ActivitiesFormModal({ isOpen, closeModal }) {
   return (
@@ -10,44 +9,48 @@ export function ActivitiesFormModal({ isOpen, closeModal }) {
         <Modal.Body>
           <div className="space-y-6">
             <div>
-              <div>Activities of the Day</div>
-              <Textarea
-                color="primary"
-                id="comment"
-                placeholder="Leave a comment..."
-                required
-                rows={5}
-              />
+              <div className="font-bold text-lg">Activities of the Day</div>
+              <div className="mt-4">
+                <textarea
+                  className="border border-black p-2 w-full h-32" // You can adjust the height here
+                  placeholder="Enter your activities done for the day"
+                ></textarea>
+              </div>
             </div>
             <div>
-              <div>Skills Learned</div>
-              <Textarea
-                color="primary"
-                id="comment"
-                placeholder="Leave a comment..."
-                required
-                rows={5}
-              />
+              <div className="font-bold text-lg">Skills Learned</div>
+              <div className="mt-4">
+                <textarea
+                  className="border border-black p-2 w-full h-32" // You can adjust the height here
+                  placeholder="Enter the skills you learned"
+                ></textarea>
+              </div>
             </div>
             <div>
-              <div>Values Learned</div>
-              <Textarea
-                color="primary"
-                id="comment"
-                placeholder="Leave a comment..."
-                required
-                rows={5}
-              />
+              <div className="font-bold text-lg">Values Learned</div>
+              <div className="mt-4">
+                <textarea
+                  className="border border-black p-2 w-full h-32" // You can adjust the height here
+                  placeholder="Enter the values you learned"
+                ></textarea>
+              </div>
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button color="gray" onClick={closeModal}>
+          <button
+            className="bg-primary text-white py-2 px-4 rounded"
+            onClick={closeModal}
+          >
             Submit
-          </Button>
-          <Button color="gray" onClick={closeModal}>
+          </button>
+          <button
+            className="bg-primary text-white py-2 px-4 rounded"
+            color="gray"
+            onClick={closeModal}
+          >
             Cancel
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </div>
