@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CITNASDaily.Entities.Models
 {
@@ -7,8 +7,8 @@ namespace CITNASDaily.Entities.Models
 	/// </summary>
 	public class Office
 	{
+		[Key]
 		public int Id { get; set; }
-		[ForeignKey("SuperiorId")]
 		public int SuperiorId { get; set; }
 		public Superior? Superior { get; set; }
 		public List<NAS>? Nas { get; set; }

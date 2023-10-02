@@ -2,11 +2,13 @@
 
 namespace CITNASDaily.Entities.Models
 {
-    public class Role
+    public class TimekeepingSummary
     {
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; }
+        public int NASId { get; set; }
+        public NAS NAS { get; set; }
+
     }
 }

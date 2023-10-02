@@ -1,15 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CITNASDaily.Entities.Models;
+using System.ComponentModel.DataAnnotations;
 
-namespace CITNASDaily.Entities.Models
+namespace CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto
 {
-    public class SuperiorEvaluationRating
-	{
-		[Key]
-		public int Id { get; set; }
+    public class SuperiorEvaluationCreateDto
+    {
 
-		[Required]
-        public int SuperiorId { get; set; }
-		public Superior? Superior { get; set; }
         [Required]
         public float AttendanceAndPunctuality { get; set; }
         [Required]
@@ -22,5 +18,9 @@ namespace CITNASDaily.Entities.Models
         public float OverallAssessment { get; set; }
         [Required]
         public float OverallRating { get; set; }
-	}
+
+        //TODO: subject to change after implementing auth
+        [Required]
+        public int SuperiorId { get; set; }
+    }
 }
