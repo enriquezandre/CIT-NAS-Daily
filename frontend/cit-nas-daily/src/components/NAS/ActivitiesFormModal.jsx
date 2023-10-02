@@ -7,12 +7,12 @@ export function ActivitiesFormModal({ isOpen, closeModal }) {
     <div>
       <Modal show={isOpen} onClose={closeModal}>
         <Modal.Body>
-          <div className="space-y-6">
+          <div className="space-y-6 bg-[url('/src/assets/CIT.png')] bg-cover bg-center">
             <div>
               <div className="font-bold text-lg">Activities of the Day</div>
               <div className="mt-4">
                 <textarea
-                  className="border border-black p-2 w-full h-32" // You can adjust the height here
+                  className="border border-black p-2 w-full h-32 bg-transparent"
                   placeholder="Enter your activities done for the day"
                 ></textarea>
               </div>
@@ -21,7 +21,7 @@ export function ActivitiesFormModal({ isOpen, closeModal }) {
               <div className="font-bold text-lg">Skills Learned</div>
               <div className="mt-4">
                 <textarea
-                  className="border border-black p-2 w-full h-32" // You can adjust the height here
+                  className="border border-black p-2 w-full h-32 bg-transparent" // You can adjust the height here
                   placeholder="Enter the skills you learned"
                 ></textarea>
               </div>
@@ -30,7 +30,7 @@ export function ActivitiesFormModal({ isOpen, closeModal }) {
               <div className="font-bold text-lg">Values Learned</div>
               <div className="mt-4">
                 <textarea
-                  className="border border-black p-2 w-full h-32" // You can adjust the height here
+                  className="border border-black p-2 w-full h-32 bg-transparent" // You can adjust the height here
                   placeholder="Enter the values you learned"
                 ></textarea>
               </div>

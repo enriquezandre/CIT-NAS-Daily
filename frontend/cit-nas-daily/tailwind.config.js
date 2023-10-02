@@ -12,6 +12,7 @@ export default {
       secondary: "#E9C434",
       gray: "#717171",
       white: "#FFFFFF",
+      transparent: "transparent",
     },
     extend: {},
   },
