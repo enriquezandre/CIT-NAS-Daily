@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import { Modal } from "flowbite-react";
 
-export function ActivitiesFormModal({ isOpen, closeModal }) {
+export const ActivitiesFormModal = ({ isOpen, closeModal }) => {
   return (
     <div>
       <Modal show={isOpen} onClose={closeModal}>
@@ -55,7 +55,7 @@ export function ActivitiesFormModal({ isOpen, closeModal }) {
       </Modal>
     </div>
   );
-}
+};
 
 ActivitiesFormModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
