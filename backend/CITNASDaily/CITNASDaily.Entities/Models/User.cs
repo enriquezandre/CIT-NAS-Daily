@@ -1,19 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Principal;
 
 namespace CITNASDaily.Entities.Models
 {
-	/// <summary>
-	/// This is the class for the User Model
-	/// </summary>
-	public class User
+    /// <summary>
+    /// This is the class for the User Model
+    /// </summary>
+    public class User
 	{
-		public Guid Id { get; set; }
-		public string? UserName { get; set; }
-		public string? Password { get; set; }
-		public string? RoleCode { get; set; } //idk  if this is string, please check uwu >,<
-	}
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string Username { get; set; }
+
+        [Required]
+        public string PasswordHash { get; set; }
+
+
+        [Required]
+        public DateTime CreatedAt { get; set; }
+
+        [Required]
+        public DateTime UpdatedAt { get; set; }
+
+        [Required]
+        public int RoleId { get; set; }
+        public Role Role { get; set; }
+    }
 }
