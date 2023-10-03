@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { TimeInLog } from "../../pages/NAS/TimeInLog";
 
 export const NASTabs = () => {
   const [activeTab, setActiveTab] = useState(1);
@@ -75,12 +76,16 @@ export const NASTabs = () => {
         </div>
         <div className="p-4 bg-white rounded-b-lg">
           {/* Content for each tab */}
-          {activeTab === 1 && <div>Tab 1 Content</div>}
-          {activeTab === 2 && <div>Tab 2 Content</div>}
-          {activeTab === 3 && <div>Tab 3 Content</div>}
-          {activeTab === 4 && <div>Tab 4 Content</div>}
-          {activeTab === 5 && <div>Tab 5 Content</div>}
-          {activeTab === 6 && <div>Tab 6 Content</div>}
+          {activeTab === 1 && (
+            <div>
+              <TimeInLog />
+            </div>
+          )}
+          {activeTab === 2 && <div>Personal Information Page Here</div>}
+          {activeTab === 3 && <div>Attendance Summary Page Here</div>}
+          {activeTab === 4 && <div>Activities Summary Page Here</div>}
+          {activeTab === 5 && <div>Schedule of Duty Here</div>}
+          {activeTab === 6 && <div>Evaluation Result Here</div>}
         </div>
       </div>
     </div>
