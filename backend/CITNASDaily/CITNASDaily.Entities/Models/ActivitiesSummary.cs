@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CITNASDaily.Entities.Models
 {
-	public class ActivitiesSummary
-	{
-		public int Id { get; set; }
-		public string? ActivitiesOfTheDay { get; set; }
-		public string? SkillsLearned { get; set; }
-		public string? ValuesLearned { get; set; }
-	}
+    public class ActivitiesSummary
+    {
+		[Key]
+        public int Id { get; set; }
+        [Required]
+        public string? ActivitiesOfTheDay { get; set; }
+        [Required]
+        public string? SkillsLearned { get; set; }
+        [Required]
+        public string? ValuesLearned { get; set; }
+    }
 }
