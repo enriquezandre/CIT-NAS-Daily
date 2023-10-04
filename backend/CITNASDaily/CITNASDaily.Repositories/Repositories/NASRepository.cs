@@ -13,10 +13,16 @@ namespace CITNASDaily.Repositories.Repositories
 			_context = context;
 		}
 
-		public async Task CreateNAS(NAS nas)
+		public async Task<NAS?> CreateNAS(NAS nas)
 		{
-			await _context.NAS.AddAsync(nas);
-			await _context.SaveChangesAsync();
+			if(nas != null)
+			{
+				await _context.NAS.AddAsync(nas);
+				await _context.SaveChangesAsync();
+				return nas;
+			}
+			return null;
+			
 		}
 
 		public async Task<IQueryable<NAS>> GetAllNASByOfficeId(int officeId)

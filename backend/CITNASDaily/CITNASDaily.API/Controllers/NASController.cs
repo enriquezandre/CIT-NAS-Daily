@@ -41,7 +41,7 @@ namespace CITNASDaily.API.Controllers
 			try
 			{
 				var nas = await _nasService.GetAllNASByOfficeId(officeId);
-				if (nas.IsNullOrEmpty()) return NoContent();
+				if (nas == null) return NoContent();
 				return Ok(nas);
 			}
 			catch (Exception ex)

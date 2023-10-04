@@ -24,17 +24,38 @@ namespace CITNASDaily.Services.Services
 			_mapper = mapper;
 		}
 
-		public async Task<int> CreateNAS(NASCreationDto nasDto)
+		/// <summary>
+		/// this adds new NAS on the NAS table.
+		/// if creation fails, this returns 0. otherwise, it will return the nas id
+		/// </summary>
+		/// <param name="nasDto"></param>
+		/// <returns></returns>
+		public async Task<int?> CreateNAS(NASCreationDto nasDto)
 		{
 			var nas = _mapper.Map<NAS>(nasDto);
-			await _nasRepository.CreateNAS(nas);
-			return nas.Id;
+			var createdNas = await _nasRepository.CreateNAS(nas);
+			if (createdNas != null)
+			{
+				return createdNas.Id;
+			}
+			return 0;
 		}
 
-		public async Task<List<NAS>> GetAllNASByOfficeId(int officeId)
+		/// <summary>
+		/// this gets all the nas under an office.
+		/// if there is no nas under an office, it will return null.
+		/// otherwise, it will return all the nas
+		/// </summary>
+		/// <param name="officeId"></param>
+		/// <returns></returns>
+		public async Task<List<NAS>?> GetAllNASByOfficeId(int officeId)
 		{
 			var nas = await _nasRepository.GetAllNASByOfficeId(officeId);
-			return nas.ToList();
+			if (nas != null)
+			{
+				return nas.ToList();
+			}
+			return null;
 		}
 	}
 }

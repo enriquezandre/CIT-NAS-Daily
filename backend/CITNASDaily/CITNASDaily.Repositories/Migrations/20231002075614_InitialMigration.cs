@@ -277,7 +277,8 @@ namespace CITNASDaily.Repositories.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[] { 1, "OAS" });
 
-        }
+			
+		}
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
