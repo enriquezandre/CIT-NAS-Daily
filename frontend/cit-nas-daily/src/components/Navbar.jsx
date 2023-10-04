@@ -1,11 +1,9 @@
 import NasNavbar from "../assets/navbar-nasdaily.png";
 
-function Navbar() {
+export const Navbar = () => {
   return (
-    <div className="bg-secondary fixed h-20 w-full z-50">
+    <nav className="bg-secondary h-20 w-full">
       <img src={NasNavbar} alt="logo" className="h-20 object-contain" />
-    </div>
+    </nav>
   );
-}
-
-export default Navbar;
+};
