@@ -30,15 +30,15 @@ namespace CITNASDaily.Services.Services
 		/// </summary>
 		/// <param name="nasDto"></param>
 		/// <returns></returns>
-		public async Task<int?> CreateNAS(NASCreationDto nasDto)
+		public async Task<NAS?> CreateNAS(NASCreationDto nasDto)
 		{
 			var nas = _mapper.Map<NAS>(nasDto);
 			var createdNas = await _nasRepository.CreateNAS(nas);
 			if (createdNas != null)
 			{
-				return createdNas.Id;
+				return createdNas;
 			}
-			return 0;
+			return null;
 		}
 
 		/// <summary>

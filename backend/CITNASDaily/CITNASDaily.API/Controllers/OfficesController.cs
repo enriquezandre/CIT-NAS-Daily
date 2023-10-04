@@ -20,7 +20,7 @@ namespace CITNASDaily.API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateOffice(OfficeCreationDto officeDto)
+		public async Task<IActionResult> CreateOffice([FromBody] OfficeCreationDto officeDto)
 		{
 			try
 			{

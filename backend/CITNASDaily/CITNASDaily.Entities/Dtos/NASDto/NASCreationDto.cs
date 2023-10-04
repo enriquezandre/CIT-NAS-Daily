@@ -11,9 +11,8 @@ namespace CITNASDaily.Entities.Dtos.NASDto
 {
 	public class NASCreationDto
 	{
-
-		[Required]
-		public Guid UserId { get; set; }
+		/*[Required]
+		public Guid UserId { get; set; }*/
 
 		[Required]
 		public int OfficeId { get; set; }

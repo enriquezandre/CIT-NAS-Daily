@@ -20,13 +20,6 @@ namespace CITNASDaily.Entities.Models
         [Required]
         public string PasswordHash { get; set; }
 
-
-        [Required]
-        public DateTime CreatedAt { get; set; }
-
-        [Required]
-        public DateTime UpdatedAt { get; set; }
-
         [Required]
         public int RoleId { get; set; }
         public Role Role { get; set; }
