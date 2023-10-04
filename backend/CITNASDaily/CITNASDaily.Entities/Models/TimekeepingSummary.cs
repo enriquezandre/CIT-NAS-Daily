@@ -8,7 +8,7 @@ namespace CITNASDaily.Entities.Models
         public int Id { get; set; }
         [Required]
         public int NASId { get; set; }
-        public NAS NAS { get; set; }
+        public NAS? NAS { get; set; }
 
 		public bool Excused { get; set; }
 		public bool Unexcused { get; set; }

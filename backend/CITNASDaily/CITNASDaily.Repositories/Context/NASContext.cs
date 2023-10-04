@@ -17,7 +17,7 @@ namespace CITNASDaily.Repositories.Context
         public DbSet<ActivitiesSummary> ActivitiesSummaries { get; set; }
 		public DbSet<OAS> OAS { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
-        public DbSet<PerformanceEvaluation> SummaryEvaluations { get; set; }
+        public DbSet<PerformanceEvaluation> PerformanceEvaluations { get; set; }
         public DbSet<TimekeepingSummary> TimekeepingSummaries { get; set; }
 
 
@@ -32,20 +32,6 @@ namespace CITNASDaily.Repositories.Context
             }
 
             modelBuilder.Entity<Role>().HasData(new Role { Id = 1, Name = "OAS" });
-
-			// configuration for the office and superior relationship
-			modelBuilder.Entity<Office>()
-			.HasOne(o => o.Superior)
-			.WithOne(s => s.Office)
-			.HasForeignKey<Superior>(s => s.OfficeId)
-			.OnDelete(DeleteBehavior.Cascade);
-
-			// set fk for superior
-			modelBuilder.Entity<Superior>()
-			.HasOne(o => o.Office)
-			.WithOne(s => s.Superior)
-			.HasForeignKey<Office>(s => s.SuperiorId)
-			.OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<NAS>()
             .HasOne(n => n.User)
