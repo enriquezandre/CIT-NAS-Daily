@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Context;
 using CITNASDaily.Repositories.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace CITNASDaily.Repositories.Repositories
 {
@@ -25,6 +26,25 @@ namespace CITNASDaily.Repositories.Repositories
 				return office;
 			}
 			return null;
+		}
+
+		/// <summary>
+		/// this retrieves all offices.
+		/// </summary>
+		/// <returns></returns>
+		public async Task<IEnumerable<Office>> GetAllOffices()
+		{
+			return await _context.Offices.ToListAsync();
+		}
+
+		/// <summary>
+		/// this gets the office by it's id
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public async Task<Office?> GetOfficeById(int id)
+		{
+			return await _context.Offices.FindAsync(id);
 		}
 	}
 }

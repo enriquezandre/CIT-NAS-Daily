@@ -57,5 +57,24 @@ namespace CITNASDaily.Services.Services
 			}
 			return null;
 		}
+
+		/// <summary>
+		/// this updates an existing nas.
+		/// returns nas if updation is not succesful.
+		/// otherwise, returns the nas
+		/// </summary>
+		/// <param name="nasDto"></param>
+		/// <returns></returns>
+
+		public async Task<NAS?> UpdateNAS(NASUpdationDto nasDto)
+		{
+			var nas = _mapper.Map<NAS> (nasDto);
+			var updatedNAS = await _nasRepository.UpdateNAS(nas);
+			if (updatedNAS != null)
+			{
+				return updatedNAS;
+			}
+			return null;
+		}
 	}
 }

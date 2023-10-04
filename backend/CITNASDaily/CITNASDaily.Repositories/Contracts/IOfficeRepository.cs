@@ -9,6 +9,8 @@ namespace CITNASDaily.Repositories.Contracts
 {
 	public interface IOfficeRepository
 	{
+		Task<Office?> GetOfficeById(int id);
+		Task<IEnumerable<Office>> GetAllOffices();
 		Task<Office?> AddOffice(Office office);
 	}
 }

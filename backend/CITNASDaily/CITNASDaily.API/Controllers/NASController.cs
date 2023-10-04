@@ -21,6 +21,14 @@ namespace CITNASDaily.API.Controllers
 			_logger = logger;
 		}
 
+		/// <summary>
+		/// this is the controller for creating new entry of nas.
+		/// </summary>
+		/// <param name="nasDto"></param>
+		/// <returns>
+		/// returns the route if creation is succesful.
+		/// returns badrequest if nas is null.</returns>
+
 		[HttpPost]
 		[ProducesResponseType(typeof(NASCreationDto), StatusCodes.Status201Created)]
 		public async Task<IActionResult> CreateNAS ([FromBody] NASCreationDto nasDto)
@@ -60,6 +68,31 @@ namespace CITNASDaily.API.Controllers
 				_logger.LogError(ex, "Error getting NAS.");
 				return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
 			}
+		}
+
+		/// <summary>
+		/// this is the controller for updating an existing nas.
+		/// </summary>
+		/// <param name="nasDto"></param>
+		/// <returns>
+		/// returns the createdroute, if succesful.
+		/// returns badrequest, if nas is null.
+		/// </returns>
+		[HttpPut]
+		public async Task<IActionResult> UpdateNAS([FromBody] NASUpdationDto nasDto)
+		{
+			try
+			{
+				var nas = await _nasService.UpdateNAS(nasDto);
+				if (nas == null) return BadRequest();
+				return CreatedAtRoute("GetNAS", new { nasId = nas?.Id }, nas);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error encountered when creating NAS.");
+				return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+			}
+
 		}
 	}
 }

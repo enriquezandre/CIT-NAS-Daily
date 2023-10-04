@@ -11,6 +11,8 @@ namespace CITNASDaily.Services.Contracts
 {
 	public interface IOfficeService
 	{
-		Task<int?> CreateOffice(OfficeCreationDto officeDto);
+		Task<Office?> GetOfficeById(int id);
+		Task<IEnumerable<Office>> GetAllOffices();
+		Task<Office?> CreateOffice(OfficeCreationDto officeDto);
 	}
 }

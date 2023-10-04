@@ -11,6 +11,7 @@ namespace CITNASDaily.Services.Contracts
 	public interface INASService
 	{
 		Task<NAS?> CreateNAS(NASCreationDto nasDto);
+		Task<NAS?> UpdateNAS(NASUpdationDto nasDto);
 		Task<List<NAS>?> GetAllNASByOfficeId(int officeId);
 	}
 }

@@ -10,6 +10,7 @@ namespace CITNASDaily.Repositories.Contracts
     public interface INASRepository
     {
         Task<NAS?> CreateNAS(NAS nas);
-        Task<IQueryable<NAS>> GetAllNASByOfficeId(int officeId);
+        Task<NAS?> UpdateNAS(NAS nas);
+        Task<IQueryable<NAS>?> GetAllNASByOfficeId(int officeId);
     }
 }

@@ -20,15 +20,42 @@ namespace CITNASDaily.Services.Services
 			_officeRepository = officeRepository;
 			_mapper = mapper;
 		}
-		public async Task<int?> CreateOffice(OfficeCreationDto officeDto)
+
+		/// <summary>
+		/// this creates a new office entry.
+		/// returns null if creation fails.
+		/// otherwise, returns the new office entry
+		/// </summary>
+		/// <param name="officeDto"></param>
+		/// <returns></returns>
+		public async Task<Office?> CreateOffice(OfficeCreationDto officeDto)
 		{
 			var office = _mapper.Map<Office>(officeDto);
 			var createdOffice = await _officeRepository.AddOffice(office);
 			if (createdOffice != null)
 			{
-				return createdOffice.Id;
+				return createdOffice;
 			}
-			return 0;
+			return null;
+		}
+
+		/// <summary>
+		/// this gets all the offices in the table
+		/// </summary>
+		/// <returns></returns>
+		public async Task<IEnumerable<Office>> GetAllOffices()
+		{
+			return await _officeRepository.GetAllOffices();
+		}
+
+		/// <summary>
+		/// this returns an office via it's id
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public async Task<Office?> GetOfficeById(int id)
+		{
+			return await GetOfficeById(id);
 		}
 	}
 }
