@@ -11,6 +11,7 @@ namespace CITNASDaily.Entities.Models
 		public int Id { get; set; }
 		public int SuperiorId { get; set; }
 		public Superior? Superior { get; set; }
+		public string? Name { get; set; }
 		public List<NAS>? Nas { get; set; }
 	}
 }

@@ -17,7 +17,7 @@ namespace CITNASDaily.Repositories.Context
         public DbSet<ActivitiesSummary> ActivitiesSummaries { get; set; }
 		public DbSet<OAS> OAS { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
-        public DbSet<SummaryEvaluation> SummaryEvaluations { get; set; }
+        public DbSet<PerformanceEvaluation> SummaryEvaluations { get; set; }
         public DbSet<TimekeepingSummary> TimekeepingSummaries { get; set; }
 
 

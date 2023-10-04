@@ -13,15 +13,8 @@ namespace CITNASDaily.Entities.Models
         public User? User { get; set; }
 
         [Required]
-        public int OfficeId { get; set; }
-        public Office? Office { get; set; }
-
-        [Required]
         [MaxLength(50)]
         public string? FirstName { get; set; }
-
-        [MaxLength(50)]
-        public string? MiddleName { get; set; }
 
         [Required]
         [MaxLength(50)]

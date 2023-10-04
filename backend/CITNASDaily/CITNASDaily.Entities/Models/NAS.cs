@@ -8,7 +8,6 @@ namespace CITNASDaily.Entities.Models
 	/// </summary>
     public class NAS
     {
-        public int Id { get; set; }
 		[Key]
         public int Id { get; set; }
 
@@ -40,34 +39,5 @@ namespace CITNASDaily.Entities.Models
         public int UnitsAllowed { get; set; }
         [Required]
         public DateTime DateStarted { get; set; }
-
-		//fks with delete cascade behavior
-		[ForeignKey("Activitiesd")]
-		public int ActivitiesId { get; set; }
-		public ActivitiesSummary? ActivitiesSummary { get; set; }
-
-		[ForeignKey("SummaryEvaluationId")]
-		public int SummaryEvaluationId { get; set; }
-		public SummaryEvaluation? SummaryEvaluation { get; set; }
-		[ForeignKey("TimekeepingId")]
-		public int TimekeepingId { get; set; }
-		public TimekeepingSummary? TimekeepingSummary { get; set;}
-		[ForeignKey("BiometricsLogId")]
-		public int BiometricsLogId { get; set; }
-		public BiometricsLog? BiometricsLog { get; set; }
-		[ForeignKey("ScheduleId")]
-		public int ScheduleId { get; set; }
-		public Schedule? Schedule { get; set; }
-		[ForeignKey("GradesId")]
-		public int GradesId { get; set; }
-		public Grades? Grades { get; set; }
-		[ForeignKey("ValidationId")]
-		public int ValidationId { get; set; }
-		public Validation? Validation { get; set; }
-		[ForeignKey("SuperiorEvaluationId")]
-		public int SuperiorValidationId { get; set; }
-        [Required]
-        public int SuperiorValidationId { get; set; }
-		public SuperiorEvaluationRating? SuperiorEvaluationRating { get; set; }
 	}
 }
