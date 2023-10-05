@@ -59,8 +59,7 @@ export const SuperiorEvaluation = () => {
   ];
   return (
     <>
-      <Header role={"Superior"} />
-
+      <Header role={"SUPERIOR Name"} />
       <Card className="w-9/10 mx-8 mb-10">
         <div className="grid grid-cols-1 sm:grid-cols-2">
           <p className="mb-3">
