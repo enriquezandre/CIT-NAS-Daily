@@ -7,6 +7,7 @@ import { Attendance } from "./pages/OAS/Attendance";
 import { Eval } from "./pages/OAS/Eval";
 import { Status } from "./pages/OAS/Status";
 import { Validation } from "./pages/OAS/Validation";
+import { NASList } from "./components/NASList";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="eval" element={<Eval />} />
         <Route path="status" element={<Status />} />
         <Route path="validation" element={<Validation />} />
+        <Route path="naslist" element={<NASList />} />
       </Routes>
     </>
   );
