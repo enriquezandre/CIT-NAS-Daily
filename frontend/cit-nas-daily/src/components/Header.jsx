@@ -1,6 +1,7 @@
 import { Avatar } from "flowbite-react";
+import PropTypes from "prop-types";
 
-export const Header = ( {role} ) => {
+export const Header = ({ role }) => {
   return (
     <>
       <div className="flex mt-5 ml-10 items-center justify-between">
@@ -19,4 +20,8 @@ export const Header = ( {role} ) => {
       <hr className="my-5 border-t-2 border-gray-300 ml-7 mr-7" />
     </>
   );
+};
+
+Header.propTypes = {
+  role: PropTypes.string.isRequired,
 };
