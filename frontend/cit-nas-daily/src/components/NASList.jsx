@@ -2,7 +2,7 @@
 import { Card } from "flowbite-react";
 import { Avatar } from "flowbite-react";
 
-export default function NASList() {
+export const NASList = () => {
   return (
     <div className="flex justify-center items-center">
       <Card className="w-3/5 mt-5">
@@ -19,4 +19,4 @@ export default function NASList() {
       </Card>
     </div>
   );
-}
+};
