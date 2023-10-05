@@ -1,7 +1,23 @@
+import "../src/index.css";
+import { Route, Routes } from "react-router-dom";
+import { Navbar } from "./components/Navbar.jsx";
+import { Login } from "./pages/Login/Login";
+import { Evaluation } from "./pages/superior/Evaluation";
+import { Attendance } from "./pages/OAS/Attendance";
+import { Eval } from "./pages/OAS/Eval";
+import { Status } from "./pages/OAS/Status";
+
 function App() {
   return (
     <>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/evaluation" element={<Evaluation />} />
+        <Route path="attendance" element={<Attendance />} />
+        <Route path="eval" element={<Eval />} />
+        <Route path="status" element={<Status />} />
+      </Routes>
     </>
   );
 }
