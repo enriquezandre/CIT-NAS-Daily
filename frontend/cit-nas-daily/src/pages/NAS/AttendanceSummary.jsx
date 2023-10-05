@@ -46,16 +46,16 @@ export const AttendanceSummary = () => {
         </div>
         <div className="m-2">
           <div className="flex mt-2 ml-2">
-            <div className="w-48">
+            <div className="w-48 z-10">
               SY: <Dropdown options={sy_options} onSelect={handleSelectSY} />
               <p className="mt-4">Selected Value: {selectedSY}</p>
             </div>
-            <div className="w-56">
+            <div className="w-56 z-10">
               SEMESTER:{" "}
               <Dropdown options={sem_options} onSelect={handleSelectSem} />
               <p className="mt-4">Selected Value: {selectedSem}</p>
             </div>
-            <div className="w-48">
+            <div className="w-48 z-10">
               MONTH:{" "}
               <Dropdown
                 options={month_options}
