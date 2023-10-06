@@ -1,7 +1,7 @@
 import { Header } from '../../components/Header';
 import { OASButtons } from '../../components/OAS/OASButtons';
 import { ValidationList } from '../../components/OAS/ValidationList';
-export const Validation = () => {
+export const OASValidation = () => {
   return (
     <>
       <Header role={"OAS"}/>
