@@ -4,7 +4,7 @@ import { OASAttendance } from "../../pages/OAS/OASAttendance";
 import { OASEvaluation } from "../../pages/OAS/OASEvaluation";
 import { OASStatus } from "../../pages/OAS/OASStatus";
 import { OASMasterlist } from "../../pages/OAS/OASMasterlist"
-
+import { OASValidation } from "../../pages/OAS/OASValidation";
 export const OASTabs = () => {
   const [activeTab, setActiveTab] = useState(1);
 
@@ -95,7 +95,10 @@ export const OASTabs = () => {
               <OASStatus />
             </div>
           )}
-          {activeTab === 5 && <div>Validation Page Here</div>}
+          {activeTab === 5 && 
+            (<div>
+              <OASValidation />
+            </div>)}
           {activeTab === 6 && (
             <div>
               <OASMasterlist />
