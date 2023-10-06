@@ -27,16 +27,21 @@ export const EvaluateGrades = ({ show, close }) => {
                                 <button type="button" className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-lg text-sm px-5 py-2.5 my-10" onClick={openShowGrades}>EVALUATE GRADES</button>
                                 <ShowGrades show={isViewingShowGrades} close={closeShowGrades} />
                                 <div className="flex flex-row w-full items-center gap-6 mb-10">
-                                    <p className="text-xl text-left w-2/4">ALL COURSES PASSED:</p>
-                                    <div className="flex flex-row gap-2 justify-center items-center w-1/4">
-                                        <input checked id="default-radio-1" type="radio" value="" name="yes-radio" className="h-5 w-5"/>
-                                        <label htmlFor="default-radio-1" className="ml-2 text-xl font-medium text-green">YES</label>
-                                    </div>
-                                    <div className="flex flex-row gap-2 justify-center items-center w-1/4">
-                                        <input id="default-radio-2" type="radio" value="" name="no-radio" className="h-5 w-5"/>
-                                        <label htmlFor="default-radio-2" className="ml-2 text-xl font-medium text-red">NO</label>
-                                    </div>
+                                <p className="text-xl text-left w-2/4">ALL COURSES PASSED:</p>
+                                <div className="flex flex-row gap-2 justify-center items-center w-1/4">
+                                    <input checked id="default-radio-1" type="radio" value="yes" name="course-passed" className="h-5 w-5" />
+                                    <label htmlFor="default-radio-1" className="ml-2 text-xl font-medium text-green">
+                                    YES
+                                    </label>
                                 </div>
+                                <div className="flex flex-row gap-2 justify-center items-center w-1/4">
+                                    <input id="default-radio-2" type="radio" value="no" name="course-passed" className="h-5 w-5" />
+                                    <label htmlFor="default-radio-2" className="ml-2 text-xl font-medium text-red">
+                                    NO
+                                    </label>
+                                </div>
+                                </div>
+
                                 <div className="flex flex-row w-full items-center mb-10">
                                     <p className="text-xl text-left w-3/4">NUMBER OF COURSES FAILED:</p>
                                     <p className="text-xl text-left w-1/4">_____</p>
