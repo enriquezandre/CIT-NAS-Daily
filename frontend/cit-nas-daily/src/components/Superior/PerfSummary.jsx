@@ -1,3 +1,6 @@
+"use client";
+import PropTypes from "prop-types";
+
 import { useState } from 'react';
 import { MonthlySummary } from "../MonthlySummary";
 
@@ -129,3 +132,8 @@ export const PerfSummary = ({ show, close }) => {
     )
   );
 }
+
+PerfSummary.propTypes = {
+  show: PropTypes.bool.isRequired,
+  close: PropTypes.func.isRequired,
+};
