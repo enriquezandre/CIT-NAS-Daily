@@ -4,10 +4,11 @@ import { Navbar } from "./components/Navbar.jsx";
 import { Login } from "./pages/Login/Login";
 import { SuperiorEvaluation } from "./pages/superior/SuperiorEvaluation";
 import { SuperiorNASList } from "./pages/superior/SuperiorNASList";
-import { Attendance } from "./pages/OAS/Attendance";
-import { Eval } from "./pages/OAS/Eval";
-import { Status } from "./pages/OAS/Status";
+import { OASAttendance } from "./pages/OAS/OASAttendance";
+import { OASEvaluation } from "./pages/OAS/OASEvaluation";
+import { OASStatus } from "./pages/OAS/OASStatus";
 import { NASPage } from "./pages/NAS/NASPage";
+import { OASPage } from "./pages/OAS/OASPage";
 
 function App() {
   return (
@@ -16,12 +17,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         {/* Superior */}
-        <Route path="/superiorevaluation" element={<SuperiorEvaluation />} />
-        <Route path="/superiornaslist" element={<SuperiorNASList />} />
-        <Route path="/attendance" element={<Attendance />} />
-        <Route path="/eval" element={<Eval />} />
-        <Route path="/status" element={<Status />} />
-        <Route path="/naspage" element={<NASPage />} />
+        <Route path="/superior/evaluation" element={<SuperiorEvaluation />} />
+        <Route path="/superior/naslist" element={<SuperiorNASList />} />
+        {/* OAS */}
+        <Route path="/oas" element={<OASPage />} />
+        <Route path="/oas/attendance" element={<OASAttendance />} />
+        <Route path="/oas/evaluation" element={<OASEvaluation />} />
+        <Route path="/status" element={<OASStatus />} />
+        {/* NAS */}
+        <Route path="/nas" element={<NASPage />} />
       </Routes>
     </>
   );
