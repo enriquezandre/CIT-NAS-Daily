@@ -1,3 +1,5 @@
+"use client";
+import PropTypes from "prop-types";
 import GradeImage from "../../assets/image9.png"
 
 export const ShowGrades = ({ show, close }) => {
@@ -14,3 +16,8 @@ export const ShowGrades = ({ show, close }) => {
         )
     )
 }
+
+ShowGrades.propTypes = {
+  show: PropTypes.bool.isRequired,
+  close: PropTypes.func.isRequired,
+};

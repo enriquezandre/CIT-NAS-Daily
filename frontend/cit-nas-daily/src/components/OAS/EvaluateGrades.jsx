@@ -1,3 +1,5 @@
+"use client";
+import PropTypes from "prop-types";
 import { useState } from 'react';
 import { ShowGrades } from './ShowGrades';
 
@@ -49,3 +51,8 @@ export const EvaluateGrades = ({ show, close }) => {
         )
     );
 }
+
+EvaluateGrades.propTypes = {
+  show: PropTypes.bool.isRequired,
+  close: PropTypes.func.isRequired,
+};
