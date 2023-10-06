@@ -41,9 +41,6 @@ export const AttendanceSummary = () => {
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
-        <div className="text-primary text-xl font-bold ml-2 my-4">
-          Scholar&rsquo;s Name: NAS Name Here
-        </div>
         <div className="m-2">
           <div className="flex mt-2 ml-2">
             <div className="w-48 z-10">
