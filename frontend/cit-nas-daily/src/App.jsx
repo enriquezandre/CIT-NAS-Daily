@@ -24,8 +24,8 @@ function App() {
         <Route path="/oas" element={<OASPage />} />
         <Route path="/oas/attendance" element={<OASAttendance />} />
         <Route path="/oas/evaluation" element={<OASEvaluation />} />
-        <Route path="/status" element={<OASStatus />} />
-        <Route path="/validate" element={<OASValidation />} />
+        <Route path="/oas/status" element={<OASStatus />} />
+        <Route path="/oas/validate" element={<OASValidation />} />
         {/* NAS */}
         <Route path="/nas" element={<NASPage />} />
       </Routes>
