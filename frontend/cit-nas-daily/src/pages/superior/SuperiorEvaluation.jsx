@@ -168,7 +168,7 @@ export const SuperiorEvaluation = () => {
                       ))}
                     </tr>
                   ))}
-                  <br />
+                  <td className="py-2"></td>
                 </React.Fragment>
               ))}
             </tbody>
