@@ -9,6 +9,7 @@ import { OASEvaluation } from "./pages/OAS/OASEvaluation";
 import { OASStatus } from "./pages/OAS/OASStatus";
 import { NASPage } from "./pages/NAS/NASPage";
 import { OASPage } from "./pages/OAS/OASPage";
+import { OASValidation } from "./pages/OAS/OASValidation";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/oas/attendance" element={<OASAttendance />} />
         <Route path="/oas/evaluation" element={<OASEvaluation />} />
         <Route path="/status" element={<OASStatus />} />
+        <Route path="/validate" element={<OASValidation />} />
         {/* NAS */}
         <Route path="/nas" element={<NASPage />} />
       </Routes>
