@@ -5,6 +5,7 @@ import { Dropdown } from "../../components/Dropdown.jsx";
 export const NASEvaluationResult = () => {
   const [selectedSY, setSelectedSY] = useState("");
   const [selectedSem, setSelectedSem] = useState("");
+  const [fileUploaded, setFileUploaded] = useState(false);
 
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
@@ -15,6 +16,14 @@ export const NASEvaluationResult = () => {
 
   const handleSelectSem = (value) => {
     setSelectedSem(value);
+  };
+
+  const handleFileUpload = (event) => {
+    if (event.target.files.length > 0) {
+      setFileUploaded(true); // Step 3: Update state when a file is selected
+    } else {
+      setFileUploaded(false);
+    }
   };
 
   return (
@@ -58,7 +67,19 @@ export const NASEvaluationResult = () => {
               </div>
               <div className="flex flex-row gap-36 justify-start items-center text-lg mt-2">
                 <div>GRADE STATUS:</div>
-                <div className="font-bold">UPLOADED</div>
+                <div className="text-sm">
+                  <input
+                    type="file"
+                    id="fileUpload"
+                    accept=".pdf, .doc, .docx"
+                    onChange={handleFileUpload}
+                  />
+                  {fileUploaded ? (
+                    <button className="py-2 rounded-md bg-secondary w-24 items-center justify center hover:bg-primary hover:text-white">
+                      Submit
+                    </button>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>
