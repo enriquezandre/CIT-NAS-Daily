@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
-import { TimeInLog } from "../../pages/NAS/TimeInLog";
-import { AttendanceSummary } from "../../pages/NAS/AttendanceSummary";
-import { NASEvaluationResult } from "../../pages/NAS/NASEvaluationResult";
+import { OASAttendance } from "../../pages/OAS/OASAttendance";
+import { OASEvaluation } from "../../pages/OAS/OASEvaluation";
+import { OASStatus } from "../../pages/OAS/OASStatus";
+import { OASMasterlist } from "../../pages/OAS/OASMasterlist"
 
-export const NASTabs = () => {
+export const OASTabs = () => {
   const [activeTab, setActiveTab] = useState(1);
 
   const handleTabClick = (tabNumber) => {
@@ -23,7 +24,7 @@ export const NASTabs = () => {
             } px-4 py-2 rounded-tl-lg w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(1)}
           >
-            Home
+            Offices
           </button>
           <button
             className={`${
@@ -33,7 +34,7 @@ export const NASTabs = () => {
             } px-4 py-2 w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(2)}
           >
-            Personal Information
+            Attendance
           </button>
           <button
             className={`${
@@ -43,7 +44,7 @@ export const NASTabs = () => {
             } px-4 py-2 w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(3)}
           >
-            Attendance Summary
+            Evaluation
           </button>
           <button
             className={`${
@@ -53,7 +54,7 @@ export const NASTabs = () => {
             } px-4 py-2 w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(4)}
           >
-            Activities Summary
+            NAS Status
           </button>
           <button
             className={`${
@@ -63,7 +64,7 @@ export const NASTabs = () => {
             } px-4 py-2 rounded-tr-lg w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(5)}
           >
-            Schedule of Duty
+            Validation
           </button>
           <button
             className={`${
@@ -73,27 +74,31 @@ export const NASTabs = () => {
             } px-4 py-2 rounded-tr-lg w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(6)}
           >
-            Evaluation Result
+            NAS Masterlist
           </button>
         </div>
         <div className="p-4 bg-white rounded-b-lg">
           {/* Content for each tab */}
-          {activeTab === 1 && (
+          {activeTab === 1 && <div>Offices Page Here</div>}
+          {activeTab === 2 && (
             <div>
-              <TimeInLog />
+              <OASAttendance />
             </div>
           )}
-          {activeTab === 2 && <div>Personal Information Page Here</div>}
           {activeTab === 3 && (
             <div>
-              <AttendanceSummary />
+              <OASEvaluation />
             </div>
           )}
-          {activeTab === 4 && <div>Activities Summary Page Here</div>}
-          {activeTab === 5 && <div>Schedule of Duty Here</div>}
+          {activeTab === 4 && (
+            <div>
+              <OASStatus />
+            </div>
+          )}
+          {activeTab === 5 && <div>Validation Page Here</div>}
           {activeTab === 6 && (
             <div>
-              <NASEvaluationResult />
+              <OASMasterlist />
             </div>
           )}
         </div>
