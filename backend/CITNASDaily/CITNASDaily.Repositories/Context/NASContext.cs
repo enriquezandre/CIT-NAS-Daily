@@ -8,7 +8,6 @@ namespace CITNASDaily.Repositories.Context
     {
         public NASContext(DbContextOptions <NASContext> options) : base(options) { }
         //tables sa db
-        public DbSet<Role> Roles { get; set; }
 		public DbSet<NAS> NAS { get; set; }
 		public DbSet<Office> Offices { get; set; }
 		public DbSet<Superior> Superiors { get; set; }
@@ -25,38 +24,67 @@ namespace CITNASDaily.Repositories.Context
         {
             base.OnModelCreating(modelBuilder);
 
-			// set table names as singular
-			foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes())
+            // set table names as singular
+            foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes())
             {
                 entityType.SetTableName(entityType.DisplayName());
             }
 
-            modelBuilder.Entity<Role>().HasData(new Role { Id = 1, Name = "OAS" });
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
 
-			// configuration for the office and superior relationship
-			modelBuilder.Entity<Office>()
-			.HasOne(o => o.Superior)
-			.WithOne(s => s.Office)
-			.HasForeignKey<Superior>(s => s.OfficeId)
-			.OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Superior>()
+                .HasOne(s => s.User)
+                .WithOne()
+                .HasForeignKey<Superior>(s => s.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-			// set fk for superior
-			modelBuilder.Entity<Superior>()
-			.HasOne(o => o.Office)
-			.WithOne(s => s.Superior)
-			.HasForeignKey<Office>(s => s.SuperiorId)
-			.OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Superior>()
+                .HasOne(s => s.Office)
+                .WithOne(o => o.Superior)
+                .HasForeignKey<Superior>(s => s.OfficeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
+            modelBuilder.Entity<Office>()
+                .HasOne(o => o.Superior)
+                .WithOne(s => s.Office)
+                .HasForeignKey<Office>(o => o.SuperiorId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Office>()
+                .HasMany(o => o.NAS)
+                .WithOne(n => n.Office)
+                .HasForeignKey(n => n.OfficeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             modelBuilder.Entity<NAS>()
-            .HasOne(n => n.User)
-            .WithMany()
-            .HasForeignKey(n => n.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
+                .HasOne(n => n.User)
+                .WithOne()
+                .HasForeignKey<NAS>(n => n.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // set pk for superior evaluation rating because EFC doesnt recognize it
+            modelBuilder.Entity<NAS>()
+                .HasOne(n => n.Office)    
+                .WithMany(o => o.NAS)  
+                .HasForeignKey(n => n.OfficeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
             modelBuilder.Entity<SuperiorEvaluationRating>()
-			.HasKey(rating => rating.Id);
+                .HasOne(r => r.NAS)
+                .WithMany()
+                .HasForeignKey(n => n.NASId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-		}
-	}
+            //modelBuilder.Entity<Office>().HasData(
+            //new Office
+            //{
+            //    Id = 1,
+            //    SuperiorId = 1,
+            //});
+        }
+    }
 }

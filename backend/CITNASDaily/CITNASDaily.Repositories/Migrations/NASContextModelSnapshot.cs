@@ -55,7 +55,8 @@ namespace CITNASDaily.Repositories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("BirthDate")
+                    b.Property<DateTime?>("BirthDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Course")
@@ -83,31 +84,31 @@ namespace CITNASDaily.Repositories.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("OfficeId")
+                    b.Property<int?>("OfficeId")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int?>("SuperiorEvaluationRatingId")
+                    b.Property<int?>("UnitsAllowed")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<int>("SuperiorValidationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UnitsAllowed")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("YearLevel")
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("YearLevel")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OfficeId");
 
-                    b.HasIndex("SuperiorEvaluationRatingId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("NAS");
                 });
@@ -134,8 +135,12 @@ namespace CITNASDaily.Repositories.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -152,6 +157,9 @@ namespace CITNASDaily.Repositories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("SuperiorId")
                         .HasColumnType("int");
 
@@ -161,30 +169,6 @@ namespace CITNASDaily.Repositories.Migrations
                         .IsUnique();
 
                     b.ToTable("Office");
-                });
-
-            modelBuilder.Entity("CITNASDaily.Entities.Models.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "OAS"
-                        });
                 });
 
             modelBuilder.Entity("CITNASDaily.Entities.Models.Schedule", b =>
@@ -269,19 +253,21 @@ namespace CITNASDaily.Repositories.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("MiddleName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("OfficeId")
+                    b.Property<int?>("OfficeId")
+                        .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Superior");
                 });
@@ -300,6 +286,9 @@ namespace CITNASDaily.Repositories.Migrations
                     b.Property<float>("AttitudeAndWorkBehaviour")
                         .HasColumnType("real");
 
+                    b.Property<int>("NASId")
+                        .HasColumnType("int");
+
                     b.Property<float>("OverallAssessment")
                         .HasColumnType("real");
 
@@ -312,12 +301,16 @@ namespace CITNASDaily.Repositories.Migrations
                     b.Property<float>("QualOfWorkOutput")
                         .HasColumnType("real");
 
-                    b.Property<int>("SuperiorId")
+                    b.Property<string>("Semester")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SuperiorId");
+                    b.HasIndex("NASId");
 
                     b.ToTable("SuperiorEvaluationRating");
                 });
@@ -350,8 +343,9 @@ namespace CITNASDaily.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -360,7 +354,8 @@ namespace CITNASDaily.Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("User");
                 });
@@ -368,24 +363,18 @@ namespace CITNASDaily.Repositories.Migrations
             modelBuilder.Entity("CITNASDaily.Entities.Models.NAS", b =>
                 {
                     b.HasOne("CITNASDaily.Entities.Models.Office", "Office")
-                        .WithMany("Nas")
+                        .WithMany("NAS")
                         .HasForeignKey("OfficeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("CITNASDaily.Entities.Models.SuperiorEvaluationRating", "SuperiorEvaluationRating")
-                        .WithMany()
-                        .HasForeignKey("SuperiorEvaluationRatingId");
-
                     b.HasOne("CITNASDaily.Entities.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne()
+                        .HasForeignKey("CITNASDaily.Entities.Models.NAS", "UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Office");
-
-                    b.Navigation("SuperiorEvaluationRating");
 
                     b.Navigation("User");
                 });
@@ -406,7 +395,7 @@ namespace CITNASDaily.Repositories.Migrations
                     b.HasOne("CITNASDaily.Entities.Models.Superior", "Superior")
                         .WithOne("Office")
                         .HasForeignKey("CITNASDaily.Entities.Models.Office", "SuperiorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Superior");
@@ -426,9 +415,9 @@ namespace CITNASDaily.Repositories.Migrations
             modelBuilder.Entity("CITNASDaily.Entities.Models.Superior", b =>
                 {
                     b.HasOne("CITNASDaily.Entities.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne()
+                        .HasForeignKey("CITNASDaily.Entities.Models.Superior", "UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -436,13 +425,13 @@ namespace CITNASDaily.Repositories.Migrations
 
             modelBuilder.Entity("CITNASDaily.Entities.Models.SuperiorEvaluationRating", b =>
                 {
-                    b.HasOne("CITNASDaily.Entities.Models.Superior", "Superior")
+                    b.HasOne("CITNASDaily.Entities.Models.NAS", "NAS")
                         .WithMany()
-                        .HasForeignKey("SuperiorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("NASId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Superior");
+                    b.Navigation("NAS");
                 });
 
             modelBuilder.Entity("CITNASDaily.Entities.Models.TimekeepingSummary", b =>
@@ -456,20 +445,9 @@ namespace CITNASDaily.Repositories.Migrations
                     b.Navigation("NAS");
                 });
 
-            modelBuilder.Entity("CITNASDaily.Entities.Models.User", b =>
-                {
-                    b.HasOne("CITNASDaily.Entities.Models.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-                });
-
             modelBuilder.Entity("CITNASDaily.Entities.Models.Office", b =>
                 {
-                    b.Navigation("Nas");
+                    b.Navigation("NAS");
                 });
 
             modelBuilder.Entity("CITNASDaily.Entities.Models.Superior", b =>
