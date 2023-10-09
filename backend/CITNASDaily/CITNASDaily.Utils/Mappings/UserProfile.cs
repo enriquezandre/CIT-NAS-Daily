@@ -12,7 +12,8 @@ namespace CITNASDaily.Utils.Mappings
 
             CreateMap<User, UserCreateDto>()
                 .ReverseMap()
-                .ForMember(user => user.PasswordHash, op => op.MapFrom(dto => dto.Password));
+                .ForMember(user => user.PasswordHash, op => op.MapFrom(dto => dto.Password))
+                .ForMember(user => user.Role, op => op.MapFrom(dto => dto.Role));
         }
     }
 }
