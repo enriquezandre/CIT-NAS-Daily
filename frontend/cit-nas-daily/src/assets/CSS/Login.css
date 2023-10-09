@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&display=swap');
+
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 89vh;
+  }
+  
+  .main-container {
+    color: #e9c434;
+    font-family: 'Barlow', sans-serif;
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    height: 80%;
+    border-width: 0.5px;
+    border-radius: 10px;
+  }
+  
+  .login-image-container,
+  .text-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+  }
+
+  .login-image-container{
+    width: 60%;
+  }
+
+  .text-container{
+    width: 40%;
+  }
+  
+  .text-container {
+    font-family: 'Barlow', sans-serif;
+    background-color: #8a353c;
+    border-radius: 0px 10px 10px 0px;
+  }
+  
+  .bg-container {
+    height: 100%;
+    width: 100%;
+    opacity: 0.5;
+    border-radius: 10px 0px 0px 10px;
+  }
+  
+  .text-login {
+    text-align: center;
+    font-weight: 700;
+    font-size: x-large;
+    border-bottom: 2px solid #e9c434;
+    width: 60%;
+    margin-bottom: 10%;
+  }
+  
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-top: 20px;
+  }
+  
+  .input-label {
+    font-weight: 500;
+    font-size: medium;
+    margin-bottom: 5px;
+  }
+  
+  .text-input {
+    margin-top: auto;
+    margin-bottom: 10%;
+    width: 280px;
+    height: 35px;
+  }
+
+  .button-submit{
+    background-color: #e9c434;
+    color: #8a353c;
+    font-weight: 500;
+    border: none;
+    align-self: flex-end;
+    position: relative;
+    width: 4em;
+    height: 2em;
+  }
+  
