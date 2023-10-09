@@ -6,13 +6,16 @@ namespace CITNASDaily.Entities.Dtos.SuperiorDtos
     {
         [Required]
         [MaxLength(50)]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         [Required]
-        public int OfficeId { get; set; }
+        public string? Username { get; set; }
+
+        [Required]
+        public int? OfficeId { get; set; }
     }
 }

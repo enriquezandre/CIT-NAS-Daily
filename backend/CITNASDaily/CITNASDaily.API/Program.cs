@@ -1,3 +1,4 @@
+using CITNASDaily.API.Initializer;
 using CITNASDaily.Repositories.Context;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Repositories.Repositories;
@@ -10,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -128,6 +128,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.Seed();
+
 app.MapControllers();
 
 app.Run();
@@ -139,17 +141,26 @@ void ConfigureServices(IServiceCollection services)
     // Register automapper
     services.AddAutoMapper(
         typeof(SuperiorProfile),
-        typeof(UserProfile)
+        typeof(UserProfile),
+        typeof(OfficeProfile),
+        typeof(OASProfile),
+        typeof(NASProfile)
         );
 
     // Register repositories
     services.AddScoped<ISuperiorRepository, SuperiorRepository>();
     services.AddScoped<IUserRepository, UserRepository>();
+    services.AddScoped<IOASRepository, OASRepository>();
+    services.AddScoped<INASRepository, NASRepository>();
+    services.AddScoped<IOfficeRepository, OfficeRepository>();
 
 
     // Register services
     services.AddScoped<ISuperiorService, SuperiorService>();
+    services.AddScoped<IOASService, OASService>();
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<IAuthService, AuthService>();
     services.AddScoped<ITokenService, TokenService>();
+    services.AddScoped<INASService, NASService>();
+    services.AddScoped<IOfficeService, OfficeService>();
 }

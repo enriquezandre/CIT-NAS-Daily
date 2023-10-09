@@ -31,11 +31,12 @@ namespace CITNASDaily.API.Controllers
         /// <reponse code="500">Internal server error</reponse>
         [HttpGet]
         [AllowAnonymous]
+        [Authorize]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
             try
             {
@@ -69,7 +70,7 @@ namespace CITNASDaily.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<UserDto>> GetUser(Guid userId)
+        public async Task<IActionResult> GetUser(Guid userId)
         {
             try
             {
@@ -101,7 +102,7 @@ namespace CITNASDaily.API.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<UserDto> GetCurrentUser()
+        public IActionResult GetCurrentUser()
         {
             try
             {
@@ -122,7 +123,7 @@ namespace CITNASDaily.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<bool>> CheckUsername(string username)
+        public async Task<IActionResult> CheckUsername(string username)
         {
             try
             {

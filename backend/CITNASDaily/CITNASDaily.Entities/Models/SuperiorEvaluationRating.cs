@@ -6,10 +6,13 @@ namespace CITNASDaily.Entities.Models
 	{
 		[Key]
 		public int Id { get; set; }
-
-		[Required]
-        public int SuperiorId { get; set; }
-		public Superior? Superior { get; set; }
+        [Required]
+        public int NASId { get; set; }
+        public NAS NAS { get; set; }
+        [Required]
+        public string Semester { get; set; }
+        [Required]
+        public int Year { get; set; }
         [Required]
         public float AttendanceAndPunctuality { get; set; }
         [Required]

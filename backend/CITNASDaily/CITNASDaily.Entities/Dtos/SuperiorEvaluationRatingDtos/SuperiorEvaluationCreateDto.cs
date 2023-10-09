@@ -6,6 +6,10 @@ namespace CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto
     public class SuperiorEvaluationCreateDto
     {
 
+
+        [Required]
+        public int NASId { get; set; }
+        public NAS NAS { get; set; }
         [Required]
         public float AttendanceAndPunctuality { get; set; }
         [Required]
@@ -18,9 +22,5 @@ namespace CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto
         public float OverallAssessment { get; set; }
         [Required]
         public float OverallRating { get; set; }
-
-        //TODO: subject to change after implementing auth
-        [Required]
-        public int SuperiorId { get; set; }
     }
 }
