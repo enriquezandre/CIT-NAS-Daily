@@ -5,26 +5,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CITNASDaily.Repositories.Repositories
 {
-    public class NASRepository : INASRepository
+    public class OfficeRepository : IOfficeRepository
     {
         private readonly NASContext _context;
 
-        public NASRepository(NASContext context)
+        public OfficeRepository(NASContext context)
         {
             _context = context;
         }
-
-        public async Task<NAS?> CreateNASAsync(NAS nas)
+        public async Task<Office?> CreateOfficeAsync(Office office)
         {
-            await _context.NAS.AddAsync(nas);
+            await _context.Offices.AddAsync(office);
             await _context.SaveChangesAsync();
-            return nas;
+            return office;
         }
 
-        public async Task<NAS?> GetNASAsync(Guid? userId, int nasId)
+        public async Task<IEnumerable<Office?>> GetOfficesAsync()
         {
-            return await _context.NAS.FirstOrDefaultAsync(c => c.UserId == userId && c.Id == nasId);
+            return await _context.Offices.ToListAsync();
         }
-
     }
 }
