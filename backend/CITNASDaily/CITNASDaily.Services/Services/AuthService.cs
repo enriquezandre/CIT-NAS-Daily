@@ -27,6 +27,7 @@ namespace CITNASDaily.Services.Services
             {
                 Id = Guid.Parse(identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value!),
                 Username = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value!,
+                Role = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value!,
             };
         }
 

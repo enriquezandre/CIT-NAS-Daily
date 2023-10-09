@@ -4,8 +4,9 @@ namespace CITNASDaily.Services.Contracts
 {
     public interface ISuperiorService
     {
-        Task<SuperiorDto?> CreateSuperiorsAsync(SuperiorCreateDto superiorCreate);
-        Task<SuperiorDto?> GetSuperiorAsync(int superiorId);
+        Task<SuperiorDto?> CreateSuperiorAsync(string username, SuperiorCreateDto superiorCreate);
+        public Task<SuperiorDto?> GetSuperiorAsync(string username, int superiorId);
         Task<IEnumerable<SuperiorDto>> GetSuperiorsAsync();
+        Task<Guid?> GetSuperiorUserIdByUsernameAsync(string username);
     }
 }
