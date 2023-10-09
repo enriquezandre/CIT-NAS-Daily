@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Principal;
 
 namespace CITNASDaily.Entities.Models
 {
@@ -20,15 +19,7 @@ namespace CITNASDaily.Entities.Models
         [Required]
         public string PasswordHash { get; set; }
 
-
         [Required]
-        public DateTime CreatedAt { get; set; }
-
-        [Required]
-        public DateTime UpdatedAt { get; set; }
-
-        [Required]
-        public int RoleId { get; set; }
-        public Role Role { get; set; }
+        public string Role { get; set; }
     }
 }

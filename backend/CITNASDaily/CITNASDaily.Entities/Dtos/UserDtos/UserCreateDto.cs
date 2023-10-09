@@ -14,6 +14,6 @@ namespace CITNASDaily.Entities.Dtos.UserDtos
         public string Password { get; set; }
        
         [Required]
-        public int RoleId { get; set; }
+        public string Role { get; set; }
     }
 }
