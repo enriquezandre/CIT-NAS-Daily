@@ -48,7 +48,7 @@ namespace CITNASDaily.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating ActivitiesSummary.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }

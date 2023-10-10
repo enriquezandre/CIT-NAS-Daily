@@ -144,7 +144,8 @@ void ConfigureServices(IServiceCollection services)
         typeof(UserProfile),
         typeof(OfficeProfile),
         typeof(OASProfile),
-        typeof(NASProfile)
+        typeof(NASProfile),
+        typeof(ActivitiesSummaryProfile)
         );
 
     // Register repositories
@@ -153,6 +154,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IOASRepository, OASRepository>();
     services.AddScoped<INASRepository, NASRepository>();
     services.AddScoped<IOfficeRepository, OfficeRepository>();
+    services.AddScoped<IActivitiesSummaryRepository, ActivitiesSummaryRepository>();
 
 
     // Register services
@@ -163,4 +165,5 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<ITokenService, TokenService>();
     services.AddScoped<INASService, NASService>();
     services.AddScoped<IOfficeService, OfficeService>();
+    services.AddScoped<IActivitiesSummaryService, ActivitiesSummaryService>();
 }

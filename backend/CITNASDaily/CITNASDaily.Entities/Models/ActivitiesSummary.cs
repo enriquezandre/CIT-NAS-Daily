@@ -9,7 +9,7 @@ namespace CITNASDaily.Entities.Models
         [Required]
         public int NASId { get; set; }
         [Required]
-        public DateTime Date { get; set; }
+        public DateTime DateOfEntry { get; set; }
         [Required]
         public string? ActivitiesOfTheDay { get; set; }
         [Required]

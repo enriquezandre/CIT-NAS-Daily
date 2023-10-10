@@ -24,6 +24,7 @@ namespace CITNASDaily.Services.Services
         public async Task<ActivitiesSummary?> CreateActivitiesSummaryAsync(ActivitiesSummaryCreateDto activitiesSummaryDto)
         {
             var activitiesSummary = _mapper.Map<ActivitiesSummary>(activitiesSummaryDto);
+            activitiesSummary.DateOfEntry = DateTime.Now; //set date created
             var createdActSummary = await _activitiesSummaryRepository.CreateActivitiesSummaryAsync(activitiesSummary);
 
             if (createdActSummary != null)
