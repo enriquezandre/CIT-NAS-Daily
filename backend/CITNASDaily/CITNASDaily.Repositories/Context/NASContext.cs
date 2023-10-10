@@ -40,16 +40,10 @@ namespace CITNASDaily.Repositories.Context
                 .HasForeignKey<Superior>(s => s.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Superior>()
-                .HasOne(s => s.Office)
-                .WithOne(o => o.Superior)
-                .HasForeignKey<Superior>(s => s.OfficeId)
-                .OnDelete(DeleteBehavior.NoAction);
-
 
             modelBuilder.Entity<Office>()
                 .HasOne(o => o.Superior)
-                .WithOne(s => s.Office)
+                .WithOne()
                 .HasForeignKey<Office>(o => o.SuperiorId)
                 .OnDelete(DeleteBehavior.NoAction);
 

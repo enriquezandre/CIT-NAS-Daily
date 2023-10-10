@@ -253,10 +253,6 @@ namespace CITNASDaily.Repositories.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("OfficeId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
                     b.Property<Guid?>("UserId")
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
@@ -393,7 +389,7 @@ namespace CITNASDaily.Repositories.Migrations
             modelBuilder.Entity("CITNASDaily.Entities.Models.Office", b =>
                 {
                     b.HasOne("CITNASDaily.Entities.Models.Superior", "Superior")
-                        .WithOne("Office")
+                        .WithOne()
                         .HasForeignKey("CITNASDaily.Entities.Models.Office", "SuperiorId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -448,11 +444,6 @@ namespace CITNASDaily.Repositories.Migrations
             modelBuilder.Entity("CITNASDaily.Entities.Models.Office", b =>
                 {
                     b.Navigation("NAS");
-                });
-
-            modelBuilder.Entity("CITNASDaily.Entities.Models.Superior", b =>
-                {
-                    b.Navigation("Office");
                 });
 #pragma warning restore 612, 618
         }

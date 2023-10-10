@@ -21,9 +21,5 @@ namespace CITNASDaily.Entities.Models
         [Required]
         [MaxLength(50)]
         public string? LastName { get; set; }
-
-        [Required]
-        public int? OfficeId { get; set; }
-        public Office? Office { get; set; }
     }
 }
