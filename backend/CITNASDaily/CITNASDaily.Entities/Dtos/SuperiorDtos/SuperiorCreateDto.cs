@@ -14,8 +14,5 @@ namespace CITNASDaily.Entities.Dtos.SuperiorDtos
 
         [Required]
         public string? Username { get; set; }
-
-        [Required]
-        public int? OfficeId { get; set; }
     }
 }
