@@ -15,8 +15,7 @@ namespace CITNASDaily.Utils.Mappings
                 .ReverseMap()
                 .ForMember(superior => superior.Username, op => op.MapFrom(dto => dto.Username))
                 .ForMember(superior => superior.FirstName, op => op.MapFrom(dto => dto.FirstName))
-                .ForMember(superior => superior.LastName, op => op.MapFrom(dto => dto.LastName))
-                .ForMember(superior => superior.OfficeId, op => op.MapFrom(dto => dto.OfficeId));
+                .ForMember(superior => superior.LastName, op => op.MapFrom(dto => dto.LastName));
         }
     }
 }
