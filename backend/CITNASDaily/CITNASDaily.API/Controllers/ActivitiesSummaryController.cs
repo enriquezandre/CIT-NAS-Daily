@@ -43,12 +43,50 @@ namespace CITNASDaily.API.Controllers
                     return NotFound();
                 }
 
-                return Ok();
+                return Ok(createdActivitiesSummary);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating ActivitiesSummary.");
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllActivitiesSummary()
+        {
+            try
+            {
+                var activitiesSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryAsync();
+                if (activitiesSummaries == null) return BadRequest();
+                return Ok(activitiesSummaries);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error encountered when retrieving all Activities Summaries.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("{nasId}", Name = "GetAllActivitiesSummary")]
+        [Authorize]
+        public async Task<IActionResult> GetAllActivitiesSummary(int nasId)
+        {
+            try
+            {
+                var actSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryByNASIdAsync(nasId);
+
+                if (actSummaries == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(actSummaries);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting Superior.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
     }

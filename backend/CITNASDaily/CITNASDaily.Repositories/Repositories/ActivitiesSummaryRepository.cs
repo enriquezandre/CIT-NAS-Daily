@@ -1,6 +1,7 @@
 ﻿using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Context;
 using CITNASDaily.Repositories.Contracts;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,16 @@ namespace CITNASDaily.Repositories.Repositories
             await _context.ActivitiesSummaries.AddAsync(activitiesSummary);
             await _context.SaveChangesAsync();
             return activitiesSummary;
+        }
+
+        public async Task<IEnumerable<ActivitiesSummary>?> GetAllActivitiesSummaryAsync()
+        {
+            return await _context.ActivitiesSummaries.ToListAsync();
+        }
+
+        public async Task<IQueryable<ActivitiesSummary>?> GetAllActivitiesSummaryByNASIdAsync(int nasId)
+        {
+            return await Task.FromResult(_context.ActivitiesSummaries.Where(e => e.NASId == nasId));
         }
     }
 }

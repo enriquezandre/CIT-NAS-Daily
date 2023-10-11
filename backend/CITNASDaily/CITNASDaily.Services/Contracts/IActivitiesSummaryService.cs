@@ -11,5 +11,7 @@ namespace CITNASDaily.Services.Contracts
     public interface IActivitiesSummaryService
     {
         Task<ActivitiesSummary?> CreateActivitiesSummaryAsync(ActivitiesSummaryCreateDto activitiesSummaryDto);
+        Task<IEnumerable<ActivitiesSummary>?> GetAllActivitiesSummaryAsync();
+        Task<List<ActivitiesSummary>?> GetAllActivitiesSummaryByNASIdAsync(int nasId);
     }
 }

@@ -10,5 +10,7 @@ namespace CITNASDaily.Repositories.Contracts
     public interface IActivitiesSummaryRepository
     {
         Task<ActivitiesSummary?> CreateActivitiesSummaryAsync(ActivitiesSummary activitiesSummary);
+        Task<IEnumerable<ActivitiesSummary>?> GetAllActivitiesSummaryAsync();
+        Task<IQueryable<ActivitiesSummary>?> GetAllActivitiesSummaryByNASIdAsync(int nasId);
     }
 }

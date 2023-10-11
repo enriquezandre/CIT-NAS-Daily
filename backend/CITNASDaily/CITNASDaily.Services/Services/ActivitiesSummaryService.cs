@@ -33,5 +33,21 @@ namespace CITNASDaily.Services.Services
             }
             return null;
         }
+
+        public async Task<IEnumerable<ActivitiesSummary>?> GetAllActivitiesSummaryAsync()
+        {
+            return await _activitiesSummaryRepository.GetAllActivitiesSummaryAsync();
+        }
+
+        public async Task<List<ActivitiesSummary>?> GetAllActivitiesSummaryByNASIdAsync(int nasId)
+        {
+            var actSummaries = await _activitiesSummaryRepository.GetAllActivitiesSummaryByNASIdAsync(nasId);
+            if (actSummaries != null)
+            {
+                return actSummaries.ToList();
+            }
+            return null;
+           
+        }
     }
 }
