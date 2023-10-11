@@ -220,7 +220,15 @@ namespace CITNASDaily.Repositories.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NASId = table.Column<int>(type: "int", nullable: false)
+                    NASId = table.Column<int>(type: "int", nullable: false),
+                    Semester = table.Column<int>(type: "int", nullable: true),
+                    Year = table.Column<int>(type: "int", nullable: true),
+                    Excused = table.Column<int>(type: "int", nullable: true),
+                    Unexcused = table.Column<int>(type: "int", nullable: true),
+                    FailedToPunch = table.Column<int>(type: "int", nullable: true),
+                    LateOver10Mins = table.Column<int>(type: "int", nullable: true),
+                    LateOver45Mins = table.Column<int>(type: "int", nullable: true),
+                    MakeUpDutyHours = table.Column<float>(type: "float", nullable: true),
                 },
                 constraints: table =>
                 {
