@@ -1,18 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using CITNASDaily.Entities.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using static CITNASDaily.Entities.Enums.Enums;
 
-namespace CITNASDaily.Entities.Models
+namespace CITNASDaily.Entities.Dtos.TimekeepingSummaryDtos
 {
-    public class TimekeepingSummary
+    public class TimekeepingSummaryCreateDto
     {
-        [Key]
-        public int Id { get; set; }
-        [Required]
         public int NASId { get; set; }
-        [Required]
         public Semester Semester { get; set; }
-        public int? Year { get; set; }
         public int? Excused { get; set; }
         public int? Unexcused { get; set; }
         public int? FailedToPunch { get; set; }
