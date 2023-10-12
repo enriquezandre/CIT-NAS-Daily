@@ -39,7 +39,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (createdTimekeepingSummary == null)
                 {
-                    return NotFound();
+                    return BadRequest("Creatiion Failed.");
                 }
 
                 return Ok(createdTimekeepingSummary);

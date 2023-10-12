@@ -40,7 +40,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (createdActivitiesSummary == null)
                 {
-                    return NotFound();
+                    return BadRequest("Creatiion Failed.");
                 }
 
                 return Ok(createdActivitiesSummary);

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Repositories.Repositories
 {
@@ -20,11 +21,27 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<TimekeepingSummary?> CreateTimekeepingSummaryAsync(TimekeepingSummary timekeepingSummary)
         {
-            // to be checked
-            //var nas = await _context.NAS.FirstOrDefaultAsync(n => n.Id == timekeepingSummary.Id);
-            await _context.TimekeepingSummaries.AddAsync(timekeepingSummary);
-            await _context.SaveChangesAsync();
-            return timekeepingSummary;
+            //checks if inputted semester int equals to the enum set to it
+            if (Enum.IsDefined(typeof(Semester), timekeepingSummary.Semester)) {
+                //checks time keeping summary with the same semester already exists
+                var existingSummary = await _context.TimekeepingSummaries.FirstOrDefaultAsync(s => s.NASId == timekeepingSummary.NASId && s.Semester == timekeepingSummary.Semester);
+                if (existingSummary == null)
+                {
+                    var nas = await _context.NAS.FirstOrDefaultAsync(n => n.Id == timekeepingSummary.NASId);
+                    if (nas == null)
+                    {
+                        return null;
+                    }
+                    timekeepingSummary.Year = nas.YearLevel; //SET YEAR LEVEL
+                    await _context.TimekeepingSummaries.AddAsync(timekeepingSummary);
+                    await _context.SaveChangesAsync();
+                    return timekeepingSummary;
+                }
+                return null;
+            }
+            return null;
+            
+            
         }
 
         public async Task<IEnumerable<TimekeepingSummary>?> GetAllTimekeepingSummaryAsync()
