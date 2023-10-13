@@ -3,13 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto
 {
-    public class SuperiorEvaluationCreateDto
+    public class SuperiorEvaluationRatingCreateDto
     {
 
 
         [Required]
         public int NASId { get; set; }
-        public NAS NAS { get; set; }
         [Required]
         public float AttendanceAndPunctuality { get; set; }
         [Required]
