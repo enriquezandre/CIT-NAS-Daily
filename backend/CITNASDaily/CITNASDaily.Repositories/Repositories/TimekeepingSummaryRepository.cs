@@ -27,6 +27,7 @@ namespace CITNASDaily.Repositories.Repositories
                 var existingSummary = await _context.TimekeepingSummaries.FirstOrDefaultAsync(s => s.NASId == timekeepingSummary.NASId && s.Semester == timekeepingSummary.Semester);
                 if (existingSummary == null)
                 {
+                    //this part is for setting the year in TK Summary
                     var nas = await _context.NAS.FirstOrDefaultAsync(n => n.Id == timekeepingSummary.NASId);
                     if (nas == null)
                     {
