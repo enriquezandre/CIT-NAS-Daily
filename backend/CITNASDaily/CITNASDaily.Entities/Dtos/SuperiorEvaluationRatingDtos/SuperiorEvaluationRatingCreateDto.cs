@@ -19,7 +19,5 @@ namespace CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto
         public float AttitudeAndWorkBehaviour { get; set; }
         [Required]
         public float OverallAssessment { get; set; }
-        [Required]
-        public float OverallRating { get; set; }
     }
 }

@@ -27,14 +27,17 @@ namespace CITNASDaily.Repositories.Repositories
                 && evaluation.QualOfWorkOutput >= 0 && evaluation.QualOfWorkOutput <= 5
                 && evaluation.QualOfWorkInput >= 0 && evaluation.QualOfWorkInput <= 5
                 && evaluation.AttitudeAndWorkBehaviour >= 0 && evaluation.AttitudeAndWorkBehaviour <= 5
-                && evaluation.OverallAssessment >= 0 && evaluation.OverallAssessment <= 5
-                && evaluation.OverallRating >= 0 && evaluation.OverallRating <= 5)
+                && evaluation.OverallAssessment >= 0 && evaluation.OverallAssessment <= 5)
             {
+                //calculation for overallrating
+                var overAllRating = (evaluation.AttendanceAndPunctuality + evaluation.QualOfWorkOutput + evaluation.QualOfWorkInput
+                    + evaluation.AttitudeAndWorkBehaviour + evaluation.OverallAssessment)/5;
                 var semester = await _context.TimekeepingSummaries.FirstOrDefaultAsync(e => e.NASId == evaluation.NASId);
                 if (semester == null)
                 {
                     return null;
                 }
+                evaluation.OverallRating = (float)Math.Round(overAllRating, 2);
                 evaluation.Semester = semester.Semester;
                 evaluation.Year = semester.Year;
                 Console.WriteLine("existing eval is not null");
