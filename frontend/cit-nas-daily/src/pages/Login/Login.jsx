@@ -1,63 +1,47 @@
 import React, { useState } from 'react';
-import "../../assets/CSS/Login.css"
+import { useNavigate } from 'react-router-dom';
+import "../../assets/CSS/Login.css";
 import bg from "../../assets/glebuilding.png";
 
 export const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   
     try {
-      const response = await fetch('https://localhost:7047/api/nas', {
-        method: 'GET',
+      const response = await fetch('https://localhost:7001/api/Auth/login', {
+        method: 'POST',
         headers: {
+          'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-      });
-  
-      const responseOas = await fetch('https://localhost:7047/api/oas', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
       });
       
-      if (response.ok || responseOas.ok) {
-        const nasList = await response.json();
-        console.log('NAS List:', nasList);
-        console.log('Username:', username);
-        console.log('Password:', password);
-        const nas = nasList.find((n) => n.username === username && n.password === password);
-
-        const oasList = await responseOas.json();
-        const oas = oasList.find((o) => o.name === username && o.password === password);
-  
-        if (nas) {
-          console.log('Successful login:', nas);
-          // Successful login, redirect user to timeinout page
-          window.location.href = `/${username}/timeinout`;
-        } else if (oas) {
-          console.log('Successful login:', oas);
-          // Successful login
-          window.location.href = `/${username}/OASAttendance`;
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          console.log('Successful login:', data);
+          navigate('/oas');
         } else {
           console.log('Invalid credentials');
-          // Invalid credentials, display error message
           setLoginError(true);
         }
       } else {
         console.log('API request failed:', response.status);
-        // Handle failed API request, display error message
         setLoginError(true);
       }
     } catch (error) {
       console.error('Error:', error);
     }
   };
-  
 
   return (
     <>
@@ -90,6 +74,8 @@ export const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                {/* Add a space */}
+                <div style={{ margin: '10px 0' }}></div>
                 <input type='submit' className='button-submit' value='Login' />
               </div>
             </form>
