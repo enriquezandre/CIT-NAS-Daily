@@ -22,6 +22,11 @@ namespace CITNASDaily.Repositories.Repositories
         public async Task<TimekeepingSummary?> CreateTimekeepingSummaryAsync(TimekeepingSummary timekeepingSummary)
         {
             //checks if inputted semester int equals to the enum set to it
+            var existingNAS = await _context.NAS.FirstOrDefaultAsync(e => e.Id == timekeepingSummary.Id);
+            if (existingNAS != null)
+            {
+                return null; //nas dont exist 
+            }
             if (Enum.IsDefined(typeof(Semester), timekeepingSummary.Semester)) {
                 //checks time keeping summary with the same semester already exists
                 var existingSummary = await _context.TimekeepingSummaries.FirstOrDefaultAsync(s => s.NASId == timekeepingSummary.NASId && s.Semester == timekeepingSummary.Semester);

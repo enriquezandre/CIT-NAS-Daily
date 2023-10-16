@@ -1,5 +1,6 @@
 ﻿using CITNASDaily.Entities.Models;
 using System.ComponentModel.DataAnnotations;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto
 {
@@ -9,6 +10,8 @@ namespace CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto
 
         [Required]
         public int NASId { get; set; }
+        [Required]
+        public Semester Semester { get; set; }
         [Required]
         public float AttendanceAndPunctuality { get; set; }
         [Required]

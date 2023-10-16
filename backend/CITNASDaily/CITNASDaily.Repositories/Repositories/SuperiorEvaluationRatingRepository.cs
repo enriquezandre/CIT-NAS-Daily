@@ -16,11 +16,10 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<SuperiorEvaluationRating?> CreateSuperiorEvaluationRatingAsync(SuperiorEvaluationRating evaluation)
         {
-            var existingEvaluation = await _context.NAS.FirstOrDefaultAsync(e => e.Id == evaluation.NASId);
-            Console.WriteLine("checking of exising eval");
-            if (existingEvaluation == null)
+            var tkSummary = await _context.TimekeepingSummaries.FirstOrDefaultAsync(t => t.NASId == evaluation.NASId && t.Semester == evaluation.Semester);
+            if (tkSummary == null)
             {
-                return null; //cant create another eval for nas
+                return null; //nas id with semester inputted do not exist in timekeeping summary
             }
             // input should only be between 0 and 5
             if (evaluation.AttendanceAndPunctuality >= 0 && evaluation.AttendanceAndPunctuality <= 5
@@ -32,15 +31,9 @@ namespace CITNASDaily.Repositories.Repositories
                 //calculation for overallrating
                 var overAllRating = (evaluation.AttendanceAndPunctuality + evaluation.QualOfWorkOutput + evaluation.QualOfWorkInput
                     + evaluation.AttitudeAndWorkBehaviour + evaluation.OverallAssessment)/5;
-                var semester = await _context.TimekeepingSummaries.FirstOrDefaultAsync(e => e.NASId == evaluation.NASId);
-                if (semester == null)
-                {
-                    return null;
-                }
                 evaluation.OverallRating = (float)Math.Round(overAllRating, 2);
-                evaluation.Semester = semester.Semester;
-                evaluation.Year = semester.Year;
-                Console.WriteLine("existing eval is not null");
+                evaluation.Semester = tkSummary.Semester;
+                evaluation.Year = tkSummary.Year;
                 await _context.SuperiorEvaluationRatings.AddAsync(evaluation);
                 await _context.SaveChangesAsync();
                 return evaluation;
