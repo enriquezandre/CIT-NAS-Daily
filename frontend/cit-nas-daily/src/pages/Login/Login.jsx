@@ -24,24 +24,27 @@ export const Login = () => {
           password: password,
         }),
       });
-      
+  
       if (response.ok) {
         const data = await response.json();
         if (data.success) {
-          console.log('Successful login:', data);
-          navigate('/oas');
+          // Authentication was successful
+          alert('Login successful' + username + ", " +password); // You can display a more user-friendly message or redirect to a new page.
+          navigate('/oas'); // Redirect to a new page if login is successful.
         } else {
-          console.log('Invalid credentials');
-          setLoginError(true);
+          // Authentication failed
+          alert('Invalid: ' + username + ", " +password); //
         }
       } else {
         console.log('API request failed:', response.status);
-        setLoginError(true);
+        alert('API request failed');
       }
     } catch (error) {
       console.error('Error:', error);
+      alert('An error occurred');
     }
   };
+  
 
   return (
     <>
@@ -75,11 +78,10 @@ export const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 {/* Add a space */}
-                <div style={{ margin: '10px 0' }}></div>
+                <div style={{ margin: '10px 0' }}>{loginError && <p className='error-message'>Invalid username or password</p>}</div>
                 <input type='submit' className='button-submit' value='Login' />
               </div>
             </form>
-            {loginError && <p className='error-message'>Invalid username or password</p>}
           </div>
         </div>
       </div>
