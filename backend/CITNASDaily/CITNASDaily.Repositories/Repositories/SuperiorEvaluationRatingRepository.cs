@@ -16,6 +16,11 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<SuperiorEvaluationRating?> CreateSuperiorEvaluationRatingAsync(SuperiorEvaluationRating evaluation)
         {
+            var existingEvaluation = await _context.SuperiorEvaluationRatings.FirstOrDefaultAsync(e => e.NASId == evaluation.NASId && e.Semester == evaluation.Semester);
+            if (existingEvaluation != null)
+            {
+                return null; //cannot add if it exist already in the table
+            }
             var tkSummary = await _context.TimekeepingSummaries.FirstOrDefaultAsync(t => t.NASId == evaluation.NASId && t.Semester == evaluation.Semester);
             if (tkSummary == null)
             {
