@@ -17,12 +17,18 @@ namespace CITNASDaily.Services.Services
             _userRepository = userRepository;
         }
 
-        public async Task<UserDto> CreateUserAsync(UserCreateDto userCreate)
+        public async Task<UserDto?> CreateUserAsync(UserCreateDto userCreate)
         {
-            var user = _mapper.Map<User>(userCreate);
-            var createdUser = await _userRepository.CreateUserAsync(user);
+            //subject to change
+            //checking for role validation
+            if (userCreate.Role == "OAS" ||  userCreate.Role == "NAS" || userCreate.Role == "Superior")
+            {
+                var user = _mapper.Map<User>(userCreate);
+                var createdUser = await _userRepository.CreateUserAsync(user);
 
-            return _mapper.Map<UserDto>(createdUser);
+                return _mapper.Map<UserDto>(createdUser);
+            }
+            return null;
         }
 
         public async Task<bool> DoesUserExist(Guid userId)

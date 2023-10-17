@@ -42,7 +42,7 @@ namespace CITNASDaily.API.Controllers
                 if (await _userService.DoesUsernameExist(userCreate.Username)) return BadRequest("Username already exists");
 
                 var createdUser = await _authService.RegisterUser(userCreate);
-                if (createdUser == null) return BadRequest("Username already exists");
+                if (createdUser == null) return BadRequest("Invalid Role. Role input is case sensitive.");
 
                 return CreatedAtRoute("GetUser", new { userId = createdUser.Id }, createdUser);
             }
