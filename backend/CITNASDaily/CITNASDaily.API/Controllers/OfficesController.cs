@@ -58,7 +58,7 @@ namespace CITNASDaily.API.Controllers
             try
             {
                 var offices = await _officeService.GetOfficesAsync();
-                if (offices == null) return BadRequest();
+                if (offices == null) return NoContent();
                 return Ok(offices);
             }
             catch (Exception ex)
