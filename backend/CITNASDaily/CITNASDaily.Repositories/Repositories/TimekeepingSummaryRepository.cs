@@ -22,8 +22,8 @@ namespace CITNASDaily.Repositories.Repositories
         public async Task<TimekeepingSummary?> CreateTimekeepingSummaryAsync(TimekeepingSummary timekeepingSummary)
         {
             //checks for existing nas
-            var existingNAS = await _context.NAS.FirstOrDefaultAsync(e => e.Id == timekeepingSummary.Id);
-            if (existingNAS != null)
+            var existingNAS = await _context.NAS.FirstOrDefaultAsync(e => e.Id == timekeepingSummary.NASId);
+            if (existingNAS == null)
             {
                 return null; //nas dont exist 
             }
