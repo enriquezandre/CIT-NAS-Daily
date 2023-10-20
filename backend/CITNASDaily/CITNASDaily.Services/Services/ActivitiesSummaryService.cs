@@ -49,5 +49,11 @@ namespace CITNASDaily.Services.Services
             return null;
            
         }
+
+        public async Task<List<ActivitiesSummary?>> GetAllActivitiesSummaryByNASIdMonthYearAsync(int nasId, int month, int year)
+        {
+            var actSummaries = await _activitiesSummaryRepository.GetAllActivitiesSummaryByNASIdMonthYearAsync(nasId, month, year);
+            return actSummaries.ToList();
+        }
     }
 }

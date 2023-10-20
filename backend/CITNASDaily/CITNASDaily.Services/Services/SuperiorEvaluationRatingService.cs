@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Services.Services
 {
@@ -31,6 +32,17 @@ namespace CITNASDaily.Services.Services
             if (createdEvaluationRating != null)
             {
                 return createdEvaluationRating;
+            }
+            return null;
+        }
+
+        public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(int nasId, Semester semester)
+        {
+            var evaluationRating = await _superiorEvaluationRatingRepository.GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(nasId, semester);
+
+            if (evaluationRating != null)
+            {
+                return evaluationRating;
             }
             return null;
         }

@@ -18,11 +18,14 @@ namespace CITNASDaily.Repositories.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    NASId = table.Column<int>(type: "int", nullable: false),
+                    Semester = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
                     SuperiorOverallRating = table.Column<float>(type: "real", nullable: false),
-                    AcademicPerformance = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AcademicPerformance = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TimekeepingStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EnrollmentAllowed = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UnitsAllowed = table.Column<int>(type: "int", nullable: false)
+                    EnrollmentAllowed = table.Column<bool>(type: "bit", nullable: false),
+                    UnitsAllowed = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {

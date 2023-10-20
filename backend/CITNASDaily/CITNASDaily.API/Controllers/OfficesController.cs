@@ -26,7 +26,7 @@ namespace CITNASDaily.API.Controllers
         [HttpPost]
         [Authorize]
         [ProducesResponseType(typeof(OfficeDto), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateSuperior([FromBody] OfficeCreateDto officeCreate)
+        public async Task<IActionResult> CreateOffice([FromBody] OfficeCreateDto officeCreate)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetOffices")]
         public async Task<IActionResult> GetOffices()
         {
             try

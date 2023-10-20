@@ -13,5 +13,6 @@ namespace CITNASDaily.Services.Contracts
         Task<ActivitiesSummary?> CreateActivitiesSummaryAsync(ActivitiesSummaryCreateDto activitiesSummaryDto);
         Task<IEnumerable<ActivitiesSummary>?> GetAllActivitiesSummaryAsync();
         Task<List<ActivitiesSummary>?> GetAllActivitiesSummaryByNASIdAsync(int nasId);
+        Task<List<ActivitiesSummary?>> GetAllActivitiesSummaryByNASIdMonthYearAsync(int nasId, int month, int year);
     }
 }
