@@ -15,7 +15,7 @@ namespace CITNASDaily.Entities.Dtos.SummaryEvaluationDtos
         [Required]
         public Semester Semester { get; set; }
         [Required]
-        public int Year { get; set; }
+        public int? Year { get; set; }
         [Required]
         public float SuperiorOverallRating { get; set; }
         [Required]

@@ -19,7 +19,7 @@ namespace CITNASDaily.Repositories.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NASId = table.Column<int>(type: "int", nullable: false),
-                    Semester = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Semester = table.Column<int>(type: "int", nullable: false),
                     Year = table.Column<int>(type: "int", nullable: false),
                     SuperiorOverallRating = table.Column<float>(type: "real", nullable: false),
                     AcademicPerformance = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -198,7 +198,7 @@ namespace CITNASDaily.Repositories.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NASId = table.Column<int>(type: "int", nullable: false),
-                    Semester = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Semester = table.Column<int>(type: "int", nullable: false),
                     Year = table.Column<int>(type: "int", nullable: false),
                     AttendanceAndPunctuality = table.Column<float>(type: "real", nullable: false),
                     QualOfWorkOutput = table.Column<float>(type: "real", nullable: false),

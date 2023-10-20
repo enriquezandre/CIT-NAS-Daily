@@ -25,6 +25,30 @@ namespace CITNASDaily.Services.Services
 
         public async Task<SummaryEvaluation?> CreateSummaryEvaluationAsync(SummaryEvaluationCreateDto summaryEvaluationCreateDto)
         {
+            var status = "";
+            var allowed = true;
+
+            if(summaryEvaluationCreateDto.SuperiorOverallRating <= 5 && summaryEvaluationCreateDto.SuperiorOverallRating >= 4.1)
+            {
+                status = "EXCELLENT";
+            }
+            else if (summaryEvaluationCreateDto.SuperiorOverallRating <= 4.0 && summaryEvaluationCreateDto.SuperiorOverallRating >= 3.0)
+            {
+                status = "GOOD";
+            }
+            else
+            {
+                status = "POOR";
+            }
+
+            if(status == "POOR")
+            {
+                allowed = false;
+            }
+
+            summaryEvaluationCreateDto.TimekeepingStatus = status;
+            summaryEvaluationCreateDto.EnrollmentAllowed = allowed;
+
             var summaryEvaluation = _mapper.Map<SummaryEvaluation>(summaryEvaluationCreateDto);
 
             var createdSummaryEvaluation = await _summaryEvaluationRepository.CreateSummaryEvaluationAsync(summaryEvaluation);
