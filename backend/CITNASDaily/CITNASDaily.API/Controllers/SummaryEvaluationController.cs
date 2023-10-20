@@ -1,5 +1,7 @@
 ﻿using CITNASDaily.Entities.Dtos.SummaryEvaluationDtos;
+using CITNASDaily.Entities.Models;
 using CITNASDaily.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -20,6 +22,9 @@ namespace CITNASDaily.API.Controllers
             _logger = logger;
         }
 
+        [HttpPost]
+        [Authorize]
+        [ProducesResponseType(typeof(SummaryEvaluation), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateSummaryEvaluation([FromBody] SummaryEvaluationCreateDto summary)
         {
             try

@@ -3,6 +3,7 @@ using CITNASDaily.Entities.Dtos.SummaryEvaluationDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Repositories.Repositories;
+using CITNASDaily.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CITNASDaily.Services.Services
 {
-    public class SummaryEvaluationService
+    public class SummaryEvaluationService : ISummaryEvaluationService
     {
         public readonly ISummaryEvaluationRepository _summaryEvaluationRepository;
         private readonly IMapper _mapper;
