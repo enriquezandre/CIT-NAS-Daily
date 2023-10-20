@@ -1,4 +1,5 @@
-﻿using CITNASDaily.Entities.Models;
+﻿using CITNASDaily.Entities.Dtos.SummaryEvaluationDtos;
+using CITNASDaily.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace CITNASDaily.Services.Contracts
 {
     public interface ISummaryEvaluationService
     {
-        Task<SummaryEvaluation?> CreateSummaryEvaluationAsync(SummaryEvaluation summaryEvaluation);
+        Task<SummaryEvaluation?> CreateSummaryEvaluationAsync(SummaryEvaluationCreateDto summaryEvaluation);
     }
 }

@@ -21,6 +21,6 @@ namespace CITNASDaily.Entities.Dtos.SummaryEvaluationDtos
         [Required]
         public string? TimekeepingStatus { get; set; }
         [Required]
-        public string? EnrollmentAllowed { get; set; }
+        public bool EnrollmentAllowed { get; set; }
     }
 }
