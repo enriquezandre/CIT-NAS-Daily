@@ -43,7 +43,7 @@ namespace CITNASDaily.API.Controllers
                     return NotFound();
                 }
 
-                return CreatedAtRoute("GetOffices", new { officeId = createdOffice.Id }, createdOffice);
+                return Ok(createdOffice);
             }
             catch (Exception ex)
             {

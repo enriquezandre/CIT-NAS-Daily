@@ -25,7 +25,7 @@ namespace CITNASDaily.Repositories.Repositories
         {
             return await _context.OAS
                 .Include(s => s.User)
-                .FirstOrDefaultAsync(c => c.UserId == userId && c.Id == oasId);
+                .FirstOrDefaultAsync(c => /*c.UserId == userId &&*/ c.Id == oasId);
         }
 
     }

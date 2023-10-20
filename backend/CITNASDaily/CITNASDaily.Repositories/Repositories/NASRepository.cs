@@ -23,7 +23,7 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<NAS?> GetNASAsync(Guid? userId, int nasId)
         {
-            return await _context.NAS.FirstOrDefaultAsync(c => c.UserId == userId && c.Id == nasId);
+            return await _context.NAS.FirstOrDefaultAsync(c => /*c.UserId == userId &&*/ c.Id == nasId);
         }
 
     }

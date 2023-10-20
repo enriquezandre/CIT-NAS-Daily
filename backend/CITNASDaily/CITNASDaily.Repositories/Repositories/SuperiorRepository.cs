@@ -27,7 +27,7 @@ namespace CITNASDaily.Repositories.Repositories
         {
             return await _context.Superiors
                 .Include(s => s.User)
-                .FirstOrDefaultAsync(c => c.UserId == userId && c.Id == superiorId);
+                .FirstOrDefaultAsync(c => /*c.UserId == userId &&*/ c.Id == superiorId);
         }
 
 
