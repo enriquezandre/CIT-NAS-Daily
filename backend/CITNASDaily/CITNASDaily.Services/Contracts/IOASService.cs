@@ -6,7 +6,7 @@ namespace CITNASDaily.Services.Contracts
     public interface IOASService
     {
         Task<OASDto?> CreateOASAsync(string username, OASCreateDto oasCreate);
-        public Task<OASDto?> GetOASAsync(string username, int oasId);
+        public Task<OASDto?> GetOASAsync(int oasId);
         Task<Guid?> GetOASUserIdByUsernameAsync(string username);
     }
 }

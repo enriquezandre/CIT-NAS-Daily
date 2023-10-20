@@ -12,6 +12,6 @@ namespace CITNASDaily.Services.Contracts
     public interface ISuperiorEvaluationRatingService
     {
         Task<SuperiorEvaluationRating?> CreateSuperiorEvaluationRatingAsync(SuperiorEvaluationRatingCreateDto SuperiorEvaluationRatingDto);
-        Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(int nasId, int semester);
+        Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(int nasId, Semester semester);
     }
 }

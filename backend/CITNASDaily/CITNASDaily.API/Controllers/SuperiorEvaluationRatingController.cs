@@ -1,4 +1,5 @@
-﻿using CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto;
+﻿using CITNASDaily.Entities.Dtos.SummaryEvaluationDtos;
+using CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Services.Contracts;
 using CITNASDaily.Services.Services;
@@ -15,12 +16,14 @@ namespace CITNASDaily.API.Controllers
     {
         private readonly IAuthService _authService;
         private readonly ISuperiorEvaluationRatingService _superiorEvaluationRatingService;
+        private readonly ISummaryEvaluationService _summaryEvaluationService;
         private readonly ILogger<SuperiorEvaluationRatingController> _logger;
 
-        public SuperiorEvaluationRatingController(IAuthService authService, ISuperiorEvaluationRatingService superiorEvaluationRatingervice, ILogger<SuperiorEvaluationRatingController> logger)
+        public SuperiorEvaluationRatingController(IAuthService authService, ISuperiorEvaluationRatingService superiorEvaluationRatingervice, ISummaryEvaluationService summaryEvaluationService, ILogger<SuperiorEvaluationRatingController> logger)
         {
             _authService = authService;
             _superiorEvaluationRatingService = superiorEvaluationRatingervice;
+            _summaryEvaluationService = summaryEvaluationService;
             _logger = logger;
         }
 
@@ -43,7 +46,7 @@ namespace CITNASDaily.API.Controllers
                 {
                     return BadRequest("Creation Failed.");
                 }
-                
+
                 return Ok(createdSuperiorEvaluationRating);
             }
             catch (Exception ex)
@@ -55,7 +58,7 @@ namespace CITNASDaily.API.Controllers
 
         [HttpGet(Name = "GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync")]
         [Authorize]
-        public async Task<IActionResult> GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(int nasId, int semester)
+        public async Task<IActionResult> GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(int nasId, Semester semester)
         {
             try
             {

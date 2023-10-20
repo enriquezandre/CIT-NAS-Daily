@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CITNASDaily.Entities.Dtos.SummaryEvaluationDtos;
 using CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
@@ -16,11 +17,13 @@ namespace CITNASDaily.Services.Services
     public class SuperiorEvaluationRatingService : ISuperiorEvaluationRatingService
     {
         public readonly ISuperiorEvaluationRatingRepository _superiorEvaluationRatingRepository;
+        public readonly ISummaryEvaluationService _summaryEvaluationService;
         private readonly IMapper _mapper;
-        public SuperiorEvaluationRatingService(ISuperiorEvaluationRatingRepository superiorEvaluationRatingRepository, IMapper mapper)
+        public SuperiorEvaluationRatingService(ISuperiorEvaluationRatingRepository superiorEvaluationRatingRepository, IMapper mapper, ISummaryEvaluationService summaryEvaluationService)
         {
             _superiorEvaluationRatingRepository = superiorEvaluationRatingRepository;
             _mapper = mapper;
+            _summaryEvaluationService = summaryEvaluationService;
         }
 
         public async Task<SuperiorEvaluationRating?> CreateSuperiorEvaluationRatingAsync(SuperiorEvaluationRatingCreateDto SuperiorEvaluationRatingDto)
@@ -31,12 +34,24 @@ namespace CITNASDaily.Services.Services
 
             if (createdEvaluationRating != null)
             {
+
+                //summary eval
+
+                SummaryEvaluationCreateDto summary = new SummaryEvaluationCreateDto
+                {
+                    nasId = createdEvaluationRating.NASId,
+                    Semester = createdEvaluationRating.Semester,
+                    Year = createdEvaluationRating.Year,
+                    SuperiorOverallRating = createdEvaluationRating.OverallRating
+                };
+                await _summaryEvaluationService.CreateSummaryEvaluationAsync(summary);
+
                 return createdEvaluationRating;
             }
             return null;
         }
 
-        public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(int nasId, int semester)
+        public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(int nasId, Semester semester)
         {
             var evaluationRating = await _superiorEvaluationRatingRepository.GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(nasId, semester);
 
