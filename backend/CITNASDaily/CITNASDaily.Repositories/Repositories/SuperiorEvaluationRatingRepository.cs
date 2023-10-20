@@ -2,6 +2,7 @@
 using CITNASDaily.Repositories.Context;
 using CITNASDaily.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Repositories.Repositories
 {
@@ -45,6 +46,11 @@ namespace CITNASDaily.Repositories.Repositories
             }
             return null;
             
+        }
+
+        public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(int nasId, Semester semester)
+        {
+            return await _context.SuperiorEvaluationRatings.FirstOrDefaultAsync(s => s.NASId == nasId && s.Semester == semester);
         }
     }
 }

@@ -5,6 +5,7 @@ using CITNASDaily.Services.Contracts;
 using CITNASDaily.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace CITNASDaily.API.Controllers
@@ -34,7 +35,7 @@ namespace CITNASDaily.API.Controllers
                 if (currentUser == null) return Forbid();
 
                 // Pass the username from the API request
-                var nas = await _nasService.GetNASAsync(currentUser.Username, nasId);
+                var nas = await _nasService.GetNASAsync(nasId);
 
                 if (nas == null)
                 {
@@ -49,6 +50,27 @@ namespace CITNASDaily.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting Superior.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("{officeId}/offices", Name = "GetNASByOfficeIdAsync")]
+        [Authorize]
+        public async Task<IActionResult> GetNASByOfficeIdAsync(int officeId)
+        {
+            try
+            {
+                var nas = await _nasService.GetNASByOfficeIdAsync(officeId);
+
+                if(nas.IsNullOrEmpty()){
+                    return NotFound("No NAS under your office yet.");
+                }
+
+                return Ok(nas);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting list of NAS.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }

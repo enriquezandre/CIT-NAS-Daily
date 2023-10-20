@@ -37,17 +37,9 @@ namespace CITNASDaily.Services.Services
             return _mapper.Map<NASDto>(createdSuperior);
         }
 
-        public async Task<NASDto?> GetNASAsync(string username, int nasId)
+        public async Task<NASDto?> GetNASAsync(int nasId)
         {
-            var userId = await GetNASUserIdByUsernameAsync(username);
-
-            if (userId == null)
-            {
-                // subject to change
-                return null;
-            }
-
-            var nas = await _nasRepository.GetNASAsync(userId, nasId);
+            var nas = await _nasRepository.GetNASAsync(nasId);
 
             return _mapper.Map<NASDto>(nas);
         }
@@ -62,6 +54,12 @@ namespace CITNASDaily.Services.Services
             }
 
             return user.Id;
+        }
+
+        public async Task<List<NAS?>> GetNASByOfficeIdAsync(int officeId)
+        {
+            var nasByOffice = await _nasRepository.GetNASByOfficeIdAsync(officeId);
+            return nasByOffice.ToList();
         }
     }
 }
