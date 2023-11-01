@@ -23,38 +23,124 @@ export const NASPersonalInformation = () => {
 
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
-        
         <div className="flex items-center">
           <div className="m-3 flex-1">
-            <label htmlFor="studentId" className="block mb-2 font-bold text-gray-600">
-              Student ID:
-            </label>
-            <input
-              type="text"
-              id="studentId"
-              name="studentId"
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 w-full"
-              readOnly="true"
-              style={{ backgroundColor: '#E3E3E3' }}
-            />
+            <div>
+              <label htmlFor="studentId" className="block mb-2 font-bold text-gray-600">
+                Student ID:
+              </label>
+              <input
+                type="text"
+                id="studentId"
+                name="studentId"
+                value={studentId}
+                onChange={(e) => setStudentId(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                readOnly="true"
+                style={{ backgroundColor: '#E3E3E3' }}
+              />
+            </div>
+            <div>
+              <label htmlFor="gender" className="block mb-2 font-bold text-gray-600">
+                Gender:
+              </label>
+              <input
+                type="text"
+                id="gender"
+                name="gender"
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              />
+            </div>
 
-<label htmlFor="studentId" className="block mb-2 font-bold text-gray-600">
-              Student ID:
-            </label>
-            <input
-              type="text"
-              id="studentId"
-              name="studentId"
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 w-full"
-              readOnly="true"
-              style={{ backgroundColor: '#E3E3E3' }}
-            />
           </div>
-          
+          <div className="m-3 flex-1">
+            <div>
+              <label htmlFor="firstName" className="block mb-2 font-bold text-gray-600">
+                First Name:
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              />
+            </div>
+            <div>
+              <label htmlFor="bday" className="block mb-2 font-bold text-gray-600">
+                Birthdate:
+              </label>
+              <input
+                type="text"
+                id="bday"
+                name="bday"
+                value={bday}
+                onChange={(e) => setBday(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              />
+            </div>
+          </div>
+          <div className="m-3 flex-1">
+            <div>
+              <label htmlFor="middleName" className="block mb-2 font-bold text-gray-600">
+                Middle Name:
+              </label>
+              <input
+                type="text"
+                id="middleName"
+                name="middleName"
+                value={middleName}
+                onChange={(e) => setMiddleName(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              />
+            </div>
+            <div>
+              <label htmlFor="gender" className="block mb-2 font-bold text-gray-600">
+                Gender:
+              </label>
+              <input
+                type="text"
+                id="gender"
+                name="gender"
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              />
+            </div>
+          </div>
+          <div className="m-3 flex-1">
+            <div>
+                <label htmlFor="lastName" className="block mb-2 font-bold text-gray-600">
+                  Last Name:
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                />
+            </div>
+            <div>
+              <label htmlFor="gender" className="block mb-2 font-bold text-gray-600">
+                Gender:
+              </label>
+              <input
+                type="text"
+                id="gender"
+                name="gender"
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              />
+            </div>
+          </div>
+
+          {/* avatar */}
           <div className='m-3 flex-2'>
             <div className="avatar-square" style={{ width: '200px', height: '200px', border: '2px solid gray', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               {avatar ? ( 
@@ -75,82 +161,11 @@ export const NASPersonalInformation = () => {
             </div>
           </div>
         </div>
-      
-      <div className="flex">
-        <div className="m-3 flex-1">
-          <label htmlFor="firstName" className="block mb-2 font-bold text-gray-600">
-            First Name:
-          </label>
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 w-full"
-          />
-        </div>
-        <div className="m-3 flex-1">
-          <label htmlFor="middleName" className="block mb-2 font-bold text-gray-600">
-            Middle Name:
-          </label>
-          <input
-            type="text"
-            id="middleName"
-            name="middleName"
-            value={middleName}
-            onChange={(e) => setMiddleName(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 w-full"
-          />
-        </div>
-        <div className="m-3 flex-1">
-          <label htmlFor="lastName" className="block mb-2 font-bold text-gray-600">
-            Last Name:
-          </label>
-          <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 w-full"
-          />
-        </div>
-      </div>
-      
-      <div className="flex">
-        <div className="m-3 flex-1">
-          <label htmlFor="gender" className="block mb-2 font-bold text-gray-600">
-            Gender:
-          </label>
-          <input
-            type="text"
-            id="gender"
-            name="gender"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 w-full"
-          />
-        </div>
-        <div className="m-3 flex-1">
-          <label htmlFor="bday" className="block mb-2 font-bold text-gray-600">
-            Birthdate:
-          </label>
-          <input
-            type="text"
-            id="bday"
-            name="bday"
-            value={bday}
-            onChange={(e) => setBday(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 w-full"
-          />
-        </div>
-        <div className="m-3 flex-1"></div> {/* Create a blank div with the same width */}
-      </div>
 
       {/* horizontal line */}
       <hr className="my-5 border-t-2 border-gray-300 mx-2" />
       
+      {/* below the horiztonal line fields*/}
       <div className="m-3 flex-1">
         <label htmlFor="office" className="block mb-2 font-bold text-gray-600">
           Office Assigned:
