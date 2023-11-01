@@ -38,17 +38,9 @@ namespace CITNASDaily.Services.Services
         }
 
 
-        public async Task<SuperiorDto?> GetSuperiorAsync(string username,int superiorId)
+        public async Task<SuperiorDto?> GetSuperiorAsync(int superiorId)
         {
-            var userId = await GetSuperiorUserIdByUsernameAsync(username);
-
-            if (userId == null)
-            {
-                // subject to change
-                return null;
-            }
-
-            var superior = await _superiorRepository.GetSuperiorAsync(userId, superiorId);
+            var superior = await _superiorRepository.GetSuperiorAsync(superiorId);
 
             return _mapper.Map<SuperiorDto>(superior);
         }

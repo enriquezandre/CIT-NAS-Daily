@@ -62,7 +62,7 @@ namespace CITNASDaily.API.Controllers
                 if (currentUser == null) return Forbid();
 
                 // Pass the username from the API request
-                var oas = await _oasService.GetOASAsync(currentUser.Username, oasId);
+                var oas = await _oasService.GetOASAsync(oasId);
 
                 if (oas == null)
                 {

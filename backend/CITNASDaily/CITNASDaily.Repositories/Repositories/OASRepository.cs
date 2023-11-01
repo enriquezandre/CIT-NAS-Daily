@@ -21,11 +21,11 @@ namespace CITNASDaily.Repositories.Repositories
             return oas;
         }
 
-        public async Task<OAS?> GetOAS(Guid? userId, int oasId)
+        public async Task<OAS?> GetOAS(int oasId)
         {
             return await _context.OAS
                 .Include(s => s.User)
-                .FirstOrDefaultAsync(c => c.UserId == userId && c.Id == oasId);
+                .FirstOrDefaultAsync(c => c.Id == oasId);
         }
 
     }

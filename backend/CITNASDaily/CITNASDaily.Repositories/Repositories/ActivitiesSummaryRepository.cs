@@ -34,5 +34,10 @@ namespace CITNASDaily.Repositories.Repositories
         {
             return await Task.FromResult(_context.ActivitiesSummaries.Where(e => e.NASId == nasId));
         }
+
+        public async Task<IQueryable<ActivitiesSummary?>> GetAllActivitiesSummaryByNASIdMonthYearAsync(int nasId, int month, int year)
+        {
+            return await Task.FromResult(_context.ActivitiesSummaries.Where(e => e.NASId == nasId && e.DateOfEntry.Month == month && e.DateOfEntry.Year == year));
+        }
     }
 }

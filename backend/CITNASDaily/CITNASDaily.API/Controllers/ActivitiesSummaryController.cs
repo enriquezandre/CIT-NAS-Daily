@@ -89,5 +89,27 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
+        [HttpGet("{nasId}/{year}/{month}", Name = "GetAllActivitiesSummaryByNASIdMonthYear")]
+        [Authorize]
+        public async Task<IActionResult> GetAllActivitiesSummary(int nasId, int month, int year)
+        {
+            try
+            {
+                var actSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryByNASIdMonthYearAsync(nasId, month, year);
+
+                if (actSummaries == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(actSummaries);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting Superior.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
     }
 }
