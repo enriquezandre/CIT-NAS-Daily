@@ -76,7 +76,8 @@ namespace CITNASDaily.API.Controllers
             {
                 var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
                 if (currentUser == null) return Forbid();
-                if (currentUser.Id != userId) return Forbid();
+                //this line is what made the getting of userid fail
+                /*if (currentUser.Id != userId) return Forbid();*/
 
                 var user = await _userService.GetUserByIdAsync(userId);
                 if (user == null) return NotFound();

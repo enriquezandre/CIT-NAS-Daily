@@ -121,6 +121,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("AllowSpecificOrigin");
 }
 
 app.UseHttpsRedirection();
@@ -138,6 +139,19 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services)
 {
+    //cors
+    services.AddCors(options =>
+    {
+        options.AddPolicy("AllowSpecificOrigin",
+            builder =>
+            {
+                builder.WithOrigins("http://localhost:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    });
+
+
     // Register automapper
     services.AddAutoMapper(
         typeof(SuperiorProfile),
@@ -146,7 +160,9 @@ void ConfigureServices(IServiceCollection services)
         typeof(OASProfile),
         typeof(NASProfile),
         typeof(ActivitiesSummaryProfile),
-        typeof(TimekeepingSummaryProfile)
+        typeof(TimekeepingSummaryProfile),
+        typeof(SuperiorEvaluationRatingProfile),
+        typeof(SummaryEvaluationProfile)
         );
 
     // Register repositories
@@ -157,6 +173,8 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IOfficeRepository, OfficeRepository>();
     services.AddScoped<IActivitiesSummaryRepository, ActivitiesSummaryRepository>();
     services.AddScoped<ITimekeepingSummaryRepository, TimekeepingSummaryRepository>();
+    services.AddScoped<ISuperiorEvaluationRatingRepository, SuperiorEvaluationRatingRepository>();
+    services.AddScoped<ISummaryEvaluationRepository, SummaryEvaluationRepository>();
 
     // Register services
     services.AddScoped<ISuperiorService, SuperiorService>();
@@ -168,4 +186,6 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IOfficeService, OfficeService>();
     services.AddScoped<IActivitiesSummaryService, ActivitiesSummaryService>();
     services.AddScoped<ITimekeepingSummaryService, TimekeepingSummaryService>();
+    services.AddScoped<ISuperiorEvaluationRatingService, SuperiorEvaluationRatingService>();
+    services.AddScoped<ISummaryEvaluationService, SummaryEvaluationService>();
 }

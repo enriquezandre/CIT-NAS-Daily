@@ -26,7 +26,7 @@ namespace CITNASDaily.API.Controllers
         [HttpPost]
         [Authorize]
         [ProducesResponseType(typeof(OfficeDto), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateSuperior([FromBody] OfficeCreateDto officeCreate)
+        public async Task<IActionResult> CreateOffice([FromBody] OfficeCreateDto officeCreate)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace CITNASDaily.API.Controllers
                     return NotFound();
                 }
 
-                return Ok();
+                return CreatedAtRoute("GetOffices", new { officeId = createdOffice.Id }, createdOffice);
             }
             catch (Exception ex)
             {
@@ -52,13 +52,13 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetOffices")]
         public async Task<IActionResult> GetOffices()
         {
             try
             {
                 var offices = await _officeService.GetOfficesAsync();
-                if (offices == null) return BadRequest();
+                if (offices == null) return NoContent();
                 return Ok(offices);
             }
             catch (Exception ex)

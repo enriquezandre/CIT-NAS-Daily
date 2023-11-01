@@ -7,7 +7,7 @@ namespace CITNASDaily.Services.Contracts
         Task<IEnumerable<UserDto>> GetUsersAsync();
         Task<UserDto?> GetUserByIdAsync(Guid userId);
         Task<UserDto?> GetUserByUsernameAsync(string username);
-        Task<UserDto> CreateUserAsync(UserCreateDto userCreate);
+        Task<UserDto?> CreateUserAsync(UserCreateDto userCreate);
         Task<bool> DoesUserExist(Guid userId);
         Task<bool> DoesUsernameExist(string username);
     }

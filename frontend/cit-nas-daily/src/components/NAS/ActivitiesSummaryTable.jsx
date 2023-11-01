@@ -1,6 +1,33 @@
 import { Table } from "flowbite-react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export const ActivitiesSummaryTable = () => {
+  // const { nasId } = useParams();
+  const [activitySummaries, setActivitySummaries] = useState([]);
+
+  useEffect(() => {
+    const fetchNas = async () => {
+      try {
+        // Create an Axios instance with the Authorization header
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get(`/ActivitiesSummary/1`);
+        console.log(response);
+        setActivitySummaries(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchNas();
+  }, [1]); // PLACEHOLDER SINCE WALA PAY ENDPOINT MAKA GET SA NAS ID
+
   return (
     <Table hoverable className="border">
       <Table.Head className="border">
@@ -16,60 +43,22 @@ export const ActivitiesSummaryTable = () => {
         </Table.HeadCell>
       </Table.Head>
       <Table.Body className="divide-y">
-        <Table.Row>
-          <Table.Cell className="text-center border">03/06/2022</Table.Cell>
-          <Table.Cell className="text-center border">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum
-            varius sit amet mattis vulputate enim nulla aliquet.
-          </Table.Cell>
-          <Table.Cell className="text-center border">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum
-            varius sit amet mattis vulputate enim nulla aliquet.
-          </Table.Cell>
-          <Table.Cell className="text-center border">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum
-            varius sit amet mattis vulputate enim nulla aliquet.
-          </Table.Cell>
-        </Table.Row>
-        <Table.Row>
-          <Table.Cell className="text-center border">03/05/2022</Table.Cell>
-          <Table.Cell className="text-center border">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum
-            varius sit amet mattis vulputate enim nulla aliquet.
-          </Table.Cell>
-          <Table.Cell className="text-center border">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum
-            varius sit amet mattis vulputate enim nulla aliquet.
-          </Table.Cell>
-          <Table.Cell className="text-center border">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum
-            varius sit amet mattis vulputate enim nulla aliquet.
-          </Table.Cell>
-        </Table.Row>
-        <Table.Row>
-          <Table.Cell className="text-center border">03/04/2022</Table.Cell>
-          <Table.Cell className="text-center border">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum
-            varius sit amet mattis vulputate enim nulla aliquet.
-          </Table.Cell>
-          <Table.Cell className="text-center border">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum
-            varius sit amet mattis vulputate enim nulla aliquet.
-          </Table.Cell>
-          <Table.Cell className="text-center border">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum
-            varius sit amet mattis vulputate enim nulla aliquet.
-          </Table.Cell>
-        </Table.Row>
+        {activitySummaries.map((summary) => (
+          <Table.Row key={summary.id}>
+            <Table.Cell className="text-center border">
+              {new Date(summary.dateOfEntry).toLocaleDateString()}
+            </Table.Cell>
+            <Table.Cell className="text-center border">
+              {summary.activitiesOfTheDay}
+            </Table.Cell>
+            <Table.Cell className="text-center border">
+              {summary.skillsLearned}
+            </Table.Cell>
+            <Table.Cell className="text-center border">
+              {summary.valuesLearned}
+            </Table.Cell>
+          </Table.Row>
+        ))}
       </Table.Body>
     </Table>
   );

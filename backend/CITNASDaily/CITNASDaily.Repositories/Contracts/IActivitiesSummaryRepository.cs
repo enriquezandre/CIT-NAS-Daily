@@ -12,5 +12,6 @@ namespace CITNASDaily.Repositories.Contracts
         Task<ActivitiesSummary?> CreateActivitiesSummaryAsync(ActivitiesSummary activitiesSummary);
         Task<IEnumerable<ActivitiesSummary>?> GetAllActivitiesSummaryAsync();
         Task<IQueryable<ActivitiesSummary>?> GetAllActivitiesSummaryByNASIdAsync(int nasId);
+        Task<IQueryable<ActivitiesSummary?>> GetAllActivitiesSummaryByNASIdMonthYearAsync(int nasId, int month, int year);
     }
 }

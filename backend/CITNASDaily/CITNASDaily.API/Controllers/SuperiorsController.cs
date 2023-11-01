@@ -32,7 +32,7 @@ namespace CITNASDaily.API.Controllers
                 if (currentUser == null) return Forbid();
 
                 // Pass the username from the API request
-                var superior = await _superiorService.GetSuperiorAsync(currentUser.Username, superiorId);
+                var superior = await _superiorService.GetSuperiorAsync(superiorId);
 
                 if (superior == null)
                 {

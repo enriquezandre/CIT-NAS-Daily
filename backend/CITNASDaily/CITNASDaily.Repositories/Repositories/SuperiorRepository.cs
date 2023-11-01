@@ -23,11 +23,11 @@ namespace CITNASDaily.Repositories.Repositories
         }
 
 
-        public async Task<Superior?> GetSuperiorAsync(Guid? userId, int superiorId)
+        public async Task<Superior?> GetSuperiorAsync(int superiorId)
         {
             return await _context.Superiors
                 .Include(s => s.User)
-                .FirstOrDefaultAsync(c => c.UserId == userId && c.Id == superiorId);
+                .FirstOrDefaultAsync(c => c.Id == superiorId);
         }
 
 
