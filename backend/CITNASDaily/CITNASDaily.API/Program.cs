@@ -121,6 +121,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("AllowSpecificOrigin");
 }
 
 app.UseHttpsRedirection();
@@ -138,6 +139,19 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services)
 {
+    //cors
+    services.AddCors(options =>
+    {
+        options.AddPolicy("AllowSpecificOrigin",
+            builder =>
+            {
+                builder.WithOrigins("http://localhost:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    });
+
+
     // Register automapper
     services.AddAutoMapper(
         typeof(SuperiorProfile),
