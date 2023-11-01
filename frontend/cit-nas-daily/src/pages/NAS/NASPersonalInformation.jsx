@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 
-
 export const NASPersonalInformation = () => {
-  const [studentId, setStudentId] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [middleName, setMiddleName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [gender, setGender] = useState('');
-  const [bday, setBday] = useState('');
-  const [course, setCourse] = useState('');
-  const [yearLevel, setYearLevel] = useState('');
-  const [office, setOffice] = useState('');
-  const [dateStarted, setDateStarted] = useState('');
+  const [studentId, setStudentId] = useState('20-2615-260');
+  const [firstName, setFirstName] = useState('Kaye');
+  const [middleName, setMiddleName] = useState('Capalac');
+  const [lastName, setLastName] = useState('Belderol');
+  const [gender, setGender] = useState('Female');
+  const [bday, setBday] = useState('08/10/2001');
+  const [course, setCourse] = useState('BS Computer Science');
+  const [yearLevel, setYearLevel] = useState('4');
+  const [office, setOffice] = useState('Enrollment and Technical Office');
+  const [dateStarted, setDateStarted] = useState('11/01/2023');
   const [avatar, setAvatar] = useState(null);
 
   const handleAvatarChange = (e) => {
@@ -26,8 +25,7 @@ export const NASPersonalInformation = () => {
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
         
-      <div className="flex">
-        <div className="m-3 flex-1">
+      <div className="flex items-center mb-2">
           <label htmlFor="studentId" className="block mb-2 font-bold text-gray-600">
             Student ID:
           </label>
@@ -39,23 +37,23 @@ export const NASPersonalInformation = () => {
             onChange={(e) => setStudentId(e.target.value)}
             className="border border-gray-300 rounded-md px-3 py-2 w-full"
           />
-        </div>
-        <div className="mt-2">
-          <input
-            type="file"
-            id="avatar"
-            accept="image/*"
-            onChange={handleAvatarChange}
-          />
+          <div className="avatar-square" style={{ width: '200px', height: '200px', border: '2px solid gray', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            {avatar ? ( 
+              <img
+                src={URL.createObjectURL(avatar)}
+                alt="Avatar"
+                className="avatar-image"
+                style={{ width: '100%', height: '100%' }}
+              />
+            ) : (
+              <input
+                type="file"
+                id="avatar"
+                accept="image/*"
+                onChange={handleAvatarChange}
+              />
+            )}
           </div>
-          {avatar && (
-            <img
-              src={URL.createObjectURL(avatar)}
-              alt="Avatar"
-              className="mt-2"
-              style={{ width: '200px', height: '200px' }}
-            />
-          )}
         </div>
       </div>
       
@@ -142,7 +140,7 @@ export const NASPersonalInformation = () => {
           type="text"
           id="office"
           name="office"
-          value={office.name}
+          value={office}
           onChange={(e) => setOffice(e.target.value)}
           className="border border-gray-300 rounded-md px-3 py-2 w-full"
         />
