@@ -23,39 +23,58 @@ export const NASPersonalInformation = () => {
 
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
-      <div className="m-3">
         
-      <div className="flex items-center mb-2">
-          <label htmlFor="studentId" className="block mb-2 font-bold text-gray-600">
-            Student ID:
-          </label>
-          <input
-            type="text"
-            id="studentId"
-            name="studentId"
-            value={studentId}
-            onChange={(e) => setStudentId(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 w-full"
-          />
-          <div className="avatar-square" style={{ width: '200px', height: '200px', border: '2px solid gray', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            {avatar ? ( 
-              <img
-                src={URL.createObjectURL(avatar)}
-                alt="Avatar"
-                className="avatar-image"
-                style={{ width: '100%', height: '100%' }}
-              />
-            ) : (
-              <input
-                type="file"
-                id="avatar"
-                accept="image/*"
-                onChange={handleAvatarChange}
-              />
-            )}
+        <div className="flex items-center">
+          <div className="m-3 flex-1">
+            <label htmlFor="studentId" className="block mb-2 font-bold text-gray-600">
+              Student ID:
+            </label>
+            <input
+              type="text"
+              id="studentId"
+              name="studentId"
+              value={studentId}
+              onChange={(e) => setStudentId(e.target.value)}
+              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              readOnly="true"
+              style={{ backgroundColor: '#E3E3E3' }}
+            />
+
+<label htmlFor="studentId" className="block mb-2 font-bold text-gray-600">
+              Student ID:
+            </label>
+            <input
+              type="text"
+              id="studentId"
+              name="studentId"
+              value={studentId}
+              onChange={(e) => setStudentId(e.target.value)}
+              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              readOnly="true"
+              style={{ backgroundColor: '#E3E3E3' }}
+            />
+          </div>
+          
+          <div className='m-3 flex-2'>
+            <div className="avatar-square" style={{ width: '200px', height: '200px', border: '2px solid gray', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              {avatar ? ( 
+                <img
+                  src={URL.createObjectURL(avatar)}
+                  alt="Avatar"
+                  className="avatar-image"
+                  style={{ width: '100%', height: '100%' }}
+                />
+              ) : (
+                <input
+                  type="file"
+                  id="avatar"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                />
+              )}
+            </div>
           </div>
         </div>
-      </div>
       
       <div className="flex">
         <div className="m-3 flex-1">
