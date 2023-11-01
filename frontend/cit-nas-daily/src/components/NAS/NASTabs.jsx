@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { TimeInLog } from "../../pages/NAS/TimeInLog";
 import { AttendanceSummary } from "../../pages/NAS/AttendanceSummary";
+import { ActivitiesSummary } from "../../pages/NAS/ActivitiesSummary";
 import { NASEvaluationResult } from "../../pages/NAS/NASEvaluationResult";
 
 export const NASTabs = () => {
@@ -89,7 +90,11 @@ export const NASTabs = () => {
               <AttendanceSummary />
             </div>
           )}
-          {activeTab === 4 && <div>Activities Summary Page Here</div>}
+          {activeTab === 4 && (
+            <div>
+              <ActivitiesSummary />
+            </div>
+          )}
           {activeTab === 5 && <div>Schedule of Duty Here</div>}
           {activeTab === 6 && (
             <div>
