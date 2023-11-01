@@ -23,7 +23,7 @@ export const NASPersonalInformation = () => {
 
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
-        <div className="flex items-center">
+        <div className="flex">
           <div className="m-3 flex-1">
             <div>
               <label htmlFor="studentId" className="block mb-2 font-bold text-gray-600">
@@ -40,6 +40,7 @@ export const NASPersonalInformation = () => {
                 style={{ backgroundColor: '#E3E3E3' }}
               />
             </div>
+            <br/>
             <div>
               <label htmlFor="gender" className="block mb-2 font-bold text-gray-600">
                 Gender:
@@ -51,10 +52,12 @@ export const NASPersonalInformation = () => {
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
                 className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                readOnly="true"
+                style={{ backgroundColor: '#E3E3E3' }}
               />
             </div>
-
           </div>
+          
           <div className="m-3 flex-1">
             <div>
               <label htmlFor="firstName" className="block mb-2 font-bold text-gray-600">
@@ -67,8 +70,11 @@ export const NASPersonalInformation = () => {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                readOnly="true"
+                style={{ backgroundColor: '#E3E3E3' }}
               />
             </div>
+            <br/>
             <div>
               <label htmlFor="bday" className="block mb-2 font-bold text-gray-600">
                 Birthdate:
@@ -80,6 +86,8 @@ export const NASPersonalInformation = () => {
                 value={bday}
                 onChange={(e) => setBday(e.target.value)}
                 className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                readOnly="true"
+                style={{ backgroundColor: '#E3E3E3' }}
               />
             </div>
           </div>
@@ -95,19 +103,8 @@ export const NASPersonalInformation = () => {
                 value={middleName}
                 onChange={(e) => setMiddleName(e.target.value)}
                 className="border border-gray-300 rounded-md px-3 py-2 w-full"
-              />
-            </div>
-            <div>
-              <label htmlFor="gender" className="block mb-2 font-bold text-gray-600">
-                Gender:
-              </label>
-              <input
-                type="text"
-                id="gender"
-                name="gender"
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                readOnly="true"
+                style={{ backgroundColor: '#E3E3E3' }}
               />
             </div>
           </div>
@@ -123,24 +120,12 @@ export const NASPersonalInformation = () => {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                  readOnly="true"
+                  style={{ backgroundColor: '#E3E3E3' }}
                 />
-            </div>
-            <div>
-              <label htmlFor="gender" className="block mb-2 font-bold text-gray-600">
-                Gender:
-              </label>
-              <input
-                type="text"
-                id="gender"
-                name="gender"
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 w-full"
-              />
             </div>
           </div>
 
-          {/* avatar */}
           <div className='m-3 flex-2'>
             <div className="avatar-square" style={{ width: '200px', height: '200px', border: '2px solid gray', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               {avatar ? ( 
@@ -151,12 +136,16 @@ export const NASPersonalInformation = () => {
                   style={{ width: '100%', height: '100%' }}
                 />
               ) : (
-                <input
-                  type="file"
-                  id="avatar"
-                  accept="image/*"
-                  onChange={handleAvatarChange}
-                />
+                <label htmlFor="avatar" style={{ cursor: 'pointer' }}>
+                  Select Avatar
+                  <input
+                    type="file"
+                    id="avatar"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    style={{ display: 'none' }}
+                  /> 
+                </label>
               )}
             </div>
           </div>
@@ -177,6 +166,8 @@ export const NASPersonalInformation = () => {
           value={office}
           onChange={(e) => setOffice(e.target.value)}
           className="border border-gray-300 rounded-md px-3 py-2 w-full"
+          readOnly="true"
+          style={{ backgroundColor: '#E3E3E3' }}
         />
       </div>
       <div className="flex">
@@ -191,6 +182,8 @@ export const NASPersonalInformation = () => {
             value={course}
             onChange={(e) => setCourse(e.target.value)}
             className="border border-gray-300 rounded-md px-3 py-2 w-full"
+            readOnly="true"
+            style={{ backgroundColor: '#E3E3E3' }}
           />
         </div>
         <div className="m-3 flex-1">
@@ -204,6 +197,8 @@ export const NASPersonalInformation = () => {
             value={yearLevel}
             onChange={(e) => setYearLevel(e.target.value)}
             className="border border-gray-300 rounded-md px-3 py-2 w-full"
+            readOnly="true"
+            style={{ backgroundColor: '#E3E3E3' }}
           />
         </div>
         <div className="m-3 flex-1">
@@ -217,6 +212,8 @@ export const NASPersonalInformation = () => {
             value={dateStarted}
             onChange={(e) => setDateStarted(e.target.value)}
             className="border border-gray-300 rounded-md px-3 py-2 w-full"
+            readOnly="true"
+            style={{ backgroundColor: '#E3E3E3' }}
           />
         </div>
       </div>
