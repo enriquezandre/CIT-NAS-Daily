@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ActivitiesFormModal } from "./ActivitiesFormModal";
+import axios from "axios";
 
 export const TimeLogCard = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -43,13 +44,41 @@ export const TimeLogCard = () => {
     return date.toLocaleTimeString();
   };
 
+  // const { nasId } = useParams();
+  const [nas, setNas] = useState({});
+
+  useEffect(() => {
+    const fetchNas = async () => {
+      try {
+        // Create an Axios instance with the Authorization header
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get(`/NAS/1`);
+        console.log(response);
+        setNas(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchNas();
+  }, [1]); // PLACEHOLDER SINCE WALA PAY ENDPOINT MAKA GET SA NAS ID
+
   return (
     <div className="flex justify-center items-center mx-1 mb-6">
       <div className="bg-[url('/src/assets/glebuilding.png')] bg-cover bg-center rounded h-screen w-screen">
         <div className="flex items-center justify-between">
           <div className="ml-10 mt-10">
-            <div className="text-5xl font-bold mb-10 text-primary">
-              Hello, NAS Name!
+            <div
+              className="text-5xl font-bold mb-10 text-primary"
+              style={{ textTransform: "capitalize" }}
+            >
+              Hello, {nas.firstName}
             </div>
             <div className="border-l-2 border-primary">
               <div className="text-2xl ml-4">

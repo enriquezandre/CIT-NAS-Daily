@@ -4,7 +4,7 @@ import { NASTabs } from "../../components/NAS/NASTabs";
 export const NASPage = () => {
   return (
     <div>
-      <Header role={"NAS Name"} />
+      <Header />
       <NASTabs />
     </div>
   );

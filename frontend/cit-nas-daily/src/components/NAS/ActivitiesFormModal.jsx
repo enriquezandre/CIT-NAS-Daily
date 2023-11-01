@@ -1,8 +1,42 @@
 "use client";
 import PropTypes from "prop-types";
 import { Modal } from "flowbite-react";
+import { useState } from "react";
+import axios from "axios";
 
 export const ActivitiesFormModal = ({ isOpen, closeModal }) => {
+  // const { nasId } = useParams();
+  const nasId = 1; // PLACEHOLDER SINCE WALA PAY ENDPOINT MAKA GET SA NAS ID
+  const [activitiesOfTheDay, setActivitiesOfTheDay] = useState("");
+  const [skillsLearned, setSkillsLearned] = useState("");
+  const [valuesLearned, setValuesLearned] = useState("");
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const api = axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const response = await api.post(
+        "https://localhost:7001/api/ActivitiesSummary",
+        {
+          nasId,
+          activitiesOfTheDay,
+          skillsLearned,
+          valuesLearned,
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div>
       <Modal show={isOpen} onClose={closeModal}>
@@ -14,6 +48,8 @@ export const ActivitiesFormModal = ({ isOpen, closeModal }) => {
                 <textarea
                   className="border border-black p-2 w-full h-32 bg-transparent"
                   placeholder="Enter your activities done for the day"
+                  value={activitiesOfTheDay}
+                  onChange={(e) => setActivitiesOfTheDay(e.target.value)}
                 ></textarea>
               </div>
             </div>
@@ -21,8 +57,10 @@ export const ActivitiesFormModal = ({ isOpen, closeModal }) => {
               <div className="font-bold text-lg">Skills Learned</div>
               <div className="mt-4">
                 <textarea
-                  className="border border-black p-2 w-full h-32 bg-transparent" // You can adjust the height here
+                  className="border border-black p-2 w-full h-32 bg-transparent"
                   placeholder="Enter the skills you learned"
+                  value={skillsLearned}
+                  onChange={(e) => setSkillsLearned(e.target.value)}
                 ></textarea>
               </div>
             </div>
@@ -30,8 +68,10 @@ export const ActivitiesFormModal = ({ isOpen, closeModal }) => {
               <div className="font-bold text-lg">Values Learned</div>
               <div className="mt-4">
                 <textarea
-                  className="border border-black p-2 w-full h-32 bg-transparent" // You can adjust the height here
+                  className="border border-black p-2 w-full h-32 bg-transparent"
                   placeholder="Enter the values you learned"
+                  value={valuesLearned}
+                  onChange={(e) => setValuesLearned(e.target.value)}
                 ></textarea>
               </div>
             </div>
@@ -39,8 +79,12 @@ export const ActivitiesFormModal = ({ isOpen, closeModal }) => {
         </Modal.Body>
         <Modal.Footer>
           <button
+            type="submit"
             className="bg-primary text-white py-2 px-4 rounded"
-            onClick={closeModal}
+            onClick={(event) => {
+              closeModal();
+              handleSubmit(event);
+            }}
           >
             Submit
           </button>
