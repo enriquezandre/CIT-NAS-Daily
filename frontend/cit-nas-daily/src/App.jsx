@@ -29,7 +29,7 @@ function App() {
         <Route path="/oas/status" element={<OASStatus />} />
         <Route path="/oas/validate" element={<OASValidation />} />
         {/* NAS */}
-        <Route path="/nas" element={<NASPage />} />
+        <Route path="/nas/1" element={<NASPage />} />
       </Routes>
     </>
   );
