@@ -137,7 +137,7 @@ export const NASPersonalInformation = () => {
                 />
               ) : (
                 <label htmlFor="avatar" style={{ cursor: 'pointer' }}>
-                  Select Avatar
+                  Upload Photo
                   <input
                     type="file"
                     id="avatar"
