@@ -10,6 +10,7 @@ import { OASStatus } from "./pages/OAS/OASStatus";
 import { NASPage } from "./pages/NAS/NASPage";
 import { OASPage } from "./pages/OAS/OASPage";
 import { OASValidation } from "./pages/OAS/OASValidation";
+import { OASOffices } from "./pages/OAS/OASOffices";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/superior/naslist" element={<SuperiorNASList />} />
         {/* OAS */}
         <Route path="/oas" element={<OASPage />} />
+        <Route path="/oas/office" element={<OASOffices />} />
         <Route path="/oas/attendance" element={<OASAttendance />} />
         <Route path="/oas/evaluation" element={<OASEvaluation />} />
         <Route path="/oas/status" element={<OASStatus />} />
