@@ -1,17 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export const NASPersonalInformation = () => {
-  const [studentId, setStudentId] = useState('20-2615-260');
-  const [firstName, setFirstName] = useState('Kaye');
-  const [middleName, setMiddleName] = useState('Capalac');
-  const [lastName, setLastName] = useState('Belderol');
-  const [gender, setGender] = useState('Female');
-  const [bday, setBday] = useState('08/10/2001');
-  const [course, setCourse] = useState('BS Computer Science');
-  const [yearLevel, setYearLevel] = useState('4');
-  const [office, setOffice] = useState('Enrollment and Technical Office');
-  const [dateStarted, setDateStarted] = useState('11/01/2023');
+  const nasId = 1; //placeholder since wala pa endpoint nga makakuha sa nas id
+  const [studentId, setStudentId] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [gender, setGender] = useState('');
+  const [bday, setBday] = useState('');
+  const [course, setCourse] = useState('');
+  const [yearLevel, setYearLevel] = useState('');
+  const [office, setOffice] = useState('');
+  const [dateStarted, setDateStarted] = useState('');
   const [avatar, setAvatar] = useState(null);
+
+  useEffect(() => {
+    const fetchNas = async () => {
+      try {
+        // Create an Axios instance with the Authorization header
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get(`/NAS/${nasId}`);
+        console.log(response);
+        const nasData = response.data;
+
+        setStudentId(nasData.userId);
+        setFirstName(nasData.firstName);
+        setMiddleName(nasData.middleName);
+        setLastName(nasData.lastName);
+        setGender(nasData.gender);
+        setBday(new Date(nasData.birthDate).toLocaleDateString());
+        setCourse(nasData.course);
+        setYearLevel(nasData.yearLevel.toString());
+        setOffice(nasData.officeId.toString());
+        setDateStarted(new Date(nasData.dateStarted).toLocaleDateString());
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchNas();
+  }, [nasId]);
 
   const handleAvatarChange = (e) => {
     // Handle the image selection
