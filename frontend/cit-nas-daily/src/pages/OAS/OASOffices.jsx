@@ -1,29 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export const OASOffices = () => {
-
   const [offices, setOffices] = useState([]);
 
-  const [searchInput, setSearchInput] = useState('');
-
-  useEffect(() => {
-    // Temp data
-    const placeholderData = [
-      { name: 'Office 1', scholarCount: 2 },
-      { name: 'Office 2', scholarCount: 3 },
-      { name: 'Office 3', scholarCount: 1 },
-      { name: 'Office 4', scholarCount: 7 },
-      { name: 'Office 5', scholarCount: 2 },
-      { name: 'Office 6', scholarCount: 4 },
-      { name: 'Office 6', scholarCount: 4 },
-    ];
-    setOffices(placeholderData);
-  }, []);
-
+  const [searchInput, setSearchInput] = useState("");
   // Function to filter offices based on search input
   const filteredOffices = offices.filter((office) =>
     office.name.toLowerCase().includes(searchInput.toLowerCase())
   );
+
+  useEffect(() => {
+    const fetchOffices = async () => {
+      try {
+        // Create an Axios instance with the Authorization header
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get(`/Offices`);
+        console.log(response);
+        setOffices(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchOffices();
+  }, []); // PLACEHOLDER SINCE WALA PAY ENDPOINT MAKA GET SA NAS ID
+
+  const handleOfficeClick = (office) => {
+    console.log(`You clicked on ${office.name}`);
+    // Add your own logic here
+  };
 
   return (
     <>
@@ -32,7 +44,7 @@ export const OASOffices = () => {
           <ul className="flex justify-end items-center text-lg font-medium rounded-t-lg bg-grey px-8 py-4">
             <li className="w-1/4">
               <div className="flex justify-end">
-                  <div className="relative w-full">
+                <div className="relative w-full">
                   <input
                     type="search"
                     className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
@@ -54,9 +66,9 @@ export const OASOffices = () => {
                     >
                       <path
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                       />
                     </svg>
@@ -68,10 +80,16 @@ export const OASOffices = () => {
           <div className="grid grid-cols-2 gap-4 p-6">
             {/* Render the list of offices in a 2-column layout */}
             {filteredOffices.map((office, index) => (
-              <div key={index} className="bg-white p-4 rounded-lg shadow-md">
+              <button
+                key={index}
+                className="bg-white p-4 rounded-lg shadow-md text-left"
+                onClick={() => handleOfficeClick(office)}
+              >
                 <h2 className="text-xl font-semibold">{office.name}</h2>
-                <p className="text-gray-600">Non-Academic Scholars: {office.scholarCount}</p>
-              </div>
+                <p className="text-gray-600">
+                  Non-Academic Scholars: {office.scholarCount}
+                </p>
+              </button>
             ))}
           </div>
         </div>
