@@ -36,5 +36,15 @@ namespace CITNASDaily.Repositories.Repositories
             }
             return null;
         }
+
+        public async Task<IEnumerable<SummaryEvaluation?>> GetSummaryEvaluationsAsync()
+        {
+            return await _context.SummaryEvaluations.ToListAsync();
+        }
+
+        public async Task<SummaryEvaluation?> GetSummaryEvaluationWithNASIdAsync(int nasId)
+        {
+            return await _context.SummaryEvaluations.FirstOrDefaultAsync(s => s.nasId == nasId);
+        }
     }
 }
