@@ -38,7 +38,7 @@ export const NASPersonalInformation = () => {
         setBday(new Date(nasData.birthDate).toLocaleDateString());
         setCourse(nasData.course);
         setYearLevel(nasData.yearLevel.toString());
-        setOffice(nasData.officeId.toString());
+        setOffice(nasData.officeId.toString()); //to be changed, need ug endpoint nga get office by id para makuha nako ang name
         setDateStarted(new Date(nasData.dateStarted).toLocaleDateString());
       } catch (error) {
         console.error(error);
