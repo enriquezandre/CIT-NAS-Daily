@@ -4,13 +4,20 @@ import { Dropdown } from "../../components/Dropdown.jsx";
 export const NASSchedule = () => {
   const [selectedSY, setSelectedSY] = useState("");
   const [selectedSem, setSelectedSem] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const isBrokenSched = false;
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
+
+  const initialTimeData = days.map((day) => ({
+    hoursStart: "",
+    minutesStart: "",
+    amPmStart: "AM",
+    hoursEnd: "",
+    minutesEnd: "",
+    amPmEnd: "AM",
+  }));
+
+  const [timeData, setTimeData] = useState(initialTimeData);
 
   const handleSelectSY = (value) => {
     setSelectedSY(value);
@@ -20,23 +27,62 @@ export const NASSchedule = () => {
     setSelectedSem(value);
   };
 
-  const handleSelectStartTime = (value) => {
-    setStartTime(value);
+  const handleHoursStartChange = (value, index) => {
+    const updatedTimeData = [...timeData];
+    updatedTimeData[index].hoursStart = value;
+    setTimeData(updatedTimeData);
   };
 
-  const handleSelectEndTime = (value) => {
-    setEndTime(value);
+  const handleMinutesStartChange = (value, index) => {
+    const updatedTimeData = [...timeData];
+    updatedTimeData[index].minutesStart = value;
+    setTimeData(updatedTimeData);
   };
 
-  const handleBrokenSchedChange = (value) => {
-    // Handle the change of broken schedule status here
+  const handleAmPmStartChange = (value, index) => {
+    const updatedTimeData = [...timeData];
+    updatedTimeData[index].amPmStart = value;
+    setTimeData(updatedTimeData);
   };
 
-  const calculateHours = () => {
-    const start = new Date("1970-01-01 " + startTime);
-    const end = new Date("1970-01-01 " + endTime);
-    const hours = (end - start) / (1000 * 60 * 60);
-    return hours;
+  const handleHoursEndChange = (value, index) => {
+    const updatedTimeData = [...timeData];
+    updatedTimeData[index].hoursEnd = value;
+    setTimeData(updatedTimeData);
+  };
+
+  const handleMinutesEndChange = (value, index) => {
+    const updatedTimeData = [...timeData];
+    updatedTimeData[index].minutesEnd = value;
+    setTimeData(updatedTimeData);
+  };
+
+  const handleAmPmEndChange = (value, index) => {
+    const updatedTimeData = [...timeData];
+    updatedTimeData[index].amPmEnd = value;
+    setTimeData(updatedTimeData);
+  };
+
+  const toggleBrokenSchedule = (day) => {
+    const updatedTimeData = [...timeData];
+    const index = days.indexOf(day);
+    updatedTimeData[index] = {
+      ...updatedTimeData[index],
+      brokenSched: !updatedTimeData[index].brokenSched,
+    };
+    setTimeData(updatedTimeData);
+  };
+
+  const calculateHours = (startHH, startMM, startAP, endHH, endMM, endAP) => {
+    if (startHH && startMM && startAP && endHH && endMM && endAP) {
+      const startTime = `${startHH}:${startMM} ${startAP}`;
+      const endTime = `${endHH}:${endMM} ${endAP}`;
+      const startDate = new Date(`1970-01-01 ${startTime}`);
+      const endDate = new Date(`1970-01-01 ${endTime}`);
+      const hours = (endDate - startDate) / (1000 * 60 * 60);
+      return hours;
+    }
+    return "Invalid Time";
   };
 
   return (
@@ -55,59 +101,108 @@ export const NASSchedule = () => {
             </div>
           </div>
 
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th>Day</th>
-                <th>Broken Sched?</th>
-                <th>Start time</th>
-                <th>End time</th>
-                <th>Hours</th>
-              </tr>
-            </thead>
-            <tbody>
-              {days.map((day) => (
-                <tr key={day}>
-                  <td className="text-center">{day}</td>
-                  <td className="text-center">
-                    <label>
-                      <input
-                        type="radio"
-                        name={`${day}_brokenSched`}
-                        value="yes"
-                        onChange={() => handleBrokenSchedChange("yes")}
-                        checked={isBrokenSched}
-                      />{" "}
-                      Yes
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name={`${day}_brokenSched`}
-                        value="no"
-                        onChange={() => handleBrokenSchedChange("no")}
-                        checked={!isBrokenSched}
-                      />{" "}
-                      No
-                    </label>
-                  </td>
-                  <td className="text-center">
-                    <Dropdown
-                      options={["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"]}
-                      onSelect={handleSelectStartTime}
-                    />
-                  </td>
-                  <td className="text-center">
-                    <Dropdown
-                      options={["9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM"]}
-                      onSelect={handleSelectEndTime}
-                    />
-                  </td>
-                  <td className="text-center">{calculateHours()}</td>
+          <div className="pt-10">
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  <th>Broken Sched?</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Hours</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {days.map((day, index) => (
+                  <tr key={day}>
+                    <td className="text-center p-5">{day}</td>
+                    <td className="text-center p-5">
+                      <label className="pr-5">
+                        <input
+                          type="radio"
+                          name={`${day}_brokenSched`}
+                          value="yes"
+                          onChange={() => toggleBrokenSchedule(day)}
+                          checked={timeData[index].brokenSched}
+                        />{" "}
+                        Yes
+                      </label>
+                      <label>
+                        <input
+                          type="radio"
+                          name={`${day}_brokenSched`}
+                          value="no"
+                          onChange={() => toggleBrokenSchedule(day)}
+                          checked={!timeData[index].brokenSched}
+                        />{" "}
+                        No
+                      </label>
+                    </td>
+                    <td className="text-center p-5">
+                      <input
+                        type="text"
+                        placeholder="HH"
+                        value={timeData[index].hoursStart}
+                        onChange={(e) => handleHoursStartChange(e.target.value, index)}
+                        className="w-10"
+                      />
+                      :
+                      <input
+                        type="text"
+                        placeholder="MM"
+                        value={timeData[index].minutesStart}
+                        onChange={(e) => handleMinutesStartChange(e.target.value, index)}
+                        className="w-10"
+                      />
+                      <select
+                        value={timeData[index].amPmStart}
+                        onChange={(e) => handleAmPmStartChange(e.target.value, index)}
+                        className="w-16"
+                      >
+                        <option value="AM">AM</option>
+                        <option value="PM">PM</option>
+                      </select>
+                    </td>
+                    <td className="text-center p-5">
+                      <input
+                        type="text"
+                        placeholder="HH"
+                        value={timeData[index].hoursEnd}
+                        onChange={(e) => handleHoursEndChange(e.target.value, index)}
+                        className="w-10"
+                      />
+                      :
+                      <input
+                        type="text"
+                        placeholder="MM"
+                        value={timeData[index].minutesEnd}
+                        onChange={(e) => handleMinutesEndChange(e.target.value, index)}
+                        className="w-10"
+                      />
+                      <select
+                        value={timeData[index].amPmEnd}
+                        onChange={(e) => handleAmPmEndChange(e.target.value, index)}
+                        className="w-16"
+                      >
+                        <option value="AM">AM</option>
+                        <option value="PM">PM</option>
+                      </select>
+                    </td>
+                    <td className="text-center p-5">
+                      {calculateHours(
+                        timeData[index].hoursStart,
+                        timeData[index].minutesStart,
+                        timeData[index].amPmStart,
+                        timeData[index].hoursEnd,
+                        timeData[index].minutesEnd,
+                        timeData[index].amPmEnd
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
