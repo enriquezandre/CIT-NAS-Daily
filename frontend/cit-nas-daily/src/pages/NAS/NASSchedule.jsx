@@ -15,6 +15,7 @@ export const NASSchedule = () => {
     hoursEnd: "",
     minutesEnd: "",
     amPmEnd: "AM",
+    isBroken: false,
   }));
 
   const [timeData, setTimeData] = useState(initialTimeData);
@@ -63,13 +64,9 @@ export const NASSchedule = () => {
     setTimeData(updatedTimeData);
   };
 
-  const toggleBrokenSchedule = (day) => {
+  const handleBrokenScheduleChange = (isChecked, index) => {
     const updatedTimeData = [...timeData];
-    const index = days.indexOf(day);
-    updatedTimeData[index] = {
-      ...updatedTimeData[index],
-      brokenSched: !updatedTimeData[index].brokenSched,
-    };
+    updatedTimeData[index].isBroken = isChecked;
     setTimeData(updatedTimeData);
   };
 
@@ -106,7 +103,7 @@ export const NASSchedule = () => {
               <thead>
                 <tr>
                   <th>Day</th>
-                  <th>Broken Sched?</th>
+                  <th>Broken Sched</th>
                   <th>Start Time</th>
                   <th>End Time</th>
                   <th>Hours</th>
@@ -117,26 +114,11 @@ export const NASSchedule = () => {
                   <tr key={day}>
                     <td className="text-center p-5">{day}</td>
                     <td className="text-center p-5">
-                      <label className="pr-5">
-                        <input
-                          type="radio"
-                          name={`${day}_brokenSched`}
-                          value="yes"
-                          onChange={() => toggleBrokenSchedule(day)}
-                          checked={timeData[index].brokenSched}
-                        />{" "}
-                        Yes
-                      </label>
-                      <label>
-                        <input
-                          type="radio"
-                          name={`${day}_brokenSched`}
-                          value="no"
-                          onChange={() => toggleBrokenSchedule(day)}
-                          checked={!timeData[index].brokenSched}
-                        />{" "}
-                        No
-                      </label>
+                      <input
+                        type="checkbox"
+                        onChange={(e) => handleBrokenScheduleChange(e.target.checked, index)}
+                        checked={timeData[index].isBroken}
+                      />
                     </td>
                     <td className="text-center p-5">
                       <input
