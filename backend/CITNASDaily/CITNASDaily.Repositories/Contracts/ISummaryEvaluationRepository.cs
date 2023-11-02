@@ -10,5 +10,7 @@ namespace CITNASDaily.Repositories.Contracts
     public interface ISummaryEvaluationRepository
     {
         Task<SummaryEvaluation?> CreateSummaryEvaluationAsync(SummaryEvaluation summaryEvaluation);
+        Task<IEnumerable<SummaryEvaluation?>> GetSummaryEvaluationsAsync();
+        Task<SummaryEvaluation?> GetSummaryEvaluationWithNASIdAsync(int nasId);
     }
 }

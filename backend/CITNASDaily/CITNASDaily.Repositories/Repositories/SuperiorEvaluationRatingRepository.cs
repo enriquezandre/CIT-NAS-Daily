@@ -51,8 +51,6 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(int nasId, Semester semester)
         {
-            Console.WriteLine("Semester" + semester);
-
             return await _context.SuperiorEvaluationRatings.FirstOrDefaultAsync(s => s.NASId == nasId && s.Semester == semester);
         }
     }
