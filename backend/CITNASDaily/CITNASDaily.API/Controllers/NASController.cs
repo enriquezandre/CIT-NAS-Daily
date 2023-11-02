@@ -100,6 +100,28 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        [HttpGet("{username}/id", Name = "GetNASId")]
+        [Authorize]
+        public async Task<IActionResult> GetNASIdAsync (string username)
+        {
+            try
+            {
+                var nasId = await _nasService.GetNASIdByUsernameAsync(username);
+
+                if (nasId == 0)
+                {
+                    return NotFound("NAS does not exist.");
+                }
+
+                return Ok(nasId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting NAS Id");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
         [HttpPost]
         [Authorize]
         [ProducesResponseType(typeof(NASDto), StatusCodes.Status201Created)]

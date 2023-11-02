@@ -7,5 +7,6 @@ namespace CITNASDaily.Repositories.Contracts
         Task<NAS?> CreateNASAsync(NAS nas);
         Task<NAS?> GetNASAsync(int nasId);
         Task<IQueryable<NAS?>> GetNASByOfficeIdAsync(int officeId);
+        Task<int> GetNASIdByUsernameAsync(string username);
     }
 }
