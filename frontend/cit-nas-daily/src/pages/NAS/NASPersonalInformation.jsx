@@ -30,7 +30,7 @@ export const NASPersonalInformation = () => {
         console.log(response);
         const nasData = response.data;
 
-        setStudentId(nasData.userId);
+        setStudentId(nasData.userId); //should be studentId but I think walay student id sa NAS Info
         setFirstName(nasData.firstName);
         setMiddleName(nasData.middleName);
         setLastName(nasData.lastName);
