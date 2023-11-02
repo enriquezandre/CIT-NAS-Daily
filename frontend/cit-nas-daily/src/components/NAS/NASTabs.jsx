@@ -4,6 +4,7 @@ import { TimeInLog } from "../../pages/NAS/TimeInLog";
 import { AttendanceSummary } from "../../pages/NAS/AttendanceSummary";
 import { ActivitiesSummary } from "../../pages/NAS/ActivitiesSummary";
 import { NASEvaluationResult } from "../../pages/NAS/NASEvaluationResult";
+import { NASPersonalInformation } from "../../pages/NAS/NASPersonalInformation";
 
 export const NASTabs = () => {
   const [activeTab, setActiveTab] = useState(1);
@@ -84,7 +85,11 @@ export const NASTabs = () => {
               <TimeInLog />
             </div>
           )}
-          {activeTab === 2 && <div>Personal Information Page Here</div>}
+          {activeTab === 2 && (
+            <div>
+              <NASPersonalInformation/>
+            </div>
+          )}
           {activeTab === 3 && (
             <div>
               <AttendanceSummary />

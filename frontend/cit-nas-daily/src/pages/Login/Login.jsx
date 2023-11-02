@@ -39,19 +39,20 @@ export const Login = () => {
       // Get the user's role
       const roleResponse = await api.get(`/Users/${userId}`);
       const userRole = roleResponse.data.role;
-      console.log(`User ID: ${userId}`);
-      console.log(`User Role: ${userRole}`);
+      // console.log(`User ID: ${userId}`);
+      // console.log(`User Role: ${userRole}`);
+      
 
       // Navigate to the respective route based on the user's role
       switch (userRole) {
         case "NAS":
-          navigate("/nas");
+          navigate(`/nas/1`);
           break;
         case "OAS":
-          navigate("/oas/${userId}");
+          navigate(`/oas/`);
           break;
         case "Superior":
-          navigate("/superior/${userId}");
+          navigate(`/superior/`);
           break;
         default:
           navigate("Unknown role");
