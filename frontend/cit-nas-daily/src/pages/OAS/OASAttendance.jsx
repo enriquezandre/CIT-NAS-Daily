@@ -27,7 +27,7 @@ export const OASAttendance = () => {
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey px-8 py-4 grid grid-cols-3">
+          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey px-8 py-4 grid grid-cols-3">
             <li>
               <p className="font-bold">BELDEROL, KAYE CASSANDRA</p>
             </li>
