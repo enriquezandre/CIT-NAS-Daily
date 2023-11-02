@@ -125,10 +125,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.Seed();
 
 app.MapControllers();
@@ -145,7 +143,7 @@ void ConfigureServices(IServiceCollection services)
         options.AddPolicy("AllowSpecificOrigin",
             builder =>
             {
-                builder.WithOrigins("http://localhost:5173")
+                builder.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod();
             });
