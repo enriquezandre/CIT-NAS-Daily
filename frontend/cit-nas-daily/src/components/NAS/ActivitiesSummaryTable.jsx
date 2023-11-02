@@ -4,6 +4,7 @@ import axios from "axios";
 
 export const ActivitiesSummaryTable = () => {
   // const { nasId } = useParams();
+  const nasId = 1;
   const [activitySummaries, setActivitySummaries] = useState([]);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export const ActivitiesSummaryTable = () => {
     };
 
     fetchNas();
-  }, [1]); // PLACEHOLDER SINCE WALA PAY ENDPOINT MAKA GET SA NAS ID
+  }, [nasId]); // PLACEHOLDER SINCE WALA PAY ENDPOINT MAKA GET SA NAS ID
 
   return (
     <Table hoverable className="border">
