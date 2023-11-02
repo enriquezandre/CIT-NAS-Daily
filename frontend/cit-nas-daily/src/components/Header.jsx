@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
-// import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Avatar } from "flowbite-react";
 import axios from "axios";
 
 export const Header = () => {
-  // const { nasId } = useParams();
+  const navigate = useNavigate(); // Create a history object to navigate
+
   const [nas, setNas] = useState({});
+
+  const handleLogout = () => {
+    // Clear the authentication token from local storage
+    localStorage.removeItem("token");
+    // Redirect the user to the login page
+    navigate("/");
+  };
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -27,7 +35,7 @@ export const Header = () => {
     };
 
     fetchNas();
-  }, [1]); // PLACEHOLDER SINCE WALA PAY ENDPOINT MAKA GET SA NAS ID
+  }, []);
 
   return (
     <>
@@ -40,7 +48,9 @@ export const Header = () => {
             {nas.fullName}
           </div>
         </div>
-        <button className="text-base text-red-500 mr-10">Logout</button>
+        <button className="text-base text-red-500 mr-10" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
       <hr className="my-5 border-t-2 border-gray-300 ml-7 mr-7" />
     </>
