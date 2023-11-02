@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Avatar } from "../../components/NAS/Avatar";
+import { PersonalInformation as Field } from "../../components/NAS/PersonalInformation";
 
 export const NASPersonalInformation = () => {
-  const nasId = 1; //placeholder since wala pa endpoint nga makakuha sa nas id
+  const nasId = 1; // temporary id since there is no endpoint to fetch NAS ID
   const [studentId, setStudentId] = useState('');
   const [firstName, setFirstName] = useState('');
   const [middleName, setMiddleName] = useState('');
@@ -30,7 +32,7 @@ export const NASPersonalInformation = () => {
         console.log(response);
         const nasData = response.data;
 
-        setStudentId(nasData.userId); //should be studentId but I think walay student id sa NAS Info
+        setStudentId(nasData.userId); // should be studentId but I think there is no student ID in NAS Info
         setFirstName(nasData.firstName);
         setMiddleName(nasData.middleName);
         setLastName(nasData.lastName);
@@ -38,7 +40,7 @@ export const NASPersonalInformation = () => {
         setBday(new Date(nasData.birthDate).toLocaleDateString());
         setCourse(nasData.course);
         setYearLevel(nasData.yearLevel.toString());
-        setOffice(nasData.officeId.toString()); //to be changed, need ug endpoint nga get office by id para makuha nako ang name
+        setOffice(nasData.officeId.toString()); // to be changed, need an endpoint to get office by ID to retrieve the name
         setDateStarted(new Date(nasData.dateStarted).toLocaleDateString());
       } catch (error) {
         console.error(error);
@@ -58,198 +60,48 @@ export const NASPersonalInformation = () => {
 
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
-        <div className="flex">
-          <div className="m-3 flex-1">
-            <div>
-              <label htmlFor="studentId" className="block mb-2 font-bold text-gray-600">
-                Student ID:
-              </label>
-              <input
-                type="text"
-                id="studentId"
-                name="studentId"
-                value={studentId}
-                onChange={(e) => setStudentId(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 w-full"
-                readOnly="true"
-                style={{ backgroundColor: '#E3E3E3' }}
-              />
+      <div className="flex">
+        <div className="m-3 flex-1">
+          <div className="flex">
+            <div className="flex-1 pr-5">
+              <Field label="Student ID:" id="studentId" type="text" value={studentId} onChange={(e) => setStudentId(e.target.value)} readOnly={true} />
+              <br/>
+              <Field label="Gender:" id="gender" type="text" value={gender} onChange={(e) => setGender(e.target.value)} readOnly={true} />
             </div>
-            <br/>
-            <div>
-              <label htmlFor="gender" className="block mb-2 font-bold text-gray-600">
-                Gender:
-              </label>
-              <input
-                type="text"
-                id="gender"
-                name="gender"
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 w-full"
-                readOnly="true"
-                style={{ backgroundColor: '#E3E3E3' }}
-              />
+            <div className="flex-1 pr-5">
+              <Field label="Lastname:" id="lastname" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} readOnly={true} />
+              <br/>
+              <Field label="Birthdate:" id="bday" type="text" value={bday} onChange={(e) => setBday(e.target.value)} readOnly={true} />
             </div>
-          </div>
-          
-          <div className="m-3 flex-1">
-            <div>
-              <label htmlFor="firstName" className="block mb-2 font-bold text-gray-600">
-                First Name:
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 w-full"
-                readOnly="true"
-                style={{ backgroundColor: '#E3E3E3' }}
-              />
+            <div className="flex-1 pr-5">
+              <Field label="Middlename:" id="middlename" type="text" value={middleName} onChange={(e) => setMiddleName(e.target.value)} readOnly={true} />
             </div>
-            <br/>
-            <div>
-              <label htmlFor="bday" className="block mb-2 font-bold text-gray-600">
-                Birthdate:
-              </label>
-              <input
-                type="text"
-                id="bday"
-                name="bday"
-                value={bday}
-                onChange={(e) => setBday(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 w-full"
-                readOnly="true"
-                style={{ backgroundColor: '#E3E3E3' }}
-              />
-            </div>
-          </div>
-          <div className="m-3 flex-1">
-            <div>
-              <label htmlFor="middleName" className="block mb-2 font-bold text-gray-600">
-                Middle Name:
-              </label>
-              <input
-                type="text"
-                id="middleName"
-                name="middleName"
-                value={middleName}
-                onChange={(e) => setMiddleName(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 w-full"
-                readOnly="true"
-                style={{ backgroundColor: '#E3E3E3' }}
-              />
-            </div>
-          </div>
-          <div className="m-3 flex-1">
-            <div>
-                <label htmlFor="lastName" className="block mb-2 font-bold text-gray-600">
-                  Last Name:
-                </label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2 w-full"
-                  readOnly="true"
-                  style={{ backgroundColor: '#E3E3E3' }}
-                />
-            </div>
-          </div>
-
-          <div className='m-3 flex-2'>
-            <div className="avatar-square" style={{ width: '200px', height: '200px', border: '2px solid gray', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              {avatar ? ( 
-                <img
-                  src={URL.createObjectURL(avatar)}
-                  alt="Avatar"
-                  className="avatar-image"
-                  style={{ width: '100%', height: '100%' }}
-                />
-              ) : (
-                <label htmlFor="avatar" style={{ cursor: 'pointer' }}>
-                  Upload Photo
-                  <input
-                    type="file"
-                    id="avatar"
-                    accept="image/*"
-                    onChange={handleAvatarChange}
-                    style={{ display: 'none' }}
-                  /> 
-                </label>
-              )}
-            </div>
+            <div className="flex-1 pr-5">
+              <Field label="Firstname:" id="firstname" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} readOnly={true} />
+            </div>     
           </div>
         </div>
+        <div className="m-3 flex-2">
+          <Avatar avatar={avatar} handleAvatarChange={handleAvatarChange} />
+        </div>
+      </div>
 
       {/* horizontal line */}
       <hr className="my-5 border-t-2 border-gray-300 mx-2" />
-      
-      {/* below the horiztonal line fields*/}
+
+      {/* below the horizontal line fields */}
       <div className="m-3 flex-1">
-        <label htmlFor="office" className="block mb-2 font-bold text-gray-600">
-          Office Assigned:
-        </label>
-        <input
-          type="text"
-          id="office"
-          name="office"
-          value={office}
-          onChange={(e) => setOffice(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-2 w-full"
-          readOnly="true"
-          style={{ backgroundColor: '#E3E3E3' }}
-        />
+        <Field label="Office Assigned:" id="office" type="text" value={office} onChange={(e) => setOffice(e.target.value)} readOnly={true} />
       </div>
       <div className="flex">
         <div className="m-3 flex-1">
-          <label htmlFor="course" className="block mb-2 font-bold text-gray-600">
-            Course:
-          </label>
-          <input
-            type="text"
-            id="course"
-            name="course"
-            value={course}
-            onChange={(e) => setCourse(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 w-full"
-            readOnly="true"
-            style={{ backgroundColor: '#E3E3E3' }}
-          />
+          <Field label="Course:" id="course" type="text" value={course} onChange={(e) => setCourse(e.target.value)} readOnly={true} />
         </div>
         <div className="m-3 flex-1">
-          <label htmlFor="yearLevel" className="block mb-2 font-bold text-gray-600">
-            Year Level:
-          </label>
-          <input
-            type="text"
-            id="yearLevel"
-            name="yearLevel"
-            value={yearLevel}
-            onChange={(e) => setYearLevel(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 w-full"
-            readOnly="true"
-            style={{ backgroundColor: '#E3E3E3' }}
-          />
+          <Field label="Year Level:" id="yearLevel" type="text" value={yearLevel} onChange={(e) => setYearLevel(e.target.value)} readOnly={true} />
         </div>
         <div className="m-3 flex-1">
-          <label htmlFor="dateStarted" className="block mb-2 font-bold text-gray-600">
-            Date Started:
-          </label>
-          <input
-            type="text"
-            id="dateStarted"
-            name="dateStarted"
-            value={dateStarted}
-            onChange={(e) => setDateStarted(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 w-full"
-            readOnly="true"
-            style={{ backgroundColor: '#E3E3E3' }}
-          />
+          <Field label="Date Started:" id="dateStarted" type="text" value={dateStarted} onChange={(e) => setDateStarted(e.target.value)} readOnly={true} />
         </div>
       </div>
     </div>
