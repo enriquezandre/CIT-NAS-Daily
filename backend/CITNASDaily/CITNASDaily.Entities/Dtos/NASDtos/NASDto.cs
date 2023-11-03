@@ -16,5 +16,6 @@
         public int? YearLevel { get; set; }
         public int? UnitsAllowed { get; set; }
         public DateTime? DateStarted { get; set; }
+        public string? ImageLink { get; set; }
     }
 }
