@@ -11,25 +11,62 @@ namespace CITNASDaily.Repositories.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            
+            migrationBuilder.CreateTable(
+                name: "ActivitiesSummary",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NASId = table.Column<int>(type: "int", nullable: false),
+                    DateOfEntry = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ActivitiesOfTheDay = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SkillsLearned = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ValuesLearned = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ActivitiesSummary", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "SummaryEvaluation",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NASId = table.Column<int>(type: "int", nullable: false),
+                    nasId = table.Column<int>(type: "int", nullable: false),
                     Semester = table.Column<int>(type: "int", nullable: false),
                     Year = table.Column<int>(type: "int", nullable: false),
                     SuperiorOverallRating = table.Column<float>(type: "real", nullable: false),
                     AcademicPerformance = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TimekeepingStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EnrollmentAllowed = table.Column<bool>(type: "bit", nullable: false),
-                    UnitsAllowed = table.Column<int>(type: "int", nullable: true)
+                    UnitsAllowed = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SummaryEvaluation", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TimekeepingSummary",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NASId = table.Column<int>(type: "int", nullable: false),
+                    Semester = table.Column<int>(type: "int", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: true),
+                    Excused = table.Column<int>(type: "int", nullable: true),
+                    Unexcused = table.Column<int>(type: "int", nullable: true),
+                    FailedToPunch = table.Column<int>(type: "int", nullable: true),
+                    LateOver10Mins = table.Column<int>(type: "int", nullable: true),
+                    LateOver45Mins = table.Column<int>(type: "int", nullable: true),
+                    MakeUpDutyHours = table.Column<double>(type: "float", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TimekeepingSummary", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -118,6 +155,7 @@ namespace CITNASDaily.Repositories.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OfficeId = table.Column<int>(type: "int", nullable: false),
+                    EnNo = table.Column<int>(type: "int", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     MiddleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -143,28 +181,31 @@ namespace CITNASDaily.Repositories.Migrations
                         principalColumn: "Id");
                 });
 
-            // this has to be made after NAS table is made
             migrationBuilder.CreateTable(
-                name: "ActivitiesSummary",
+                name: "BiometricLog",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    No = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NASId = table.Column<int>(type: "int", nullable: false),
-                    DateOfEntry = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ActivitiesOfTheDay = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SkillsLearned = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ValuesLearned = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TMNo = table.Column<int>(type: "int", nullable: false),
+                    EnNo = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GMNo = table.Column<int>(type: "int", nullable: false),
+                    Mode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InOut = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Antipass = table.Column<int>(type: "int", nullable: false),
+                    ProxyWork = table.Column<int>(type: "int", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    NASId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ActivitiesSummary", x => x.Id);
+                    table.PrimaryKey("PK_BiometricLog", x => x.No);
                     table.ForeignKey(
-                        name: "FK_ActivitiesSummary_NAS_NASId",
+                        name: "FK_BiometricLog_NAS_NASId",
                         column: x => x.NASId,
                         principalTable: "NAS",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -217,32 +258,10 @@ namespace CITNASDaily.Repositories.Migrations
                         principalColumn: "Id");
                 });
 
-            migrationBuilder.CreateTable(
-                name: "TimekeepingSummary",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NASId = table.Column<int>(type: "int", nullable: false),
-                    Semester = table.Column<int>(type: "int", nullable: true),
-                    Year = table.Column<int>(type: "int", nullable: true),
-                    Excused = table.Column<int>(type: "int", nullable: true),
-                    Unexcused = table.Column<int>(type: "int", nullable: true),
-                    FailedToPunch = table.Column<int>(type: "int", nullable: true),
-                    LateOver10Mins = table.Column<int>(type: "int", nullable: true),
-                    LateOver45Mins = table.Column<int>(type: "int", nullable: true),
-                    MakeUpDutyHours = table.Column<float>(type: "float", nullable: true),
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TimekeepingSummary", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TimekeepingSummary_NAS_NASId",
-                        column: x => x.NASId,
-                        principalTable: "NAS",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_BiometricLog_NASId",
+                table: "BiometricLog",
+                column: "NASId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NAS_OfficeId",
@@ -283,11 +302,6 @@ namespace CITNASDaily.Repositories.Migrations
                 column: "NASId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TimekeepingSummary_NASId",
-                table: "TimekeepingSummary",
-                column: "NASId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_User_Username",
                 table: "User",
                 column: "Username",
@@ -299,6 +313,9 @@ namespace CITNASDaily.Repositories.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ActivitiesSummary");
+
+            migrationBuilder.DropTable(
+                name: "BiometricLog");
 
             migrationBuilder.DropTable(
                 name: "OAS");
