@@ -18,5 +18,15 @@ namespace CITNASDaily.Entities.Enums
             [Description("Summer")]
             Summer
         }
+
+        public enum DaysOfTheWeek
+        {
+            Monday,
+            Tuesday,
+            Wednesday,
+            Thursday,
+            Friday,
+            Saturday
+        }
     }
 }
