@@ -24,7 +24,6 @@ namespace CITNASDaily.Repositories.Repositories
         {
             if (Enum.IsDefined(typeof(Semester), summaryEvaluation.Semester))
             {
-                //checks time keeping summary with the same semester already exists
                 var existingSummary = await _context.SummaryEvaluations.FirstOrDefaultAsync(s => s.nasId == summaryEvaluation.nasId && s.Semester == summaryEvaluation.Semester);
                 if (existingSummary == null)
                 {
