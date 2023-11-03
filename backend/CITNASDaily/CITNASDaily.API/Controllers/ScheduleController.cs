@@ -51,7 +51,7 @@ namespace CITNASDaily.API.Controllers
         [HttpPost]
         [Authorize]
         [ProducesResponseType(typeof(ScheduleDto), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateSchedule([FromBody] ScheduleCreateDto scheduleCreate)
+        public async Task<IActionResult> CreateNASSchedule([FromBody] ScheduleCreateDto scheduleCreate)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace CITNASDaily.API.Controllers
                     return NotFound();
                 }
 
-                return CreatedAtRoute("GetSchedule", new { scheduleId = createdSchedule.Id }, createdSchedule);
+                return Ok(createdSchedule);
             }
             catch (Exception ex)
             {
@@ -80,7 +80,7 @@ namespace CITNASDaily.API.Controllers
         [HttpPut]
         [Authorize]
 
-        public async Task<IActionResult> UpdateSchedule([FromBody] ScheduleUpdateDto schedule)
+        public async Task<IActionResult> UpdateNASSchedule([FromBody] ScheduleUpdateDto schedule)
         {
             try
             {
