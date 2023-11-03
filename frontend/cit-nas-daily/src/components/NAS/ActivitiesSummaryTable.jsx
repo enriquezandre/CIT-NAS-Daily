@@ -46,16 +46,28 @@ export const ActivitiesSummaryTable = () => {
       <Table.Body className="divide-y">
         {activitySummaries.map((summary) => (
           <Table.Row key={summary.id}>
-            <Table.Cell className="text-center border">
+            <Table.Cell
+              className="text-center border"
+              style={{ overflowWrap: "break-word", maxWidth: "100px" }}
+            >
               {new Date(summary.dateOfEntry).toLocaleDateString()}
             </Table.Cell>
-            <Table.Cell className="text-center border">
+            <Table.Cell
+              className="text-center border"
+              style={{ overflowWrap: "break-word", maxWidth: "100px" }}
+            >
               {summary.activitiesOfTheDay}
             </Table.Cell>
-            <Table.Cell className="text-center border">
+            <Table.Cell
+              className="text-center border"
+              style={{ overflowWrap: "break-word", maxWidth: "100px" }}
+            >
               {summary.skillsLearned}
             </Table.Cell>
-            <Table.Cell className="text-center border">
+            <Table.Cell
+              className="text-center border"
+              style={{ overflowWrap: "break-word", maxWidth: "100px" }}
+            >
               {summary.valuesLearned}
             </Table.Cell>
           </Table.Row>
