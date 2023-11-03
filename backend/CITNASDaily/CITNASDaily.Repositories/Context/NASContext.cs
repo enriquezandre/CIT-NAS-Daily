@@ -18,6 +18,7 @@ namespace CITNASDaily.Repositories.Context
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<SummaryEvaluation> SummaryEvaluations { get; set; }
         public DbSet<TimekeepingSummary> TimekeepingSummaries { get; set; }
+        public DbSet<BiometricLog> BiometricLogs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -64,6 +65,12 @@ namespace CITNASDaily.Repositories.Context
                 .HasOne(n => n.Office)    
                 .WithMany(o => o.NAS)  
                 .HasForeignKey(n => n.OfficeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<NAS>()
+                .HasMany(n => n.BiometricLogs)
+                .WithOne(b => b.NAS)
+                .HasForeignKey(b => b.NASId)
                 .OnDelete(DeleteBehavior.NoAction);
 
 
