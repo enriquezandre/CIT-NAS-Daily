@@ -29,7 +29,7 @@ export const NASList = ({ office }) => {
 
   return (
     <div className="flex justify-center items-center">
-      <Card className="w-3/5 mt-5">
+      <Card className="w-3/5 m-5">
         <h5 className="text-2xl font-bold tracking-tight">
           <p>{office.name}</p>
         </h5>
