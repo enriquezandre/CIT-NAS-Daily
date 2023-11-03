@@ -160,7 +160,7 @@ void ConfigureServices(IServiceCollection services)
         typeof(ActivitiesSummaryProfile),
         typeof(TimekeepingSummaryProfile),
         typeof(SuperiorEvaluationRatingProfile),
-        typeof(ScheduleProfile)
+        typeof(ScheduleProfile),
         typeof(BiometricLogProfile),
         typeof(SummaryEvaluationProfile)
         );
