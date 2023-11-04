@@ -10,5 +10,6 @@ namespace CITNASDaily.Services.Contracts
         Task<NASDto?> GetNASAsync(int nasId);
         Task<Guid?> GetNASUserIdByUsernameAsync(string username);
         Task<List<NAS?>> GetNASByOfficeIdAsync(int officeId);
+        Task<int> GetNASIdByUsernameAsync(string username);
     }
 }

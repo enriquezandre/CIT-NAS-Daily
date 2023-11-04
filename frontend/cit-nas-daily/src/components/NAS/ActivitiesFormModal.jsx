@@ -2,11 +2,11 @@
 import PropTypes from "prop-types";
 import { Modal } from "flowbite-react";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 export const ActivitiesFormModal = ({ isOpen, closeModal }) => {
-  // const { nasId } = useParams();
-  const nasId = 1; // PLACEHOLDER SINCE WALA PAY ENDPOINT MAKA GET SA NAS ID
+  const { nasId } = useParams();
   const [activitiesOfTheDay, setActivitiesOfTheDay] = useState("");
   const [skillsLearned, setSkillsLearned] = useState("");
   const [valuesLearned, setValuesLearned] = useState("");

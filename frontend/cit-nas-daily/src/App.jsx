@@ -19,7 +19,7 @@ function App() {
         {/* OAS */}
         <Route path="/oas/offices" element={<OASPage />} />
         {/* NAS */}
-        <Route path="/nas/1" element={<NASPage />} />
+        <Route path="/nas/:nasId" element={<NASPage />} />
       </Routes>
     </>
   );

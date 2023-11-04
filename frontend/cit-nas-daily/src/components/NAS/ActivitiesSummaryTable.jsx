@@ -1,10 +1,10 @@
 import { Table } from "flowbite-react";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 export const ActivitiesSummaryTable = () => {
-  // const { nasId } = useParams();
-  const nasId = 1;
+  const { nasId } = useParams();
   const [activitySummaries, setActivitySummaries] = useState([]);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export const ActivitiesSummaryTable = () => {
           },
         });
 
-        const response = await api.get(`/ActivitiesSummary/1`);
+        const response = await api.get(`/ActivitiesSummary/${nasId}`);
         console.log(response);
         setActivitySummaries(response.data);
       } catch (error) {
@@ -27,7 +27,7 @@ export const ActivitiesSummaryTable = () => {
     };
 
     fetchNas();
-  }, [nasId]); // PLACEHOLDER SINCE WALA PAY ENDPOINT MAKA GET SA NAS ID
+  }, [nasId]);
 
   return (
     <Table hoverable className="border">
