@@ -112,7 +112,7 @@ export const OASStatus = () => {
                 />
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-bold">TIMEKEEPING STATUS:</p>
+                <p className="text-bold text-xl">TIMEKEEPING STATUS:</p>
                 <p className="text-bold text-xl font-bold text-green">
                   EXCELLENT
                 </p>

@@ -23,6 +23,7 @@ namespace CITNASDaily.Entities.Dtos.NASDtos
         public int? UnitsAllowed { get; set; }
         [Required]
         public int? OfficeId { get; set; }
+        public int? EnNo { get; set; }
         [Required]
         public DateTime? DateStarted { get; set; }
     }

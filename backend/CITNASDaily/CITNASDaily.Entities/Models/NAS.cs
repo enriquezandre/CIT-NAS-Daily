@@ -16,6 +16,9 @@ namespace CITNASDaily.Entities.Models
         public int? OfficeId { get; set; }
         public Office? Office { get; set; }
 
+        public int? EnNo { get; set; }
+        public List<BiometricLog>? BiometricLogs { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string? FirstName { get; set; }

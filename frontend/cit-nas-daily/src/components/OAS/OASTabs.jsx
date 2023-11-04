@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
+import { OASOffices } from "../../pages/OAS/OASOffices";
 import { OASAttendance } from "../../pages/OAS/OASAttendance";
 import { OASEvaluation } from "../../pages/OAS/OASEvaluation";
 import { OASStatus } from "../../pages/OAS/OASStatus";
-import { OASMasterlist } from "../../pages/OAS/OASMasterlist"
+import { OASMasterlist } from "../../pages/OAS/OASMasterlist";
 import { OASValidation } from "../../pages/OAS/OASValidation";
 export const OASTabs = () => {
   const [activeTab, setActiveTab] = useState(1);
@@ -79,7 +80,11 @@ export const OASTabs = () => {
         </div>
         <div className="p-4 bg-white rounded-b-lg">
           {/* Content for each tab */}
-          {activeTab === 1 && <div>Offices Page Here</div>}
+          {activeTab === 1 && (
+            <div>
+              <OASOffices />
+            </div>
+          )}
           {activeTab === 2 && (
             <div>
               <OASAttendance />
@@ -95,10 +100,11 @@ export const OASTabs = () => {
               <OASStatus />
             </div>
           )}
-          {activeTab === 5 && 
-            (<div>
+          {activeTab === 5 && (
+            <div>
               <OASValidation />
-            </div>)}
+            </div>
+          )}
           {activeTab === 6 && (
             <div>
               <OASMasterlist />

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CITNASDaily.Repositories.Migrations
 {
     [DbContext(typeof(NASContext))]
-    [Migration("20231010121221_InitialMigration")]
+    [Migration("20231102132705_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -37,6 +37,12 @@ namespace CITNASDaily.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("DateOfEntry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("NASId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SkillsLearned")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -48,6 +54,51 @@ namespace CITNASDaily.Repositories.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ActivitiesSummary");
+                });
+
+            modelBuilder.Entity("CITNASDaily.Entities.Models.BiometricLog", b =>
+                {
+                    b.Property<int>("No")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("No"));
+
+                    b.Property<int>("Antipass")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EnNo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GMNo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InOut")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Mode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NASId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProxyWork")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TMNo")
+                        .HasColumnType("int");
+
+                    b.HasKey("No");
+
+                    b.HasIndex("NASId");
+
+                    b.ToTable("BiometricLog");
                 });
 
             modelBuilder.Entity("CITNASDaily.Entities.Models.NAS", b =>
@@ -68,6 +119,9 @@ namespace CITNASDaily.Repositories.Migrations
 
                     b.Property<DateTime>("DateStarted")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("EnNo")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -216,12 +270,13 @@ namespace CITNASDaily.Repositories.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AcademicPerformance")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EnrollmentAllowed")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("EnrollmentAllowed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Semester")
+                        .HasColumnType("int");
 
                     b.Property<float>("SuperiorOverallRating")
                         .HasColumnType("real");
@@ -231,6 +286,13 @@ namespace CITNASDaily.Repositories.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UnitsAllowed")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Year")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<int>("nasId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -300,11 +362,11 @@ namespace CITNASDaily.Repositories.Migrations
                     b.Property<float>("QualOfWorkOutput")
                         .HasColumnType("real");
 
-                    b.Property<string>("Semester")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Semester")
+                        .HasColumnType("int");
 
-                    b.Property<int>("Year")
+                    b.Property<int?>("Year")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -322,12 +384,34 @@ namespace CITNASDaily.Repositories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("Excused")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FailedToPunch")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LateOver10Mins")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LateOver45Mins")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("MakeUpDutyHours")
+                        .HasColumnType("float");
+
                     b.Property<int>("NASId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Semester")
+                        .HasColumnType("int");
 
-                    b.HasIndex("NASId");
+                    b.Property<int?>("Unexcused")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.ToTable("TimekeepingSummary");
                 });
@@ -357,6 +441,17 @@ namespace CITNASDaily.Repositories.Migrations
                         .IsUnique();
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("CITNASDaily.Entities.Models.BiometricLog", b =>
+                {
+                    b.HasOne("CITNASDaily.Entities.Models.NAS", "NAS")
+                        .WithMany("BiometricLogs")
+                        .HasForeignKey("NASId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("NAS");
                 });
 
             modelBuilder.Entity("CITNASDaily.Entities.Models.NAS", b =>
@@ -433,15 +528,9 @@ namespace CITNASDaily.Repositories.Migrations
                     b.Navigation("NAS");
                 });
 
-            modelBuilder.Entity("CITNASDaily.Entities.Models.TimekeepingSummary", b =>
+            modelBuilder.Entity("CITNASDaily.Entities.Models.NAS", b =>
                 {
-                    b.HasOne("CITNASDaily.Entities.Models.NAS", "NAS")
-                        .WithMany()
-                        .HasForeignKey("NASId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("NAS");
+                    b.Navigation("BiometricLogs");
                 });
 
             modelBuilder.Entity("CITNASDaily.Entities.Models.Office", b =>
