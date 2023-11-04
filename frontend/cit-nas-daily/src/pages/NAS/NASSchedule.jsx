@@ -9,13 +9,17 @@ export const NASSchedule = () => {
   const sem_options = ["First", "Second", "Summer"];
 
   const initialTimeData = days.map((day) => ({
-    hoursStart: "",
-    minutesStart: "",
-    amPmStart: "AM",
-    hoursEnd: "",
-    minutesEnd: "",
-    amPmEnd: "AM",
     isBroken: false,
+    timeEntries: [
+      {
+        hoursStart: "",
+        minutesStart: "",
+        amPmStart: "AM",
+        hoursEnd: "",
+        minutesEnd: "",
+        amPmEnd: "AM",
+      },
+    ],
   }));
 
   const [timeData, setTimeData] = useState(initialTimeData);
@@ -28,45 +32,72 @@ export const NASSchedule = () => {
     setSelectedSem(value);
   };
 
-  const handleHoursStartChange = (value, index) => {
+  const handleHoursStartChange = (value, dayIndex, entryIndex) => {
     const updatedTimeData = [...timeData];
-    updatedTimeData[index].hoursStart = value;
+    updatedTimeData[dayIndex].timeEntries[entryIndex].hoursStart = value;
     setTimeData(updatedTimeData);
   };
 
-  const handleMinutesStartChange = (value, index) => {
+  const handleMinutesStartChange = (value, dayIndex, entryIndex) => {
     const updatedTimeData = [...timeData];
-    updatedTimeData[index].minutesStart = value;
+    updatedTimeData[dayIndex].timeEntries[entryIndex].minutesStart = value;
     setTimeData(updatedTimeData);
   };
 
-  const handleAmPmStartChange = (value, index) => {
+  const handleAmPmStartChange = (value, dayIndex, entryIndex) => {
     const updatedTimeData = [...timeData];
-    updatedTimeData[index].amPmStart = value;
+    updatedTimeData[dayIndex].timeEntries[entryIndex].amPmStart = value;
     setTimeData(updatedTimeData);
   };
 
-  const handleHoursEndChange = (value, index) => {
+  const handleHoursEndChange = (value, dayIndex, entryIndex) => {
     const updatedTimeData = [...timeData];
-    updatedTimeData[index].hoursEnd = value;
+    updatedTimeData[dayIndex].timeEntries[entryIndex].hoursEnd = value;
     setTimeData(updatedTimeData);
   };
 
-  const handleMinutesEndChange = (value, index) => {
+  const handleMinutesEndChange = (value, dayIndex, entryIndex) => {
     const updatedTimeData = [...timeData];
-    updatedTimeData[index].minutesEnd = value;
+    updatedTimeData[dayIndex].timeEntries[entryIndex].minutesEnd = value;
     setTimeData(updatedTimeData);
   };
 
-  const handleAmPmEndChange = (value, index) => {
+  const handleAmPmEndChange = (value, dayIndex, entryIndex) => {
     const updatedTimeData = [...timeData];
-    updatedTimeData[index].amPmEnd = value;
+    updatedTimeData[dayIndex].timeEntries[entryIndex].amPmEnd = value;
     setTimeData(updatedTimeData);
   };
 
-  const handleBrokenScheduleChange = (isChecked, index) => {
+  const handleBrokenScheduleChange = (isChecked, dayIndex) => {
     const updatedTimeData = [...timeData];
-    updatedTimeData[index].isBroken = isChecked;
+    updatedTimeData[dayIndex].isBroken = isChecked;
+    // If the day is no longer broken, clear any existing time entries
+    if (!isChecked) {
+      updatedTimeData[dayIndex].timeEntries = [];
+    } else if (updatedTimeData[dayIndex].timeEntries.length === 0) {
+      // Add an initial time entry if it's a newly broken day
+      updatedTimeData[dayIndex].timeEntries.push({
+        hoursStart: "",
+        minutesStart: "",
+        amPmStart: "AM",
+        hoursEnd: "",
+        minutesEnd: "",
+        amPmEnd: "AM",
+      });
+    }
+    setTimeData(updatedTimeData);
+  };
+
+  const addTimeEntry = (dayIndex) => {
+    const updatedTimeData = [...timeData];
+    updatedTimeData[dayIndex].timeEntries.push({
+      hoursStart: "",
+      minutesStart: "",
+      amPmStart: "AM",
+      hoursEnd: "",
+      minutesEnd: "",
+      amPmEnd: "AM",
+    });
     setTimeData(updatedTimeData);
   };
 
@@ -110,74 +141,97 @@ export const NASSchedule = () => {
                 </tr>
               </thead>
               <tbody>
-                {days.map((day, index) => (
+                {days.map((day, dayIndex) => (
                   <tr key={day}>
                     <td className="text-center p-5">{day}</td>
                     <td className="text-center p-5">
                       <input
                         type="checkbox"
-                        onChange={(e) => handleBrokenScheduleChange(e.target.checked, index)}
-                        checked={timeData[index].isBroken}
+                        onChange={(e) => handleBrokenScheduleChange(e.target.checked, dayIndex)}
+                        checked={timeData[dayIndex].isBroken}
                       />
                     </td>
                     <td className="text-center p-5">
-                      <input
-                        type="text"
-                        placeholder="HH"
-                        value={timeData[index].hoursStart}
-                        onChange={(e) => handleHoursStartChange(e.target.value, index)}
-                        className="w-10"
-                      />
-                      :
-                      <input
-                        type="text"
-                        placeholder="MM"
-                        value={timeData[index].minutesStart}
-                        onChange={(e) => handleMinutesStartChange(e.target.value, index)}
-                        className="w-10"
-                      />
-                      <select
-                        value={timeData[index].amPmStart}
-                        onChange={(e) => handleAmPmStartChange(e.target.value, index)}
-                        className="w-16"
-                      >
-                        <option value="AM">AM</option>
-                        <option value="PM">PM</option>
-                      </select>
+                      {timeData[dayIndex].isBroken &&
+                        timeData[dayIndex].timeEntries.map((timeEntry, entryIndex) => (
+                          <div key={entryIndex}>
+                            <input
+                              type="text"
+                              placeholder="HH"
+                              value={timeEntry.hoursStart}
+                              onChange={(e) => handleHoursStartChange(e.target.value, dayIndex, entryIndex)}
+                              className="w-10"
+                            />
+                            :
+                            <input
+                              type="text"
+                              placeholder="MM"
+                              value={timeEntry.minutesStart}
+                              onChange={(e) => handleMinutesStartChange(e.target.value, dayIndex, entryIndex)}
+                              className="w-10"
+                            />
+                            <select
+                              value={timeEntry.amPmStart}
+                              onChange={(e) => handleAmPmStartChange(e.target.value, dayIndex, entryIndex)}
+                              className="w-16"
+                            >
+                              <option value="AM">AM</option>
+                              <option value="PM">PM</option>
+                            </select>
+                            <br />
+                          </div>
+                        ))}
                     </td>
                     <td className="text-center p-5">
-                      <input
-                        type="text"
-                        placeholder="HH"
-                        value={timeData[index].hoursEnd}
-                        onChange={(e) => handleHoursEndChange(e.target.value, index)}
-                        className="w-10"
-                      />
-                      :
-                      <input
-                        type="text"
-                        placeholder="MM"
-                        value={timeData[index].minutesEnd}
-                        onChange={(e) => handleMinutesEndChange(e.target.value, index)}
-                        className="w-10"
-                      />
-                      <select
-                        value={timeData[index].amPmEnd}
-                        onChange={(e) => handleAmPmEndChange(e.target.value, index)}
-                        className="w-16"
-                      >
-                        <option value="AM">AM</option>
-                        <option value="PM">PM</option>
-                      </select>
+                      {timeData[dayIndex].isBroken &&
+                        timeData[dayIndex].timeEntries.map((timeEntry, entryIndex) => (
+                          <div key={entryIndex}>
+                            <input
+                              type="text"
+                              placeholder="HH"
+                              value={timeEntry.hoursEnd}
+                              onChange={(e) => handleHoursEndChange(e.target.value, dayIndex, entryIndex)}
+                              className="w-10"
+                            />
+                            :
+                            <input
+                              type="text"
+                              placeholder="MM"
+                              value={timeEntry.minutesEnd}
+                              onChange={(e) => handleMinutesEndChange(e.target.value, dayIndex, entryIndex)}
+                              className="w-10"
+                            />
+                            <select
+                              value={timeEntry.amPmEnd}
+                              onChange={(e) => handleAmPmEndChange(e.target.value, dayIndex, entryIndex)}
+                              className="w-16"
+                            >
+                              <option value="AM">AM</option>
+                              <option value="PM">PM</option>
+                            </select>
+                            <br />
+                          </div>
+                        ))}
                     </td>
                     <td className="text-center p-5">
-                      {calculateHours(
-                        timeData[index].hoursStart,
-                        timeData[index].minutesStart,
-                        timeData[index].amPmStart,
-                        timeData[index].hoursEnd,
-                        timeData[index].minutesEnd,
-                        timeData[index].amPmEnd
+                      {timeData[dayIndex].isBroken &&
+                        timeData[dayIndex].timeEntries.map((timeEntry, entryIndex) => (
+                          <div key={entryIndex}>
+                            {calculateHours(
+                              timeEntry.hoursStart,
+                              timeEntry.minutesStart,
+                              timeEntry.amPmStart,
+                              timeEntry.hoursEnd,
+                              timeEntry.minutesEnd,
+                              timeEntry.amPmEnd
+                            )}
+                            <br />
+                          </div>
+                        ))}
+                    </td>
+                    <td className="text-center p-5">
+                      {timeData[dayIndex].isBroken && (
+                        <button onClick={() => addTimeEntry(dayIndex)}>Add Time</button>
                       )}
                     </td>
                   </tr>
