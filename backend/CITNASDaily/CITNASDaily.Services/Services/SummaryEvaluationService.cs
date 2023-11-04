@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CITNASDaily.Entities.Dtos.SummaryEvaluationDtos;
+using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Repositories.Repositories;
@@ -58,6 +59,19 @@ namespace CITNASDaily.Services.Services
                 return createdSummaryEvaluation;
             }
             return null;
+        }
+
+        public async Task<IEnumerable<SummaryEvaluationDto?>> GetSummaryEvaluationsAsync()
+        {
+            var summaryeval = await _summaryEvaluationRepository.GetSummaryEvaluationsAsync();
+
+            return _mapper.Map<IEnumerable<SummaryEvaluationDto>>(summaryeval);
+        }
+        public async Task<SummaryEvaluation?> GetSummaryEvaluationWithNASIdAsync(int nasId)
+        {
+            var summaryeval = await _summaryEvaluationRepository.GetSummaryEvaluationWithNASIdAsync(nasId);
+
+            return _mapper.Map<SummaryEvaluation>(summaryeval);
         }
     }
 }

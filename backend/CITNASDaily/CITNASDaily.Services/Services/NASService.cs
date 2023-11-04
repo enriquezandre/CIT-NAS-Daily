@@ -63,6 +63,11 @@ namespace CITNASDaily.Services.Services
             return nasByOffice.ToList();
         }
 
+        public async Task<int> GetNASIdByUsernameAsync(string username)
+        {
+            return await _nasRepository.GetNASIdByUsernameAsync(username);
+        }
+
         public async Task<IEnumerable<NAS>?> GetAllNASAsync()
         {
             return await _nasRepository.GetAllNASAsync();

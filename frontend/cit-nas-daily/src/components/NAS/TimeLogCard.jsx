@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 import { ActivitiesFormModal } from "./ActivitiesFormModal";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 export const TimeLogCard = () => {
+  const { nasId } = useParams();
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [formIsOpen, setFormIsOpen] = useState(false);
+  const [nas, setNas] = useState({});
+  const [inOut, setInOut] = useState("");
+  const [time, setTime] = useState("");
+  const [latestEntry, setLatestEntry] = useState("");
 
   const openForm = () => {
     setFormIsOpen(true);
@@ -44,8 +50,10 @@ export const TimeLogCard = () => {
     return date.toLocaleTimeString();
   };
 
-  // const { nasId } = useParams();
-  const [nas, setNas] = useState({});
+  const formatTimeLog = (time) => {
+    const [hour, minute] = time.split(":");
+    return `${hour % 12 || 12}:${minute} ${hour < 12 ? "AM" : "PM"}`;
+  };
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -58,16 +66,28 @@ export const TimeLogCard = () => {
           },
         });
 
-        const response = await api.get(`/NAS/1`);
-        console.log(response);
+        const response = await api.get(`/NAS/${nasId}`);
         setNas(response.data);
+
+        const logresponse = await api.get(`BiometricLogs?nasId=${nasId}`);
+        const latestLog = logresponse.data.sort(
+          (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
+        )[0];
+        setInOut(latestLog.inOut); // ["DutyOn", "DutyOff", "OvertimeOn", "OvertimeOff"]
+        setTime(latestLog.dateTime);
+
+        const activitiesresponse = await api.get(`ActivitiesSummary/${nasId}`);
+        const activities = activitiesresponse.data.sort(
+          (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
+        )[0];
+        setLatestEntry(activities.dateOfEntry);
+        console.log(activities.dateOfEntry);
       } catch (error) {
         console.error(error);
       }
     };
-
     fetchNas();
-  }, [1]); // PLACEHOLDER SINCE WALA PAY ENDPOINT MAKA GET SA NAS ID
+  }, [nasId]);
 
   return (
     <div className="flex justify-center items-center mx-1 mb-6">
@@ -88,20 +108,36 @@ export const TimeLogCard = () => {
               </div>
             </div>
           </div>
-          {/* To be implemented: From biometrics, read time-in log and show here */}
           <div>
             <div className="mt-10 mr-28 text-2xl font-bold text-gray">
-              NOT YET TIMED IN
+              {inOut === "DutyOn"
+                ? "TIMED IN: " + formatTimeLog(time.split("T")[1])
+                : inOut === "DutyOff"
+                ? "TIMED OUT: " + formatTimeLog(time.split("T")[1])
+                : inOut === "OvertimeOn"
+                ? "OVERTIME IN: " + formatTimeLog(time.split("T")[1])
+                : inOut === "OvertimeOff"
+                ? "OVERTIME OUT: " + formatTimeLog(time.split("T")[1])
+                : "NOT YET TIMED IN"}
             </div>
-            {/* To be implemented: This will show only if naka time out na */}
+            {/* This will show only if user has already have a record on time-out on the current day*/}
             <div className="mt-7 text-xl">
-              <button
-                onClick={openForm}
-                className="bg-primary text-white py-2 px-4 rounded"
-              >
-                Fill-up Activities Form
-              </button>
-              <ActivitiesFormModal isOpen={formIsOpen} closeModal={closeForm} />
+              {inOut === "DutyOff" &&
+              new Date(latestEntry).toLocaleDateString().split("T")[0] !==
+                new Date().toLocaleDateString().split("T")[0] ? (
+                <>
+                  <button
+                    onClick={openForm}
+                    className="bg-primary text-white py-2 px-4 rounded"
+                  >
+                    Fill-up Activities Form
+                  </button>
+                  <ActivitiesFormModal
+                    isOpen={formIsOpen}
+                    closeModal={closeForm}
+                  />
+                </>
+              ) : null}
             </div>
           </div>
         </div>

@@ -9,6 +9,7 @@ namespace CITNASDaily.Services.Contracts
         Task<OASDto?> CreateOASAsync(string username, OASCreateDto oasCreate);
         public Task<OASDto?> GetOASAsync(int oasId);
         Task<Guid?> GetOASUserIdByUsernameAsync(string username);
+        Task<int> GetOASIdByUsernameAsync(string username);
         Task<IEnumerable<OAS>?> GetAllOASAsync();
     }
 }

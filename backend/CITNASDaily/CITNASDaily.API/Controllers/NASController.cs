@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.API.Controllers
 {
@@ -16,12 +17,14 @@ namespace CITNASDaily.API.Controllers
     {
         private readonly IAuthService _authService;
         private readonly INASService _nasService;
+        private readonly ISuperiorEvaluationRatingService _superiorEvaluationRatingService;
         private readonly ILogger<NASController> _logger;
 
-        public NASController(IAuthService authService, INASService nasService, ILogger<NASController> logger)
+        public NASController(IAuthService authService, INASService nasService, ISuperiorEvaluationRatingService superiorEvaluationRatingService, ILogger<NASController> logger)
         {
             _authService = authService;
             _nasService = nasService;
+            _superiorEvaluationRatingService = superiorEvaluationRatingService;
             _logger = logger;
         }
 
@@ -68,6 +71,50 @@ namespace CITNASDaily.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting list of NAS.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("{nasId}/rating", Name = "GetNASSuperiorEvaluationRating")]
+        [Authorize]
+        public async Task<IActionResult> GetNASSuperiorEvaluationRatingAsync(int nasId, Semester semester)
+        {
+            try
+            {
+                var superiorEval = await _superiorEvaluationRatingService.GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(nasId, semester);
+
+                if (superiorEval == null)
+                {
+                    return NotFound("No Superior Evaluation Rating Yet.");
+                }
+
+                return Ok(superiorEval);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting superior evaluation");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("{username}/id", Name = "GetNASId")]
+        [Authorize]
+        public async Task<IActionResult> GetNASIdAsync (string username)
+        {
+            try
+            {
+                var nasId = await _nasService.GetNASIdByUsernameAsync(username);
+
+                if (nasId == 0)
+                {
+                    return NotFound("NAS does not exist.");
+                }
+
+                return Ok(nasId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting NAS Id");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
