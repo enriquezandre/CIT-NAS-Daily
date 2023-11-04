@@ -2,11 +2,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar } from "flowbite-react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 export const Header = () => {
   const navigate = useNavigate();
-
+  const { nasId } = useParams();
   const [user, setUser] = useState({});
 
   const handleLogout = () => {
@@ -33,13 +34,12 @@ export const Header = () => {
         const userDataResponse = await api.get(`/Users/${userId}`);
         const userRole = userDataResponse.data.role;
 
-        //ALL PLACEHOLDERS KAY WALA PAY ENDPOINT MAKA GET SA ID ANI NILA TO GET THEIR DETAILS
         switch (userRole) {
           case "NAS":
-            const nasResponse = await api.get(`/NAS/1`);
+            const nasResponse = await api.get(`/NAS/${nasId}`);
             setUser(nasResponse.data);
             break;
-          case "OAS":
+          case "OAS": //PLACEHOLDER
             const oasResponse = await api.get(`/OAS/1`);
             setUser(oasResponse.data);
             break;
@@ -56,7 +56,7 @@ export const Header = () => {
     };
 
     fetchUser();
-  }, []);
+  }, [nasId]);
 
   return (
     <>

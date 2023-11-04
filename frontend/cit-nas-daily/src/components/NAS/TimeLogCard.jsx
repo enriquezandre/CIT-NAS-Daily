@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { ActivitiesFormModal } from "./ActivitiesFormModal";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 export const TimeLogCard = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [formIsOpen, setFormIsOpen] = useState(false);
+  const { nasId } = useParams();
+  const [nas, setNas] = useState({});
 
   const openForm = () => {
     setFormIsOpen(true);
@@ -44,9 +47,6 @@ export const TimeLogCard = () => {
     return date.toLocaleTimeString();
   };
 
-  // const { nasId } = useParams();
-  const [nas, setNas] = useState({});
-
   useEffect(() => {
     const fetchNas = async () => {
       try {
@@ -58,7 +58,7 @@ export const TimeLogCard = () => {
           },
         });
 
-        const response = await api.get(`/NAS/1`);
+        const response = await api.get(`/NAS/${nasId}`);
         console.log(response);
         setNas(response.data);
       } catch (error) {
@@ -67,7 +67,7 @@ export const TimeLogCard = () => {
     };
 
     fetchNas();
-  }, [1]); // PLACEHOLDER SINCE WALA PAY ENDPOINT MAKA GET SA NAS ID
+  }, [nasId]);
 
   return (
     <div className="flex justify-center items-center mx-1 mb-6">
