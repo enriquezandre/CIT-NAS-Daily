@@ -41,7 +41,6 @@ export const Login = () => {
       const userRole = roleResponse.data.role;
       // console.log(`User ID: ${userId}`);
       // console.log(`User Role: ${userRole}`);
-      
 
       // Navigate to the respective route based on the user's role
       switch (userRole) {
@@ -49,7 +48,7 @@ export const Login = () => {
           navigate(`/nas/1`);
           break;
         case "OAS":
-          navigate(`/oas/`);
+          navigate(`/oas/offices`);
           break;
         case "Superior":
           navigate(`/superior/`);
