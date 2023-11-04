@@ -23,7 +23,7 @@ export const WeeklyAttendance = () => {
               DutyOn: [],
               DutyOff: [],
               OvertimeOn: [],
-              "OverTime Off": [],
+              OverTimeOff: [],
             };
           }
           acc[date][curr.inOut].push(curr);
@@ -43,7 +43,7 @@ export const WeeklyAttendance = () => {
             OvertimeOn: logs.OvertimeOn.sort(
               (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
             )[0],
-            "OverTime Off": logs["OverTime Off"].sort(
+            OverTimeOff: logs.OverTimeOff.sort(
               (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
             )[0],
           };
