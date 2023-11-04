@@ -25,6 +25,7 @@ export const AttendanceSummaryTable = () => {
         // Create a date range
         const startDate = new Date("2023-11-01");
         const endDate = new Date();
+        endDate.setHours(23, 59, 59, 999);
         const dateRange = [];
         for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
           dateRange.push(new Date(d));

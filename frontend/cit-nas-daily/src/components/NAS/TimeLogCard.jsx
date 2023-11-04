@@ -77,17 +77,25 @@ export const TimeLogCard = () => {
         setTime(latestLog.dateTime);
 
         const activitiesresponse = await api.get(`ActivitiesSummary/${nasId}`);
-        const activities = activitiesresponse.data.sort(
-          (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
-        )[0];
-        setLatestEntry(activities.dateOfEntry);
-        console.log(activities.dateOfEntry);
+        const activities = activitiesresponse.data;
+        console.log(activities);
+        if (activities.length > 0) {
+          // Sort the activities by 'dateOfEntry' in descending order
+          activities.sort(
+            (a, b) => new Date(b.dateOfEntry) - new Date(a.dateOfEntry)
+          );
+
+          setLatestEntry(activities[0].dateOfEntry);
+          console.log(activities[0].dateOfEntry);
+        } else {
+          console.log("No activities found");
+        }
       } catch (error) {
         console.error(error);
       }
     };
     fetchNas();
-  }, [nasId]);
+  }, [nasId, latestEntry]);
 
   return (
     <div className="flex justify-center items-center mx-1 mb-6">
