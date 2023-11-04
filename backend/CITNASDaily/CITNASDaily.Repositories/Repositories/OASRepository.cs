@@ -28,5 +28,14 @@ namespace CITNASDaily.Repositories.Repositories
                 .FirstOrDefaultAsync(c => c.Id == oasId);
         }
 
+        public async Task<int> GetOASIdByUsernameAsync(string username)
+        {
+            var oas = await _context.OAS.FirstOrDefaultAsync(c => c.Username == username);
+            if (oas != null)
+            {
+                return oas.Id;
+            }
+            return 0;
+        }
     }
 }

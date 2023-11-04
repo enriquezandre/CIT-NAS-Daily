@@ -11,7 +11,8 @@ namespace CITNASDaily.Utils.Mappings
 {
     public class SummaryEvaluationProfile : Profile
     {
-        public SummaryEvaluationProfile() { 
+        public SummaryEvaluationProfile() {
+            CreateMap<SummaryEvaluation, SummaryEvaluationDto>().ReverseMap();
             CreateMap<SummaryEvaluation, SummaryEvaluationCreateDto>().ReverseMap();
         }
     }

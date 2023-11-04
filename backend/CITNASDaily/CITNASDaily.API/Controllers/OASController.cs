@@ -80,5 +80,28 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
+        [HttpGet("{username}/id", Name = "GetOASId")]
+        [Authorize]
+        public async Task<IActionResult> GetOASIdAsync(string username)
+        {
+            try
+            {
+                var oasId = await _oasService.GetOASIdByUsernameAsync(username);
+
+                if (oasId == 0)
+                {
+                    return NotFound("OAS does not exist.");
+                }
+
+                return Ok(oasId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting OAS Id");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
+            }
+        }
     }
 }

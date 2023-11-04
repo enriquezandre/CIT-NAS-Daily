@@ -57,5 +57,10 @@ namespace CITNASDaily.Services.Services
 
             return user.Id;
         }
+
+        public async Task<int> GetOASIdByUsernameAsync(string username)
+        {
+            return await _oasRepository.GetOASIdByUsernameAsync(username);
+        }
     }
 }
