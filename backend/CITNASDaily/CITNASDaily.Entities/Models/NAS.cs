@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CITNASDaily.Entities.Models
 {
@@ -13,8 +14,9 @@ namespace CITNASDaily.Entities.Models
         public User? User { get; set; }
 
         [Required]
+        [JsonIgnore]
         public int? OfficeId { get; set; }
-        public Office? Office { get; set; }
+        //public Office? Office { get; set; }
 
         public int? EnNo { get; set; }
         public List<BiometricLog>? BiometricLogs { get; set; }

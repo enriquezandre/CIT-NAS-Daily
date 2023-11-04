@@ -69,5 +69,16 @@ namespace CITNASDaily.Repositories.Repositories
                 throw ex;
             }
         }
+
+        public async Task<Superior?> GetSuperiorByOfficeId(int officeId)
+        {
+            var office = await _context.Offices.FirstOrDefaultAsync(o => o.Id == officeId);
+
+            if (office != null)
+            {
+                return await _context.Superiors.FirstOrDefaultAsync(s => s.Id == office.SuperiorId);
+            }
+            return null;
+        }
     }
 }

@@ -39,9 +39,6 @@ namespace CITNASDaily.API.Controllers
 
                 if (nas == null)
                 {
-                    // Handle the case where the superior with the given username or ID does not exist.
-                    // You can return an appropriate response or throw an exception.
-                    // For example:
                     return NotFound("NAS not found");
                 }
 
@@ -100,6 +97,28 @@ namespace CITNASDaily.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating NAS.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet(Name = "GetAllNAS")]
+        [Authorize]
+        public async Task<IActionResult> GetAllNAS()
+        {
+            try
+            {
+                var nas = await _nasService.GetAllNASAsync();
+
+                if (nas.IsNullOrEmpty())
+                {
+                    return NotFound("There is no registered NAS.");
+                }
+
+                return Ok(nas);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting list of NAS.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }

@@ -21,6 +21,11 @@ namespace CITNASDaily.Repositories.Repositories
             return nas;
         }
 
+        public async Task<IEnumerable<NAS>?> GetAllNASAsync()
+        {
+            return await _context.NAS.ToListAsync();
+        }
+
         public async Task<NAS?> GetNASAsync(int nasId)
         {
             return await _context.NAS.FirstOrDefaultAsync(n => n.Id == nasId);

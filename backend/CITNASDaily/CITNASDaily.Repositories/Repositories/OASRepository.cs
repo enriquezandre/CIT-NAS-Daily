@@ -21,6 +21,11 @@ namespace CITNASDaily.Repositories.Repositories
             return oas;
         }
 
+        public async Task<IEnumerable<OAS>?> GetAllOASAsync()
+        {
+            return await _context.OAS.ToListAsync();
+        }
+
         public async Task<OAS?> GetOAS(int oasId)
         {
             return await _context.OAS

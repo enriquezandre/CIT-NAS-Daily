@@ -42,17 +42,17 @@ namespace CITNASDaily.Repositories.Context
                 .OnDelete(DeleteBehavior.NoAction);
 
 
-            modelBuilder.Entity<Office>()
+            /*modelBuilder.Entity<Office>()
                 .HasOne(o => o.Superior)
                 .WithOne()
                 .HasForeignKey<Office>(o => o.SuperiorId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.NoAction);*/
 
-            modelBuilder.Entity<Office>()
+            /*modelBuilder.Entity<Office>()
                 .HasMany(o => o.NAS)
                 .WithOne(n => n.Office)
                 .HasForeignKey(n => n.OfficeId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.NoAction);*/
 
 
             modelBuilder.Entity<NAS>()
@@ -61,11 +61,11 @@ namespace CITNASDaily.Repositories.Context
                 .HasForeignKey<NAS>(n => n.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<NAS>()
+            /*modelBuilder.Entity<NAS>()
                 .HasOne(n => n.Office)    
                 .WithMany(o => o.NAS)  
                 .HasForeignKey(n => n.OfficeId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.NoAction);*/
 
             modelBuilder.Entity<NAS>()
                 .HasMany(n => n.BiometricLogs)
