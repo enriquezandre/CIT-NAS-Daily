@@ -40,12 +40,5 @@ namespace CITNASDaily.Services.Services
             var sched = await _scheduleRepository.GetScheduleAsync(nasId);
             return _mapper.Map<ScheduleDto>(sched);
         }
-
-        public async Task UpdateScheduleAsync(ScheduleUpdateDto schedule)
-        {
-            var sched = _mapper.Map<Schedule>(schedule);
-            Console.WriteLine(sched.Id);
-            await _scheduleRepository.UpdateScheduleAsync(sched);
-        }
     }
 }

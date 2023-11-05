@@ -11,6 +11,5 @@ namespace CITNASDaily.Repositories.Contracts
     {
         Task<Schedule?> CreateScheduleAsync(Schedule schedule);
         Task<Schedule?> GetScheduleAsync(int nasId);
-        Task UpdateScheduleAsync(Schedule schedule);
     }
 }

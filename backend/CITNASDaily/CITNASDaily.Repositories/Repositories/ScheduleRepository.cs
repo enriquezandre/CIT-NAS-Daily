@@ -31,23 +31,5 @@ namespace CITNASDaily.Repositories.Repositories
         {
             return await _context.Schedules.FirstOrDefaultAsync(s => s.NASId == nasId);
         }
-
-        public async Task UpdateScheduleAsync(Schedule schedule)
-        {
-            var existingSchedule = await _context.Schedules
-                                    .Where(es => es.NASId == schedule.NASId)
-                                    .FirstOrDefaultAsync();
-
-            if (existingSchedule != null)
-            {
-                existingSchedule.DayOfWeek = schedule.DayOfWeek;
-                existingSchedule.StartTime = schedule.StartTime;
-                existingSchedule.EndTime = schedule.EndTime;
-                existingSchedule.BrokenSched = schedule.BrokenSched;
-                existingSchedule.TotalHours = schedule.TotalHours;
-
-                await _context.SaveChangesAsync();
-            }
-        }
     }
 }

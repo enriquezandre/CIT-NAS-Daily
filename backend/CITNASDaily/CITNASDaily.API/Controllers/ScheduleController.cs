@@ -76,36 +76,5 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
-
-        [HttpPut]
-        [Authorize]
-
-        public async Task<IActionResult> UpdateNASSchedule([FromBody] ScheduleUpdateDto schedule)
-        {
-            try
-            {
-                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
-                if (currentUser == null)
-                {
-                    return Forbid();
-                }
-
-                var checkSchedule = await _scheduleService.GetScheduleAsync(schedule.NASId);
-
-                if (checkSchedule == null)
-                {
-                    return NotFound();
-                }
-
-                await _scheduleService.UpdateScheduleAsync(schedule);
-
-                return Ok("Schedule Updated");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating Schedule.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-            }
-        }
     }
 }
