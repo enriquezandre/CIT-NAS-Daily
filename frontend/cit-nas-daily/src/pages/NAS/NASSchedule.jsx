@@ -132,7 +132,6 @@ export const NASSchedule = () => {
                   <th>End Time</th>
                   <th></th>
                   <th>No. of Hours</th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -224,6 +223,14 @@ export const NASSchedule = () => {
                     </tr>
                   )
                 ))}
+                <tr>
+                  <th colSpan="4" className="pt-3 text-right font-weight-bold">
+                    <input type="button" value="Confirm" />
+                  </th>
+                  <th colSpan="1" className="pt-3 text-right font-weight-bold">
+                    Total Hours:
+                  </th>
+                </tr>
               </tbody>
             </table>
           </div>
