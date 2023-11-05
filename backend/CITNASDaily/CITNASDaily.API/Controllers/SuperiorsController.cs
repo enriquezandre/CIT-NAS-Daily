@@ -100,5 +100,34 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        [HttpGet("{officeId}/office", Name = "GetSuperiorByOfficeId")]
+        [Authorize]
+        public async Task<IActionResult> GetSuperiorByOfficeId(int officeId)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
+                // Pass the username from the API request
+                var superior = await _superiorService.GetSuperiorAsync(officeId);
+
+                if (superior == null)
+                {
+                    // Handle the case where the superior with the given username or ID does not exist.
+                    // You can return an appropriate response or throw an exception.
+                    // For example:
+                    return NotFound("Superior not found");
+                }
+
+                return Ok(superior);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting Superior.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
     }
 }
