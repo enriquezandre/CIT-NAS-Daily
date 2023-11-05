@@ -94,7 +94,7 @@ export const AttendanceSummary = () => {
       <div className="m-3">
         <div className="m-2">
           <div className="flex mt-2 ml-2">
-            <div className="w-24 z-10 flex">
+            <div className="w-36 z-10 flex">
               <div className="mr-2">SY:</div>
               <select
                 id="sy"
