@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Dropdown } from "../../components/Dropdown.jsx";
 import { useParams } from "react-router-dom";
+import { ScheduleTable } from "../../components/NAS/ScheduleTable.jsx";
 import axios from "axios";
 
 export const NASSchedule = () => {
@@ -199,124 +200,19 @@ export const NASSchedule = () => {
             </div>
           </div>
           <div className="pt-10">
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th>Day</th>
-                  <th>Broken Schedule?</th>
-                  <th>Start Time</th>
-                  <th>End Time</th>
-                  <th></th>
-                  <th>No. of Hours</th>
-                </tr>
-              </thead>
-              <tbody>
-                {days.map((day) => (
-                  schedule[day].isBroken ? (
-                    schedule[day].items.map((scheduleItem, index) => (
-                      <tr key={`${day}-${index}`}>
-                        <td className="text-center pt-5">{index === 0 ? day : ""}</td>
-                        <td className="text-center">
-                          {index === 0 ? (
-                            <input
-                              type="checkbox"
-                              checked={schedule[day].isBroken}
-                              onChange={(e) => handleToggleBrokenSchedule(day, e.target.checked)}
-                            />
-                          ) : null}
-                        </td>
-                        <td className="text-center">
-                          <input
-                            type="time"
-                            value={scheduleItem.start}
-                            onChange={(e) => handleStartTimeChange(day, index, e.target.value)}
-                          />
-                        </td>
-                        <td className="text-center">
-                          <input
-                            type="time"
-                            value={scheduleItem.end}
-                            onChange={(e) => handleEndTimeChange(day, index, e.target.value)}
-                          />
-                        </td>
-                        {index === 0 ? (
-                          <td className="text-center">
-                            <button
-                              onClick={() => handleAddScheduleRow(day)}
-                              disabled={!schedule[day].isBroken}
-                              style={{ color: schedule[day].isBroken ? 'green' : '#C5C5C5' }}
-                            >
-                              Add Row
-                            </button>
-                          </td>
-                        ) : (
-                          <td className="text-center">
-                            <button
-                              onClick={() => handleRemoveScheduleRow(day, index)}
-                              style={{ color: 'red' }}
-                            >
-                              Remove Row
-                            </button>
-                          </td>
-                        )}
-                        <td className="text-center">{scheduleItem.totalHours} hours</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr key={day}>
-                      <td className="text-center pt-5">{day}</td>
-                      <td className="text-center">
-                        <input
-                          type="checkbox"
-                          checked={schedule[day].isBroken}
-                          onChange={(e) => handleToggleBrokenSchedule(day, e.target.checked)}
-                        />
-                      </td>
-                      <td className="text-center">
-                        <input
-                          type="time"
-                          value={schedule[day].items[0].start}
-                          onChange={(e) => handleStartTimeChange(day, 0, e.target.value)}
-                        />
-                      </td>
-                      <td className="text-center">
-                        <input
-                          type="time"
-                          value={schedule[day].items[0].end}
-                          onChange={(e) => handleEndTimeChange(day, 0, e.target.value)}
-                        />
-                      </td>
-                      <td className="text-center">
-                        <button
-                          onClick={() => handleAddScheduleRow(day)}
-                          disabled={schedule[day].isBroken}
-                          style={{ color: schedule[day].isBroken ? 'green' : '#C5C5C5' }}
-                        >
-                          Add Row
-                        </button>
-                      </td>
-                      <td className="text-center">{schedule[day].items[0].totalHours} hours</td>
-                    </tr>
-                  )
-                ))}
-                <tr><br/></tr>
-                <tr>
-                  <th colSpan="4"></th>
-                  <th colSpan="1" className="pt-3 text-center font-weight-bold">
-                  <button
-                    className={`py-2 px-4 rounded ${overallHours === 24 ? "bg-primary text-white" : "bg-gray-300 text-gray-600"}`}
-                    disabled={overallHours < 24}
-                    onClick={handleSubmit}
-                  >
-                    Submit
-                  </button>
-                  </th>
-                  <th colSpan="1" className="pt-3 text-center font-weight-bold">
-                    Total Hours: {overallHours} hours
-                  </th>
-                </tr>
-              </tbody>
-            </table>
+            {/* Pass the schedule prop to the ScheduleTable component */}
+            <ScheduleTable
+              days={days}
+              schedule={schedule}
+              scheduleChanges={scheduleChanges}
+              handleToggleBrokenSchedule={handleToggleBrokenSchedule}
+              handleAddScheduleRow={handleAddScheduleRow}
+              handleRemoveScheduleRow={handleRemoveScheduleRow}
+              handleStartTimeChange={handleStartTimeChange}
+              handleEndTimeChange={handleEndTimeChange}
+              handleSubmit={handleSubmit}
+              overallHours={overallHours}
+            />
           </div>
         </div>
       </div>
