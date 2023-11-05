@@ -145,7 +145,10 @@ export const ActivitiesSummary = () => {
           </div>
           <div></div>
           <div className="m-5">
-            <ActivitiesSummaryTable selectedMonth={selectedMonthIndex} />
+            <ActivitiesSummaryTable
+              selectedMonth={selectedMonthIndex}
+              selectedSY={selectedSY}
+            />
           </div>
         </div>
       </div>

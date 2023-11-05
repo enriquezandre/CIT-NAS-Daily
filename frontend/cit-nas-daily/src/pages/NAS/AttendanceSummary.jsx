@@ -64,6 +64,7 @@ export const AttendanceSummary = () => {
     setSelectedMonthIndex(selectedMonthIndex);
     console.log("Selected Sem:", selectedSem);
     console.log("Selected Month Index:", selectedMonthIndex);
+    console.log("Selected SY:", selectedSY);
   }, [selectedSY, selectedSem, selectedMonth]);
 
   const handleSelectSY = (event) => {
@@ -166,7 +167,10 @@ export const AttendanceSummary = () => {
             </div>
           </div>
           <div className="m-5">
-            <AttendanceSummaryTable selectedMonth={selectedMonthIndex} />
+            <AttendanceSummaryTable
+              selectedMonth={selectedMonthIndex}
+              selectedSY={selectedSY}
+            />
           </div>
         </div>
       </div>

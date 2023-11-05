@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const ActivitiesSummaryTable = ({ selectedMonth }) => {
+export const ActivitiesSummaryTable = ({ selectedMonth, selectedSY }) => {
   const { nasId } = useParams();
   const [activitySummaries, setActivitySummaries] = useState([]);
 
@@ -23,14 +23,22 @@ export const ActivitiesSummaryTable = ({ selectedMonth }) => {
         const data = response.data;
 
         const filteredData = data.filter((item) => {
-          const month = new Date(item.dateOfEntry).getMonth();
+          const date = new Date(item.dateOfEntry);
+          const month = date.getMonth();
+          const year = date.getFullYear();
+          const first = parseInt(
+            year.toString().substring(0, 2) + selectedSY.substring(0, 2)
+          );
+          const second = parseInt(
+            year.toString().substring(0, 2) + selectedSY.substring(2)
+          );
           switch (selectedMonth) {
             case -1:
-              return month >= 7 && month <= 11;
+              return month >= 7 && month <= 11 && year === first;
             case -2:
-              return month >= 0 && month <= 5;
+              return month >= 0 && month <= 5 && year === second;
             case -3:
-              return month >= 5 && month <= 7;
+              return month >= 5 && month <= 7 && year === second;
           }
           return month === selectedMonth;
         });
@@ -41,7 +49,7 @@ export const ActivitiesSummaryTable = ({ selectedMonth }) => {
     };
 
     fetchNas();
-  }, [nasId, selectedMonth]);
+  }, [nasId, selectedMonth, selectedSY]);
 
   return (
     <Table hoverable className="border">
@@ -81,4 +89,5 @@ export const ActivitiesSummaryTable = ({ selectedMonth }) => {
 
 ActivitiesSummaryTable.propTypes = {
   selectedMonth: PropTypes.number.isRequired,
+  selectedSY: PropTypes.string.isRequired,
 };

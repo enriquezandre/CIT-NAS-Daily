@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const AttendanceSummaryTable = ({ selectedMonth }) => {
+export const AttendanceSummaryTable = ({ selectedMonth, selectedSY }) => {
   const { nasId } = useParams();
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
 
@@ -78,14 +78,22 @@ export const AttendanceSummaryTable = ({ selectedMonth }) => {
         });
 
         const filteredData = latestLogs.filter((item) => {
-          const month = new Date(item.dateTime).getMonth();
+          const date = new Date(item.dateTime);
+          const month = date.getMonth();
+          const year = date.getFullYear();
+          const first = parseInt(
+            year.toString().substring(0, 2) + selectedSY.substring(0, 2)
+          );
+          const second = parseInt(
+            year.toString().substring(0, 2) + selectedSY.substring(2)
+          );
           switch (selectedMonth) {
             case -1:
-              return month >= 7 && month <= 11;
+              return month >= 7 && month <= 11 && year === first;
             case -2:
-              return month >= 0 && month <= 5;
+              return month >= 0 && month <= 5 && year === second;
             case -3:
-              return month >= 5 && month <= 7;
+              return month >= 5 && month <= 7 && year === second;
           }
           return month === selectedMonth;
         });
@@ -97,7 +105,7 @@ export const AttendanceSummaryTable = ({ selectedMonth }) => {
     };
 
     fetchNas();
-  }, [nasId, selectedMonth]);
+  }, [nasId, selectedMonth, selectedSY]);
 
   const formatTime = (time) => {
     const [hour, minute] = time.split(":");
@@ -154,4 +162,5 @@ export const AttendanceSummaryTable = ({ selectedMonth }) => {
 
 AttendanceSummaryTable.propTypes = {
   selectedMonth: PropTypes.number.isRequired,
+  selectedSY: PropTypes.string.isRequired,
 };
