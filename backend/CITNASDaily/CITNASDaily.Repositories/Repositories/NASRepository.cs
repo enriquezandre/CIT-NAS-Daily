@@ -2,6 +2,7 @@
 using CITNASDaily.Repositories.Context;
 using CITNASDaily.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 
 namespace CITNASDaily.Repositories.Repositories
 {
@@ -21,6 +22,11 @@ namespace CITNASDaily.Repositories.Repositories
             return nas;
         }
 
+        public async Task<IEnumerable<NAS>?> GetAllNASAsync()
+        {
+            return await _context.NAS.ToListAsync();
+        }
+
         public async Task<NAS?> GetNASAsync(int nasId)
         {
             return await _context.NAS.FirstOrDefaultAsync(n => n.Id == nasId);
@@ -31,5 +37,14 @@ namespace CITNASDaily.Repositories.Repositories
             return await Task.FromResult(_context.NAS.Where(e => e.OfficeId == officeId));
         }
 
+        public async Task<int> GetNASIdByUsernameAsync(string username)
+        {
+            var nas = await _context.NAS.FirstOrDefaultAsync(c => c.Username == username);
+            if (nas != null)
+            {
+                return nas.Id;
+            }
+            return 0;
+        }
     }
 }

@@ -67,5 +67,37 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
+        [HttpGet("{superiorId}", Name = "GetOfficeBySuperiorId")]
+        public async Task<IActionResult> GetOfficeBySuperiorId(int superiorId)
+        {
+            try
+            {
+                var offices = await _officeService.GetOfficeBySuperiorIdAsync(superiorId);
+                if (offices == null) return NoContent();
+                return Ok(offices);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error encountered when retrieving the office.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("{nasId}/NAS", Name = "GetOfficeByNASId")]
+        public async Task<IActionResult> GetOfficeByNASId(int nasId)
+        {
+            try
+            {
+                var offices = await _officeService.GetOfficeByNASIdAsync(nasId);
+                if (offices == null) return NoContent();
+                return Ok(offices);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error encountered when retrieving the office.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
     }
 }

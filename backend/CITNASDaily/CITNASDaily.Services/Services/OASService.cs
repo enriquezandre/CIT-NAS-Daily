@@ -39,6 +39,11 @@ namespace CITNASDaily.Services.Services
             return _mapper.Map<OASDto>(createdOAS);
         }
 
+        public Task<IEnumerable<OAS>?> GetAllOASAsync()
+        {
+            return _oasRepository.GetAllOASAsync();
+        }
+
         public async Task<OASDto?> GetOASAsync(int oasId)
         {
             var oas = await _oasRepository.GetOAS(oasId);
@@ -56,6 +61,11 @@ namespace CITNASDaily.Services.Services
             }
 
             return user.Id;
+        }
+
+        public async Task<int> GetOASIdByUsernameAsync(string username)
+        {
+            return await _oasRepository.GetOASIdByUsernameAsync(username);
         }
     }
 }

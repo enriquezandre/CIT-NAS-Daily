@@ -6,5 +6,7 @@ namespace CITNASDaily.Repositories.Contracts
     {
         Task<OAS?> CreateOASAsync(OAS oas);
         public Task<OAS?> GetOAS(int oasId);
+        Task<int> GetOASIdByUsernameAsync(string username);
+        Task<IEnumerable<OAS>?> GetAllOASAsync();
     }
 }
