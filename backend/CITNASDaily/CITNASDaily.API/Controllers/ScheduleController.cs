@@ -23,16 +23,16 @@ namespace CITNASDaily.API.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{nasId}", Name = "GetSchedule")]
+        [HttpGet("{nasId}", Name = "GetSchedulesByNASId")]
         [Authorize]
-        public async Task<IActionResult> GetSchedule(int nasId)
+        public async Task<IActionResult> GetSchedulesByNASId(int nasId)
         {
             try
             {
                 var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
                 if (currentUser == null) return Forbid();
 
-                var schedule = await _scheduleService.GetScheduleAsync(nasId);
+                var schedule = await _scheduleService.GetSchedulesByNASIdAsync(nasId);
 
                 if (schedule == null)
                 {
@@ -90,14 +90,14 @@ namespace CITNASDaily.API.Controllers
                     return Forbid();
                 }
 
-                var checkSched = await _scheduleService.GetScheduleAsync(nasId);
+                var checkSched = await _scheduleService.GetSchedulesByNASIdAsync(nasId);
 
                 if(checkSched == null)
                 {
                     return NotFound($"Schedule with NAS Id {nasId} does not exist");
                 }
 
-                await _scheduleService.DeleteScheduleByNASIdAsync(nasId);
+                await _scheduleService.DeleteSchedulesByNASIdAsync(nasId);
                 return Ok();
             }
             catch (Exception ex)
