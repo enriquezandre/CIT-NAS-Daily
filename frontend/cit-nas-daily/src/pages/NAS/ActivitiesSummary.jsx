@@ -11,6 +11,7 @@ export const ActivitiesSummary = () => {
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const month_options = [
+    "All",
     "January",
     "February",
     "March",
@@ -57,12 +58,13 @@ export const ActivitiesSummary = () => {
                 options={month_options}
                 onSelect={handleSelectedMonth}
               />
-              <p className="mt-4">Selected Value: {selectedMonth}</p>
             </div>
           </div>
           <div></div>
           <div className="m-5">
-            <ActivitiesSummaryTable />
+            <ActivitiesSummaryTable
+              selectedMonth={month_options.indexOf(selectedMonth) - 1}
+            />
           </div>
         </div>
       </div>

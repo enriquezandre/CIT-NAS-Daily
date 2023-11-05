@@ -2,9 +2,10 @@
 import { Table } from "flowbite-react";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
 
-export const AttendanceSummaryTable = () => {
+export const AttendanceSummaryTable = ({ selectedMonth }) => {
   const { nasId } = useParams();
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
 
@@ -19,11 +20,10 @@ export const AttendanceSummaryTable = () => {
         });
 
         const response = await api.get(`BiometricLogs?nasId=${nasId}`);
-        console.log(response);
         const data = response.data;
 
-        // Create a date range
-        const startDate = new Date("2023-11-01");
+        // TO DO: DATE RANGE FOR FIRST, SECOND, SUMMER SEMESTER
+        const startDate = new Date("2023-10-01");
         const endDate = new Date();
         endDate.setHours(23, 59, 59, 999);
         const dateRange = [];
@@ -77,14 +77,24 @@ export const AttendanceSummaryTable = () => {
           }
         });
 
-        setAttendanceSummaries(latestLogs);
+        const filteredData = latestLogs.filter((item) => {
+          if (selectedMonth < 0) {
+            return true;
+          }
+          const month = new Date(item.dateTime).getMonth();
+          return month === selectedMonth;
+        });
+
+        setAttendanceSummaries(filteredData);
+        console.log(selectedMonth);
+        console.log(filteredData);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchNas();
-  }, [nasId]);
+  }, [nasId, selectedMonth]);
 
   const formatTime = (time) => {
     const [hour, minute] = time.split(":");
@@ -137,4 +147,8 @@ export const AttendanceSummaryTable = () => {
       </Table.Body>
     </Table>
   );
+};
+
+AttendanceSummaryTable.propTypes = {
+  selectedMonth: PropTypes.number.isRequired,
 };

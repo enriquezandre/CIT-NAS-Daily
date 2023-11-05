@@ -12,6 +12,7 @@ export const AttendanceSummary = () => {
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const month_options = [
+    "All",
     "January",
     "February",
     "March",
@@ -35,7 +36,11 @@ export const AttendanceSummary = () => {
   };
 
   const handleSelectedMonth = (value) => {
-    setSelectedMonth(value);
+    if (value === "All") {
+      setSelectedMonth("");
+    } else {
+      setSelectedMonth(value);
+    }
   };
 
   return (
@@ -52,13 +57,12 @@ export const AttendanceSummary = () => {
               <Dropdown options={sem_options} onSelect={handleSelectSem} />
               <p className="mt-4">Selected Value: {selectedSem}</p>
             </div>
-            <div className="w-48 z-10">
+            <div className="w-70 z-10">
               MONTH:{" "}
               <Dropdown
                 options={month_options}
                 onSelect={handleSelectedMonth}
               />
-              <p className="mt-4">Selected Value: {selectedMonth}</p>
             </div>
           </div>
           <div>
@@ -82,7 +86,9 @@ export const AttendanceSummary = () => {
             </div>
           </div>
           <div className="m-5">
-            <AttendanceSummaryTable />
+            <AttendanceSummaryTable
+              selectedMonth={month_options.indexOf(selectedMonth) - 1}
+            />
           </div>
         </div>
       </div>

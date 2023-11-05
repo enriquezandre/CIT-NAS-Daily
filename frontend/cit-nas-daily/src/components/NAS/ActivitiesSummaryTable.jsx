@@ -1,9 +1,10 @@
 import { Table } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 import axios from "axios";
 
-export const ActivitiesSummaryTable = () => {
+export const ActivitiesSummaryTable = ({ selectedMonth }) => {
   const { nasId } = useParams();
   const [activitySummaries, setActivitySummaries] = useState([]);
 
@@ -19,15 +20,23 @@ export const ActivitiesSummaryTable = () => {
         });
 
         const response = await api.get(`/ActivitiesSummary/${nasId}`);
-        console.log(response);
-        setActivitySummaries(response.data);
+        const data = response.data;
+
+        const filteredData = data.filter((item) => {
+          if (selectedMonth < 0) {
+            return true;
+          }
+          const month = new Date(item.dateOfEntry).getMonth();
+          return month === selectedMonth;
+        });
+        setActivitySummaries(filteredData);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchNas();
-  }, [nasId]);
+  }, [nasId, selectedMonth]);
 
   return (
     <Table hoverable className="border">
@@ -63,4 +72,8 @@ export const ActivitiesSummaryTable = () => {
       </Table.Body>
     </Table>
   );
+};
+
+ActivitiesSummaryTable.propTypes = {
+  selectedMonth: PropTypes.number.isRequired,
 };
