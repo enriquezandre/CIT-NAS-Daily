@@ -66,9 +66,6 @@ namespace CITNASDaily.API.Controllers
 
                 if (oas == null)
                 {
-                    // Handle the case where the superior with the given username or ID does not exist.
-                    // You can return an appropriate response or throw an exception.
-                    // For example:
                     return NotFound();
                 }
 
@@ -101,6 +98,28 @@ namespace CITNASDaily.API.Controllers
                 _logger.LogError(ex, "Error getting OAS Id");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
 
+            }
+        }
+
+        [HttpGet(Name = "GetAllOAS")]
+        [Authorize]
+        public async Task<IActionResult> GetAllOAS()
+        {
+            try
+            {
+                var oas = await _oasService.GetAllOASAsync();
+
+                if (oas == null)
+                {
+                    return NotFound("There is no registered OAS.");
+                }
+
+                return Ok(oas);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting list of OAS.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
     }

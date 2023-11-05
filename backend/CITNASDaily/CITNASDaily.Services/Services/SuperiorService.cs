@@ -45,6 +45,10 @@ namespace CITNASDaily.Services.Services
             return _mapper.Map<SuperiorDto>(superior);
         }
 
+        public async Task<Superior?> GetSuperiorByOfficeId(int officeId)
+        {
+            return await _superiorRepository.GetSuperiorByOfficeId(officeId);
+        }
 
         public async Task<IEnumerable<SuperiorDto>> GetSuperiorsAsync()
         {

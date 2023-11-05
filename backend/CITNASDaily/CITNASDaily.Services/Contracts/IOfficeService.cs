@@ -7,5 +7,7 @@ namespace CITNASDaily.Services.Contracts
     {
         Task<Office?> CreateOfficeAsync(OfficeCreateDto office);
         Task<IEnumerable<Office?>> GetOfficesAsync();
+        Task<Office?> GetOfficeBySuperiorIdAsync(int superiorId);
+        Task<Office?> GetOfficeByNASIdAsync(int nasId);
     }
 }

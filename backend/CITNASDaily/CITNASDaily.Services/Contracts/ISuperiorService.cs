@@ -1,4 +1,5 @@
 ﻿using CITNASDaily.Entities.Dtos.SuperiorDtos;
+using CITNASDaily.Entities.Models;
 
 namespace CITNASDaily.Services.Contracts
 {
@@ -8,5 +9,6 @@ namespace CITNASDaily.Services.Contracts
         public Task<SuperiorDto?> GetSuperiorAsync(int superiorId);
         Task<IEnumerable<SuperiorDto>> GetSuperiorsAsync();
         Task<Guid?> GetSuperiorUserIdByUsernameAsync(string username);
+        Task<Superior?> GetSuperiorByOfficeId(int officeId);
     }
 }
