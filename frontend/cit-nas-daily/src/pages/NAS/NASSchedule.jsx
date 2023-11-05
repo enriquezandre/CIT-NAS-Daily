@@ -1,16 +1,26 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dropdown } from "../../components/Dropdown.jsx";
 
 export const NASSchedule = () => {
   const [selectedSY, setSelectedSY] = useState("");
   const [selectedSem, setSelectedSem] = useState("");
+
   const [schedule, setSchedule] = useState({
-    Monday: { isBroken: false, items: [{ start: "", end: "" }] },
-    Tuesday: { isBroken: false, items: [{ start: "", end: "" }] },
-    Wednesday: { isBroken: false, items: [{ start: "", end: "" }] },
-    Thursday: { isBroken: false, items: [{ start: "", end: "" }] },
-    Friday: { isBroken: false, items: [{ start: "", end: "" }] },
-    Saturday: { isBroken: false, items: [{ start: "", end: "" }] },
+    Monday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Tuesday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Wednesday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Thursday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Friday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Saturday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+  });
+
+  const [scheduleChanges, setScheduleChanges] = useState({
+    Monday: false,
+    Tuesday: false,
+    Wednesday: false,
+    Thursday: false,
+    Friday: false,
+    Saturday: false,
   });
 
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -29,54 +39,73 @@ export const NASSchedule = () => {
     const updatedSchedule = { ...schedule };
     updatedSchedule[day].items[index].start = value;
     setSchedule(updatedSchedule);
+
+    setScheduleChanges({ ...scheduleChanges, [day]: true });
   };
 
   const handleEndTimeChange = (day, index, value) => {
     const updatedSchedule = { ...schedule };
     updatedSchedule[day].items[index].end = value;
     setSchedule(updatedSchedule);
+
+    setScheduleChanges({ ...scheduleChanges, [day]: true });
   };
 
   const handleToggleBrokenSchedule = (day, isBroken) => {
     const updatedSchedule = { ...schedule };
     updatedSchedule[day].isBroken = isBroken;
     setSchedule(updatedSchedule);
+
+    setScheduleChanges({ ...scheduleChanges, [day]: true });
   };
 
   const handleAddScheduleRow = (day) => {
-    const updatedSchedule = { ...schedule };
-    updatedSchedule[day].items.push({ start: "", end: "" });
-    setSchedule(updatedSchedule);
+    if (schedule[day].isBroken) {
+      const updatedSchedule = { ...schedule };
+      updatedSchedule[day].items.push({ start: "", end: "", totalHours: 0 });
+      setSchedule(updatedSchedule);
+
+      setScheduleChanges({ ...scheduleChanges, [day]: true });
+    }
   };
 
   const handleRemoveScheduleRow = (day, index) => {
+    if (index === 0) {
+      return;
+    }
     const updatedSchedule = { ...schedule };
     updatedSchedule[day].items.splice(index, 1);
     setSchedule(updatedSchedule);
+
+    setScheduleChanges({ ...scheduleChanges, [day]: true });
   };
 
-  // Function to calculate duty hours for a day
-  const calculateDutyHours = (day) => {
-    const schedules = schedule[day].items;
-    let totalHours = 0;
-    
-    schedules.forEach((scheduleItem) => {
-      const startTime = scheduleItem.start;
-      const endTime = scheduleItem.end;
+  useEffect(() => {
+    days.forEach((day) => {
+      if (scheduleChanges[day]) {
+        const updatedSchedule = { ...schedule };
+        updatedSchedule[day].items.forEach((scheduleItem, index) => {
+          const startTime = scheduleItem.start;
+          const endTime = scheduleItem.end;
 
-      if (startTime && endTime) {
-        const startHour = parseInt(startTime.split(":")[0]);
-        const startMinute = parseInt(startTime.split(":")[1]);
-        const endHour = parseInt(endTime.split(":")[0]);
-        const endMinute = parseInt(endTime.split(":")[1]);
+          if (startTime && endTime) {
+            const startHour = parseInt(startTime.split(":")[0]);
+            const startMinute = parseInt(startTime.split(":")[1]);
+            const endHour = parseInt(endTime.split(":")[0]);
+            const endMinute = parseInt(endTime.split(":")[1]);
 
-        const totalMinutes = (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
-        totalHours += totalMinutes / 60;
+            const totalMinutes = (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
+            updatedSchedule[day].items[index].totalHours = totalMinutes / 60;
+          } else {
+            updatedSchedule[day].items[index].totalHours = 0;
+          }
+        });
+
+        setSchedule(updatedSchedule);
+        setScheduleChanges({ ...scheduleChanges, [day]: false });
       }
     });
-
-    return totalHours;
-  };
+  }, [schedule, scheduleChanges]);
 
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
@@ -93,7 +122,6 @@ export const NASSchedule = () => {
               <p className="mt-4">Selected Value: {selectedSem}</p>
             </div>
           </div>
-          {/* Start of schedule table */}
           <div className="pt-10">
             <table className="w-full">
               <thead>
@@ -102,7 +130,8 @@ export const NASSchedule = () => {
                   <th>Broken Schedule?</th>
                   <th>Start Time</th>
                   <th>End Time</th>
-                  <th>Total Hours</th>
+                  <th></th>
+                  <th>No. of Hours</th>
                   <th></th>
                 </tr>
               </thead>
@@ -135,20 +164,27 @@ export const NASSchedule = () => {
                             onChange={(e) => handleEndTimeChange(day, index, e.target.value)}
                           />
                         </td>
-                        <td className="text-center">{calculateDutyHours(day)} hours</td>
                         {index === 0 ? (
                           <td className="text-center">
-                              <button
-                                onClick={() => handleAddScheduleRow(day)}
-                                disabled={!schedule[day].isBroken}
-                                className={!schedule[day].isBroken ? 'disabled-button' : ''}
-                              >Add Row</button>
+                            <button
+                              onClick={() => handleAddScheduleRow(day)}
+                              disabled={!schedule[day].isBroken}
+                              style={{ color: schedule[day].isBroken ? 'green' : '#C5C5C5' }}
+                            >
+                              Add Row
+                            </button>
                           </td>
                         ) : (
                           <td className="text-center">
-                            <button onClick={() => handleRemoveScheduleRow(day, index)}>Remove Row</button>
+                            <button
+                              onClick={() => handleRemoveScheduleRow(day, index)}
+                              style={{ color: 'red' }}
+                            >
+                              Remove Row
+                            </button>
                           </td>
                         )}
+                        <td className="text-center">{scheduleItem.totalHours} hours</td>
                       </tr>
                     ))
                   ) : (
@@ -175,17 +211,22 @@ export const NASSchedule = () => {
                           onChange={(e) => handleEndTimeChange(day, 0, e.target.value)}
                         />
                       </td>
-                      <td className="text-center">{calculateDutyHours(day)} hours</td>
                       <td className="text-center">
-                        <button onClick={() => handleAddScheduleRow(day)}>Add Row</button>
+                        <button
+                          onClick={() => handleAddScheduleRow(day)}
+                          disabled={schedule[day].isBroken}
+                          style={{ color: schedule[day].isBroken ? 'green' : '#C5C5C5' }}
+                        >
+                          Add Row
+                        </button>
                       </td>
+                      <td className="text-center">{schedule[day].items[0].totalHours} hours</td>
                     </tr>
                   )
                 ))}
               </tbody>
             </table>
           </div>
-          {/* End of schedule table */}
         </div>
       </div>
     </div>
