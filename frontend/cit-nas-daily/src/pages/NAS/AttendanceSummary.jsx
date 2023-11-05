@@ -1,68 +1,148 @@
 "use client";
-import { useState } from "react";
-import { Dropdown } from "../../components/Dropdown.jsx";
+import { useState, useEffect } from "react";
 import { DataDisplayBox } from "../../components/DataDisplayBox.jsx";
 import { AttendanceSummaryTable } from "../../components/NAS/AttendanceSummaryTable.jsx";
 
-export const AttendanceSummary = () => {
-  const [selectedSY, setSelectedSY] = useState("");
-  const [selectedSem, setSelectedSem] = useState("");
-  const [selectedMonth, setSelectedMonth] = useState("");
+const first_sem = [
+  "All",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
+const second_sem = [
+  "All",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+];
+
+const summer = ["All", "June", "July", "August"];
+
+export const AttendanceSummary = () => {
+  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSem, setSelectedSem] = useState("First");
+  const [monthOptions, setMonthOptions] = useState(first_sem);
+  const [selectedMonth, setSelectedMonth] = useState("All");
+  const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
-  const month_options = [
-    "All",
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
 
-  const handleSelectSY = (value) => {
+  useEffect(() => {
+    let selectedMonthIndex;
+    switch (selectedSem) {
+      case "First":
+        setMonthOptions(first_sem);
+        selectedMonthIndex = first_sem.indexOf(selectedMonth) + 6;
+        if (selectedMonth === "All") {
+          selectedMonthIndex = -1;
+        }
+        break;
+      case "Second":
+        setMonthOptions(second_sem);
+        selectedMonthIndex = second_sem.indexOf(selectedMonth) - 1;
+        if (selectedMonth === "All") {
+          selectedMonthIndex = -1;
+        }
+        break;
+      case "Summer":
+        setMonthOptions(summer);
+        selectedMonthIndex = summer.indexOf(selectedMonth) + 5;
+        if (selectedMonth === "All") {
+          selectedMonthIndex = -1;
+        }
+        break;
+      default:
+        break;
+    }
+
+    setSelectedMonthIndex(selectedMonthIndex);
+    console.log("Selected Sem:", selectedSem);
+    console.log("Selected Month Index:", selectedMonthIndex);
+  }, [selectedSY, selectedSem, selectedMonth]);
+
+  const handleSelectSY = (event) => {
+    const value = event.target.value;
     setSelectedSY(value);
   };
 
-  const handleSelectSem = (value) => {
+  const handleSelectSem = (event) => {
+    const value = event.target.value;
     setSelectedSem(value);
+    setSelectedMonth("All");
   };
 
-  const handleSelectedMonth = (value) => {
+  const handleSelectedMonth = (event) => {
+    const value = event.target.value;
     if (value === "All") {
-      setSelectedMonth("");
+      setSelectedMonth("All");
     } else {
       setSelectedMonth(value);
     }
+    console.log("Selected Month:", value);
   };
+
+  console.log(selectedMonth);
 
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
         <div className="m-2">
           <div className="flex mt-2 ml-2">
-            <div className="w-48 z-10">
-              SY: <Dropdown options={sy_options} onSelect={handleSelectSY} />
-              <p className="mt-4">Selected Value: {selectedSY}</p>
+            <div className="w-24 z-10 flex">
+              <div className="mr-2">SY:</div>
+              <select
+                id="sy"
+                name="sy"
+                value={selectedSY}
+                onChange={handleSelectSY}
+                className=" w-full text-base border rounded-md"
+              >
+                {Array.isArray(sy_options) &&
+                  sy_options.map((sy, index) => (
+                    <option key={index} value={sy}>
+                      {sy}
+                    </option>
+                  ))}
+              </select>
             </div>
-            <div className="w-56 z-10">
-              SEMESTER:{" "}
-              <Dropdown options={sem_options} onSelect={handleSelectSem} />
-              <p className="mt-4">Selected Value: {selectedSem}</p>
+            <div className="w-48 z-10 flex ml-5">
+              <div className="mr-2">SEMESTER:</div>
+              <select
+                id="sem"
+                name="sem"
+                value={selectedSem}
+                onChange={handleSelectSem}
+                className=" w-full text-base border rounded-md"
+              >
+                {sem_options.map((sem, index) => (
+                  <option key={index} value={sem}>
+                    {sem}
+                  </option>
+                ))}
+              </select>
             </div>
-            <div className="w-70 z-10">
-              MONTH:{" "}
-              <Dropdown
-                options={month_options}
-                onSelect={handleSelectedMonth}
-              />
+            <div className="w-48 z-10 flex ml-5">
+              <div className="mr-2">MONTH:</div>
+              <select
+                id="month"
+                name="month"
+                value={selectedMonth}
+                onChange={handleSelectedMonth}
+                className=" w-full text-base border rounded-md"
+              >
+                {Array.isArray(monthOptions) &&
+                  monthOptions.map((month, index) => (
+                    <option key={index} value={month}>
+                      {month}
+                    </option>
+                  ))}
+              </select>
             </div>
           </div>
           <div>
@@ -86,9 +166,7 @@ export const AttendanceSummary = () => {
             </div>
           </div>
           <div className="m-5">
-            <AttendanceSummaryTable
-              selectedMonth={month_options.indexOf(selectedMonth) - 1}
-            />
+            <AttendanceSummaryTable selectedMonth={selectedMonthIndex} />
           </div>
         </div>
       </div>

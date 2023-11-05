@@ -86,8 +86,6 @@ export const AttendanceSummaryTable = ({ selectedMonth }) => {
         });
 
         setAttendanceSummaries(filteredData);
-        console.log(selectedMonth);
-        console.log(filteredData);
       } catch (error) {
         console.error(error);
       }
