@@ -15,7 +15,6 @@ namespace CITNASDaily.Utils.Mappings
         {
             CreateMap<Schedule, ScheduleDto>().ReverseMap();
             CreateMap<Schedule, ScheduleCreateDto>().ReverseMap();
-            CreateMap<Schedule, ScheduleUpdateDto>().ReverseMap();
         }
     }
 }
