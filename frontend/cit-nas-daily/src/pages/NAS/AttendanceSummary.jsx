@@ -169,6 +169,7 @@ export const AttendanceSummary = () => {
           <div className="m-5">
             <AttendanceSummaryTable
               selectedMonth={selectedMonthIndex}
+              selectedSem={selectedSem}
               selectedSY={selectedSY}
             />
           </div>

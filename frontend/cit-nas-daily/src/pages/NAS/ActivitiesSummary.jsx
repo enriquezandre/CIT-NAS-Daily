@@ -147,6 +147,7 @@ export const ActivitiesSummary = () => {
           <div className="m-5">
             <ActivitiesSummaryTable
               selectedMonth={selectedMonthIndex}
+              selectedSem={selectedSem}
               selectedSY={selectedSY}
             />
           </div>

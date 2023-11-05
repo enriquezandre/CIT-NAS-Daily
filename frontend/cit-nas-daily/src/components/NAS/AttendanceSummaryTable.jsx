@@ -5,7 +5,11 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const AttendanceSummaryTable = ({ selectedMonth, selectedSY }) => {
+export const AttendanceSummaryTable = ({
+  selectedMonth,
+  selectedSem,
+  selectedSY,
+}) => {
   const { nasId } = useParams();
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
 
@@ -95,7 +99,15 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSY }) => {
             case -3:
               return month >= 5 && month <= 7 && year === second;
           }
-          return month === selectedMonth;
+
+          switch (selectedSem) {
+            case "First":
+              return month === selectedMonth && year === first;
+            case "Second":
+              return month === selectedMonth && year === second;
+            case "Summer":
+              return month === selectedMonth && year === second;
+          }
         });
 
         setAttendanceSummaries(filteredData);
@@ -105,7 +117,7 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSY }) => {
     };
 
     fetchNas();
-  }, [nasId, selectedMonth, selectedSY]);
+  }, [nasId, selectedMonth, selectedSem, selectedSY]);
 
   const formatTime = (time) => {
     const [hour, minute] = time.split(":");
@@ -162,5 +174,6 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSY }) => {
 
 AttendanceSummaryTable.propTypes = {
   selectedMonth: PropTypes.number.isRequired,
+  selectedSem: PropTypes.string.isRequired,
   selectedSY: PropTypes.string.isRequired,
 };

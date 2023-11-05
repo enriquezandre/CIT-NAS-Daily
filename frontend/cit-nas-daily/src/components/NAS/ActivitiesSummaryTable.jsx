@@ -4,7 +4,11 @@ import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const ActivitiesSummaryTable = ({ selectedMonth, selectedSY }) => {
+export const ActivitiesSummaryTable = ({
+  selectedMonth,
+  selectedSem,
+  selectedSY,
+}) => {
   const { nasId } = useParams();
   const [activitySummaries, setActivitySummaries] = useState([]);
 
@@ -40,7 +44,15 @@ export const ActivitiesSummaryTable = ({ selectedMonth, selectedSY }) => {
             case -3:
               return month >= 5 && month <= 7 && year === second;
           }
-          return month === selectedMonth;
+
+          switch (selectedSem) {
+            case "First":
+              return month === selectedMonth && year === first;
+            case "Second":
+              return month === selectedMonth && year === second;
+            case "Summer":
+              return month === selectedMonth && year === second;
+          }
         });
         setActivitySummaries(filteredData);
       } catch (error) {
@@ -49,7 +61,7 @@ export const ActivitiesSummaryTable = ({ selectedMonth, selectedSY }) => {
     };
 
     fetchNas();
-  }, [nasId, selectedMonth, selectedSY]);
+  }, [nasId, selectedMonth, selectedSem, selectedSY]);
 
   return (
     <Table hoverable className="border">
@@ -89,5 +101,6 @@ export const ActivitiesSummaryTable = ({ selectedMonth, selectedSY }) => {
 
 ActivitiesSummaryTable.propTypes = {
   selectedMonth: PropTypes.number.isRequired,
+  selectedSem: PropTypes.string.isRequired,
   selectedSY: PropTypes.string.isRequired,
 };
