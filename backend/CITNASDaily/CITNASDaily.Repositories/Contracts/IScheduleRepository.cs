@@ -10,7 +10,7 @@ namespace CITNASDaily.Repositories.Contracts
     public interface IScheduleRepository
     {
         Task<Schedule?> CreateScheduleAsync(Schedule schedule);
-        Task<Schedule?> GetScheduleAsync(int nasId);
-        Task DeleteScheduleByNASIdAsync(int nasId);
+        Task<IQueryable<Schedule?>> GetSchedulesByNASIdAsync(int nasId);
+        Task DeleteSchedulesByNASIdAsync(int nasId);
     }
 }
