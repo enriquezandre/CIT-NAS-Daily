@@ -16,8 +16,8 @@ export const ScheduleTable = ({
     return (
       <table className="w-full">
         <thead>
-          <tr>
-            <th>Day</th>
+          <tr style={{border: '1px solid #000'}}>
+            <th >Day</th>
             <th>Broken Schedule?</th>
             <th>Start Time</th>
             <th>End Time</th>
