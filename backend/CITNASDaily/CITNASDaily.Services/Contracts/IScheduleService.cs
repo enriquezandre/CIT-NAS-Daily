@@ -12,5 +12,6 @@ namespace CITNASDaily.Services.Contracts
     {
         Task<Schedule> CreateScheduleAsync(ScheduleCreateDto schedule);
         Task<ScheduleDto?> GetScheduleAsync(int nasId);
+        Task DeleteScheduleByNASIdAsync(int nasId);
     }
 }

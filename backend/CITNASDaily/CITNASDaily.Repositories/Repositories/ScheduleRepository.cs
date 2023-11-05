@@ -31,5 +31,17 @@ namespace CITNASDaily.Repositories.Repositories
         {
             return await _context.Schedules.FirstOrDefaultAsync(s => s.NASId == nasId);
         }
+
+        public async Task DeleteScheduleByNASIdAsync(int nasId)
+        {
+            var existingSchedule = await _context.Schedules
+                                    .Where(schedule => schedule.NASId == nasId)
+                                    .FirstOrDefaultAsync();
+            if (existingSchedule != null)
+            {
+                _context.Schedules.Remove(existingSchedule);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

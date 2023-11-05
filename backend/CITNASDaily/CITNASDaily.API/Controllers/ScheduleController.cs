@@ -76,5 +76,35 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> DeleteScheduleByNASIdAsync(int nasId)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var checkSched = await _scheduleService.GetScheduleAsync(nasId);
+
+                if(checkSched == null)
+                {
+                    return NotFound($"Schedule with NAS Id {nasId} does not exist");
+                }
+
+                await _scheduleService.DeleteScheduleByNASIdAsync(nasId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting NAS Schedule.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
     }
 }

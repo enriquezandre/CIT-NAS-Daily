@@ -40,5 +40,10 @@ namespace CITNASDaily.Services.Services
             var sched = await _scheduleRepository.GetScheduleAsync(nasId);
             return _mapper.Map<ScheduleDto>(sched);
         }
+
+        public async Task DeleteScheduleByNASIdAsync(int nasId)
+        {
+            await _scheduleRepository.DeleteScheduleByNASIdAsync(nasId);
+        }
     }
 }
