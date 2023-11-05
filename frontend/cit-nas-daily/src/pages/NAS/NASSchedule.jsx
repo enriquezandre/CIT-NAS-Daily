@@ -107,6 +107,16 @@ export const NASSchedule = () => {
     });
   }, [schedule, scheduleChanges]);
 
+  const calculateOverallTotalHours = () => {
+    let totalHours = 0;
+    days.forEach((day) => {
+      schedule[day].items.forEach((scheduleItem) => {
+        totalHours += scheduleItem.totalHours;
+      });
+    });
+    return totalHours;
+  };
+
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
@@ -223,12 +233,19 @@ export const NASSchedule = () => {
                     </tr>
                   )
                 ))}
+                <tr><br/></tr>
                 <tr>
-                  <th colSpan="4" className="pt-3 text-right font-weight-bold">
-                    <input type="button" value="Confirm" />
+                  <th colSpan="4"></th>
+                  <th colSpan="1" className="pt-3 text-center font-weight-bold">
+                    <button
+                      className="bg-primary text-white py-2 px-4 rounded"
+                      color="gray"
+                    >
+                      Submit
+                    </button>
                   </th>
-                  <th colSpan="1" className="pt-3 text-right font-weight-bold">
-                    Total Hours:
+                  <th colSpan="1" className="pt-3 text-center font-weight-bold">
+                    Total Hours: {calculateOverallTotalHours()} hours
                   </th>
                 </tr>
               </tbody>
