@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Dropdown } from "../../components/Dropdown.jsx";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 export const NASSchedule = () => {
+  const { nasId } = useParams();
   const [selectedSY, setSelectedSY] = useState("");
   const [selectedSem, setSelectedSem] = useState("");
 
@@ -40,7 +43,9 @@ export const NASSchedule = () => {
     updatedSchedule[day].items[index].start = value;
     setSchedule(updatedSchedule);
 
+    console.log(`Start Time for ${day}, Row ${index}: ${value}`);
     setScheduleChanges({ ...scheduleChanges, [day]: true });
+    
   };
 
   const handleEndTimeChange = (day, index, value) => {
@@ -48,6 +53,7 @@ export const NASSchedule = () => {
     updatedSchedule[day].items[index].end = value;
     setSchedule(updatedSchedule);
 
+    console.log(`End Time for ${day}, Row ${index}: ${value}`);
     setScheduleChanges({ ...scheduleChanges, [day]: true });
   };
 
@@ -115,6 +121,66 @@ export const NASSchedule = () => {
       });
     });
     return totalHours;
+  };
+
+  const overallHours = calculateOverallTotalHours();
+
+  const handleSubmit = async () => {
+    try {
+      const api = axios.create({
+        baseURL: "https://your-backend-api-url",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      // Loop through days and send each day's schedule to the backend
+      days.forEach(async (day) => {
+        if (schedule[day].isBroken) {
+          schedule[day].items.forEach(async (scheduleItem) => {
+            const dayOfWeek = day; // Assuming the day matches your enum
+            const startTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.start + ':00.000Z';
+            const endTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.end + ':00.000Z';
+            const brokenSched = true;
+            const totalHours = scheduleItem.totalHours;
+
+            // Send the schedule data for each row
+            const response = await api.post("https://localhost:7001/api/Schedule", {
+              nasId,
+              dayOfWeek,
+              startTime,
+              endTime,
+              brokenSched,
+              totalHours,
+            });
+
+            console.log(response); // Handle the response as needed
+          });
+        } else {
+          const scheduleItem = schedule[day].items[0];
+          const dayOfWeek = day; // Assuming the day matches your enum
+          const startTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.start + ':00.000Z';
+          const endTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.end + ':00.000Z';
+          const brokenSched = false;
+          const totalHours = scheduleItem.totalHours;
+
+          // Send the schedule data for the single row
+          const response = await api.post("https://localhost:7001/api/Schedule", {
+            nasId,
+            dayOfWeek,
+            startTime,
+            endTime,
+            brokenSched,
+            totalHours,
+          });
+
+          console.log(response); // Handle the response as needed
+        }
+      });
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -237,15 +303,16 @@ export const NASSchedule = () => {
                 <tr>
                   <th colSpan="4"></th>
                   <th colSpan="1" className="pt-3 text-center font-weight-bold">
-                    <button
-                      className="bg-primary text-white py-2 px-4 rounded"
-                      color="gray"
-                    >
-                      Submit
-                    </button>
+                  <button
+                    className={`py-2 px-4 rounded ${overallHours === 24 ? "bg-primary text-white" : "bg-gray-300 text-gray-600"}`}
+                    disabled={overallHours < 24}
+                    onClick={handleSubmit}
+                  >
+                    Submit
+                  </button>
                   </th>
                   <th colSpan="1" className="pt-3 text-center font-weight-bold">
-                    Total Hours: {calculateOverallTotalHours()} hours
+                    Total Hours: {overallHours} hours
                   </th>
                 </tr>
               </tbody>
