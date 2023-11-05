@@ -27,19 +27,19 @@ namespace CITNASDaily.Repositories.Repositories
             return schedule;
         }
 
-        public async Task<Schedule?> GetScheduleAsync(int nasId)
+        public async Task<IQueryable<Schedule?>> GetSchedulesByNASIdAsync(int nasId)
         {
-            return await _context.Schedules.FirstOrDefaultAsync(s => s.NASId == nasId);
+            return await Task.FromResult(_context.Schedules.Where(s => s.NASId == nasId));
         }
 
-        public async Task DeleteScheduleByNASIdAsync(int nasId)
+        public async Task DeleteSchedulesByNASIdAsync(int nasId)
         {
-            var existingSchedule = await _context.Schedules
+            var existingSchedules = await _context.Schedules
                                     .Where(schedule => schedule.NASId == nasId)
-                                    .FirstOrDefaultAsync();
-            if (existingSchedule != null)
+                                    .ToListAsync();
+            if (existingSchedules.Any())
             {
-                _context.Schedules.Remove(existingSchedule);
+                _context.Schedules.RemoveRange(existingSchedules);
                 await _context.SaveChangesAsync();
             }
         }
