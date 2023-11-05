@@ -98,7 +98,7 @@ namespace CITNASDaily.API.Controllers
                 }
 
                 await _scheduleService.DeleteSchedulesByNASIdAsync(nasId);
-                return Ok();
+                return Ok($"Schedules with NAS Id {nasId} deleted successfully");
             }
             catch (Exception ex)
             {
