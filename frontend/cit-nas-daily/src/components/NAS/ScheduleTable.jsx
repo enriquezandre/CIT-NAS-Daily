@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react';
 import { ScheduleRow } from './ScheduleRow';
 
 export const ScheduleTable = ({
@@ -10,9 +10,10 @@ export const ScheduleTable = ({
   handleRemoveScheduleRow,
   handleStartTimeChange,
   handleEndTimeChange,
-  handleSubmit,
+  openModal, // Include openModal here
   overallHours,
   }) => {
+    
     return (
       <table className="w-full">
         <thead>
@@ -92,7 +93,7 @@ export const ScheduleTable = ({
                 overallHours === 24 ? "bg-primary text-white" : "bg-gray-300 text-gray-600"
               }`}
               disabled={overallHours < 24}
-              onClick={handleSubmit}
+              onClick={openModal}
               style={{
                 backgroundColor: overallHours === 24 ? "#88333a" : "#c5c5c5",
                 color: "white",

@@ -2,12 +2,22 @@ import React, { useState, useEffect } from "react";
 import { Dropdown } from "../../components/Dropdown.jsx";
 import { useParams } from "react-router-dom";
 import { ScheduleTable } from "../../components/NAS/ScheduleTable.jsx";
+import { ScheduleModal } from "../../components/NAS/ScheduleModal.jsx";
 import axios from "axios";
 
 export const NASSchedule = () => {
   const { nasId } = useParams();
   const [selectedSY, setSelectedSY] = useState("");
   const [selectedSem, setSelectedSem] = useState("");
+  const [isOpen, setIsOpen] = useState(false); // Manage isOpen state here
+
+  const openModal = () => {
+    setIsOpen(true);
+  }
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
 
   const [schedule, setSchedule] = useState({
     Monday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
@@ -26,6 +36,7 @@ export const NASSchedule = () => {
     Friday: false,
     Saturday: false,
   });
+
 
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   const sy_options = ["2324", "2223", "2122", "2021"];
@@ -200,7 +211,6 @@ export const NASSchedule = () => {
             </div>
           </div>
           <div className="pt-10">
-            {/* Pass the schedule prop to the ScheduleTable component */}
             <ScheduleTable
               days={days}
               schedule={schedule}
@@ -210,12 +220,13 @@ export const NASSchedule = () => {
               handleRemoveScheduleRow={handleRemoveScheduleRow}
               handleStartTimeChange={handleStartTimeChange}
               handleEndTimeChange={handleEndTimeChange}
-              handleSubmit={handleSubmit}
+              openModal={openModal} // Pass openModal here
               overallHours={overallHours}
             />
           </div>
         </div>
       </div>
+      <ScheduleModal isOpen={isOpen} closeModal={closeModal} handleSubmit={handleSubmit} />
     </div>
   );
 };
