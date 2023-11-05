@@ -1,9 +1,14 @@
 import { Table } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 import axios from "axios";
 
-export const ActivitiesSummaryTable = () => {
+export const ActivitiesSummaryTable = ({
+  selectedMonth,
+  selectedSem,
+  selectedSY,
+}) => {
   const { nasId } = useParams();
   const [activitySummaries, setActivitySummaries] = useState([]);
 
@@ -19,15 +24,44 @@ export const ActivitiesSummaryTable = () => {
         });
 
         const response = await api.get(`/ActivitiesSummary/${nasId}`);
-        console.log(response);
-        setActivitySummaries(response.data);
+        const data = response.data;
+
+        const filteredData = data.filter((item) => {
+          const date = new Date(item.dateOfEntry);
+          const month = date.getMonth();
+          const year = date.getFullYear();
+          const first = parseInt(
+            year.toString().substring(0, 2) + selectedSY.substring(0, 2)
+          );
+          const second = parseInt(
+            year.toString().substring(0, 2) + selectedSY.substring(2)
+          );
+          switch (selectedMonth) {
+            case -1:
+              return month >= 7 && month <= 11 && year === first;
+            case -2:
+              return month >= 0 && month <= 5 && year === second;
+            case -3:
+              return month >= 5 && month <= 7 && year === second;
+          }
+
+          switch (selectedSem) {
+            case "First":
+              return month === selectedMonth && year === first;
+            case "Second":
+              return month === selectedMonth && year === second;
+            case "Summer":
+              return month === selectedMonth && year === second;
+          }
+        });
+        setActivitySummaries(filteredData);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchNas();
-  }, [nasId]);
+  }, [nasId, selectedMonth, selectedSem, selectedSY]);
 
   return (
     <Table hoverable className="border">
@@ -63,4 +97,10 @@ export const ActivitiesSummaryTable = () => {
       </Table.Body>
     </Table>
   );
+};
+
+ActivitiesSummaryTable.propTypes = {
+  selectedMonth: PropTypes.number.isRequired,
+  selectedSem: PropTypes.string.isRequired,
+  selectedSY: PropTypes.string.isRequired,
 };
