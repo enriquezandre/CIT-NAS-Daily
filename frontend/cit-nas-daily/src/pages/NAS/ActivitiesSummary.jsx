@@ -47,14 +47,14 @@ export const ActivitiesSummary = () => {
         setMonthOptions(second_sem);
         selectedMonthIndex = second_sem.indexOf(selectedMonth) - 1;
         if (selectedMonth === "All") {
-          selectedMonthIndex = -1;
+          selectedMonthIndex = -2;
         }
         break;
       case "Summer":
         setMonthOptions(summer);
         selectedMonthIndex = summer.indexOf(selectedMonth) + 5;
         if (selectedMonth === "All") {
-          selectedMonthIndex = -1;
+          selectedMonthIndex = -3;
         }
         break;
       default:

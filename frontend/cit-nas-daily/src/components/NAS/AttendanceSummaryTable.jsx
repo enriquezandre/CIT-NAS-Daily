@@ -78,10 +78,15 @@ export const AttendanceSummaryTable = ({ selectedMonth }) => {
         });
 
         const filteredData = latestLogs.filter((item) => {
-          if (selectedMonth < 0) {
-            return true;
-          }
           const month = new Date(item.dateTime).getMonth();
+          switch (selectedMonth) {
+            case -1:
+              return month >= 7 && month <= 11;
+            case -2:
+              return month >= 0 && month <= 5;
+            case -3:
+              return month >= 5 && month <= 7;
+          }
           return month === selectedMonth;
         });
 
