@@ -2,19 +2,23 @@ import React from 'react';
 import { Modal } from "flowbite-react";
 
 const modalStyle = {
-  padding: '0', // Set the padding to 0
+  padding: '0',
   zIndex: 1000,
 };
 
 const footerStyle = {
-  paddingTop: '0.5rem', // Adjust the top padding
-  paddingBottom: '0.5rem', // Adjust the bottom padding
+  paddingTop: '0.5rem',
+  paddingBottom: '0.5rem',
   display: 'flex',
-  justifyContent: 'flex-end'
-
+  justifyContent: 'flex-end',
 };
 
 export const ScheduleModal = ({ isOpen, closeModal, handleSubmit }) => {
+  const handleConfirm = () => {
+    handleSubmit(); // Call your submit function
+    closeModal();  // Close the modal after submitting
+  };
+
   return (
     <div>
       {isOpen && (
@@ -46,7 +50,7 @@ export const ScheduleModal = ({ isOpen, closeModal, handleSubmit }) => {
               </button>
             </div>
             <div className="flex m-2">
-              <button className="bg-primary text-white py-2 px-6 rounded-full" onClick={handleSubmit}>
+              <button className="bg-primary text-white py-2 px-6 rounded-full" onClick={handleConfirm}>
                 Confirm
               </button>
             </div>
