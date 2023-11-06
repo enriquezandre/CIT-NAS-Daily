@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { MonthlySummary } from "../../components/MonthlySummary";
 import { WeeklyAttendance } from "../../components/OAS/WeeklyAttendance";
+import { Button } from "flowbite-react";
+import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 
 export const OASAttendance = () => {
   const [selectedMonth, setSelectedMonth] = useState("");
@@ -27,16 +29,21 @@ export const OASAttendance = () => {
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey px-8 py-4 grid grid-cols-3">
-            <li>
-              <p className="font-bold">BELDEROL, KAYE CASSANDRA</p>
-            </li>
+          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey px-1 py-4 grid grid-cols-3">
+            <div className="flex items-center w-auto justify-start">
+              <div>
+                <Button className="text-black">
+                  <HiOutlineArrowLeft className="h-6 w-6" />
+                </Button>
+              </div>
+              <div className="font-bold">BELDEROL, KAYE CASSANDRA</div>
+            </div>
             <li>
               <p className="font-bold text-center">DEPT./OFFICE: ETO</p>
             </li>
-            <li>
-              <div className="flex justify-end">
-                <div className="relative w-4/5">
+            <li className="flex justify-end">
+              <div className="flex ">
+                <div className="relative w-auto">
                   <input
                     type="search"
                     className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
@@ -65,6 +72,9 @@ export const OASAttendance = () => {
                   </button>
                 </div>
               </div>
+              <Button className="text-black">
+                <HiOutlineArrowRight className="h-6 w-6" />
+              </Button>
             </li>
           </ul>
           <div className="px-8 py-4">
