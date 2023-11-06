@@ -91,6 +91,14 @@ export const ViewScheduleTable = () => {
     return items.length > 1 ? timeSlots.join('; ') : timeSlots[0];
   };
 
+  const calculateTotalHours = (items) => {
+    let total = 0;
+    items.forEach((item) => {
+      total += item.totalHours;
+    });
+    return total;
+  };
+
   return (
     <div className="p-10" style={{ display: 'flex', justifyContent: 'center' }}>
       <table className="w-10/12 border-collapse border">
@@ -114,7 +122,13 @@ export const ViewScheduleTable = () => {
                 {formatTimeSlots(schedule[day])}
               </td>
               <td className="border p-2 text-center align-middle">
-                {schedule[day][0].totalHours}
+                {schedule[day].length > 0 ? (
+                  schedule[day][0].brokenSched
+                    ? calculateTotalHours(schedule[day])
+                    : schedule[day][0].totalHours
+                ) : (
+                  ""
+                )}
               </td>
             </tr>
           ))}
