@@ -73,12 +73,18 @@ export const TimeLogCard = () => {
         const latestLog = logresponse.data.sort(
           (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
         )[0];
-        setInOut(latestLog.inOut); // ["DutyOn", "DutyOff", "OvertimeOn", "OvertimeOff"]
+        if (
+          new Date(latestLog.dateTime).toLocaleDateString() !==
+          new Date().toLocaleDateString()
+        ) {
+          setInOut(""); // Set inOut to an empty string every new day and no record of time in yet
+        } else {
+          setInOut(latestLog.inOut); // ["DutyOn", "DutyOff", "OvertimeOn", "OvertimeOff"]
+        }
         setTime(latestLog.dateTime);
 
         const activitiesresponse = await api.get(`ActivitiesSummary/${nasId}`);
         const activities = activitiesresponse.data;
-        console.log(activities);
         if (activities.length > 0) {
           // Sort the activities by 'dateOfEntry' in descending order
           activities.sort(
@@ -86,7 +92,7 @@ export const TimeLogCard = () => {
           );
 
           setLatestEntry(activities[0].dateOfEntry);
-          console.log(activities[0].dateOfEntry);
+          console.log(inOut);
         } else {
           console.log("No activities found");
         }
@@ -95,7 +101,7 @@ export const TimeLogCard = () => {
       }
     };
     fetchNas();
-  }, [nasId, latestEntry]);
+  }, [nasId, latestEntry, inOut]);
 
   return (
     <div className="flex justify-center items-center mx-1 mb-6">
