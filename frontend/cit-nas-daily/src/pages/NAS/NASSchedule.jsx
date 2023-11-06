@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Dropdown } from "../../components/Dropdown.jsx";
 import { useParams } from "react-router-dom";
 import { ScheduleTable } from "../../components/NAS/ScheduleTable.jsx";
-import { ScheduleModal } from "../../components/NAS/ScheduleModal.jsx";
+import { ScheduleModal } from "../../components/NAS/ConfirmScheduleModal.jsx";
 import axios from "axios";
 
 export const NASSchedule = () => {
