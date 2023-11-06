@@ -23,16 +23,16 @@ namespace CITNASDaily.API.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{nasId}", Name = "GetSchedule")]
+        [HttpGet("{nasId}", Name = "GetSchedulesByNASId")]
         [Authorize]
-        public async Task<IActionResult> GetSchedule(int nasId)
+        public async Task<IActionResult> GetSchedulesByNASId(int nasId)
         {
             try
             {
                 var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
                 if (currentUser == null) return Forbid();
 
-                var schedule = await _scheduleService.GetScheduleAsync(nasId);
+                var schedule = await _scheduleService.GetSchedulesByNASIdAsync(nasId);
 
                 if (schedule == null)
                 {
@@ -77,33 +77,32 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpDelete]
         [Authorize]
-
-        public async Task<IActionResult> UpdateNASSchedule([FromBody] ScheduleUpdateDto schedule)
+        public async Task<IActionResult> DeleteScheduleByNASIdAsync(int nasId)
         {
             try
             {
                 var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+
                 if (currentUser == null)
                 {
                     return Forbid();
                 }
 
-                var checkSchedule = await _scheduleService.GetScheduleAsync(schedule.NASId);
+                var checkSched = await _scheduleService.GetSchedulesByNASIdAsync(nasId);
 
-                if (checkSchedule == null)
+                if(checkSched == null)
                 {
-                    return NotFound();
+                    return NotFound($"Schedule with NAS Id {nasId} does not exist");
                 }
 
-                await _scheduleService.UpdateScheduleAsync(schedule);
-
-                return Ok("Schedule Updated");
+                await _scheduleService.DeleteSchedulesByNASIdAsync(nasId);
+                return Ok($"Schedules with NAS Id {nasId} deleted successfully");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating Schedule.");
+                _logger.LogError(ex, "Error deleting NAS Schedule.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }

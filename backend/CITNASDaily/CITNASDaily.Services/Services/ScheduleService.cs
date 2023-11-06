@@ -3,6 +3,7 @@ using CITNASDaily.Entities.Dtos.ScheduleDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Services.Contracts;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,17 +36,19 @@ namespace CITNASDaily.Services.Services
             return null;
         }
 
-        public async Task<ScheduleDto?> GetScheduleAsync(int nasId)
+        public async Task<List<Schedule?>> GetSchedulesByNASIdAsync(int nasId)
         {
-            var sched = await _scheduleRepository.GetScheduleAsync(nasId);
-            return _mapper.Map<ScheduleDto>(sched);
+            var sched = await _scheduleRepository.GetSchedulesByNASIdAsync(nasId);
+            if(!sched.IsNullOrEmpty())
+            {
+                return sched.ToList();
+            }
+            return null;
         }
 
-        public async Task UpdateScheduleAsync(ScheduleUpdateDto schedule)
+        public async Task DeleteSchedulesByNASIdAsync(int nasId)
         {
-            var sched = _mapper.Map<Schedule>(schedule);
-            Console.WriteLine(sched.Id);
-            await _scheduleRepository.UpdateScheduleAsync(sched);
+            await _scheduleRepository.DeleteSchedulesByNASIdAsync(nasId);
         }
     }
 }

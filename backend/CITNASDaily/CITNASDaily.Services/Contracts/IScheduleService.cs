@@ -11,7 +11,7 @@ namespace CITNASDaily.Services.Contracts
     public interface IScheduleService
     {
         Task<Schedule> CreateScheduleAsync(ScheduleCreateDto schedule);
-        Task<ScheduleDto?> GetScheduleAsync(int nasId);
-        Task UpdateScheduleAsync(ScheduleUpdateDto schedule);
+        Task<List<Schedule?>> GetSchedulesByNASIdAsync(int nasId);
+        Task DeleteSchedulesByNASIdAsync(int nasId);
     }
 }

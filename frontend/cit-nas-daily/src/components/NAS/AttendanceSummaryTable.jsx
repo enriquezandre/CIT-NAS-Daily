@@ -2,9 +2,14 @@
 import { Table } from "flowbite-react";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
 
-export const AttendanceSummaryTable = () => {
+export const AttendanceSummaryTable = ({
+  selectedMonth,
+  selectedSem,
+  selectedSY,
+}) => {
   const { nasId } = useParams();
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
 
@@ -19,11 +24,10 @@ export const AttendanceSummaryTable = () => {
         });
 
         const response = await api.get(`BiometricLogs?nasId=${nasId}`);
-        console.log(response);
         const data = response.data;
 
-        // Create a date range
-        const startDate = new Date("2023-11-01");
+        // TO DO: DATE RANGE FOR FIRST, SECOND, SUMMER SEMESTER
+        const startDate = new Date("2023-10-01");
         const endDate = new Date();
         endDate.setHours(23, 59, 59, 999);
         const dateRange = [];
@@ -77,14 +81,43 @@ export const AttendanceSummaryTable = () => {
           }
         });
 
-        setAttendanceSummaries(latestLogs);
+        const filteredData = latestLogs.filter((item) => {
+          const date = new Date(item.dateTime);
+          const month = date.getMonth();
+          const year = date.getFullYear();
+          const first = parseInt(
+            year.toString().substring(0, 2) + selectedSY.substring(0, 2)
+          );
+          const second = parseInt(
+            year.toString().substring(0, 2) + selectedSY.substring(2)
+          );
+          switch (selectedMonth) {
+            case -1:
+              return month >= 7 && month <= 11 && year === first;
+            case -2:
+              return month >= 0 && month <= 5 && year === second;
+            case -3:
+              return month >= 5 && month <= 7 && year === second;
+          }
+
+          switch (selectedSem) {
+            case "First":
+              return month === selectedMonth && year === first;
+            case "Second":
+              return month === selectedMonth && year === second;
+            case "Summer":
+              return month === selectedMonth && year === second;
+          }
+        });
+
+        setAttendanceSummaries(filteredData);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchNas();
-  }, [nasId]);
+  }, [nasId, selectedMonth, selectedSem, selectedSY]);
 
   const formatTime = (time) => {
     const [hour, minute] = time.split(":");
@@ -137,4 +170,10 @@ export const AttendanceSummaryTable = () => {
       </Table.Body>
     </Table>
   );
+};
+
+AttendanceSummaryTable.propTypes = {
+  selectedMonth: PropTypes.number.isRequired,
+  selectedSem: PropTypes.string.isRequired,
+  selectedSY: PropTypes.string.isRequired,
 };
