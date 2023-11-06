@@ -3,6 +3,7 @@ import { Dropdown } from "../../components/Dropdown.jsx";
 import { useParams } from "react-router-dom";
 import { ScheduleTable } from "../../components/NAS/ScheduleTable.jsx";
 import { ScheduleModal } from "../../components/NAS/ConfirmScheduleModal.jsx";
+import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable.jsx";
 import axios from "axios";
 
 export const NASSchedule = () => {
@@ -10,6 +11,7 @@ export const NASSchedule = () => {
   const [selectedSY, setSelectedSY] = useState("");
   const [selectedSem, setSelectedSem] = useState("");
   const [isOpen, setIsOpen] = useState(false); // Manage isOpen state here
+  const [apiData, setApiData] = useState(null);
 
   const openModal = () => {
     setIsOpen(true);
@@ -166,7 +168,7 @@ export const NASSchedule = () => {
               totalHours,
             });
 
-            console.log(response); // Handle the response as needed
+            console.log(response.data); 
           });
         } else {
           const scheduleItem = schedule[day].items[0];
@@ -186,7 +188,7 @@ export const NASSchedule = () => {
             totalHours,
           });
 
-          console.log(response); // Handle the response as needed
+          console.log(response);
         }
       });
 
@@ -195,34 +197,63 @@ export const NASSchedule = () => {
     }
   };
 
+
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get(`/Schedule/${nasId}`);
+        setApiData(nasData || []);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchSchedule();
+  }, [nasId]);
+
+  const dataExist = apiData && apiData.length > 0;
+
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
         <div className="m-2">
           <div className="flex mt-2 ml-2">
+          <div className="flex mt-2 ml-2">
             <div className="w-48 z-10">
               SY: <Dropdown options={sy_options} onSelect={handleSelectSY} />
               <p className="mt-4">Selected Value: {selectedSY}</p>
-            </div>
-            <div className="w-56 z-10">
-              SEMESTER:{" "}
-              <Dropdown options={sem_options} onSelect={handleSelectSem} />
-              <p className="mt-4">Selected Value: {selectedSem}</p>
+              </div>
+              <div className="w-56 z-10">
+                SEMESTER:{" "}
+                <Dropdown options={sem_options} onSelect={handleSelectSem} />
+                <p className="mt-4">Selected Value: {selectedSem}</p>
+              </div>
             </div>
           </div>
           <div className="pt-10">
-            <ScheduleTable
-              days={days}
-              schedule={schedule}
-              scheduleChanges={scheduleChanges}
-              handleToggleBrokenSchedule={handleToggleBrokenSchedule}
-              handleAddScheduleRow={handleAddScheduleRow}
-              handleRemoveScheduleRow={handleRemoveScheduleRow}
-              handleStartTimeChange={handleStartTimeChange}
-              handleEndTimeChange={handleEndTimeChange}
-              openModal={openModal} // Pass openModal here
-              overallHours={overallHours}
-            />
+            {dataExist ? (
+              <ViewScheduleTable apiData={apiData} />
+            ) : (
+              <ScheduleTable
+                days={days}
+                schedule={schedule}
+                scheduleChanges={scheduleChanges}
+                handleToggleBrokenSchedule={handleToggleBrokenSchedule}
+                handleAddScheduleRow={handleAddScheduleRow}
+                handleRemoveScheduleRow={handleRemoveScheduleRow}
+                handleStartTimeChange={handleStartTimeChange}
+                handleEndTimeChange={handleEndTimeChange}
+                openModal={openModal}
+                overallHours={overallHours}
+              />
+            )}
           </div>
         </div>
       </div>
