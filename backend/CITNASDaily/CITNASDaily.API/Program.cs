@@ -162,7 +162,8 @@ void ConfigureServices(IServiceCollection services)
         typeof(SuperiorEvaluationRatingProfile),
         typeof(ScheduleProfile),
         typeof(BiometricLogProfile),
-        typeof(SummaryEvaluationProfile)
+        typeof(SummaryEvaluationProfile),
+        typeof(ValidationProfile)
         );
 
     // Register repositories
@@ -177,6 +178,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<ISummaryEvaluationRepository, SummaryEvaluationRepository>();
     services.AddScoped<IScheduleRepository, ScheduleRepository>();
     services.AddScoped<IBiometricLogRepository, BiometricLogRepository>();
+    services.AddScoped<IValidationRepository, ValidationRepository>();
 
     // Register services
     services.AddScoped<ISuperiorService, SuperiorService>();
@@ -192,4 +194,5 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<ISummaryEvaluationService, SummaryEvaluationService>();
     services.AddScoped<IScheduleService, ScheduleService>();
     services.AddScoped<IBiometricLogService, BiometricLogService>();
+    services.AddScoped<IValidationService, ValidationService>();
 }

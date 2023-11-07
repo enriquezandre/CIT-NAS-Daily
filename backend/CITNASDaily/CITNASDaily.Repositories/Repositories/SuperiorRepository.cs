@@ -80,5 +80,15 @@ namespace CITNASDaily.Repositories.Repositories
             }
             return null;
         }
+
+        public async Task<int> GetSuperiorIdByUsernameAsync(string username)
+        {
+            var superior = await _context.Superiors.FirstOrDefaultAsync(c => c.Username == username);
+            if (superior != null)
+            {
+                return superior.Id;
+            }
+            return 0;
+        }
     }
 }

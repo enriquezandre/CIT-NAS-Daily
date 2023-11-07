@@ -259,6 +259,28 @@ namespace CITNASDaily.Repositories.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Validation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NASId = table.Column<int>(type: "int", nullable: false),
+                    NASLetter = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    DateSubmitted = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ValidationStatus = table.Column<int>(type: "int", nullable: false),
+                    MakeUpHours = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Validation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Validation_NAS_NASId",
+                        column: x => x.NASId,
+                        principalTable: "NAS",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_BiometricLog_NASId",
                 table: "BiometricLog",

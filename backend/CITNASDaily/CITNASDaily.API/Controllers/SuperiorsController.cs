@@ -129,5 +129,26 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        [HttpGet("{username}/id", Name = "GetSuperiorIdByUsername")]
+        [Authorize]
+        public async Task<IActionResult> GetSuperiorIdByUsername(string username)
+        {
+            try
+            {
+                var nasId = await _superiorService.GetSuperiorIdByUsernameAsync(username);
+
+                if (nasId == 0)
+                {
+                    return NotFound("Superior does not exist.");
+                }
+
+                return Ok(nasId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting NAS Id");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
     }
 }
