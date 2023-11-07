@@ -28,5 +28,23 @@ namespace CITNASDaily.Entities.Enums
             Friday,
             Saturday
         }
+
+        public enum ValidationStatus
+        {
+            [Description("Pending")]
+            Pending,
+            [Description("Excused")]
+            Excused,
+            [Description("Unexcused")]
+            Unexcused,
+            [Description("Disapproved")]
+            Disapproved,
+            [Description("Warning")]
+            Warning,
+            [Description("Last Warning")]
+            LastWarning,
+            [Description("Report To OAS")]
+            ReportToOAS
+        }
     }
 }
