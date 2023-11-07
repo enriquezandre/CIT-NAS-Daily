@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "flowbite-react";
 import { Header } from "../../components/Header";
 import { PerfSummary } from "../../components/Superior/PerfSummary.jsx";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 export const SuperiorEvaluation = () => {
+  const { nasId } = useParams();
+  const [nas, setNas] = useState({});
   const [selectedOptions, setSelectedOptions] = useState({});
   const [isViewingPerfSummary, setIsViewingPerfSummary] = useState(false);
 
@@ -57,18 +61,43 @@ export const SuperiorEvaluation = () => {
       rows: ["Overall Rating"],
     },
   ];
+
+  useEffect(() => {
+    const fetchNas = async () => {
+      try {
+        // Create an Axios instance with the Authorization header
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get(`/NAS/${nasId}`);
+        setNas(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchNas();
+  }, [nasId]);
   return (
     <>
-      <Header role={"SUPERIOR Name"} />
+      <Header />
       <Card className="w-9/10 mx-8 mb-10">
         <div className="grid grid-cols-1 sm:grid-cols-2">
           <p className="mb-3">
-            <strong className="font-bold">
-              NAME: BELDEROL, KAYE CASSANDRA
+            <strong
+              className="font-bold"
+              style={{ textTransform: "uppercase" }}
+            >
+              NAS NAME: {nas.lastName}, {nas.firstName} {nas.middleName}
             </strong>
           </p>
           <p className="mb-3">
-            <strong className="font-bold">COURSE: BSCS 3</strong>
+            <strong className="font-bold">
+              PROGRAM: {nas.course} {nas.yearLevel}
+            </strong>
           </p>
           <p className="mb-3">
             <strong className="font-bold">DEPT./OFFICE: ETO</strong>

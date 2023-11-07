@@ -14,8 +14,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         {/* Superior */}
-        <Route path="/superior/evaluation" element={<SuperiorEvaluation />} />
-        <Route path="/superior/naslist" element={<SuperiorNASList />} />
+        <Route
+          path="/superior/:superiorId/evaluation/:nasId"
+          element={<SuperiorEvaluation />}
+        />
+        <Route path="/superior/:superiorId" element={<SuperiorNASList />} />
         {/* OAS */}
         <Route path="/oas" element={<OASPage />} />
         {/* NAS */}

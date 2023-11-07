@@ -52,7 +52,9 @@ export const Login = () => {
           navigate(`/oas`);
           break;
         case "Superior":
-          navigate(`/superior/`);
+          const superiorIdResponse = await api.get(`/Superiors/${username}/id`);
+          const superiorId = superiorIdResponse.data;
+          navigate(`/superior/${superiorId}`);
           break;
         default:
           navigate("Unknown role");

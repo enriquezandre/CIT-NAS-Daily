@@ -1,13 +1,13 @@
 "use client";
 import { Header } from "../../components/Header";
-import NASList from "../../components/NASList";
+import SuperiorList from "../../components/Superior/SuperiorList";
 
 export const SuperiorNASList = () => {
   return (
     <div>
-      <Header role={"SUPERIOR Name"} />
+      <Header />
       <div>
-        <NASList />
+        <SuperiorList />
       </div>
     </div>
   );
