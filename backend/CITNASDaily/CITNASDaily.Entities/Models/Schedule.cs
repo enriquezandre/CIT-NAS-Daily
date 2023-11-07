@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Entities.Models
 {
@@ -10,15 +11,6 @@ namespace CITNASDaily.Entities.Models
         [Required]
         public int NASId { get; set; }
         public NAS? NAS { get; set; }
-        public enum DaysOfTheWeek
-        {
-            Monday,
-            Tuesday,
-            Wednesday,
-            Thursday,
-            Friday,
-            Saturday
-        }
         [Required]
         public DaysOfTheWeek DayOfWeek { get; set; }
         public DateTime StartTime { get; set; }
