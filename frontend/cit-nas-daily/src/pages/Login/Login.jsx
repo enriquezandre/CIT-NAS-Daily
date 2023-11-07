@@ -52,7 +52,7 @@ export const Login = () => {
           navigate(`/oas`);
           break;
         case "Superior":
-          navigate(`/superior/`);
+          navigate(`/superior`);
           break;
         default:
           navigate("Unknown role");
