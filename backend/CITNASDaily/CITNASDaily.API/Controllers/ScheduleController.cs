@@ -65,10 +65,10 @@ namespace CITNASDaily.API.Controllers
 
                 if (createdSchedule == null)
                 {
-                    return NotFound();
+                    return BadRequest("Creation Failed");
                 }
 
-                return Ok(createdSchedule);
+                return CreatedAtRoute("GetSchedulesByNASId", new { nasId = createdSchedule.NASId }, createdSchedule);
             }
             catch (Exception ex)
             {
