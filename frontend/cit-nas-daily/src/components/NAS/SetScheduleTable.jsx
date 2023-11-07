@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScheduleRow } from './ScheduleRow';
+import { ScheduleRow } from './SetScheduleRow';
 
 export const ScheduleTable = ({
   days,
@@ -10,7 +10,7 @@ export const ScheduleTable = ({
   handleRemoveScheduleRow,
   handleStartTimeChange,
   handleEndTimeChange,
-  openModal, // Include openModal here
+  openModal,
   overallHours,
   }) => {
     
