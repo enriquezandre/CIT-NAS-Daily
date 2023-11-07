@@ -1,21 +1,71 @@
 "use client";
 import PropTypes from "prop-types";
+import { Table } from "flowbite-react";
 
-import { useState } from 'react';
+import { useState, useEffect } from "react";
 import { MonthlySummary } from "../MonthlySummary";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 export const PerfSummary = ({ show, close }) => {
-  const [selectedMonth, setSelectedMonth] = useState('');
+  const nasId = useParams().nasId;
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [activitySummaries, setActivitySummaries] = useState([]);
+  const [filteredSummaries, setFilteredSummaries] = useState([]);
 
   const months = [
-    'January', 'February', 'March', 'April',
-    'May', 'June', 'July', 'August',
-    'September', 'October', 'November', 'December'
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
+  useEffect(() => {
+    const fetchNas = async () => {
+      try {
+        // Create an Axios instance with the Authorization header
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get(`/ActivitiesSummary/${nasId}`);
+        const data = response.data;
+
+        setActivitySummaries(data);
+        setFilteredSummaries(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchNas();
+  }, [nasId]);
+
   const handleChange = (event) => {
-    setSelectedMonth(event.target.value);
+    const newSelectedMonth = event.target.value;
+
+    // Filter activitySummaries based on selected month
+    const filtered = activitySummaries.filter((summary) => {
+      const date = new Date(summary.dateOfEntry);
+      const summaryMonth = date.getMonth();
+      return months[summaryMonth] === newSelectedMonth;
+    });
+
+    setSelectedMonth(newSelectedMonth);
+    setFilteredSummaries(filtered);
   };
+
   return (
     show && (
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
@@ -25,9 +75,25 @@ export const PerfSummary = ({ show, close }) => {
               <h3 className="text-xl text-center w-full font-bold text-gray-900 dark:text-white">
                 PERFORMANCE SUMMARY
               </h3>
-              <button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" onClick={close}>
-                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+              <button
+                type="button"
+                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                onClick={close}
+              >
+                <svg
+                  className="w-3 h-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 14"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                  />
                 </svg>
               </button>
             </div>
@@ -60,78 +126,82 @@ export const PerfSummary = ({ show, close }) => {
                   </select>
                 </div>
                 <div className="table-wrapper overflow-auto max-h-40">
-                  <table className="border w-full">
-                    <thead>
-                      <tr>
-                        <th className="border px-4 py-2 w-1/5">DATE</th>
-                        <th className="border px-4 py-2">Activities of the Day</th>
-                        <th className="border px-4 py-2">SKILLS LEARNED</th>
-                        <th className="border px-4 py-2">VALUES LEARNED</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                      </tr>
-                      <tr>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                      </tr>
-                      <tr>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                      </tr>
-                      <tr>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                      </tr>
-                      <tr>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                      </tr>
-                      <tr>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                      </tr>
-                      <tr>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                      </tr>
-                      <tr>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                        <td className="border px-4 py-2 text-center">Lorem Ipsum</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <Table hoverable className="border">
+                    <Table.Head className="border">
+                      <Table.HeadCell className="text-center border">
+                        DATE
+                      </Table.HeadCell>
+                      <Table.HeadCell className="text-center border">
+                        Activities of the Day
+                      </Table.HeadCell>
+                      <Table.HeadCell className="text-center border">
+                        Skills Learned
+                      </Table.HeadCell>
+                      <Table.HeadCell className="text-center border">
+                        Values Learned
+                      </Table.HeadCell>
+                    </Table.Head>
+                    <Table.Body className="divide-y">
+                      {filteredSummaries.map((summary) => (
+                        <Table.Row key={summary.id}>
+                          <Table.Cell
+                            className="text-center border"
+                            style={{
+                              overflowWrap: "break-word",
+                              maxWidth: "100px",
+                            }}
+                          >
+                            {new Date(summary.dateOfEntry).toLocaleDateString()}
+                          </Table.Cell>
+                          <Table.Cell
+                            className="text-center border"
+                            style={{
+                              overflowWrap: "break-word",
+                              maxWidth: "100px",
+                            }}
+                          >
+                            {summary.activitiesOfTheDay}
+                          </Table.Cell>
+                          <Table.Cell
+                            className="text-center border"
+                            style={{
+                              overflowWrap: "break-word",
+                              maxWidth: "100px",
+                            }}
+                          >
+                            {summary.skillsLearned}
+                          </Table.Cell>
+                          <Table.Cell
+                            className="text-center border"
+                            style={{
+                              overflowWrap: "break-word",
+                              maxWidth: "100px",
+                            }}
+                          >
+                            {summary.valuesLearned}
+                          </Table.Cell>
+                        </Table.Row>
+                      ))}
+                    </Table.Body>
+                  </Table>
                 </div>
               </div>
             </div>
             <div className="flex justify-center items-center p-6 space-x-2 border-gray-200 rounded-b dark:border-gray-600">
-              <button type="button" className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-lg text-sm px-10 py-2.5 text-center" onClick={close}>CLOSE</button>
+              <button
+                type="button"
+                className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-lg text-sm px-10 py-2.5 text-center"
+                onClick={close}
+              >
+                CLOSE
+              </button>
             </div>
           </div>
         </div>
       </div>
     )
   );
-}
+};
 
 PerfSummary.propTypes = {
   show: PropTypes.bool.isRequired,
