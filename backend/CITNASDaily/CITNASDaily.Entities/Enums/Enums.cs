@@ -37,14 +37,18 @@ namespace CITNASDaily.Entities.Enums
             Excused,
             [Description("Unexcused")]
             Unexcused,
+            [Description("For Make Up Duty")]
+            ForMakeUpDuty,
+            [Description("Approved")]
+            Approved,
             [Description("Disapproved")]
             Disapproved,
             [Description("Warning")]
             Warning,
             [Description("Last Warning")]
             LastWarning,
-            [Description("Report To OAS")]
-            ReportToOAS
+            [Description("Report To Office")]
+            ReportToOffice
         }
     }
 }
