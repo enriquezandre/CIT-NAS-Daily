@@ -49,7 +49,7 @@ export const Login = () => {
           navigate(`/nas/${nasId}`);
           break;
         case "OAS":
-          navigate(`/oas/offices`);
+          navigate(`/oas`);
           break;
         case "Superior":
           navigate(`/superior/`);

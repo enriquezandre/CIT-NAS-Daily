@@ -163,7 +163,6 @@ export const AttendanceSummaryTable = ({
                 ? formatTime(summary.OverTimeOff.dateTime.split("T")[1])
                 : ""}
             </Table.Cell>
-
             <Table.Cell></Table.Cell>
           </Table.Row>
         ))}
