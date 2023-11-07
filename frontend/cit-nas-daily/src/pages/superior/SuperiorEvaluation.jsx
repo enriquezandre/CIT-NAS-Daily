@@ -9,6 +9,8 @@ export const SuperiorEvaluation = () => {
   const { nasId } = useParams();
   const [nas, setNas] = useState({});
   const [selectedOptions, setSelectedOptions] = useState({});
+  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSem, setSelectedSem] = useState("First");
   const [isViewingPerfSummary, setIsViewingPerfSummary] = useState(false);
 
   const openPerfSummary = () => {
@@ -25,6 +27,19 @@ export const SuperiorEvaluation = () => {
       [rowName]: selectedValue,
     });
   };
+
+  const handleSelectSY = (event) => {
+    const value = event.target.value;
+    setSelectedSY(value);
+  };
+
+  const handleSelectSem = (event) => {
+    const value = event.target.value;
+    setSelectedSem(value);
+  };
+
+  const sy_options = ["2324", "2223", "2122", "2021"];
+  const sem_options = ["First", "Second", "Summer"];
 
   const categories = [
     {
@@ -102,12 +117,44 @@ export const SuperiorEvaluation = () => {
           <p className="mb-3">
             <strong className="font-bold">DEPT./OFFICE: ETO</strong>
           </p>
-          <p className="mb-3">
-            <strong className="font-bold">
-              PERIOD: Second Semester S.Y. 2022-2023
-            </strong>
-          </p>
         </div>
+        <div className="flex">
+          <div className="w-36 z-10 flex mr-10">
+            <div className="mr-2">SY:</div>
+            <select
+              id="sy"
+              name="sy"
+              value={selectedSY}
+              onChange={handleSelectSY}
+              className=" w-full text-base border rounded-md"
+            >
+              {Array.isArray(sy_options) &&
+                sy_options.map((sy, index) => (
+                  <option key={index} value={sy}>
+                    {sy}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div className="w-48 z-10 flex">
+            <div className="mr-2">SEMESTER:</div>
+            <select
+              id="sem"
+              name="sem"
+              value={selectedSem}
+              onChange={handleSelectSem}
+              className=" w-full text-base border rounded-md"
+            >
+              {sem_options.map((sem, index) => (
+                <option key={index} value={sem}>
+                  {sem}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         <div className="flex items-center justify-center">
           <button
             type="button"
