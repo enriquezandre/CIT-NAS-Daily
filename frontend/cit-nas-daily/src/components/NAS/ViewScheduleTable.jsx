@@ -91,49 +91,73 @@ export const ViewScheduleTable = () => {
     return items.length > 1 ? timeSlots.join('; ') : timeSlots[0];
   };
 
-  const calculateTotalHours = (items) => {
+  const calculateNumOfHours = (items) => {
     let total = 0;
     items.forEach((item) => {
       total += item.totalHours;
     });
     return total;
   };
+  
+  const calculateTotalHours = (items) => {
+    let total = 0;
+  
+    if (items) {
+      items.forEach((item) => {
+        total += item.totalHours;
+  
+        if (item.brokenSched) {
+          total += calculateTotalHours(item.items);
+        }
+      });
+    }
+  
+    return total;
+  };
+
+  console.log(calculateTotalHours());
 
   return (
-    <div className="p-10" style={{ display: 'flex', justifyContent: 'center' }}>
-      <table className="w-10/12 border-collapse border">
-        <thead>
-          <tr>
-            <th colSpan="4" className="border p-2 text-center">
-              Schedule Table
-            </th>
-          </tr>
-          <tr>
-            <th className="border p-2 text-center align-middle">Day of Week</th>
-            <th className="border p-2 text-center align-middle">Time</th>
-            <th className="border p-2 text-center align-middle">No. of Hours</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.keys(schedule).map((day) => (
-            <tr key={day}>
-              <td className="border p-2 text-center align-middle">{day}</td>
-              <td className="border p-2 text-center align-middle">
-                {formatTimeSlots(schedule[day])}
-              </td>
-              <td className="border p-2 text-center align-middle">
-                {schedule[day].length > 0 ? (
-                  schedule[day][0].brokenSched
-                    ? calculateTotalHours(schedule[day])
-                    : schedule[day][0].totalHours
-                ) : (
-                  ""
-                )}
-              </td>
+    <div>
+      <div className="pb-10" style={{ display: 'flex', justifyContent: 'center' }}>
+        <table className="w-10/12 border-collapse border">
+          <thead>
+            <tr>
+              <th colSpan="4" className="border p-2 text-center">
+                Schedule Table
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+            <tr>
+              <th className="border p-2 text-center align-middle">Day of Week</th>
+              <th className="border p-2 text-center align-middle">Time</th>
+              <th className="border p-2 text-center align-middle">No. of Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.keys(schedule).map((day) => (
+              <tr key={day}>
+                <td className="border p-2 text-center align-middle">{day}</td>
+                <td className="border p-2 text-center align-middle">
+                  {formatTimeSlots(schedule[day])}
+                </td>
+                <td className="border p-2 text-center align-middle">
+                  {schedule[day].length > 0 ? (
+                    schedule[day][0].brokenSched
+                      ? calculateNumOfHours(schedule[day])
+                      : schedule[day][0].totalHours
+                  ) : (
+                    ""
+                  )}
+                </td>
+              </tr>
+            ))}
+            <tr >
+              <td className="text-right font-bold p-2" colSpan="2">Number of hours: </td>
+              <td className="text-center font-bold p-2" colSpan="1">{calculateTotalHours()}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
