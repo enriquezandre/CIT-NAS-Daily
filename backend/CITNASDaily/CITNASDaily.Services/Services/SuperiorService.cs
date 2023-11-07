@@ -68,5 +68,10 @@ namespace CITNASDaily.Services.Services
 
             return user.Id;
         }
+
+        public async Task<int> GetSuperiorIdByUsernameAsync(string username)
+        {
+            return await _superiorRepository.GetSuperiorIdByUsernameAsync(username);
+        }
     }
 }
