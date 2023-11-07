@@ -9,7 +9,6 @@ import axios from "axios";
 
 export const NASSchedule = () => {
   const { nasId } = useParams();
-  const [selectedSY, setSelectedSY] = useState("");
   const [selectedSem, setSelectedSem] = useState("");
   const [isOpen, setIsOpen] = useState(false); // Manage isOpen state here
   const [apiData, setApiData] = useState(null);
@@ -27,12 +26,6 @@ export const NASSchedule = () => {
   const handleSelectSem = (value) => {
     setSelectedSem(value);
   };
-
-  const [semesterFlags, setSemesterFlags] = useState({
-    First: false,
-    Second: false,
-    Summer: false,
-  });
 
   // functions for SetScheduleTable starts here
 
@@ -146,7 +139,7 @@ export const NASSchedule = () => {
   const handleSubmit = async () => {
     try {
       const api = axios.create({
-        baseURL: "https://your-backend-api-url",
+        baseURL: "https://localhost:7001/api",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -204,7 +197,6 @@ export const NASSchedule = () => {
 
   // functions for SetScheduleTable ends here
 
-
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
@@ -226,16 +218,6 @@ export const NASSchedule = () => {
 
   const dataExist = apiData && apiData.length > 0;
 
-  useEffect(() => {
-    if (dataExist) {
-      const updatedFlags = { ...semesterFlags };
-      updatedFlags[selectedSem] = true;
-      setSemesterFlags(updatedFlags);
-    }
-  }, [dataExist, selectedSem]);
-
-  console.log(semesterFlags[selectedSem])
-
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
@@ -250,7 +232,7 @@ export const NASSchedule = () => {
             </div>
           </div>
           <div className="pt-10">
-            {dataExist && semesterFlags[selectedSem] ? (
+            {dataExist ? (
               <ViewScheduleTable apiData={apiData} />
             ) : (
               <ScheduleTable
@@ -273,9 +255,3 @@ export const NASSchedule = () => {
     </div>
   );
 };
-
-
-
-
-
-
