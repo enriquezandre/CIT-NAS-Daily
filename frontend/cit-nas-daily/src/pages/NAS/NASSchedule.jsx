@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Dropdown } from "../../components/Dropdown.jsx";
 import { useParams } from "react-router-dom";
-import { ScheduleTable } from "../../components/NAS/ScheduleTable.jsx";
+import { ScheduleTable } from "../../components/NAS/SetScheduleTable.jsx";
 import { ScheduleModal } from "../../components/NAS/ConfirmScheduleModal.jsx";
 import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable.jsx";
 import axios from "axios";
@@ -13,6 +13,8 @@ export const NASSchedule = () => {
   const [isOpen, setIsOpen] = useState(false); // Manage isOpen state here
   const [apiData, setApiData] = useState(null);
 
+  const sem_options = ["First", "Second", "Summer"];
+
   const openModal = () => {
     setIsOpen(true);
   }
@@ -20,6 +22,20 @@ export const NASSchedule = () => {
   const closeModal = () => {
     setIsOpen(false);
   };
+
+  const handleSelectSem = (value) => {
+    setSelectedSem(value);
+  };
+
+  const [semesterFlags, setSemesterFlags] = useState({
+    First: false,
+    Second: false,
+    Summer: false,
+  });
+
+  // functions for SetScheduleTable starts here
+
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const [schedule, setSchedule] = useState({
     Monday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
@@ -38,19 +54,6 @@ export const NASSchedule = () => {
     Friday: false,
     Saturday: false,
   });
-
-
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const sy_options = ["2324", "2223", "2122", "2021"];
-  const sem_options = ["First", "Second", "Summer"];
-
-  const handleSelectSY = (value) => {
-    setSelectedSY(value);
-  };
-
-  const handleSelectSem = (value) => {
-    setSelectedSem(value);
-  };
 
   const handleStartTimeChange = (day, index, value) => {
     const updatedSchedule = { ...schedule };
@@ -188,6 +191,7 @@ export const NASSchedule = () => {
             totalHours,
           });
 
+          window.location.reload();
           console.log(response);
         }
       });
@@ -197,20 +201,21 @@ export const NASSchedule = () => {
     }
   };
 
+  // functions for SetScheduleTable ends here
+
 
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
-
         const api = axios.create({
           baseURL: "https://localhost:7001/api",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-
+  
         const response = await api.get(`/Schedule/${nasId}`);
-        setApiData(nasData || []);
+        setApiData(response.data); // Use response.data here, not nasData
       } catch (error) {
         console.error(error);
       }
@@ -220,16 +225,22 @@ export const NASSchedule = () => {
 
   const dataExist = apiData && apiData.length > 0;
 
+  useEffect(() => {
+    if (dataExist) {
+      const updatedFlags = { ...semesterFlags };
+      updatedFlags[selectedSem] = true;
+      setSemesterFlags(updatedFlags);
+    }
+  }, [dataExist, selectedSem]);
+
+  console.log(semesterFlags[selectedSem])
+
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
         <div className="m-2">
           <div className="flex mt-2 ml-2">
-          <div className="flex mt-2 ml-2">
-            <div className="w-48 z-10">
-              SY: <Dropdown options={sy_options} onSelect={handleSelectSY} />
-              <p className="mt-4">Selected Value: {selectedSY}</p>
-              </div>
+            <div className="flex mt-2 ml-2">
               <div className="w-56 z-10">
                 SEMESTER:{" "}
                 <Dropdown options={sem_options} onSelect={handleSelectSem} />
@@ -238,7 +249,7 @@ export const NASSchedule = () => {
             </div>
           </div>
           <div className="pt-10">
-            {dataExist ? (
+            {dataExist && semesterFlags[selectedSem] ? (
               <ViewScheduleTable apiData={apiData} />
             ) : (
               <ScheduleTable
@@ -261,3 +272,9 @@ export const NASSchedule = () => {
     </div>
   );
 };
+
+
+
+
+
+
