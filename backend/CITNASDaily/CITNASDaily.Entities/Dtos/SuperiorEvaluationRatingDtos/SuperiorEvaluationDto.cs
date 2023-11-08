@@ -1,5 +1,6 @@
 ﻿using CITNASDaily.Entities.Models;
 using System.ComponentModel.DataAnnotations;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto
 {
@@ -12,9 +13,9 @@ namespace CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto
         public int NASId { get; set; }
         public NAS? NAS { get; set; }
         [Required]
-        public string Semester { get; set; }
+        public Semester Semester { get; set; }
         [Required]
-        public int Year { get; set; }
+        public SchoolYear SchoolYear { get; set; }
         [Required]
         public float AttendanceAndPunctuality { get; set; }
         [Required]

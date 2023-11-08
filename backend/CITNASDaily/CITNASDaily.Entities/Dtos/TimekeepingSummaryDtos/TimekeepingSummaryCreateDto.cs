@@ -13,6 +13,7 @@ namespace CITNASDaily.Entities.Dtos.TimekeepingSummaryDtos
     {
         public int NASId { get; set; }
         public Semester Semester { get; set; }
+        public SchoolYear SchoolYear { get; set; }
         public int? Excused { get; set; }
         public int? Unexcused { get; set; }
         public int? FailedToPunch { get; set; }

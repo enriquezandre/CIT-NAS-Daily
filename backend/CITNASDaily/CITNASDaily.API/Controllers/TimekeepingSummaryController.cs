@@ -42,7 +42,7 @@ namespace CITNASDaily.API.Controllers
                     return BadRequest("Creatiion Failed.");
                 }
 
-                return Ok(createdTimekeepingSummary);
+                return CreatedAtRoute("GetAllTimekeepingSummaryByNASId", new { nasId = createdTimekeepingSummary.NASId }, createdTimekeepingSummary);
             }
             catch (Exception ex)
             {
@@ -51,7 +51,7 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetAllTimekeepingSummary")]
         public async Task<IActionResult> GetAllTimekeepingSummary()
         {
             try
@@ -67,9 +67,9 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("{nasId}", Name = "GetAllTimekeepingSummary")]
+        [HttpGet("{nasId}", Name = "GetAllTimekeepingSummaryByNASId")]
         [Authorize]
-        public async Task<IActionResult> GetAllTimekeepingSummary(int nasId)
+        public async Task<IActionResult> GetAllTimekeepingSummaryByNASId(int nasId)
         {
             try
             {

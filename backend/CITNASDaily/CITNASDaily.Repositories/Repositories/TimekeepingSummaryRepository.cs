@@ -37,7 +37,7 @@ namespace CITNASDaily.Repositories.Repositories
                     {
                         return null;
                     }
-                    timekeepingSummary.Year = existingNAS.YearLevel; //SET YEAR LEVEL
+                    //timekeepingSummary.Year = existingNAS.YearLevel; //SET YEAR LEVEL
                     await _context.TimekeepingSummaries.AddAsync(timekeepingSummary);
                     await _context.SaveChangesAsync();
                     return timekeepingSummary;

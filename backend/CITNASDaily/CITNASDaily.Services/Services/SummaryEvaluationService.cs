@@ -26,39 +26,9 @@ namespace CITNASDaily.Services.Services
 
         public async Task<SummaryEvaluation?> CreateSummaryEvaluationAsync(SummaryEvaluationCreateDto summaryEvaluationCreateDto)
         {
-            var status = "";
-            var allowed = true;
-
-            if(summaryEvaluationCreateDto.SuperiorOverallRating <= 5 && summaryEvaluationCreateDto.SuperiorOverallRating >= 4.1)
-            {
-                status = "EXCELLENT";
-            }
-            else if (summaryEvaluationCreateDto.SuperiorOverallRating <= 4.0 && summaryEvaluationCreateDto.SuperiorOverallRating >= 3.0)
-            {
-                status = "GOOD";
-            }
-            else
-            {
-                status = "POOR";
-            }
-
-            if(status == "POOR")
-            {
-                allowed = false;
-            }
-
-            summaryEvaluationCreateDto.TimekeepingStatus = status;
-            summaryEvaluationCreateDto.EnrollmentAllowed = allowed;
-
             var summaryEvaluation = _mapper.Map<SummaryEvaluation>(summaryEvaluationCreateDto);
 
-            var createdSummaryEvaluation = await _summaryEvaluationRepository.CreateSummaryEvaluationAsync(summaryEvaluation);
-
-            if (createdSummaryEvaluation != null)
-            {
-                return createdSummaryEvaluation;
-            }
-            return null;
+            return await _summaryEvaluationRepository.CreateSummaryEvaluationAsync(summaryEvaluation);
         }
 
         public async Task<IEnumerable<SummaryEvaluationDto?>> GetSummaryEvaluationsAsync()
@@ -67,9 +37,9 @@ namespace CITNASDaily.Services.Services
 
             return _mapper.Map<IEnumerable<SummaryEvaluationDto>>(summaryeval);
         }
-        public async Task<SummaryEvaluation?> GetSummaryEvaluationWithNASIdAsync(int nasId)
+        public async Task<SummaryEvaluation?> GetSummaryEvaluationByNASIdAsync(int nasId)
         {
-            var summaryeval = await _summaryEvaluationRepository.GetSummaryEvaluationWithNASIdAsync(nasId);
+            var summaryeval = await _summaryEvaluationRepository.GetSummaryEvaluationByNASIdAsync(nasId);
 
             return _mapper.Map<SummaryEvaluation>(summaryeval);
         }
