@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.API.Controllers
 {
@@ -43,16 +44,16 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("{nasId}", Name = "GetSummaryEvaluationByNASId")]
+        [HttpGet("{year}/{semester}/{nasId}", Name = "GetSummaryEvaluationByNASId")]
         [Authorize]
-        public async Task<IActionResult> GetSummaryEvaluationByNASId(int nasId)
+        public async Task<IActionResult> GetSummaryEvaluationByNASIdSemesterYear(int nasId, Semester semester, int year)
         {
             try
             {
                 var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
                 if (currentUser == null) return Forbid();
 
-                var summaryEval = await _summaryEvaluationService.GetSummaryEvaluationByNASIdAsync(nasId);
+                var summaryEval = await _summaryEvaluationService.GetSummaryEvaluationByNASIdSemesterYearAsync(nasId, semester, year);
 
                 if (summaryEval == null)
                 {
@@ -91,6 +92,34 @@ namespace CITNASDaily.API.Controllers
                 return CreatedAtRoute("GetSummaryEvaluationByNASId", new { nasId = summaryEval.nasId }, summaryEval);
             }
             catch(Exception ex)
+            {
+                _logger.LogError(ex, "Error creating summary evaluation.");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> UpdateSummaryEvaluation([FromBody] SummaryEvaluationUpdateDto summary)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var summaryEval = await _summaryEvaluationService.UpdateSummaryEvaluationAsync(summary);
+
+                if (summaryEval == null)
+                {
+                    return BadRequest("Update Failed.");
+                }
+
+                return Ok(summaryEval);
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating summary evaluation.");
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
