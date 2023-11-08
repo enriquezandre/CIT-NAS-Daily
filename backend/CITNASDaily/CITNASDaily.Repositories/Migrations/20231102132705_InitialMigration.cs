@@ -38,10 +38,12 @@ namespace CITNASDaily.Repositories.Migrations
                     Semester = table.Column<int>(type: "int", nullable: false),
                     SchoolYear = table.Column<int>(type: "int", nullable: false),
                     SuperiorOverallRating = table.Column<float>(type: "real", nullable: false),
-                    AcademicPerformance = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AcademicPerformance = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     TimekeepingStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EnrollmentAllowed = table.Column<bool>(type: "bit", nullable: false),
-                    UnitsAllowed = table.Column<int>(type: "int", nullable: false)
+                    UnitsAllowed = table.Column<int>(type: "int", nullable: true),
+                    AllCoursesPassed = table.Column<bool>(type: "bit", nullable: true),
+                    NoOfCoursesFailed = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -242,11 +244,11 @@ namespace CITNASDaily.Repositories.Migrations
                     NASId = table.Column<int>(type: "int", nullable: false),
                     Semester = table.Column<int>(type: "int", nullable: false),
                     SchoolYear = table.Column<int>(type: "int", nullable: false),
-                    AttendanceAndPunctuality = table.Column<float>(type: "real", nullable: false),
-                    QualOfWorkOutput = table.Column<float>(type: "real", nullable: false),
-                    QualOfWorkInput = table.Column<float>(type: "real", nullable: false),
-                    AttitudeAndWorkBehaviour = table.Column<float>(type: "real", nullable: false),
-                    OverallAssessment = table.Column<float>(type: "real", nullable: false),
+                    AttendanceAndPunctuality = table.Column<int>(type: "int", nullable: false),
+                    QualOfWorkOutput = table.Column<int>(type: "int", nullable: false),
+                    QuanOfWorkOutput = table.Column<int>(type: "int", nullable: false),
+                    AttitudeAndWorkBehaviour = table.Column<int>(type: "int", nullable: false),
+                    OverallAssessment = table.Column<int>(type: "int", nullable: false),
                     OverallRating = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>

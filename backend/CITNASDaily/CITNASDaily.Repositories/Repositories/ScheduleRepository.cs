@@ -22,20 +22,6 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<Schedule?> CreateScheduleAsync(Schedule schedule)
         {
-            //checks for existing nas
-            var existingNAS = await _context.NAS.FirstOrDefaultAsync(e => e.Id == schedule.NASId);
-            if (existingNAS == null)
-            {
-                return null; //nas dont exist 
-            }
-
-            //checks if NAS has an existing schedule
-            var existingSched = await _context.Schedules.FirstOrDefaultAsync(e => e.NASId == schedule.NASId);
-            if(existingSched != null)
-            {
-                return null;
-            }
-
             await _context.Schedules.AddAsync(schedule);
             await _context.SaveChangesAsync();
             return schedule;

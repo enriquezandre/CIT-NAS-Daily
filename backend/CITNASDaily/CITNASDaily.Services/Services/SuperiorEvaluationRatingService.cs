@@ -51,7 +51,7 @@ namespace CITNASDaily.Services.Services
             return null;
         }
 
-        public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(int nasId, Semester semester, SchoolYear year)
+        public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(int nasId, Semester semester, int year)
         {
             var evaluationRating = await _superiorEvaluationRatingRepository.GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(nasId, semester, year);
 

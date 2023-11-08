@@ -34,16 +34,15 @@ namespace CITNASDaily.Repositories.Repositories
                 return null; //nas id with semester inputted do not exist in timekeeping summary
             }
 
-            // input should only be between 0 and 5
-            if (evaluation.AttendanceAndPunctuality >= 0 && evaluation.AttendanceAndPunctuality <= 5
-                && evaluation.QualOfWorkOutput >= 0 && evaluation.QualOfWorkOutput <= 5
-                && evaluation.QualOfWorkInput >= 0 && evaluation.QualOfWorkInput <= 5
-                && evaluation.AttitudeAndWorkBehaviour >= 0 && evaluation.AttitudeAndWorkBehaviour <= 5
+            if (evaluation.AttendanceAndPunctuality >= 0 && evaluation.AttendanceAndPunctuality <= 10
+                && evaluation.QualOfWorkOutput >= 0 && evaluation.QualOfWorkOutput <= 15
+                && evaluation.QuanOfWorkOutput >= 0 && evaluation.QuanOfWorkOutput <= 10
+                && evaluation.AttitudeAndWorkBehaviour >= 0 && evaluation.AttitudeAndWorkBehaviour <= 25
                 && evaluation.OverallAssessment >= 0 && evaluation.OverallAssessment <= 5)
             {
                 //calculation for overallrating
-                var overAllRating = (evaluation.AttendanceAndPunctuality + evaluation.QualOfWorkOutput + evaluation.QualOfWorkInput
-                    + evaluation.AttitudeAndWorkBehaviour + evaluation.OverallAssessment)/5;
+                var overAllRating = (float)(evaluation.AttendanceAndPunctuality + evaluation.QualOfWorkOutput + evaluation.QuanOfWorkOutput
+                    + evaluation.AttitudeAndWorkBehaviour + evaluation.OverallAssessment)/13;
                 evaluation.OverallRating = (float)Math.Round(overAllRating, 2);
                 evaluation.Semester = tkSummary.Semester;
                 evaluation.SchoolYear = tkSummary.SchoolYear;
@@ -55,7 +54,7 @@ namespace CITNASDaily.Repositories.Repositories
             
         }
 
-        public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(int nasId, Semester semester, SchoolYear year)
+        public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(int nasId, Semester semester, int year)
         {
             return await _context.SuperiorEvaluationRatings.FirstOrDefaultAsync(s => s.NASId == nasId && s.Semester == semester && s.SchoolYear == year);
         }

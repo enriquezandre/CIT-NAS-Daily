@@ -5,11 +5,13 @@ using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Repositories.Repositories;
 using CITNASDaily.Services.Contracts;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Services.Services
 {
@@ -37,11 +39,23 @@ namespace CITNASDaily.Services.Services
 
             return _mapper.Map<IEnumerable<SummaryEvaluationDto>>(summaryeval);
         }
-        public async Task<SummaryEvaluation?> GetSummaryEvaluationByNASIdAsync(int nasId)
+        public async Task<SummaryEvaluation?> GetSummaryEvaluationByNASIdSemesterYearAsync(int nasId, Semester semester, int year)
         {
-            var summaryeval = await _summaryEvaluationRepository.GetSummaryEvaluationByNASIdAsync(nasId);
+            var summaryeval = await _summaryEvaluationRepository.GetSummaryEvaluationByNASIdSemesterYearAsync(nasId, semester, year);
 
             return _mapper.Map<SummaryEvaluation>(summaryeval);
+        }
+
+        public async Task<SummaryEvaluation?> UpdateSummaryEvaluationAsync(SummaryEvaluationUpdateDto summaryEvaluationUpdateDto)
+        {
+            var summaryEvaluation = _mapper.Map<SummaryEvaluation>(summaryEvaluationUpdateDto);
+            return await _summaryEvaluationRepository.UpdateSummaryEvaluationAsync(summaryEvaluation);
+        }
+
+        public async Task<SummaryEvaluation?> UploadGrades(SummaryEvaluationGradeUpdateDto summary)
+        {
+            var summaryeval = _mapper.Map<SummaryEvaluation>(summary);
+            return await _summaryEvaluationRepository.UploadGrades(summaryeval);
         }
     }
 }
