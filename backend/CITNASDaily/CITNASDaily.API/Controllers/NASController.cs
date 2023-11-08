@@ -1,4 +1,5 @@
 ﻿using CITNASDaily.Entities.Dtos.NASDtos;
+using CITNASDaily.Entities.Dtos.SummaryEvaluationDtos;
 using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Services.Contracts;
@@ -18,13 +19,15 @@ namespace CITNASDaily.API.Controllers
         private readonly IAuthService _authService;
         private readonly INASService _nasService;
         private readonly ISuperiorEvaluationRatingService _superiorEvaluationRatingService;
+        private readonly ISummaryEvaluationService _summaryEvaluationService;
         private readonly ILogger<NASController> _logger;
 
-        public NASController(IAuthService authService, INASService nasService, ISuperiorEvaluationRatingService superiorEvaluationRatingService, ILogger<NASController> logger)
+        public NASController(IAuthService authService, INASService nasService, ISuperiorEvaluationRatingService superiorEvaluationRatingService, ISummaryEvaluationService summaryEvaluationService, ILogger<NASController> logger)
         {
             _authService = authService;
             _nasService = nasService;
             _superiorEvaluationRatingService = superiorEvaluationRatingService;
+            _summaryEvaluationService = summaryEvaluationService;
             _logger = logger;
         }
 
@@ -166,6 +169,34 @@ namespace CITNASDaily.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting list of NAS.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpPut(Name = "UploadGrades")]
+        [Authorize]
+        public async Task<IActionResult> UploadGrades(SummaryEvaluationGradeUpdateDto summary)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+                
+                var nasGrades = await _summaryEvaluationService.UploadGrades(summary);
+
+                if (nasGrades == null)
+                {
+                    return BadRequest("Upload Failed");
+                }
+
+                return Ok(nasGrades);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading grades.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }

@@ -38,10 +38,12 @@ namespace CITNASDaily.Repositories.Migrations
                     Semester = table.Column<int>(type: "int", nullable: false),
                     SchoolYear = table.Column<int>(type: "int", nullable: false),
                     SuperiorOverallRating = table.Column<float>(type: "real", nullable: false),
-                    AcademicPerformance = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AcademicPerformance = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     TimekeepingStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EnrollmentAllowed = table.Column<bool>(type: "bit", nullable: false),
-                    UnitsAllowed = table.Column<int>(type: "int", nullable: false)
+                    UnitsAllowed = table.Column<int>(type: "int", nullable: true),
+                    AllCoursesPassed = table.Column<bool>(type: "bit", nullable: true),
+                    NoOfCoursesFailed = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {

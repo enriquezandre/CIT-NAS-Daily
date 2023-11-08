@@ -15,11 +15,13 @@ namespace CITNASDaily.Entities.Models
         public int SchoolYear { get; set; }
         [Required]
         public float SuperiorOverallRating { get; set; }
-        public string? AcademicPerformance { get; set; }
+        public byte[]? AcademicPerformance { get; set; }
         [Required]
         public string? TimekeepingStatus { get; set; }
         [Required]
         public bool EnrollmentAllowed { get; set; }
         public int UnitsAllowed { get; set; }
+        public bool AllCoursesPassed { get; set; }
+        public int NoOfCoursesFailed { get; set; }
     }
 }
