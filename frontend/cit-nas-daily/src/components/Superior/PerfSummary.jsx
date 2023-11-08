@@ -12,6 +12,7 @@ export const PerfSummary = ({ show, close }) => {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [activitySummaries, setActivitySummaries] = useState([]);
   const [filteredSummaries, setFilteredSummaries] = useState([]);
+  const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
 
   const months = [
     "January",
@@ -39,11 +40,19 @@ export const PerfSummary = ({ show, close }) => {
           },
         });
 
-        const response = await api.get(`/ActivitiesSummary/${nasId}`);
-        const data = response.data;
+        const activitiesresponse = await api.get(`/ActivitiesSummary/${nasId}`);
+        const activitiesdata = activitiesresponse.data;
 
-        setActivitySummaries(data);
-        setFilteredSummaries(data);
+        setActivitySummaries(activitiesdata);
+        setFilteredSummaries(activitiesdata);
+
+        const timekeepingresponse = await api.get(
+          `/TimekeepingSummary/${nasId}`
+        );
+        const timekeepingdata = timekeepingresponse.data[0];
+        console.log(timekeepingdata);
+
+        setTimekeepingSummaries(timekeepingdata);
       } catch (error) {
         console.error(error);
       }
@@ -104,7 +113,7 @@ export const PerfSummary = ({ show, close }) => {
                   <p className="text-secondary">GOOD</p>
                 </h3>
               </div>
-              <MonthlySummary />
+              <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
               <div>
                 <h3 className="flex gap-6 text-xl text-left w-full font-semibold">
                   SUMMARY OF DAILY ACTIVITIES:
