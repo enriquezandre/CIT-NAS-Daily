@@ -6,6 +6,6 @@ namespace CITNASDaily.Repositories.Contracts
     public interface ISuperiorEvaluationRatingRepository
     {
         Task<SuperiorEvaluationRating?> CreateSuperiorEvaluationRatingAsync(SuperiorEvaluationRating evaluation);
-        Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(int nasId, Semester semester, SchoolYear year);
+        Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(int nasId, Semester semester, int year);
     }
 }

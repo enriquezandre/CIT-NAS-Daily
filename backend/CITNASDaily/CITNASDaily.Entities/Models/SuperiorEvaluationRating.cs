@@ -14,7 +14,7 @@ namespace CITNASDaily.Entities.Models
         public Semester Semester { get; set; }
 
         [Required]
-        public SchoolYear SchoolYear { get; set; }
+        public int SchoolYear { get; set; }
         [Required]
         public float AttendanceAndPunctuality { get; set; }
         [Required]

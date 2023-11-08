@@ -11,7 +11,7 @@ namespace CITNASDaily.Entities.Dtos.SuperiorEvaluationRatingDto
         [Required]
         public int NASId { get; set; }
         [Required]
-        public SchoolYear SchoolYear { get; set; }
+        public int SchoolYear { get; set; }
         [Required]
         public Semester Semester { get; set; }
         [Required]
