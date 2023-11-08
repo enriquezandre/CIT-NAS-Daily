@@ -18,7 +18,5 @@ namespace CITNASDaily.Entities.Dtos.SummaryEvaluationDtos
         public int SchoolYear { get; set; }
         [Required]
         public float SuperiorOverallRating { get; set; }
-        [Required]
-        public bool EnrollmentAllowed { get; set; }
     }
 }
