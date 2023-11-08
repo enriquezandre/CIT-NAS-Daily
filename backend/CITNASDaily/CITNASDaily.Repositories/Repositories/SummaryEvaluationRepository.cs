@@ -22,9 +22,23 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<SummaryEvaluation?> CreateSummaryEvaluationAsync(SummaryEvaluation summaryEvaluation)
         {
+            var rating = summaryEvaluation.SuperiorOverallRating;
+            if(rating >= 4.0 && rating <= 5.0)
+            {
+                summaryEvaluation.TimekeepingStatus = "EXCELLENT";
+            } 
+            else if(rating >= 3.0 && rating < 4.0)
+            {
+                summaryEvaluation.TimekeepingStatus = "GOOD";
+            }
+            else
+            {
+                summaryEvaluation.TimekeepingStatus = "POOR";
+            }
+
             if (Enum.IsDefined(typeof(Semester), summaryEvaluation.Semester))
             {
-                var existingSummary = await _context.SummaryEvaluations.FirstOrDefaultAsync(s => s.nasId == summaryEvaluation.nasId && s.Semester == summaryEvaluation.Semester);
+                var existingSummary = await _context.SummaryEvaluations.FirstOrDefaultAsync(s => s.nasId == summaryEvaluation.nasId && s.Semester == summaryEvaluation.Semester && s.SchoolYear == summaryEvaluation.SchoolYear);
                 if (existingSummary == null)
                 {
                     await _context.SummaryEvaluations.AddAsync(summaryEvaluation);
@@ -41,7 +55,7 @@ namespace CITNASDaily.Repositories.Repositories
             return await _context.SummaryEvaluations.ToListAsync();
         }
 
-        public async Task<SummaryEvaluation?> GetSummaryEvaluationWithNASIdAsync(int nasId)
+        public async Task<SummaryEvaluation?> GetSummaryEvaluationByNASIdAsync(int nasId)
         {
             return await _context.SummaryEvaluations.FirstOrDefaultAsync(s => s.nasId == nasId);
         }

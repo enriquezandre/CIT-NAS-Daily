@@ -29,7 +29,7 @@ namespace CITNASDaily.Repositories.Repositories
             }
             if (Enum.IsDefined(typeof(Semester), timekeepingSummary.Semester)) {
                 //checks time keeping summary with the same semester already exists
-                var existingSummary = await _context.TimekeepingSummaries.FirstOrDefaultAsync(s => s.NASId == timekeepingSummary.NASId && s.Semester == timekeepingSummary.Semester);
+                var existingSummary = await _context.TimekeepingSummaries.FirstOrDefaultAsync(s => s.NASId == timekeepingSummary.NASId && s.Semester == timekeepingSummary.Semester && s.SchoolYear == timekeepingSummary.SchoolYear);
                 if (existingSummary == null)
                 {
                     //this part is for setting the year in TK Summary
@@ -37,7 +37,7 @@ namespace CITNASDaily.Repositories.Repositories
                     {
                         return null;
                     }
-                    timekeepingSummary.Year = existingNAS.YearLevel; //SET YEAR LEVEL
+                    //timekeepingSummary.Year = existingNAS.YearLevel; //SET YEAR LEVEL
                     await _context.TimekeepingSummaries.AddAsync(timekeepingSummary);
                     await _context.SaveChangesAsync();
                     return timekeepingSummary;

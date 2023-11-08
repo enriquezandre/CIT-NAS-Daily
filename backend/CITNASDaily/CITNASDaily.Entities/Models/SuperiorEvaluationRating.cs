@@ -12,8 +12,9 @@ namespace CITNASDaily.Entities.Models
         public NAS? NAS { get; set; }
         [Required]
         public Semester Semester { get; set; }
+
         [Required]
-        public int? Year { get; set; }
+        public SchoolYear SchoolYear { get; set; }
         [Required]
         public float AttendanceAndPunctuality { get; set; }
         [Required]

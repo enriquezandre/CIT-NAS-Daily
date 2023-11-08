@@ -18,16 +18,22 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<SuperiorEvaluationRating?> CreateSuperiorEvaluationRatingAsync(SuperiorEvaluationRating evaluation)
         {
-            var existingEvaluation = await _context.SuperiorEvaluationRatings.FirstOrDefaultAsync(e => e.NASId == evaluation.NASId && e.Semester == evaluation.Semester);
+            var existingEvaluation = await _context.SuperiorEvaluationRatings
+                                        .Where(r => r.NASId == evaluation.NASId && r.Semester == evaluation.Semester && r.SchoolYear == evaluation.SchoolYear)
+                                        .FirstOrDefaultAsync();
             if (existingEvaluation != null)
             {
                 return null; //cannot add if it exist already in the table
             }
-            var tkSummary = await _context.TimekeepingSummaries.FirstOrDefaultAsync(t => t.NASId == evaluation.NASId && t.Semester == evaluation.Semester);
+
+            var tkSummary = await _context.TimekeepingSummaries
+                                        .Where(r => r.NASId == evaluation.NASId && r.Semester == evaluation.Semester && r.SchoolYear == evaluation.SchoolYear)
+                                        .FirstOrDefaultAsync();
             if (tkSummary == null)
             {
                 return null; //nas id with semester inputted do not exist in timekeeping summary
             }
+
             // input should only be between 0 and 5
             if (evaluation.AttendanceAndPunctuality >= 0 && evaluation.AttendanceAndPunctuality <= 5
                 && evaluation.QualOfWorkOutput >= 0 && evaluation.QualOfWorkOutput <= 5
@@ -40,7 +46,7 @@ namespace CITNASDaily.Repositories.Repositories
                     + evaluation.AttitudeAndWorkBehaviour + evaluation.OverallAssessment)/5;
                 evaluation.OverallRating = (float)Math.Round(overAllRating, 2);
                 evaluation.Semester = tkSummary.Semester;
-                evaluation.Year = tkSummary.Year;
+                evaluation.SchoolYear = tkSummary.SchoolYear;
                 await _context.SuperiorEvaluationRatings.AddAsync(evaluation);
                 await _context.SaveChangesAsync();
                 return evaluation;
@@ -49,9 +55,9 @@ namespace CITNASDaily.Repositories.Repositories
             
         }
 
-        public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(int nasId, Semester semester)
+        public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(int nasId, Semester semester, SchoolYear year)
         {
-            return await _context.SuperiorEvaluationRatings.FirstOrDefaultAsync(s => s.NASId == nasId && s.Semester == semester);
+            return await _context.SuperiorEvaluationRatings.FirstOrDefaultAsync(s => s.NASId == nasId && s.Semester == semester && s.SchoolYear == year);
         }
     }
 }

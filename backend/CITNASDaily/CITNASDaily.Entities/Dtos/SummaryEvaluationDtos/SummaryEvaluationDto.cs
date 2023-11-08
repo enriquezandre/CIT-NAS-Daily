@@ -7,7 +7,7 @@ namespace CITNASDaily.Entities.Dtos.SummaryEvaluationDtos
         public int Id { get; set; }
         public int nasId { get; set; }
         public Semester Semester { get; set; }
-        public int? Year { get; set; }
+        public SchoolYear SchoolYear { get; set; }
         public float SuperiorOverallRating { get; set; }
         public string? AcademicPerformance { get; set; }
         public string? TimekeepingStatus { get; set; }

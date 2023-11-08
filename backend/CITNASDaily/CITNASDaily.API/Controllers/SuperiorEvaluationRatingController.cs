@@ -47,7 +47,7 @@ namespace CITNASDaily.API.Controllers
                     return BadRequest("Creation Failed.");
                 }
 
-                return Ok(createdSuperiorEvaluationRating);
+                return CreatedAtRoute("GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYear", new { nasId = createdSuperiorEvaluationRating.NASId, semester = createdSuperiorEvaluationRating.Semester, year = createdSuperiorEvaluationRating.SchoolYear }, createdSuperiorEvaluationRating);
             }
             catch (Exception ex)
             {
@@ -56,9 +56,9 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet(Name = "GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync")]
+        [HttpGet(Name = "GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYear")]
         [Authorize]
-        public async Task<IActionResult> GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(int nasId, Semester semester)
+        public async Task<IActionResult> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYear(int nasId, Semester semester, SchoolYear year)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace CITNASDaily.API.Controllers
                     return Forbid();
                 }
 
-                var superiorEvaluationRating = await _superiorEvaluationRatingService.GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(nasId, semester);
+                var superiorEvaluationRating = await _superiorEvaluationRatingService.GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(nasId, semester, year);
 
                 if (superiorEvaluationRating == null)
                 {
