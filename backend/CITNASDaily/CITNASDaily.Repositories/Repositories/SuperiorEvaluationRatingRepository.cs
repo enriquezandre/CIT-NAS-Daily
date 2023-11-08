@@ -34,16 +34,6 @@ namespace CITNASDaily.Repositories.Repositories
                 return null; //nas id with semester inputted do not exist in timekeeping summary
             }
 
-            /*var existingEvaluation = await _context.SuperiorEvaluationRatings.FirstOrDefaultAsync(e => e.NASId == evaluation.NASId && e.Semester == evaluation.Semester && e.SchoolYear == evaluation.SchoolYear);
-            if (existingEvaluation != null)
-            {
-                return null; //cannot add if it exist already in the table
-            }
-            var tkSummary = await _context.TimekeepingSummaries.FirstOrDefaultAsync(t => t.NASId == evaluation.NASId && t.Semester == evaluation.Semester && t.SchoolYear == evaluation.SchoolYear);
-            if (tkSummary == null)
-            {
-                return null; //nas id with semester inputted do not exist in timekeeping summary
-            }*/
             // input should only be between 0 and 5
             if (evaluation.AttendanceAndPunctuality >= 0 && evaluation.AttendanceAndPunctuality <= 5
                 && evaluation.QualOfWorkOutput >= 0 && evaluation.QualOfWorkOutput <= 5

@@ -38,7 +38,7 @@ namespace CITNASDaily.Repositories.Repositories
 
             if (Enum.IsDefined(typeof(Semester), summaryEvaluation.Semester))
             {
-                var existingSummary = await _context.SummaryEvaluations.FirstOrDefaultAsync(s => s.nasId == summaryEvaluation.nasId && s.Semester == summaryEvaluation.Semester);
+                var existingSummary = await _context.SummaryEvaluations.FirstOrDefaultAsync(s => s.nasId == summaryEvaluation.nasId && s.Semester == summaryEvaluation.Semester && s.SchoolYear == summaryEvaluation.SchoolYear);
                 if (existingSummary == null)
                 {
                     await _context.SummaryEvaluations.AddAsync(summaryEvaluation);
