@@ -1,6 +1,7 @@
 ﻿using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Context;
 using CITNASDaily.Repositories.Contracts;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -55,9 +56,54 @@ namespace CITNASDaily.Repositories.Repositories
             return await _context.SummaryEvaluations.ToListAsync();
         }
 
-        public async Task<SummaryEvaluation?> GetSummaryEvaluationByNASIdAsync(int nasId)
+        public async Task<SummaryEvaluation?> GetSummaryEvaluationByNASIdSemesterYearAsync(int nasId, Semester semester, int year)
         {
-            return await _context.SummaryEvaluations.FirstOrDefaultAsync(s => s.nasId == nasId);
+            return await _context.SummaryEvaluations.FirstOrDefaultAsync(s => s.nasId == nasId && s.Semester == semester && s.SchoolYear == year);
+        }
+
+        public async Task<SummaryEvaluation?> UpdateSummaryEvaluationAsync(SummaryEvaluation summaryEvaluation)
+        {
+            var existingEval = await _context.SummaryEvaluations
+                                                .Where(se => se.nasId == summaryEvaluation.nasId && se.Semester == summaryEvaluation.Semester && se.SchoolYear == summaryEvaluation.SchoolYear)
+                                                .FirstOrDefaultAsync();
+            if(existingEval != null)
+            {
+                existingEval.UnitsAllowed = summaryEvaluation.UnitsAllowed;
+                existingEval.AllCoursesPassed = summaryEvaluation.AllCoursesPassed;
+                existingEval.NoOfCoursesFailed = summaryEvaluation.NoOfCoursesFailed;
+
+                if(existingEval.AllCoursesPassed == true && (existingEval.SuperiorOverallRating >= 3 && existingEval.SuperiorOverallRating <= 5) && existingEval.TimekeepingStatus != "POOR")
+                {
+                    existingEval.EnrollmentAllowed = true;
+                }
+                else
+                {
+                    existingEval.EnrollmentAllowed = false;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return existingEval;
+            }
+
+            return null;
+        }
+
+        public async Task<SummaryEvaluation?> UploadGrades(SummaryEvaluation summary)
+        {
+            var existingEval = await _context.SummaryEvaluations
+                                                .Where(se => se.nasId == summary.nasId && se.Semester == summary.Semester && se.SchoolYear == summary.SchoolYear)
+                                                .FirstOrDefaultAsync();
+            if (existingEval != null)
+            {
+                existingEval.AcademicPerformance = summary.AcademicPerformance;
+
+                await _context.SaveChangesAsync();
+
+                return existingEval;
+            }
+
+            return null;
         }
     }
 }

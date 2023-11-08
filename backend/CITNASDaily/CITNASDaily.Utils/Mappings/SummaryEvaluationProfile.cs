@@ -14,6 +14,8 @@ namespace CITNASDaily.Utils.Mappings
         public SummaryEvaluationProfile() {
             CreateMap<SummaryEvaluation, SummaryEvaluationDto>().ReverseMap();
             CreateMap<SummaryEvaluation, SummaryEvaluationCreateDto>().ReverseMap();
+            CreateMap<SummaryEvaluation, SummaryEvaluationUpdateDto>().ReverseMap();
+            CreateMap<SummaryEvaluation, SummaryEvaluationGradeUpdateDto>().ReverseMap();
         }
     }
 }

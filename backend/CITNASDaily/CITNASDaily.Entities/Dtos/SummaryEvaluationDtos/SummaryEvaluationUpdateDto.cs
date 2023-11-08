@@ -8,15 +8,13 @@ using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Entities.Dtos.SummaryEvaluationDtos
 {
-    public class SummaryEvaluationCreateDto
+    public class SummaryEvaluationUpdateDto
     {
-        [Required]
         public int nasId { get; set; }
-        [Required]
         public Semester Semester { get; set; }
-        [Required]
         public int SchoolYear { get; set; }
-        [Required]
-        public float SuperiorOverallRating { get; set; }
+        public int UnitsAllowed { get; set; }
+        public bool AllCoursesPassed { get; set; }
+        public int NoOfCoursesFailed { get; set; }
     }
 }
