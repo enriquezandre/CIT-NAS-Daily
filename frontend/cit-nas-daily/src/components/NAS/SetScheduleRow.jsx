@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react";
 
-export const ScheduleRow = ({ 
+export const ScheduleRow = ({
   day,
   index,
   scheduleItem,
@@ -42,22 +42,19 @@ export const ScheduleRow = ({
           <button
             onClick={() => handleAddScheduleRow(day)}
             disabled={!isBroken}
-            style={{ color: isBroken ? 'green' : '#C5C5C5' }}
+            style={{ color: isBroken ? "green" : "#C5C5C5" }}
           >
             Add Row
           </button>
         </td>
       ) : (
         <td className="text-center">
-          <button
-            onClick={() => handleRemoveScheduleRow(day, index)}
-            style={{ color: 'red' }}
-          >
+          <button onClick={() => handleRemoveScheduleRow(day, index)} style={{ color: "red" }}>
             Remove Row
           </button>
         </td>
       )}
-      <td className="text-center">{scheduleItem.totalHours} hours</td>
+      <td className="text-center">{scheduleItem.totalHours.toFixed(2)} hours</td>
     </tr>
   );
 };
