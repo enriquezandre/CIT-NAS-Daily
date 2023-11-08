@@ -7,8 +7,8 @@ import axios from "axios";
 
 export const NASSchedule = () => {
   const { nasId } = useParams();
-  const [selectedSem, setSelectedSem] = useState("");
-  const [selectedSY, setSelectedSY] = useState("");
+  const [selectedSem, setSelectedSem] = useState("First");
+  const [selectedSY, setSelectedSY] = useState("2324");
   const [isOpen, setIsOpen] = useState(false); // Manage isOpen state here
   const [apiData, setApiData] = useState(null);
 
