@@ -1,6 +1,4 @@
-"use client"
-import React, { useState, useEffect } from "react";
-import { Dropdown } from "../../components/Dropdown.jsx";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ScheduleTable } from "../../components/NAS/SetScheduleTable.jsx";
 import { ScheduleModal } from "../../components/NAS/ConfirmScheduleModal.jsx";
@@ -9,42 +7,39 @@ import axios from "axios";
 
 export const NASSchedule = () => {
   const { nasId } = useParams();
-  const [selectedSem, setSelectedSem] = useState("First");
-  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSem, setSelectedSem] = useState("");
+  const [selectedSY, setSelectedSY] = useState("");
   const [isOpen, setIsOpen] = useState(false); // Manage isOpen state here
   const [apiData, setApiData] = useState(null);
 
-  const sy_options = ["2324", "2223", "2122", "2021"];
+  const sy_options = ["2021", "2122", "2223", "2324"];
   const sem_options = ["First", "Second", "Summer"];
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const openModal = () => {
     setIsOpen(true);
-  }
+  };
 
   const closeModal = () => {
     setIsOpen(false);
-  };
-
-  const handleSelectSem = (value) => {
-    setSelectedSem(value);
   };
 
   const handleSelectSY = (value) => {
     setSelectedSY(value);
   };
 
+  const handleSelectSem = (value) => {
+    setSelectedSem(value);
+  };
+
+  // const [semesterFlags, setSemesterFlags] = useState({
+  //   First: false,
+  //   Second: false,
+  //   Summer: false,
+  // });
 
   // functions for SetScheduleTable starts here
 
-  const dayOfWeekMap = {
-    Monday: 0,
-    Tuesday: 1,
-    Wednesday: 2,
-    Thursday: 3,
-    Friday: 4,
-    Saturday: 5,
-  };
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const [schedule, setSchedule] = useState({
     Monday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
@@ -71,7 +66,6 @@ export const NASSchedule = () => {
 
     console.log(`Start Time for ${day}, Row ${index}: ${value}`);
     setScheduleChanges({ ...scheduleChanges, [day]: true });
-    
   };
 
   const handleEndTimeChange = (day, index, value) => {
@@ -126,7 +120,7 @@ export const NASSchedule = () => {
             const endHour = parseInt(endTime.split(":")[0]);
             const endMinute = parseInt(endTime.split(":")[1]);
 
-            const totalMinutes = (endHour * 60 + endMinute) - (startHour * 60 + startMinute);
+            const totalMinutes = endHour * 60 + endMinute - (startHour * 60 + startMinute);
             updatedSchedule[day].items[index].totalHours = totalMinutes / 60;
           } else {
             updatedSchedule[day].items[index].totalHours = 0;
@@ -159,19 +153,21 @@ export const NASSchedule = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-  
-      const scheduleData = [];
-  
-      days.forEach((day) => {
+
+      // Loop through days and send each day's schedule to the backend
+      days.forEach(async (day) => {
         if (schedule[day].isBroken) {
-          schedule[day].items.forEach((scheduleItem) => {
-            const dayOfWeek = dayOfWeekMap[day];
-            const startTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.start + ':00.000Z';
-            const endTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.end + ':00.000Z';
+          schedule[day].items.forEach(async (scheduleItem) => {
+            const dayOfWeek = day; // Assuming the day matches your enum
+            const startTime =
+              new Date().toISOString().split("T")[0] + "T" + scheduleItem.start + ":00.000Z";
+            const endTime =
+              new Date().toISOString().split("T")[0] + "T" + scheduleItem.end + ":00.000Z";
             const brokenSched = true;
             const totalHours = scheduleItem.totalHours;
-  
-            scheduleData.push({
+
+            // Send the schedule data for each row
+            const response = await api.post("https://localhost:7001/api/Schedule", {
               nasId,
               dayOfWeek,
               startTime,
@@ -179,16 +175,21 @@ export const NASSchedule = () => {
               brokenSched,
               totalHours,
             });
+
+            console.log(response.data);
           });
         } else {
           const scheduleItem = schedule[day].items[0];
-          const dayOfWeek = dayOfWeekMap[day];
-          const startTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.start + ':00.000Z';
-          const endTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.end + ':00.000Z';
+          const dayOfWeek = day; // Assuming the day matches your enum
+          const startTime =
+            new Date().toISOString().split("T")[0] + "T" + scheduleItem.start + ":00.000Z";
+          const endTime =
+            new Date().toISOString().split("T")[0] + "T" + scheduleItem.end + ":00.000Z";
           const brokenSched = false;
           const totalHours = scheduleItem.totalHours;
-  
-          scheduleData.push({
+
+          // Send the schedule data for the single row
+          const response = await api.post("https://localhost:7001/api/Schedule", {
             nasId,
             dayOfWeek,
             startTime,
@@ -196,19 +197,15 @@ export const NASSchedule = () => {
             brokenSched,
             totalHours,
           });
+
+          window.location.reload();
+          console.log(response);
         }
       });
-  
-      // Send all schedule data in a single request
-      const response = await api.post("Schedule", scheduleData);
-  
-      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
   };
-  
-  
 
   // functions for SetScheduleTable ends here
 
@@ -221,9 +218,9 @@ export const NASSchedule = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-  
+
         const response = await api.get(`/Schedule/${nasId}`);
-        setApiData(response.data);
+        setApiData(response.data); // Use response.data here, not nasData
       } catch (error) {
         console.error(error);
       }
@@ -233,45 +230,57 @@ export const NASSchedule = () => {
 
   const dataExist = apiData && apiData.length > 0;
 
+  // useEffect(() => {
+  //   if (dataExist) {
+  //     const updatedFlags = { ...semesterFlags };
+  //     updatedFlags[selectedSem] = true;
+  //     setSemesterFlags(updatedFlags);
+  //   }
+  // }, [dataExist, selectedSem]);
+
+  // console.log(semesterFlags[selectedSem]);
+
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
         <div className="m-2">
           <div className="flex mt-2 ml-2">
-          <div className="w-36 z-10 flex">
-            <div className="mr-2">SY:</div>
-              <select
-                id="sy"
-                name="sy"
-                value={selectedSY}
-                onChange={handleSelectSY}
-                className=" w-full text-base border rounded-md"
-                disabled
-              >
-                {Array.isArray(sy_options) &&
-                  sy_options.map((sy, index) => (
-                    <option key={index} value={sy}>
-                      {sy}
+            <div className="flex mt-2 ml-2">
+              <div className="w-36 z-10 flex">
+                <div className="mr-2">SY:</div>
+                <select
+                  id="sy"
+                  name="sy"
+                  value={selectedSY}
+                  onChange={handleSelectSY}
+                  className=" w-full text-base border rounded-md"
+                  disabled
+                >
+                  {Array.isArray(sy_options) &&
+                    sy_options.map((sy, index) => (
+                      <option key={index} value={sy}>
+                        {sy}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="w-48 z-10 flex ml-5">
+                <div className="mr-2">SEMESTER:</div>
+                <select
+                  id="sem"
+                  name="sem"
+                  value={selectedSem}
+                  onChange={handleSelectSem}
+                  className=" w-full text-base border rounded-md"
+                  disabled
+                >
+                  {sem_options.map((sem, index) => (
+                    <option key={index} value={sem}>
+                      {sem}
                     </option>
                   ))}
-              </select>
-            </div>
-            <div className="w-48 z-10 flex ml-5">
-              <div className="mr-2">SEMESTER:</div>
-              <select
-                id="sem"
-                name="sem"
-                value={selectedSem}
-                onChange={handleSelectSem}
-                className=" w-full text-base border rounded-md"
-                disabled
-              >
-                {sem_options.map((sem, index) => (
-                  <option key={index} value={sem}>
-                    {sem}
-                  </option>
-                ))}
-              </select>
+                </select>
+              </div>
             </div>
           </div>
           <div className="pt-10">
