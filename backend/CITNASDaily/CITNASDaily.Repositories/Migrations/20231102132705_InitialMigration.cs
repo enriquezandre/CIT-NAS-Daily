@@ -244,11 +244,11 @@ namespace CITNASDaily.Repositories.Migrations
                     NASId = table.Column<int>(type: "int", nullable: false),
                     Semester = table.Column<int>(type: "int", nullable: false),
                     SchoolYear = table.Column<int>(type: "int", nullable: false),
-                    AttendanceAndPunctuality = table.Column<float>(type: "real", nullable: false),
-                    QualOfWorkOutput = table.Column<float>(type: "real", nullable: false),
-                    QualOfWorkInput = table.Column<float>(type: "real", nullable: false),
-                    AttitudeAndWorkBehaviour = table.Column<float>(type: "real", nullable: false),
-                    OverallAssessment = table.Column<float>(type: "real", nullable: false),
+                    AttendanceAndPunctuality = table.Column<int>(type: "int", nullable: false),
+                    QualOfWorkOutput = table.Column<int>(type: "int", nullable: false),
+                    QuanOfWorkOutput = table.Column<int>(type: "int", nullable: false),
+                    AttitudeAndWorkBehaviour = table.Column<int>(type: "int", nullable: false),
+                    OverallAssessment = table.Column<int>(type: "int", nullable: false),
                     OverallRating = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>

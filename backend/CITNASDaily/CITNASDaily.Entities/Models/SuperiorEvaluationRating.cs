@@ -16,15 +16,15 @@ namespace CITNASDaily.Entities.Models
         [Required]
         public int SchoolYear { get; set; }
         [Required]
-        public float AttendanceAndPunctuality { get; set; }
+        public int AttendanceAndPunctuality { get; set; }
         [Required]
-        public float QualOfWorkOutput { get; set; }
+        public int QualOfWorkOutput { get; set; }
         [Required]
-        public float QualOfWorkInput { get; set; }
+        public int QuanOfWorkOutput { get; set; }
         [Required]
-        public float AttitudeAndWorkBehaviour { get; set; }
+        public int AttitudeAndWorkBehaviour { get; set; }
         [Required]
-        public float OverallAssessment { get; set; }
+        public int OverallAssessment { get; set; }
         [Required]
         public float OverallRating { get; set; }
 	}
