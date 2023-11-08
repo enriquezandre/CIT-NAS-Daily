@@ -10,6 +10,9 @@ namespace CITNASDaily.Services.Contracts
 {
     public interface IValidationService
     {
-        Task<Validation?> CreateValidaitonAsync(ValidationCreateDto validationCreateDto);
+        Task<Validation?> CreateValidationAsync(ValidationCreateDto validationCreateDto);
+        Task<IEnumerable<Validation>?> GetAllValidationsAsync();
+        Task<ValidationDto?> GetValidationByIdAsync(int validationId);
+        Task<Validation?> UpdateValidationAsync(ValidationUpdateDto validation, int validationId);
     }
 }

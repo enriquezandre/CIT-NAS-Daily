@@ -22,17 +22,34 @@ namespace CITNASDaily.Services.Services
             _mapper = mapper;
         }
 
-        public async Task<Validation?> CreateValidaitonAsync(ValidationCreateDto validationCreateDto)
+        public async Task<Validation?> CreateValidationAsync(ValidationCreateDto validationCreateDto)
         {
             var val = _mapper.Map<Validation>(validationCreateDto);
 
-            var createdVal = await _validationRepository.CreateValidaitonAsync(val);
+            var createdVal = await _validationRepository.CreateValidationAsync(val);
 
             if(createdVal != null)
             {
                 return createdVal;
             }
             return null;
+        }
+
+        public async Task<IEnumerable<Validation>?> GetAllValidationsAsync()
+        {
+            return await _validationRepository.GetAllValidationsAsync();
+        }
+
+        public async Task<ValidationDto?> GetValidationByIdAsync(int validationId)
+        {
+            var validation = await _validationRepository.GetValidationByIdAsync(validationId);
+            return _mapper.Map<ValidationDto>(validation);
+        }
+
+        public async Task<Validation?> UpdateValidationAsync(ValidationUpdateDto validationUpdateDto, int validationId)
+        {
+            var validation = _mapper.Map<Validation>(validationUpdateDto);
+            return await _validationRepository.UpdateValidationAsync(validation, validationId);
         }
     }
 }
