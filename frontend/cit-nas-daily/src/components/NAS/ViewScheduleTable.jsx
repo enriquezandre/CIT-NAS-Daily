@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 export const ViewScheduleTable = () => {
   const { nasId } = useParams();
+  const [totalHours, setTotalHours] = useState(0);
   const [schedule, setSchedule] = useState({
     Monday: [],
     Tuesday: [],
@@ -56,6 +57,14 @@ export const ViewScheduleTable = () => {
     fetchSchedule();
   }, [nasId]);
 
+  useEffect(() => {
+    // Calculate the total hours when the schedule updates
+    const total = Object.values(schedule).reduce((acc, daySchedule) => {
+      return acc + calculateNumOfHours(daySchedule);
+    }, 0);
+    setTotalHours(total);
+  }, [schedule]);
+
   const getDayName = (dayOfWeek) => {
     switch (dayOfWeek) {
       case 0:
@@ -83,12 +92,16 @@ export const ViewScheduleTable = () => {
     const ampm = hours >= 12 ? "PM" : "AM";
     const formattedHours = hours % 12 || 12; // Convert to 12-hour format
 
-    return `${formattedHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    return `${formattedHours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")} ${ampm}`;
   };
 
   const formatTimeSlots = (items) => {
-    const timeSlots = items.map((item) => `${formatTime(item.startTime)} - ${formatTime(item.endTime)}`);
-    return items.length > 1 ? timeSlots.join('; ') : timeSlots[0];
+    const timeSlots = items.map(
+      (item) => `${formatTime(item.startTime)} - ${formatTime(item.endTime)}`
+    );
+    return items.length > 1 ? timeSlots.join("; ") : timeSlots[0];
   };
 
   const calculateNumOfHours = (items) => {
@@ -98,28 +111,10 @@ export const ViewScheduleTable = () => {
     });
     return total;
   };
-  
-  const calculateTotalHours = (items) => {
-    let total = 0;
-  
-    if (items) {
-      items.forEach((item) => {
-        total += item.totalHours;
-  
-        if (item.brokenSched) {
-          total += calculateTotalHours(item.items);
-        }
-      });
-    }
-  
-    return total;
-  };
-
-  console.log(calculateTotalHours());
 
   return (
     <div>
-      <div className="pb-10" style={{ display: 'flex', justifyContent: 'center' }}>
+      <div className="pb-10" style={{ display: "flex", justifyContent: "center" }}>
         <table className="w-10/12 border-collapse border">
           <thead>
             <tr>
@@ -141,19 +136,21 @@ export const ViewScheduleTable = () => {
                   {formatTimeSlots(schedule[day])}
                 </td>
                 <td className="border p-2 text-center align-middle">
-                  {schedule[day].length > 0 ? (
-                    schedule[day][0].brokenSched
+                  {schedule[day].length > 0
+                    ? schedule[day][0].brokenSched
                       ? calculateNumOfHours(schedule[day])
                       : schedule[day][0].totalHours
-                  ) : (
-                    ""
-                  )}
+                    : ""}
                 </td>
               </tr>
             ))}
-            <tr >
-              <td className="text-right font-bold p-2" colSpan="2">Number of hours: </td>
-              <td className="text-center font-bold p-2" colSpan="1">{calculateTotalHours()}</td>
+            <tr>
+              <td className="text-right font-bold p-2" colSpan="2">
+                Number of hours:{" "}
+              </td>
+              <td className="text-center font-bold p-2" colSpan="1">
+                {totalHours}
+              </td>
             </tr>
           </tbody>
         </table>
