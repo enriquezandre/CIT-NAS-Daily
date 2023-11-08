@@ -9,11 +9,14 @@ import axios from "axios";
 
 export const NASSchedule = () => {
   const { nasId } = useParams();
-  const [selectedSem, setSelectedSem] = useState("");
+  const [selectedSem, setSelectedSem] = useState("First");
+  const [selectedSY, setSelectedSY] = useState("2324");
   const [isOpen, setIsOpen] = useState(false); // Manage isOpen state here
   const [apiData, setApiData] = useState(null);
 
+  const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const openModal = () => {
     setIsOpen(true);
@@ -27,9 +30,12 @@ export const NASSchedule = () => {
     setSelectedSem(value);
   };
 
-  // functions for SetScheduleTable starts here
+  const handleSelectSY = (value) => {
+    setSelectedSY(value);
+  };
 
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  // functions for SetScheduleTable starts here
 
   const dayOfWeekMap = {
     Monday: 0,
@@ -153,19 +159,19 @@ export const NASSchedule = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
-      // Loop through days and send each day's schedule to the backend
-      days.forEach(async (day) => {
+  
+      const scheduleData = [];
+  
+      days.forEach((day) => {
         if (schedule[day].isBroken) {
-          schedule[day].items.forEach(async (scheduleItem) => {
+          schedule[day].items.forEach((scheduleItem) => {
             const dayOfWeek = dayOfWeekMap[day];
             const startTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.start + ':00.000Z';
             const endTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.end + ':00.000Z';
             const brokenSched = true;
             const totalHours = scheduleItem.totalHours;
-
-            // Send the schedule data for each row
-            const response = await api.post("https://localhost:7001/api/Schedule", {
+  
+            scheduleData.push({
               nasId,
               dayOfWeek,
               startTime,
@@ -173,8 +179,6 @@ export const NASSchedule = () => {
               brokenSched,
               totalHours,
             });
-
-            console.log(response.data); 
           });
         } else {
           const scheduleItem = schedule[day].items[0];
@@ -183,9 +187,8 @@ export const NASSchedule = () => {
           const endTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.end + ':00.000Z';
           const brokenSched = false;
           const totalHours = scheduleItem.totalHours;
-
-          // Send the schedule data for the single row
-          const response = await api.post("https://localhost:7001/api/Schedule", {
+  
+          scheduleData.push({
             nasId,
             dayOfWeek,
             startTime,
@@ -193,19 +196,21 @@ export const NASSchedule = () => {
             brokenSched,
             totalHours,
           });
-
-          //window.location.reload();
-          console.log(response);
         }
       });
-
+  
+      // Send all schedule data in a single request
+      const response = await api.post("Schedule", scheduleData);
+  
+      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
   };
+  
+  
 
   // functions for SetScheduleTable ends here
-
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -233,12 +238,40 @@ export const NASSchedule = () => {
       <div className="m-3">
         <div className="m-2">
           <div className="flex mt-2 ml-2">
-            <div className="flex mt-2 ml-2">
-              <div className="w-56 z-10">
-                SEMESTER:{" "}
-                <Dropdown options={sem_options} onSelect={handleSelectSem} />
-                <p className="mt-4">Selected Value: {selectedSem}</p>
-              </div>
+          <div className="w-36 z-10 flex">
+            <div className="mr-2">SY:</div>
+              <select
+                id="sy"
+                name="sy"
+                value={selectedSY}
+                onChange={handleSelectSY}
+                className=" w-full text-base border rounded-md"
+                disabled
+              >
+                {Array.isArray(sy_options) &&
+                  sy_options.map((sy, index) => (
+                    <option key={index} value={sy}>
+                      {sy}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div className="w-48 z-10 flex ml-5">
+              <div className="mr-2">SEMESTER:</div>
+              <select
+                id="sem"
+                name="sem"
+                value={selectedSem}
+                onChange={handleSelectSem}
+                className=" w-full text-base border rounded-md"
+                disabled
+              >
+                {sem_options.map((sem, index) => (
+                  <option key={index} value={sem}>
+                    {sem}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="pt-10">
