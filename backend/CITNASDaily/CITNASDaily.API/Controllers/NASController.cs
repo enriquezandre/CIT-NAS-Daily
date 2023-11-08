@@ -77,11 +77,11 @@ namespace CITNASDaily.API.Controllers
 
         [HttpGet("{nasId}/rating", Name = "GetNASSuperiorEvaluationRating")]
         [Authorize]
-        public async Task<IActionResult> GetNASSuperiorEvaluationRatingAsync(int nasId, Semester semester)
+        public async Task<IActionResult> GetNASSuperiorEvaluationRatingAsync(int nasId, Semester semester, SchoolYear year)
         {
             try
             {
-                var superiorEval = await _superiorEvaluationRatingService.GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(nasId, semester);
+                var superiorEval = await _superiorEvaluationRatingService.GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(nasId, semester, year);
 
                 if (superiorEval == null)
                 {

@@ -41,7 +41,7 @@ namespace CITNASDaily.Services.Services
                 {
                     nasId = createdEvaluationRating.NASId,
                     Semester = createdEvaluationRating.Semester,
-                    Year = createdEvaluationRating.Year,
+                    SchoolYear = createdEvaluationRating.SchoolYear,
                     SuperiorOverallRating = createdEvaluationRating.OverallRating
                 };
                 await _summaryEvaluationService.CreateSummaryEvaluationAsync(summary);
@@ -51,9 +51,9 @@ namespace CITNASDaily.Services.Services
             return null;
         }
 
-        public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(int nasId, Semester semester)
+        public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(int nasId, Semester semester, SchoolYear year)
         {
-            var evaluationRating = await _superiorEvaluationRatingRepository.GetSuperiorEvaluationRatingWithNASIdAndSemesterAsync(nasId, semester);
+            var evaluationRating = await _superiorEvaluationRatingRepository.GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(nasId, semester, year);
 
             if (evaluationRating != null)
             {

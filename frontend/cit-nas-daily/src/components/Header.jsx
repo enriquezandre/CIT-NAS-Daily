@@ -8,6 +8,7 @@ import axios from "axios";
 export const Header = () => {
   const navigate = useNavigate();
   const { nasId } = useParams();
+  const { superiorId } = useParams();
   const [user, setUser] = useState({});
 
   const handleLogout = () => {
@@ -44,7 +45,7 @@ export const Header = () => {
             setUser(oasResponse.data);
             break;
           case "Superior":
-            const superiorResponse = await api.get(`/Superior/1`);
+            const superiorResponse = await api.get(`/Superiors/${superiorId}`);
             setUser(superiorResponse.data);
             break;
           default:
@@ -56,7 +57,7 @@ export const Header = () => {
     };
 
     fetchUser();
-  }, [nasId]);
+  }, [nasId, superiorId]);
 
   return (
     <>
