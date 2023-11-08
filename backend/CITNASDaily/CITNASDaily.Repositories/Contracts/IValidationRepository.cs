@@ -9,6 +9,9 @@ namespace CITNASDaily.Repositories.Contracts
 {
     public interface IValidationRepository
     {
-        Task<Validation?> CreateValidaitonAsync(Validation validation);
+        Task<Validation?> CreateValidationAsync(Validation validation);
+        Task<IEnumerable<Validation>?> GetAllValidationsAsync();
+        Task<Validation?> GetValidationByIdAsync(int validationId);
+        Task<Validation?> UpdateValidationAsync(Validation validation, int validationId);
     }
 }
