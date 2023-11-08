@@ -1,9 +1,51 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { Card } from "flowbite-react";
 import { Header } from "../../components/Header";
 import { PerfSummary } from "../../components/Superior/PerfSummary.jsx";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+
+const categories = [
+  {
+    title: "ATTENDANCE AND PUNCTUALITY",
+    rows: ["Regularity of Attendance", "Promptness in Reporting for Duty"],
+    index: 0,
+  },
+  {
+    title: "QUALITY OF WORK - OUTPUT",
+    rows: [
+      "Accuracy and Thoroughness of Work",
+      "Organization and/or Presentation/Neatness of Work",
+      "Effectiveness (Satisfaction of Clients: No/Less Complaints)",
+    ],
+    index: 1,
+  },
+  {
+    title: "QUANTITY OF WORK - OUTPUT",
+    rows: [
+      "Accomplishes more work on the given time",
+      "Timeliness in accomplishing tasks/duties",
+    ],
+    index: 2,
+  },
+  {
+    title: "ATTITUDE AND WORK BEHAVIOUR",
+    rows: [
+      "Sense of Responsibility and Urgency",
+      "Dependability and Reliability",
+      "Industry and Resourcefulness",
+      "Alertness and Initiative",
+      "Sociability and Pleasant Disposition",
+    ],
+    index: 3,
+  },
+  {
+    title: "OVERALL ASSESSMENT OF NAS PERFORMANCE",
+    rows: ["Overall Rating"],
+    index: 4,
+  },
+];
 
 export const SuperiorEvaluation = () => {
   const { nasId } = useParams();
@@ -12,6 +54,12 @@ export const SuperiorEvaluation = () => {
   const [selectedSY, setSelectedSY] = useState("2324");
   const [selectedSem, setSelectedSem] = useState("First");
   const [isViewingPerfSummary, setIsViewingPerfSummary] = useState(false);
+  const [attendanceAndPunctuality, setAttendanceAndPunctuality] = useState();
+  const [qualityOfWorkOutput, setQualityOfWorkOutput] = useState();
+  const [quantityOfWorkOutput, setQuantityOfWorkOutput] = useState();
+  const [attitudeAndWorkBehaviour, setAttitudeAndWorkBehaviour] = useState();
+  const [overallAssessment, setOverallAssessment] = useState();
+  const [total, setTotal] = useState();
 
   const openPerfSummary = () => {
     setIsViewingPerfSummary(true);
@@ -28,6 +76,8 @@ export const SuperiorEvaluation = () => {
     });
   };
 
+  console.log(selectedOptions);
+
   const handleSelectSY = (event) => {
     const value = event.target.value;
     setSelectedSY(value);
@@ -40,42 +90,6 @@ export const SuperiorEvaluation = () => {
 
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
-
-  const categories = [
-    {
-      title: "ATTENDANCE AND PUNCTUALITY",
-      rows: ["Regularity of Attendance", "Promptness in Reporting for Duty"],
-    },
-    {
-      title: "QUALITY OF WORK - OUTPUT",
-      rows: [
-        "Accuracy and Thoroughness of Work",
-        "Organization and/or Presentation/Neatness of Work",
-        "Effectiveness (Satisfaction of Clients: No/Less Complaints)",
-      ],
-    },
-    {
-      title: "QUANTITY OF WORK - OUTPUT",
-      rows: [
-        "Accomplishes more work on the given time",
-        "Timeliness in accomplishing tasks/duties",
-      ],
-    },
-    {
-      title: "ATTITUDE AND WORK BEHAVIOUR",
-      rows: [
-        "Sense of Responsibility and Urgency",
-        "Dependability and Reliability",
-        "Industry and Resourcefulness",
-        "Alertness and Initiative",
-        "Sociability and Pleasant Disposition",
-      ],
-    },
-    {
-      title: "OVERALL ASSESSMENT OF NAS PERFORMANCE",
-      rows: ["Overall Rating"],
-    },
-  ];
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -96,6 +110,50 @@ export const SuperiorEvaluation = () => {
     };
     fetchNas();
   }, [nasId]);
+
+  useEffect(() => {
+    const calculateCategorySum = (category) => {
+      let sum = 0;
+      console.log(category);
+      category.rows.forEach((row, rowIndex) => {
+        const option = selectedOptions[`row${category.index}-${rowIndex}`];
+        console.log(option); // Check the selected option
+        if (option) {
+          const number = parseInt(option.split(" ")[1]);
+          console.log(number); // Check the parsing of option values
+          sum += number;
+        }
+      });
+      return sum;
+    };
+
+    // Calculate the sum for each category
+    const attendanceAndPunctuality = calculateCategorySum(categories[0]);
+    const qualityOfWorkOutput = calculateCategorySum(categories[1]);
+    const quantityOfWorkOutput = calculateCategorySum(categories[2]);
+    const attitudeAndWorkBehaviour = calculateCategorySum(categories[3]);
+    const overallAssessment = calculateCategorySum(categories[4]);
+
+    // Calculate the total rating
+    const totalRating =
+      attendanceAndPunctuality +
+      qualityOfWorkOutput +
+      quantityOfWorkOutput +
+      attitudeAndWorkBehaviour +
+      overallAssessment;
+
+    // Set the state for each category and the total rating
+    setAttendanceAndPunctuality(attendanceAndPunctuality);
+    setQualityOfWorkOutput(qualityOfWorkOutput);
+    setQuantityOfWorkOutput(quantityOfWorkOutput);
+    setAttitudeAndWorkBehaviour(attitudeAndWorkBehaviour);
+    setOverallAssessment(overallAssessment);
+
+    setTotal((totalRating / 13).toFixed(1));
+    console.log(attendanceAndPunctuality);
+    console.log(totalRating);
+  }, [selectedOptions]);
+
   return (
     <>
       <Header />
@@ -241,7 +299,7 @@ export const SuperiorEvaluation = () => {
           </table>
           <div className="flex justify-end gap-10 items-center mt-5">
             <strong className="font-bold text-gray-900">
-              OVERALL RATING: _____
+              OVERALL RATING: {total}
             </strong>
             <button
               type="button"
