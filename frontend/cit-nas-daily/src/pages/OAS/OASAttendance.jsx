@@ -39,6 +39,7 @@ export const OASAttendance = () => {
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
+  const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -58,6 +59,13 @@ export const OASAttendance = () => {
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
         const officeData = officeResponse.data;
 
+        const timekeepingresponse = await api.get(
+          `/TimekeepingSummary/${nasId}`
+        );
+        const timekeepingdata = timekeepingresponse.data[0];
+        console.log(timekeepingdata);
+
+        setTimekeepingSummaries(timekeepingdata);
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
@@ -253,7 +261,7 @@ export const OASAttendance = () => {
               <p className="text-xl font-bold text-primary">
                 MONTHLY SUMMARY OF ABSENCES/LATE
               </p>
-              <MonthlySummary />
+              <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
               <p className="text-xl font-bold text-primary">
                 WEEKLY ATTENDANCE
               </p>
