@@ -12,6 +12,6 @@ namespace CITNASDaily.Services.Contracts
     {
         Task<SummaryEvaluation?> CreateSummaryEvaluationAsync(SummaryEvaluationCreateDto summaryEvaluation);
         Task<IEnumerable<SummaryEvaluationDto?>> GetSummaryEvaluationsAsync();
-        Task<SummaryEvaluation?> GetSummaryEvaluationWithNASIdAsync(int nasId);
+        Task<SummaryEvaluation?> GetSummaryEvaluationByNASIdAsync(int nasId);
     }
 }

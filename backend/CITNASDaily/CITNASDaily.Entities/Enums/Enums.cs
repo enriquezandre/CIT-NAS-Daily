@@ -50,5 +50,15 @@ namespace CITNASDaily.Entities.Enums
             [Description("Report To Office")]
             ReportToOffice
         }
+
+        public enum SchoolYear
+        {
+            [Description("2023 - 2024")]
+            SY2324,
+            [Description("2024 - 2025")]
+            SY2425,
+            [Description("2025 - 2026")]
+            SY2526
+        }
     }
 }

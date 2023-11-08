@@ -11,8 +11,8 @@ namespace CITNASDaily.Entities.Models
         public int nasId { get; set; }
         [Required]
         public Semester Semester { get; set; }
-        [Required] 
-        public int? Year { get; set; }
+        [Required]
+        public SchoolYear SchoolYear { get; set; }
         [Required]
         public float SuperiorOverallRating { get; set; }
         public string? AcademicPerformance { get; set; }

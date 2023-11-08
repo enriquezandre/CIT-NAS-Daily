@@ -12,7 +12,7 @@ namespace CITNASDaily.Entities.Models
         public int NASId { get; set; }
         [Required]
         public Semester Semester { get; set; }
-        public int? Year { get; set; }
+        public SchoolYear SchoolYear { get; set; }
         public int? Excused { get; set; }
         public int? Unexcused { get; set; }
         public int? FailedToPunch { get; set; }

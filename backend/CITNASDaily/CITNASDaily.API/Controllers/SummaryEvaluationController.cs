@@ -43,16 +43,16 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("{nasId}", Name = "GetSummaryEvaluation")]
+        [HttpGet("{nasId}", Name = "GetSummaryEvaluationByNASId")]
         [Authorize]
-        public async Task<IActionResult> GetSummaryEvaluationWithNASId(int nasId)
+        public async Task<IActionResult> GetSummaryEvaluationByNASId(int nasId)
         {
             try
             {
                 var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
                 if (currentUser == null) return Forbid();
 
-                var summaryEval = await _summaryEvaluationService.GetSummaryEvaluationWithNASIdAsync(nasId);
+                var summaryEval = await _summaryEvaluationService.GetSummaryEvaluationByNASIdAsync(nasId);
 
                 if (summaryEval == null)
                 {
@@ -88,7 +88,7 @@ namespace CITNASDaily.API.Controllers
                     return BadRequest("Creation Failed.");
                 }
 
-                return Ok(summaryEval);
+                return CreatedAtRoute("GetSummaryEvaluationByNASId", new { nasId = summaryEval.nasId }, summaryEval);
             }
             catch(Exception ex)
             {
