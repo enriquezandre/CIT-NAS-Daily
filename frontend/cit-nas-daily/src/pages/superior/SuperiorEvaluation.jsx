@@ -188,25 +188,15 @@ export const SuperiorEvaluation = () => {
             <thead>
               <tr>
                 <th className="text-left pl-0">
-                  <strong className="font-bold text-gray-900 dark:text-white">
+                  <strong className="font-bold text-gray-900">
                     A. OVERALL RATING{" "}
                   </strong>{" "}
                 </th>
-                <th className="font-semibold text-gray-900 dark:text-white px-8">
-                  5
-                </th>
-                <th className="font-semibold text-gray-900 dark:text-white px-8">
-                  4
-                </th>
-                <th className="font-semibold text-gray-900 dark:text-white px-8">
-                  3
-                </th>
-                <th className="font-semibold text-gray-900 dark:text-white px-8">
-                  2
-                </th>
-                <th className="font-semibold text-gray-900 dark:text-white px-8">
-                  1
-                </th>
+                <th className="font-semibold text-gray-900 px-8">5</th>
+                <th className="font-semibold text-gray-900 px-8">4</th>
+                <th className="font-semibold text-gray-900 px-8">3</th>
+                <th className="font-semibold text-gray-900 px-8">2</th>
+                <th className="font-semibold text-gray-900 px-8">1</th>
               </tr>
             </thead>
             <tbody>
@@ -214,7 +204,7 @@ export const SuperiorEvaluation = () => {
                 <React.Fragment key={index}>
                   <tr>
                     <td className="pl-0 text-left">
-                      <strong className="font-bold text-gray-900 dark:text-white">
+                      <strong className="font-bold text-gray-900">
                         {category.title}
                       </strong>
                     </td>
@@ -250,7 +240,7 @@ export const SuperiorEvaluation = () => {
             </tbody>
           </table>
           <div className="flex justify-end gap-10 items-center mt-5">
-            <strong className="font-bold text-gray-900 dark:text-white">
+            <strong className="font-bold text-gray-900">
               OVERALL RATING: _____
             </strong>
             <button
