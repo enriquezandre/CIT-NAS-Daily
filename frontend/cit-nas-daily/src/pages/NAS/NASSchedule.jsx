@@ -31,6 +31,15 @@ export const NASSchedule = () => {
 
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+  const dayOfWeekMap = {
+    Monday: 0,
+    Tuesday: 1,
+    Wednesday: 2,
+    Thursday: 3,
+    Friday: 4,
+    Saturday: 5,
+  };
+
   const [schedule, setSchedule] = useState({
     Monday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
     Tuesday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
@@ -149,7 +158,7 @@ export const NASSchedule = () => {
       days.forEach(async (day) => {
         if (schedule[day].isBroken) {
           schedule[day].items.forEach(async (scheduleItem) => {
-            const dayOfWeek = day; // Assuming the day matches your enum
+            const dayOfWeek = dayOfWeekMap[day];
             const startTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.start + ':00.000Z';
             const endTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.end + ':00.000Z';
             const brokenSched = true;
@@ -169,7 +178,7 @@ export const NASSchedule = () => {
           });
         } else {
           const scheduleItem = schedule[day].items[0];
-          const dayOfWeek = day; // Assuming the day matches your enum
+          const dayOfWeek = dayOfWeekMap[day];
           const startTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.start + ':00.000Z';
           const endTime = new Date().toISOString().split('T')[0] + 'T' + scheduleItem.end + ':00.000Z';
           const brokenSched = false;
@@ -185,7 +194,7 @@ export const NASSchedule = () => {
             totalHours,
           });
 
-          window.location.reload();
+          //window.location.reload();
           console.log(response);
         }
       });
@@ -196,6 +205,7 @@ export const NASSchedule = () => {
   };
 
   // functions for SetScheduleTable ends here
+
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -208,7 +218,7 @@ export const NASSchedule = () => {
         });
   
         const response = await api.get(`/Schedule/${nasId}`);
-        setApiData(response.data); // Use response.data here, not nasData
+        setApiData(response.data);
       } catch (error) {
         console.error(error);
       }
