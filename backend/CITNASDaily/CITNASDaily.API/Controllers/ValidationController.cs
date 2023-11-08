@@ -4,6 +4,7 @@ using CITNASDaily.Entities.Models;
 using CITNASDaily.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace CITNASDaily.API.Controllers
@@ -36,18 +37,102 @@ namespace CITNASDaily.API.Controllers
                     return Forbid();
                 }
 
-                var createdValidation = await _validationService.CreateValidaitonAsync(validationCreate);
+                var createdValidation = await _validationService.CreateValidationAsync(validationCreate);
 
                 if (createdValidation == null)
                 {
                     return NotFound();
                 }
 
-                return CreatedAtRoute("GetValidation", new { validationId = createdValidation.Id }, createdValidation);
+                return CreatedAtRoute("GetValidationById", new { validationId = createdValidation.Id }, createdValidation);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating Validation.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet(Name = "GetAllValidations")]
+        [Authorize]
+        public async Task<IActionResult> GetAllValidations()
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var validations = await _validationService.GetAllValidationsAsync();
+
+                if (validations.IsNullOrEmpty())
+                {
+                    return NotFound("There are no validations yet.");
+                }
+
+                return Ok(validations);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting list of Validations.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("{validationId}", Name = "GetValidationById")]
+        [Authorize]
+        public async Task<IActionResult> GetValidationById(int validationId)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var validation = await _validationService.GetValidationByIdAsync(validationId);
+
+                if (validation == null)
+                {
+                    return NotFound($"There is no validation {validationId} yet.");
+                }
+
+                return Ok(validation);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting list of Validations.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpPut(Name = "UpdateValidation")]
+        [Authorize]
+        public async Task<IActionResult> UpdateValidation(ValidationUpdateDto validationUpdate, int validationId)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var validation = await _validationService.UpdateValidationAsync(validationUpdate, validationId);
+
+                if (validation == null)
+                {
+                    return NotFound($"There is no validation {validationId} yet.");
+                }
+
+                return Ok(validation);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting list of Validations.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }

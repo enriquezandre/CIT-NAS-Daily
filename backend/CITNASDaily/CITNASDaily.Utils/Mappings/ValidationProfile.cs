@@ -15,6 +15,7 @@ namespace CITNASDaily.Utils.Mappings
         {
             CreateMap<Validation, ValidationDto>().ReverseMap();
             CreateMap<Validation, ValidationCreateDto>().ReverseMap();
+            CreateMap<Validation, ValidationUpdateDto>().ReverseMap();
         }
     }
 }
