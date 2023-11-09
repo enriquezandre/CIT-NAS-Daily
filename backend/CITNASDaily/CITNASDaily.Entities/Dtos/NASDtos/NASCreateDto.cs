@@ -26,6 +26,5 @@ namespace CITNASDaily.Entities.Dtos.NASDtos
         public int? EnNo { get; set; }
         [Required]
         public DateTime? DateStarted { get; set; }
-        public string? ImageLink { get; set; }
     }
 }

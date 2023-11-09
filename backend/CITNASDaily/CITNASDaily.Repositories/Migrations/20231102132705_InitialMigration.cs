@@ -167,7 +167,7 @@ namespace CITNASDaily.Repositories.Migrations
                     YearLevel = table.Column<int>(type: "int", nullable: false),
                     UnitsAllowed = table.Column<int>(type: "int", nullable: false),
                     DateStarted = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ImageLink = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
                 {
