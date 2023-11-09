@@ -23,12 +23,26 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<SummaryEvaluation?> CreateSummaryEvaluationAsync(SummaryEvaluation summaryEvaluation)
         {
-            var rating = summaryEvaluation.SuperiorOverallRating;
-            if(rating >= 4.0 && rating <= 5.0)
+            var tkSummary = await _context.TimekeepingSummaries
+                                        .Where(r => r.NASId == summaryEvaluation.nasId && r.Semester == summaryEvaluation.Semester && r.SchoolYear == summaryEvaluation.SchoolYear)
+                                        .FirstOrDefaultAsync();
+
+            if (tkSummary == null)
+            {
+                return null;
+            }
+
+            if(tkSummary.Excused == 0 && tkSummary.Unexcused == 0 && tkSummary.FailedToPunch == 0
+                && tkSummary.LateOver10Mins == 0 && tkSummary.LateOver45Mins == 0 && tkSummary.MakeUpDutyHours == 0)
             {
                 summaryEvaluation.TimekeepingStatus = "EXCELLENT";
-            } 
-            else if(rating >= 3.0 && rating < 4.0)
+            }
+            else if((tkSummary.Excused <= 3 && tkSummary.Excused >= 0) &&
+                (tkSummary.Unexcused <= 3 && tkSummary.Unexcused >= 0) &&
+                (tkSummary.FailedToPunch <= 3 && tkSummary.FailedToPunch >= 0) &&
+                (tkSummary.LateOver10Mins <= 3 && tkSummary.LateOver10Mins >= 0) &&
+                (tkSummary.LateOver45Mins <= 3 && tkSummary.LateOver45Mins >= 0) &&
+                (tkSummary.MakeUpDutyHours <= 5 && tkSummary.MakeUpDutyHours >= 0))
             {
                 summaryEvaluation.TimekeepingStatus = "GOOD";
             }
