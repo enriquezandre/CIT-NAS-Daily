@@ -189,8 +189,13 @@ export const NASEvaluationResult = () => {
                       </button>
                     ) : null}
                   </div>
+                ) : summaryEvaluation.allCoursesPassed === null ||
+                  summaryEvaluation.allCoursesPassed === undefined ? (
+                  <span className="text-yellow">PENDING</span>
+                ) : summaryEvaluation.allCoursesPassed ? (
+                  <span className="text-green">ALL PASSED</span>
                 ) : (
-                  summaryEvaluation.allCoursesPassed
+                  <span className="text-red">FAILED A COURSE</span>
                 )}
               </div>
             </div>
