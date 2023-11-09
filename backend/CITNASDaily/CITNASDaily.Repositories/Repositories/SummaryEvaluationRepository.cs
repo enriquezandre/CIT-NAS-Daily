@@ -37,11 +37,11 @@ namespace CITNASDaily.Repositories.Repositories
             {
                 summaryEvaluation.TimekeepingStatus = "EXCELLENT";
             }
-            else if((tkSummary.Excused <= 3 && tkSummary.Excused >= 0) &&
-                (tkSummary.Unexcused <= 3 && tkSummary.Unexcused >= 0) &&
-                (tkSummary.FailedToPunch <= 3 && tkSummary.FailedToPunch >= 0) &&
-                (tkSummary.LateOver10Mins <= 3 && tkSummary.LateOver10Mins >= 0) &&
-                (tkSummary.LateOver45Mins <= 3 && tkSummary.LateOver45Mins >= 0) &&
+            else if((tkSummary.Excused <= 3 && tkSummary.Excused >= 0) ||
+                (tkSummary.Unexcused <= 3 && tkSummary.Unexcused >= 0) ||
+                (tkSummary.FailedToPunch <= 3 && tkSummary.FailedToPunch >= 0) ||
+                (tkSummary.LateOver10Mins <= 3 && tkSummary.LateOver10Mins >= 0) ||
+                (tkSummary.LateOver45Mins <= 3 && tkSummary.LateOver45Mins >= 0) ||
                 (tkSummary.MakeUpDutyHours <= 5 && tkSummary.MakeUpDutyHours >= 0))
             {
                 summaryEvaluation.TimekeepingStatus = "GOOD";
