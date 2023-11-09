@@ -62,8 +62,22 @@ export const OASAttendance = () => {
         const timekeepingresponse = await api.get(
           `/TimekeepingSummary/${nasId}`
         );
-        const timekeepingdata = timekeepingresponse.data[0];
+        let timekeepingdata = timekeepingresponse.data[0];
         console.log(timekeepingdata);
+
+        if (!timekeepingdata) {
+          // If there's no record
+          timekeepingdata = {
+            excused: "NR",
+            failedToPunch: "NR",
+            lateOver10Mins: "NR",
+            lateOver45Mins: "NR",
+            makeUpDutyHours: "NR",
+            schoolYear: "NR",
+            semester: "NR",
+            unexcused: "NR",
+          };
+        }
 
         setTimekeepingSummaries(timekeepingdata);
         setFirstname(nasData.firstName);
