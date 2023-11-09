@@ -9,6 +9,7 @@ import axios from "axios";
 export const SuperiorList = () => {
   const { superiorId } = useParams();
   const [nasList, setNasList] = useState([]);
+  const [office, setOffice] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,6 +26,8 @@ export const SuperiorList = () => {
         const officeData = officeresponse.data;
 
         const response = await api.get(`/NAS/${officeData.id}/offices`);
+
+        setOffice(officeData);
         setNasList(response.data);
       } catch (error) {
         console.error(error);
@@ -42,8 +45,7 @@ export const SuperiorList = () => {
     <div className="flex justify-center items-center">
       <Card className="w-3/5 m-5">
         <h5 className="text-2xl font-bold tracking-tight">
-          {/* <p>{office.name}</p> */}
-          <p>DHTM</p>
+          <p>{office.name}</p>
         </h5>
         <div className="grid gap-3">
           {nasList.map((nas) => (
