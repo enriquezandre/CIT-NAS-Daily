@@ -17,6 +17,7 @@ export const OASStatus = () => {
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
+  const [summaryEvaluation, setSummaryEvaluation] = useState({});
 
   const openEvaluateGrades = () => {
     setIsViewingEvaluateGrades(true);
@@ -25,6 +26,19 @@ export const OASStatus = () => {
   const closeEvaluateGrades = () => {
     setIsViewingEvaluateGrades(false);
   };
+
+  function getSemesterValue(sem) {
+    switch (sem) {
+      case "First":
+        return 0;
+      case "Second":
+        return 1;
+      case "Summer":
+        return 3;
+      default:
+        return "Invalid semester";
+    }
+  }
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -44,6 +58,14 @@ export const OASStatus = () => {
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
         const officeData = officeResponse.data;
 
+        const summaryEvaluationResponse = await api.get(
+          `SummaryEvaluation/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}/${nasId}`
+        );
+        const summaryEvaluationData = summaryEvaluationResponse.data;
+
+        setSummaryEvaluation(summaryEvaluationData);
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
@@ -198,7 +220,9 @@ export const OASStatus = () => {
                 <p className="text-bold text-xl">
                   SUPERIOR&#39;S EVALUATION OVERALL RATING:
                 </p>
-                <p className="text-bold text-xl font-bold">4.8</p>
+                <p className="text-bold text-xl font-bold">
+                  {summaryEvaluation.superiorOverallRating}
+                </p>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">ACADEMIC PERFORMANCE:</p>
@@ -216,13 +240,15 @@ export const OASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">TIMEKEEPING STATUS:</p>
-                <p className="text-bold text-xl font-bold text-green">
-                  EXCELLENT
+                <p className="text-bold text-xl font-bold">
+                  {summaryEvaluation.timekeepingStatus}
                 </p>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">ALLOWED FOR ENROLLMENT:</p>
-                <p className="text-bold text-xl font-bold text-green">YES</p>
+                <p className="text-bold text-xl font-bold text-green">
+                  {summaryEvaluation.enrollmentAllowed}
+                </p>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">NUMBER OF UNITS ALLOWED:</p>
