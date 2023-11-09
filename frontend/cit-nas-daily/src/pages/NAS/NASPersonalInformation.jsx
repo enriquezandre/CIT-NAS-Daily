@@ -33,6 +33,9 @@ export const NASPersonalInformation = () => {
         console.log(response);
         const nasData = response.data;
 
+        const officeresponse = await api.get(`Offices/${nasId}/NAS`);
+        const officeName = officeresponse.data.name;
+
         setStudentId(nasData.userId); // should be studentId but I think there is no student ID in NAS Info
         setFirstName(nasData.firstName);
         setMiddleName(nasData.middleName);
@@ -41,7 +44,7 @@ export const NASPersonalInformation = () => {
         setBday(new Date(nasData.birthDate).toLocaleDateString());
         setCourse(nasData.course);
         setYearLevel(nasData.yearLevel.toString());
-        setOffice(nasData.officeId.toString()); // to be changed, need an endpoint to get office by ID to retrieve the name
+        setOffice(officeName);
         setDateStarted(new Date(nasData.dateStarted).toLocaleDateString());
       } catch (error) {
         console.error(error);
@@ -66,7 +69,7 @@ export const NASPersonalInformation = () => {
           <div className="flex">
             <div className="flex-1 pr-5">
               <Field
-                label="Student ID:"
+                label="User ID:"
                 id="studentId"
                 type="text"
                 value={studentId}
@@ -138,7 +141,7 @@ export const NASPersonalInformation = () => {
           label="Office Assigned:"
           id="office"
           type="text"
-          value={office.toUpperCase()}
+          value={office}
           onChange={(e) => setOffice(e.target.value)}
           readOnly={true}
         />
