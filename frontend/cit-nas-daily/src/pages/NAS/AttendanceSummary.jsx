@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { DataDisplayBox } from "../../components/DataDisplayBox.jsx";
 import { AttendanceSummaryTable } from "../../components/NAS/AttendanceSummaryTable.jsx";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const first_sem = [
   "All",
@@ -30,8 +32,10 @@ export const AttendanceSummary = () => {
   const [monthOptions, setMonthOptions] = useState(first_sem);
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
+  const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
+  const { nasId } = useParams();
 
   useEffect(() => {
     let selectedMonthIndex;
@@ -88,7 +92,44 @@ export const AttendanceSummary = () => {
     console.log("Selected Month:", value);
   };
 
-  console.log(selectedMonth);
+  useEffect(() => {
+    const fetchNas = async () => {
+      try {
+        // Create an Axios instance with the Authorization header
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const timekeepingresponse = await api.get(
+          `/TimekeepingSummary/${nasId}`
+        );
+        let timekeepingdata = timekeepingresponse.data[0];
+        console.log(timekeepingdata);
+
+        if (!timekeepingdata) {
+          // If there's no record
+          timekeepingdata = {
+            excused: "NR",
+            failedToPunch: "NR",
+            lateOver10Mins: "NR",
+            lateOver45Mins: "NR",
+            makeUpDutyHours: "NR",
+            schoolYear: "NR",
+            semester: "NR",
+            unexcused: "NR",
+          };
+        }
+        console.log(timekeepingdata);
+        setTimekeepingSummaries(timekeepingdata);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchNas();
+  }, [selectedSY, selectedSem, selectedMonth, nasId]);
 
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
@@ -149,19 +190,31 @@ export const AttendanceSummary = () => {
           <div>
             <div className="m-2">
               <div className="flex">
-                <DataDisplayBox label="Number of Lates" data="20" />
-                <DataDisplayBox label="Number of Excused Absences" data="20" />
-                <DataDisplayBox label="Late > 45 Minutes" data="20" />
+                <DataDisplayBox
+                  label="Make-up Duty Hours"
+                  data={timekeepingSummaries.makeUpDutyHours}
+                />
+                <DataDisplayBox
+                  label="Number of Excused Absences"
+                  data={timekeepingSummaries.excused}
+                />
+                <DataDisplayBox
+                  label="Late > 45 Minutes"
+                  data={timekeepingSummaries.lateOver45Mins}
+                />
               </div>
               <div className="flex">
                 <DataDisplayBox
                   label="Number of Unexcused Absences"
-                  data="20"
+                  data={timekeepingSummaries.unexcused}
                 />
-                <DataDisplayBox label="Late > 10 Minutes" data="20" />
+                <DataDisplayBox
+                  label="Late > 10 Minutes"
+                  data={timekeepingSummaries.lateOver10Mins}
+                />
                 <DataDisplayBox
                   label="FTP - Failure to Punch IN/OUT"
-                  data="20"
+                  data={timekeepingSummaries.failedToPunch}
                 />
               </div>
             </div>
