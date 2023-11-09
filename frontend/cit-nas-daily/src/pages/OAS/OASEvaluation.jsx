@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import axios from "axios";
@@ -6,7 +6,6 @@ import axios from "axios";
 export const OASEvaluation = () => {
   const [selectedSY, setSelectedSY] = useState("2324");
   const [selectedSem, setSelectedSem] = useState("First");
-  const [selectedOptions, setSelectedOptions] = useState({});
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
@@ -14,49 +13,30 @@ export const OASEvaluation = () => {
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
+  const [evaluationData, setEvaluationData] = useState([]);
 
-  const handleOptionChange = (rowName, selectedValue) => {
-    setSelectedOptions({
-      ...selectedOptions,
-      [rowName]: selectedValue,
-    });
+  const handleSelectSY = (event) => {
+    const value = event.target.value;
+    setSelectedSY(value);
   };
 
-  const categories = [
-    {
-      title: "ATTENDANCE AND PUNCTUALITY",
-      rows: ["Regularity of Attendance", "Promptness in Reporting for Duty"],
-    },
-    {
-      title: "QUALITY OF WORK - OUTPUT",
-      rows: [
-        "Accuracy and Thoroughness of Work",
-        "Organization and/or Presentation/Neatness of Work",
-        "Effectiveness (Satisfaction of Clients: No/Less Complaints)",
-      ],
-    },
-    {
-      title: "QUANTITY OF WORK - OUTPUT",
-      rows: [
-        "Accomplishes more work on the given time",
-        "Timeliness in accomplishing tasks/duties",
-      ],
-    },
-    {
-      title: "ATTITUDE AND WORK BEHAVIOUR",
-      rows: [
-        "Sense of Responsibility and Urgency",
-        "Dependability and Reliability",
-        "Industry and Resourcefulness",
-        "Alertness and Initiative",
-        "Sociability and Pleasant Disposition",
-      ],
-    },
-    {
-      title: "OVERALL ASSESSMENT OF NAS PERFORMANCE",
-      rows: ["Overall Rating"],
-    },
-  ];
+  const handleSelectSem = (event) => {
+    const value = event.target.value;
+    setSelectedSem(value);
+  };
+
+  function getSemesterValue(sem) {
+    switch (sem) {
+      case "First":
+        return 0;
+      case "Second":
+        return 1;
+      case "Summer":
+        return 3;
+      default:
+        return "Invalid semester";
+    }
+  }
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -69,9 +49,9 @@ export const OASEvaluation = () => {
           },
         });
 
-        const nasresponse = await api.get(`/NAS/${nasId}`);
-        console.log(nasresponse);
-        const nasData = nasresponse.data;
+        const nasResponse = await api.get(`/NAS/${nasId}`);
+        console.log(nasResponse);
+        const nasData = nasResponse.data;
 
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
         const officeData = officeResponse.data;
@@ -82,6 +62,14 @@ export const OASEvaluation = () => {
         setOffice(officeData.name);
       } catch (error) {
         console.error(error);
+        setEvaluationData({
+          attendanceAndPunctuality: 0,
+          attitudeAndWorkBehaviour: 0,
+          overallAssessment: 0,
+          overallRating: 0,
+          quanOfWorkOutput: 0,
+          qualOfWorkOutput: 0,
+        });
       }
     };
 
@@ -91,15 +79,52 @@ export const OASEvaluation = () => {
     console.log("Selected SY:", selectedSY);
   }, [selectedSY, selectedSem, nasId]);
 
-  const handleSelectSY = (event) => {
-    const value = event.target.value;
-    setSelectedSY(value);
-  };
+  useEffect(() => {
+    const fetchEvaluation = async () => {
+      try {
+        // Create an Axios instance with the Authorization header
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
 
-  const handleSelectSem = (event) => {
-    const value = event.target.value;
-    setSelectedSem(value);
-  };
+        const evaluationResponse = await api.get(
+          `SuperiorEvaluationRating?nasId=${nasId}&semester=${getSemesterValue(
+            selectedSem
+          )}&year=${selectedSY}`
+        );
+        let evalData = evaluationResponse.data;
+        if (!evalData) {
+          // If there's no record
+          evalData = {
+            attendanceAndPunctuality: 0,
+            attitudeAndWorkBehaviour: 0,
+            overallAssessment: 0,
+            overallRating: 0,
+            quanOfWorkOutput: 0,
+            qualOfWorkOutput: 0,
+          };
+        }
+
+        console.log(evalData);
+        setEvaluationData(evalData);
+      } catch (error) {
+        console.error(error);
+        setEvaluationData({
+          attendanceAndPunctuality: 0,
+          attitudeAndWorkBehaviour: 0,
+          overallAssessment: 0,
+          overallRating: 0,
+          quanOfWorkOutput: 0,
+          qualOfWorkOutput: 0,
+        });
+      }
+    };
+
+    fetchEvaluation();
+  }, [selectedSY, selectedSem, nasId]);
 
   return (
     <>
@@ -209,82 +234,47 @@ export const OASEvaluation = () => {
               </div>
             </div>
             <hr className="my-5 border-t-2 border-gray-300" />
-            <p className="text-xl font-bold text-center mb-4">
-              SUMMARY OF EVALUATION
-            </p>
-            <form>
-              <table className="w-full">
-                <thead>
-                  <tr>
-                    <th className="text-left pl-0">
-                      <strong className="font-bold text-gray-900 dark:text-white">
-                        A. OVERALL RATING{" "}
-                      </strong>{" "}
-                    </th>
-                    <th className="font-semibold text-gray-900 dark:text-white px-8">
-                      5
-                    </th>
-                    <th className="font-semibold text-gray-900 dark:text-white px-8">
-                      4
-                    </th>
-                    <th className="font-semibold text-gray-900 dark:text-white px-8">
-                      3
-                    </th>
-                    <th className="font-semibold text-gray-900 dark:text-white px-8">
-                      2
-                    </th>
-                    <th className="font-semibold text-gray-900 dark:text-white px-8">
-                      1
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {categories.map((category, index) => (
-                    <React.Fragment key={index}>
-                      <tr>
-                        <td className="pl-0 text-left">
-                          <strong className="font-bold text-gray-900 dark:text-white">
-                            {category.title}
-                          </strong>
-                        </td>
-                      </tr>
-                      {category.rows.map((row, rowIndex) => (
-                        <tr key={rowIndex}>
-                          <td className="text-left">{row}</td>
-                          {[5, 4, 3, 2, 1].map((value) => (
-                            <td key={value} className="text-center">
-                              <input
-                                className="form-radio h-5 w-5"
-                                type="radio"
-                                name={`row${index}-${rowIndex}`}
-                                value={`Option ${value}`}
-                                checked={
-                                  selectedOptions[`row${index}-${rowIndex}`] ===
-                                  `Option ${value}`
-                                }
-                                onChange={() =>
-                                  handleOptionChange(
-                                    `row${index}-${rowIndex}`,
-                                    `Option ${value}`
-                                  )
-                                }
-                              />
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                      <br />
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </table>
-            </form>
+            <div className="flex flex-col">
+              <p className="text-center text-xl font-bold mb-8">
+                SUPERIOR EVALUATION SUMMARY
+              </p>
+              <div className="flex flex-row gap-6 justify-start items-center mb-4">
+                <p className="text-xl">Attendance and Punctuality:</p>
+                <p className="text-xl">
+                  {evaluationData.attendanceAndPunctuality / 2}
+                </p>
+              </div>
+              <div className="flex flex-row gap-6 justify-start items-center mb-4">
+                <p className="text-xl">Quality of Work - Output:</p>
+                <p className="text-xl">{evaluationData.qualOfWorkOutput / 3}</p>
+              </div>
+              <div className="flex flex-row gap-6 justify-start items-center mb-4">
+                <p className="text-xl">Quantity of Work - Output:</p>
+                <p className="text-xl">{evaluationData.quanOfWorkOutput / 2}</p>
+              </div>
+              <div className="flex flex-row gap-6 justify-start items-center mb-4">
+                <p className="text-xl">Attitude and Work Behaviour:</p>
+                <p className="text-xl">
+                  {evaluationData.attitudeAndWorkBehaviour / 5}
+                </p>
+              </div>
+              <div className="flex flex-row gap-6 justify-start items-center mb-4">
+                <p className="text-xl">
+                  Overall Assessment of NAS Performance:
+                </p>
+                <p className="text-xl">{evaluationData.overallAssessment}</p>
+              </div>
+              <div className="flex flex-row gap-6 justify-start items-center mb-4">
+                <p className="text-xl font-bold">
+                  Superior&#39;s Evaluation Overall Rating:
+                </p>
+                <p className="text-xl font-bold">
+                  {evaluationData.overallRating}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="flex flex-row justify-end gap-10 items-center mt-5 w-9/10 mx-20 mb-10">
-        <p className="font-bold text-xl">OVERALL RATING:</p>
-        <p className="font-bold text-xl">4.8</p>
       </div>
     </>
   );
