@@ -22,8 +22,8 @@ export const MasterlistTable = () => {
     "L>10 mins.",
     "L>45 mins.",
     "FTP",
-    "OT",
     "FOR MAKE UP",
+    "OT",
     "REMARKS",
   ];
 
@@ -51,6 +51,33 @@ export const MasterlistTable = () => {
               // Handle error when office data is not available
               console.error("Error fetching office data for NAS:", officeError);
               nas.office = { name: "N/A" };
+            }
+
+            try {
+              const timekeepingresponse = await api.get(
+                `/TimekeepingSummary/${nasId}`
+              );
+              let timekeepingData = timekeepingresponse.data[0];
+
+              if (!timekeepingData) {
+                timekeepingData = {
+                  excused: "NR",
+                  failedToPunch: "NR",
+                  lateOver10Mins: "NR",
+                  lateOver45Mins: "NR",
+                  makeUpDutyHours: "NR",
+                  schoolYear: "NR",
+                  semester: "NR",
+                  unexcused: "NR",
+                };
+              }
+
+              nas.timekeeping = timekeepingData;
+            } catch (timekeepingError) {
+              console.error(
+                "Error fetching timekeeping data for NAS:",
+                timekeepingError
+              );
             }
             return nas;
           })
@@ -139,7 +166,26 @@ export const MasterlistTable = () => {
                 {nas.office ? nas.office.name : "N/A"}{" "}
                 {/* Display the office name or "N/A" if not available */}
               </td>
-              {/* Add other data fields as needed */}
+              <td className="border-2 border-black text-center px-4 py-2">
+                {nas.timekeeping ? nas.timekeeping.excused : "NR"}
+              </td>
+              <td className="border-2 border-black text-center px-4 py-2">
+                {nas.timekeeping ? nas.timekeeping.unexcused : "NR"}
+              </td>
+              <td className="border-2 border-black text-center px-4 py-2">
+                {nas.timekeeping ? nas.timekeeping.lateOver10Mins : "NR"}
+              </td>
+              <td className="border-2 border-black text-center px-4 py-2">
+                {nas.timekeeping ? nas.timekeeping.lateOver45Mins : "NR"}
+              </td>
+              <td className="border-2 border-black text-center px-4 py-2">
+                {nas.timekeeping ? nas.timekeeping.failedToPunch : "NR"}
+              </td>
+              <td className="border-2 border-black text-center px-4 py-2">
+                {nas.timekeeping ? nas.timekeeping.makeUpDutyHours : "NR"}
+              </td>
+              <td className="border-2 border-black text-center px-4 py-2"> </td>
+              <td className="border-2 border-black text-center px-4 py-2"> </td>
             </tr>
           ))}
         </tbody>
