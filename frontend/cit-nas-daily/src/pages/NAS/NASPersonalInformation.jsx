@@ -28,9 +28,8 @@ export const NASPersonalInformation = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        console.log(typeof nasId)
+        
         const response = await api.get(`/NAS/${nasId}`);
-        console.log(response);
         const nasData = response.data;
 
         const officeresponse = await api.get(`Offices/${nasId}/NAS`);
@@ -78,7 +77,7 @@ export const NASPersonalInformation = () => {
             'Content-Type': 'multipart/form-data',
           },
         });
-        console.log("Response: " + response.status)
+        
         if (response.status === 200) {
           const responseData = response.data;
           setAvatar(responseData.image);
