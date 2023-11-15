@@ -28,7 +28,7 @@ export const NASPersonalInformation = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-
+        console.log(typeof nasId)
         const response = await api.get(`/NAS/${nasId}`);
         console.log(response);
         const nasData = response.data;
@@ -43,6 +43,10 @@ export const NASPersonalInformation = () => {
         setYearLevel(nasData.yearLevel.toString());
         setOffice(nasData.officeId.toString()); // to be changed, need an endpoint to get office by ID to retrieve the name
         setDateStarted(new Date(nasData.dateStarted).toLocaleDateString());
+        
+        if(nasData.image != null){
+          setAvatar(nasData.image);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -51,11 +55,37 @@ export const NASPersonalInformation = () => {
     fetchNas();
   }, [nasId]);
 
-  const handleAvatarChange = (e) => {
-    // Handle the image selection
+  const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
+
     if (file) {
-      setAvatar(file);
+      const api = axios.create({
+        baseURL: `https://localhost:7001/api/NAS/photo/${nasId}`, // Include nasId in the URL
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await api.put('', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log("Response: " + response.status)
+        if (response.status === 200) {
+          const responseData = response.data;
+          setAvatar(responseData.image);
+          window.location.reload();
+        } else {
+          console.error('Image upload failed');
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
     }
   };
 
