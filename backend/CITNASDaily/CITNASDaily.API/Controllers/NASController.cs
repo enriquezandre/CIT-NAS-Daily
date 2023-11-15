@@ -176,7 +176,7 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpPut("grades/{nasId}", Name = "UploadGrades")]
+        [HttpPut("grades", Name = "UploadGrades")]
         [Authorize]
         public async Task<IActionResult> UploadGrades(SummaryEvaluationGradeUpdateDto summary, [FromForm] IFormFile file)
         {
@@ -220,7 +220,7 @@ namespace CITNASDaily.API.Controllers
 
                 if(result == null)
                 {
-                    return BadRequest("Invalid file");
+                    return BadRequest("Upload Failed");
                 }
 
                 return Ok(new { Image = result });
