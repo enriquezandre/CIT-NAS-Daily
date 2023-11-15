@@ -89,18 +89,27 @@ namespace CITNASDaily.Repositories.Repositories
             return null;
         }
 
-        public async Task<SummaryEvaluation?> UploadGrades(SummaryEvaluation summary)
+        public async Task<SummaryEvaluation?> UploadGrades(SummaryEvaluation summary, IFormFile file)
         {
             var existingEval = await _context.SummaryEvaluations
                                                 .Where(se => se.nasId == summary.nasId && se.Semester == summary.Semester && se.SchoolYear == summary.SchoolYear)
                                                 .FirstOrDefaultAsync();
+
+            if (file == null || file.Length == 0)
+            {
+                return null;
+            }
+
             if (existingEval != null)
             {
-                existingEval.AcademicPerformance = summary.AcademicPerformance;
-
-                await _context.SaveChangesAsync();
-
-                return existingEval;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    var fileData = memoryStream.ToArray();
+                    existingEval.AcademicPerformance = fileData;
+                    await _context.SaveChangesAsync();
+                    return existingEval;
+                }
             }
 
             return null;

@@ -176,9 +176,9 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpPut("grades/{nasId}", Name = "UploadGrades")]
+        [HttpPut("grades", Name = "UploadGrades")]
         [Authorize]
-        public async Task<IActionResult> UploadGrades(SummaryEvaluationGradeUpdateDto summary)
+        public async Task<IActionResult> UploadGrades(SummaryEvaluationGradeUpdateDto summary, [FromForm] IFormFile file)
         {
             try
             {
@@ -188,14 +188,14 @@ namespace CITNASDaily.API.Controllers
                     return Forbid();
                 }
                 
-                var nasGrades = await _summaryEvaluationService.UploadGrades(summary);
+                var nasGrades = await _summaryEvaluationService.UploadGrades(summary, file);
 
                 if (nasGrades == null)
                 {
                     return BadRequest("Upload Failed");
                 }
 
-                return Ok(nasGrades);
+                return Ok(new { Grade = nasGrades.AcademicPerformance });
             }
             catch (Exception ex)
             {
@@ -220,7 +220,7 @@ namespace CITNASDaily.API.Controllers
 
                 if(result == null)
                 {
-                    return BadRequest("Invalid file");
+                    return BadRequest("Upload Failed");
                 }
 
                 return Ok(new { Image = result });
