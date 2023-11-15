@@ -5,6 +5,7 @@ using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Repositories.Repositories;
 using CITNASDaily.Services.Contracts;
+using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 
 namespace CITNASDaily.Services.Services
@@ -71,6 +72,11 @@ namespace CITNASDaily.Services.Services
         public async Task<IEnumerable<NAS>?> GetAllNASAsync()
         {
             return await _nasRepository.GetAllNASAsync();
+        }
+
+        public async Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file)
+        {
+            return await _nasRepository.UploadPhotoAsync(nasId, file);
         }
     }
 }

@@ -6,7 +6,10 @@ using CITNASDaily.Services.Contracts;
 using CITNASDaily.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Security.Claims;
 using static CITNASDaily.Entities.Enums.Enums;
 
@@ -173,7 +176,7 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpPut(Name = "UploadGrades")]
+        [HttpPut("grades/{nasId}", Name = "UploadGrades")]
         [Authorize]
         public async Task<IActionResult> UploadGrades(SummaryEvaluationGradeUpdateDto summary)
         {
@@ -197,6 +200,34 @@ namespace CITNASDaily.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error uploading grades.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpPut("photo/{nasId}", Name = "UploadPhoto")]
+        [Authorize]
+        public async Task<IActionResult> UploadPhoto(int nasId, [FromForm] IFormFile file)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var result = await _nasService.UploadPhotoAsync(nasId, file);
+
+                if(result == null)
+                {
+                    return BadRequest("Invalid file");
+                }
+
+                return Ok(new { Image = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading photo.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
