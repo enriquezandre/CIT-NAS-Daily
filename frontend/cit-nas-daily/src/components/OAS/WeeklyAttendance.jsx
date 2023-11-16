@@ -23,8 +23,21 @@ export const WeeklyAttendance = ({
         const response = await api.get(`BiometricLogs?nasId=${nasId}`);
         const data = response.data;
 
+        if (!data || data.length === 0) {
+          setAttendanceSummaries([
+            {
+              dateTime: null,
+              DutyOn: null,
+              DutyOff: "NO RECORD",
+              OvertimeOn: null,
+              OverTimeOff: null,
+            },
+          ]);
+          return;
+        }
+
         // TO DO: DATE RANGE FOR FIRST, SECOND, SUMMER SEMESTER
-        const startDate = new Date("2023-10-01");
+        const startDate = new Date("2021-01-01");
         const endDate = new Date();
         endDate.setHours(23, 59, 59, 999);
         const dateRange = [];
@@ -71,7 +84,7 @@ export const WeeklyAttendance = ({
             return {
               dateTime: dateString,
               DutyOn: null,
-              DutyOff: "absent",
+              DutyOff: "NO RECORD",
               OvertimeOn: null,
               OverTimeOff: null,
             };
@@ -113,7 +126,6 @@ export const WeeklyAttendance = ({
         console.error(error);
       }
     };
-
     fetchNas();
   }, [nasId, selectedMonth, selectedSem, selectedSY]);
 
@@ -146,8 +158,8 @@ export const WeeklyAttendance = ({
             </td>
             <td className="border px-4 py-2 w-1/5 text-center">
               {summary.DutyOff
-                ? summary.DutyOff === "absent"
-                  ? "absent"
+                ? summary.DutyOff === "NO RECORD"
+                  ? "NO RECORD"
                   : formatTime(summary.DutyOff.dateTime.split("T")[1])
                 : ""}
             </td>

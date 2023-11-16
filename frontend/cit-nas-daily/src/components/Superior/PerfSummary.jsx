@@ -49,8 +49,20 @@ export const PerfSummary = ({ show, close }) => {
         const timekeepingresponse = await api.get(
           `/TimekeepingSummary/${nasId}`
         );
-        const timekeepingdata = timekeepingresponse.data[0];
-        console.log(timekeepingdata);
+        let timekeepingdata = timekeepingresponse.data[0];
+        if (!timekeepingdata) {
+          // If there's no record
+          timekeepingdata = {
+            excused: "NR",
+            failedToPunch: "NR",
+            lateOver10Mins: "NR",
+            lateOver45Mins: "NR",
+            makeUpDutyHours: "NR",
+            schoolYear: "NR",
+            semester: "NR",
+            unexcused: "NR",
+          };
+        }
 
         setTimekeepingSummaries(timekeepingdata);
       } catch (error) {

@@ -65,7 +65,7 @@ export const OASAttendance = () => {
         let timekeepingdata = timekeepingresponse.data[0];
         console.log(timekeepingdata);
 
-        if (!timekeepingdata) {
+        if (timekeepingdata === undefined || !timekeepingdata) {
           // If there's no record
           timekeepingdata = {
             excused: "NR",

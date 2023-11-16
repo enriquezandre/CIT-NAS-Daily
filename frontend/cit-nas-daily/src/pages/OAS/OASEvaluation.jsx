@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
+import { SuperiorEval } from "../../components/SuperiorEval";
 import axios from "axios";
 
 export const OASEvaluation = () => {
@@ -13,8 +14,6 @@ export const OASEvaluation = () => {
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
-  const [evaluationData, setEvaluationData] = useState([]);
-
   const handleSelectSY = (event) => {
     const value = event.target.value;
     setSelectedSY(value);
@@ -22,7 +21,7 @@ export const OASEvaluation = () => {
 
   const handleSelectSem = (event) => {
     const value = event.target.value;
-    setSelectedSem(value);
+    setSelectedSem(getSemesterValue(value));
   };
 
   function getSemesterValue(sem) {
@@ -62,14 +61,6 @@ export const OASEvaluation = () => {
         setOffice(officeData.name);
       } catch (error) {
         console.error(error);
-        setEvaluationData({
-          attendanceAndPunctuality: 0,
-          attitudeAndWorkBehaviour: 0,
-          overallAssessment: 0,
-          overallRating: 0,
-          quanOfWorkOutput: 0,
-          qualOfWorkOutput: 0,
-        });
       }
     };
 
@@ -77,53 +68,6 @@ export const OASEvaluation = () => {
 
     console.log("Selected Sem:", selectedSem);
     console.log("Selected SY:", selectedSY);
-  }, [selectedSY, selectedSem, nasId]);
-
-  useEffect(() => {
-    const fetchEvaluation = async () => {
-      try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const evaluationResponse = await api.get(
-          `SuperiorEvaluationRating?nasId=${nasId}&semester=${getSemesterValue(
-            selectedSem
-          )}&year=${selectedSY}`
-        );
-        let evalData = evaluationResponse.data;
-        if (!evalData) {
-          // If there's no record
-          evalData = {
-            attendanceAndPunctuality: 0,
-            attitudeAndWorkBehaviour: 0,
-            overallAssessment: 0,
-            overallRating: 0,
-            quanOfWorkOutput: 0,
-            qualOfWorkOutput: 0,
-          };
-        }
-
-        console.log(evalData);
-        setEvaluationData(evalData);
-      } catch (error) {
-        console.error(error);
-        setEvaluationData({
-          attendanceAndPunctuality: 0,
-          attitudeAndWorkBehaviour: 0,
-          overallAssessment: 0,
-          overallRating: 0,
-          quanOfWorkOutput: 0,
-          qualOfWorkOutput: 0,
-        });
-      }
-    };
-
-    fetchEvaluation();
   }, [selectedSY, selectedSem, nasId]);
 
   return (
@@ -234,44 +178,13 @@ export const OASEvaluation = () => {
               </div>
             </div>
             <hr className="my-5 border-t-2 border-gray-300" />
-            <div className="flex flex-col">
-              <p className="text-center text-xl font-bold mb-8">
-                SUPERIOR EVALUATION SUMMARY
-              </p>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-xl">Attendance and Punctuality:</p>
-                <p className="text-xl">
-                  {evaluationData.attendanceAndPunctuality / 2}
-                </p>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-xl">Quality of Work - Output:</p>
-                <p className="text-xl">{evaluationData.qualOfWorkOutput / 3}</p>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-xl">Quantity of Work - Output:</p>
-                <p className="text-xl">{evaluationData.quanOfWorkOutput / 2}</p>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-xl">Attitude and Work Behaviour:</p>
-                <p className="text-xl">
-                  {evaluationData.attitudeAndWorkBehaviour / 5}
-                </p>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-xl">
-                  Overall Assessment of NAS Performance:
-                </p>
-                <p className="text-xl">{evaluationData.overallAssessment}</p>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-xl font-bold">
-                  Superior&#39;s Evaluation Overall Rating:
-                </p>
-                <p className="text-xl font-bold">
-                  {evaluationData.overallRating}
-                </p>
-              </div>
+            <div>
+              {" "}
+              <SuperiorEval
+                nasId={nasId}
+                selectedSem={getSemesterValue(selectedSem)}
+                selectedSY={selectedSY}
+              />
             </div>
           </div>
         </div>
