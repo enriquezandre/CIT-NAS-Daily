@@ -89,41 +89,47 @@ export const SuperiorEvaluation = () => {
     setSelectedSem(value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const schoolYear = selectedSY;
     const semester = getSemesterValue(selectedSem);
-    const postData = async () => {
-      try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+    try {
+      const api = axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-        const superiorEvaluationRating = {
-          nasId,
-          schoolYear,
-          semester,
-          attendanceAndPunctuality,
-          qualOfWorkOutput,
-          quanOfWorkOutput,
-          attitudeAndWorkBehaviour,
-          overallAssessment,
-        };
+      const superiorEvaluationRating = {
+        nasId,
+        schoolYear,
+        semester,
+        attendanceAndPunctuality,
+        qualOfWorkOutput,
+        quanOfWorkOutput,
+        attitudeAndWorkBehaviour,
+        overallAssessment,
+      };
 
-        const postresponse = await api.post(
-          "https://localhost:7001/api/SuperiorEvaluationRating",
-          superiorEvaluationRating
-        );
-        console.log("Post", postresponse.data);
-        setIsSubmitted(true);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    postData();
+      const postresponse = await api.post(
+        "https://localhost:7001/api/SuperiorEvaluationRating",
+        superiorEvaluationRating
+      );
+      console.log("Post", postresponse.data);
+
+      // Resetting state values to clear the form after successful submission
+      setSelectedOptions({});
+      setAttendanceAndPunctuality(undefined);
+      setQualityOfWorkOutput(undefined);
+      setQuantityOfWorkOutput(undefined);
+      setAttitudeAndWorkBehaviour(undefined);
+      setOverallAssessment(undefined);
+      setTotal(undefined);
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   function getSemesterValue(sem) {
@@ -183,8 +189,10 @@ export const SuperiorEvaluation = () => {
         );
         const evalData = evaluationResponse.data;
         setEvalData(evalData);
+        setIsSubmitted(false);
       } catch (error) {
         console.error(error);
+        setEvalData({});
       }
     };
     fetchEvalData();
