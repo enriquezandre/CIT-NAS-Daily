@@ -55,7 +55,33 @@ namespace CITNASDaily.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting Superior.");
+                _logger.LogError(ex, "Error getting NAS.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("{nasId}/noimg", Name = "GetNASNoImage")]
+        [Authorize]
+        public async Task<IActionResult> GetNASNoImage(int nasId)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
+                // Pass the username from the API request
+                var nas = await _nasService.GetNASNoImageAsync(nasId);
+
+                if (nas == null)
+                {
+                    return NotFound("NAS not found");
+                }
+
+                return Ok(nas);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting NAS.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
@@ -161,6 +187,28 @@ namespace CITNASDaily.API.Controllers
             try
             {
                 var nas = await _nasService.GetAllNASAsync();
+
+                if (nas.IsNullOrEmpty())
+                {
+                    return NotFound("There is no registered NAS.");
+                }
+
+                return Ok(nas);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting list of NAS.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("noimg", Name = "GetAllNASNoImage")]
+        [Authorize]
+        public async Task<IActionResult> GetAllNASNoImage()
+        {
+            try
+            {
+                var nas = await _nasService.GetAllNASNoImageAsync();
 
                 if (nas.IsNullOrEmpty())
                 {
