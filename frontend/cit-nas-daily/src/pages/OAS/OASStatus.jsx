@@ -51,7 +51,7 @@ export const OASStatus = () => {
           },
         });
 
-        const nasresponse = await api.get(`/NAS/${nasId}`);
+        const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
         console.log(nasresponse);
         const nasData = nasresponse.data;
 

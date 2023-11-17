@@ -48,7 +48,7 @@ export const OASEvaluation = () => {
           },
         });
 
-        const nasResponse = await api.get(`/NAS/${nasId}`);
+        const nasResponse = await api.get(`/NAS/${nasId}/noimg`);
         console.log(nasResponse);
         const nasData = nasResponse.data;
 

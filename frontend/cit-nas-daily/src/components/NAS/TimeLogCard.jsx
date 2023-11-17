@@ -66,7 +66,7 @@ export const TimeLogCard = () => {
           },
         });
 
-        const response = await api.get(`/NAS/${nasId}`);
+        const response = await api.get(`/NAS/${nasId}/noimg`);
         setNas(response.data);
 
         const logresponse = await api.get(`BiometricLogs?nasId=${nasId}`);
