@@ -6,6 +6,7 @@ import { SuperiorEvaluation } from "./pages/superior/SuperiorEvaluation";
 import { SuperiorNASList } from "./pages/superior/SuperiorNASList";
 import { NASPage } from "./pages/NAS/NASPage";
 import { OASPage } from "./pages/OAS/OASPage";
+import { OASSpecificNAS } from "./pages/OAS/OASSpecificNAS.jsx";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/superior/:superiorId" element={<SuperiorNASList />} />
         {/* OAS */}
         <Route path="/oas" element={<OASPage />} />
+        <Route path="/oas/:nasId" element={<OASSpecificNAS />} />
         {/* NAS */}
         <Route path="/nas/:nasId" element={<NASPage />} />
       </Routes>

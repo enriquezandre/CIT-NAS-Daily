@@ -32,7 +32,6 @@ export const OASOffices = () => {
         });
 
         const response = await api.get(`/Offices`);
-        console.log(response);
         setOffices(response.data);
       } catch (error) {
         console.error(error);
@@ -117,9 +116,6 @@ export const OASOffices = () => {
                     onClick={() => handleOfficeClick(office)}
                   >
                     <h2 className="text-xl font-semibold">{office.name}</h2>
-                    <p className="text-gray-600">
-                      Non-Academic Scholars: {office.scholarCount}
-                    </p>
                   </button>
                 ))}
               </div>

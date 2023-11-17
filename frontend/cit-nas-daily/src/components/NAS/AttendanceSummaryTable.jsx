@@ -23,7 +23,7 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY 
         const data = response.data;
 
         // TO DO: DATE RANGE FOR FIRST, SECOND, SUMMER SEMESTER
-        const startDate = new Date("2023-10-01");
+        const startDate = new Date("2021-01-01");
         const endDate = new Date();
         endDate.setHours(23, 59, 59, 999);
         const dateRange = [];
@@ -66,7 +66,7 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY 
             return {
               dateTime: dateString,
               DutyOn: null,
-              DutyOff: "absent",
+              DutyOff: "NO RECORD",
               OvertimeOn: null,
               OverTimeOff: null,
             };
@@ -134,8 +134,8 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY 
             </Table.Cell>
             <Table.Cell>
               {summary.DutyOff
-                ? summary.DutyOff === "absent"
-                  ? "absent"
+                ? summary.DutyOff === "NO RECORD"
+                  ? "NO RECORD"
                   : formatTime(summary.DutyOff.dateTime.split("T")[1])
                 : ""}
             </Table.Cell>

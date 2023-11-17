@@ -38,7 +38,7 @@ export const MasterlistTable = () => {
           },
         });
 
-        const nasresponse = await api.get(`/NAS/`);
+        const nasresponse = await api.get(`/NAS/noimg`);
         const nasData = nasresponse.data;
 
         const nasDataWithOffice = await Promise.all(

@@ -52,7 +52,7 @@ export const OASAttendance = () => {
           },
         });
 
-        const nasresponse = await api.get(`/NAS/${nasId}`);
+        const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
         console.log(nasresponse);
         const nasData = nasresponse.data;
 
@@ -65,7 +65,7 @@ export const OASAttendance = () => {
         let timekeepingdata = timekeepingresponse.data[0];
         console.log(timekeepingdata);
 
-        if (!timekeepingdata) {
+        if (timekeepingdata === undefined || !timekeepingdata) {
           // If there's no record
           timekeepingdata = {
             excused: "NR",

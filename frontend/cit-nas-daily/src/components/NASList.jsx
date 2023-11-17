@@ -1,11 +1,17 @@
 "use client";
 import { Card, Avatar } from "flowbite-react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import axios from "axios";
 
 export const NASList = ({ office }) => {
   const [nasList, setNasList] = useState([]);
+  const navigate = useNavigate();
+
+  const handleNASClick = (nasId) => {
+    navigate(`/oas/${nasId}`);
+  };
 
   useEffect(() => {
     const fetchNasList = async () => {
@@ -38,6 +44,7 @@ export const NASList = ({ office }) => {
             <button
               key={nas.id}
               className="border-solid border-2 p-3 flex items-center hover:bg-grey"
+              onClick={() => handleNASClick(nas.id)}
             >
               <Avatar rounded />
               <span className="ml-5" style={{ textTransform: "capitalize" }}>

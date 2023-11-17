@@ -6,7 +6,10 @@ using CITNASDaily.Services.Contracts;
 using CITNASDaily.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Security.Claims;
 using static CITNASDaily.Entities.Enums.Enums;
 
@@ -52,7 +55,33 @@ namespace CITNASDaily.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting Superior.");
+                _logger.LogError(ex, "Error getting NAS.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("{nasId}/noimg", Name = "GetNASNoImage")]
+        [Authorize]
+        public async Task<IActionResult> GetNASNoImage(int nasId)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
+                // Pass the username from the API request
+                var nas = await _nasService.GetNASNoImageAsync(nasId);
+
+                if (nas == null)
+                {
+                    return NotFound("NAS not found");
+                }
+
+                return Ok(nas);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting NAS.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
@@ -173,9 +202,31 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpPut(Name = "UploadGrades")]
+        [HttpGet("noimg", Name = "GetAllNASNoImage")]
         [Authorize]
-        public async Task<IActionResult> UploadGrades(SummaryEvaluationGradeUpdateDto summary)
+        public async Task<IActionResult> GetAllNASNoImage()
+        {
+            try
+            {
+                var nas = await _nasService.GetAllNASNoImageAsync();
+
+                if (nas.IsNullOrEmpty())
+                {
+                    return NotFound("There is no registered NAS.");
+                }
+
+                return Ok(nas);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting list of NAS.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpPut("grades/{nasId}/{year}/{semester}", Name = "UploadGrades")]
+        [Authorize]
+        public async Task<IActionResult> UploadGrades(int nasId, int year, int semester, [FromForm] IFormFile file)
         {
             try
             {
@@ -184,19 +235,51 @@ namespace CITNASDaily.API.Controllers
                 {
                     return Forbid();
                 }
-                
-                var nasGrades = await _summaryEvaluationService.UploadGrades(summary);
+                Console.WriteLine("NAS ID: " + nasId);
+                Console.WriteLine("year: " + year);
+                Console.WriteLine("semester: " + semester);
+
+
+                var nasGrades = await _summaryEvaluationService.UploadGrades(nasId, year, (Semester)semester, file);
 
                 if (nasGrades == null)
                 {
                     return BadRequest("Upload Failed");
                 }
 
-                return Ok(nasGrades);
+                return Ok(new { Grade = nasGrades.AcademicPerformance });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error uploading grades.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpPut("photo/{nasId}", Name = "UploadPhoto")]
+        [Authorize]
+        public async Task<IActionResult> UploadPhoto(int nasId, [FromForm] IFormFile file)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var result = await _nasService.UploadPhotoAsync(nasId, file);
+
+                if(result == null)
+                {
+                    return BadRequest("Upload Failed");
+                }
+
+                return Ok(new { Image = result });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error uploading photo.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }

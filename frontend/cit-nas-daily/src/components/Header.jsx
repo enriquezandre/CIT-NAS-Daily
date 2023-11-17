@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar } from "flowbite-react";
 import { useParams } from "react-router-dom";
+import placeholder from "../placeholders/user.png"
 import axios from "axios";
 
 export const Header = () => {
@@ -64,7 +65,11 @@ export const Header = () => {
       <div className="flex mt-5 ml-10 items-center justify-between">
         <div className="flex items-center">
           <div className="mr-4">
-            <Avatar alt={user.fullName} img={user.image} rounded />
+          {user.image ? (
+            <Avatar alt={user.fullName} img={`data:image/png;base64,${user.image}`} rounded />
+          ) : (
+            <Avatar alt={user.fullName} img={placeholder} rounded />
+          )}
           </div>
           <div className="text-base" style={{ textTransform: "capitalize" }}>
             {user.fullName}

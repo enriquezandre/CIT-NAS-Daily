@@ -11,12 +11,11 @@ export const OASStatus = () => {
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
-  const [program, setProgram] = useState("");
-  const [yearLevel, setYearLevel] = useState();
   const [office, setOffice] = useState("");
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
+  const [summaryEvaluation, setSummaryEvaluation] = useState({});
 
   const openEvaluateGrades = () => {
     setIsViewingEvaluateGrades(true);
@@ -25,6 +24,19 @@ export const OASStatus = () => {
   const closeEvaluateGrades = () => {
     setIsViewingEvaluateGrades(false);
   };
+
+  function getSemesterValue(sem) {
+    switch (sem) {
+      case "First":
+        return 0;
+      case "Second":
+        return 1;
+      case "Summer":
+        return 3;
+      default:
+        return "Invalid semester";
+    }
+  }
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -37,19 +49,25 @@ export const OASStatus = () => {
           },
         });
 
-        const nasresponse = await api.get(`/NAS/${nasId}`);
+        const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
         console.log(nasresponse);
         const nasData = nasresponse.data;
 
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
         const officeData = officeResponse.data;
 
+        const summaryEvaluationResponse = await api.get(
+          `SummaryEvaluation/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}/${nasId}`
+        );
+        const summaryEvaluationData = summaryEvaluationResponse.data;
+
+        setSummaryEvaluation(summaryEvaluationData);
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
         setOffice(officeData.name);
-        setProgram(nasData.course);
-        setYearLevel(nasData.yearLevel);
       } catch (error) {
         console.error(error);
       }
@@ -75,7 +93,7 @@ export const OASStatus = () => {
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
+          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
             <div
               className={`flex items-center w-auto ${
                 nasId === 1 ? "ml-10" : ""
@@ -91,9 +109,20 @@ export const OASStatus = () => {
                   </Button>
                 )}
               </div>
+              <div className="font-bold" style={{ textTransform: "uppercase" }}>
+                NAS NAME: {lastName}, {firstName} {middleName}
+              </div>
             </div>
+            <li>
+              <p
+                className="font-bold text-center"
+                style={{ textTransform: "uppercase" }}
+              >
+                DEPT/OFFICE: {office}
+              </p>
+            </li>
             <li className="flex justify-end">
-              <div className="flex justify-end">
+              <div className="flex ">
                 <div className="relative w-auto">
                   <input
                     type="search"
@@ -167,28 +196,7 @@ export const OASStatus = () => {
                 </select>
               </div>
             </div>
-            <div>
-              <div className="grid grid-cols-1 sm:grid-cols-2">
-                <p
-                  className="text-bold mb-3 text-xl font-bold"
-                  style={{ textTransform: "uppercase" }}
-                >
-                  NAS NAME: {lastName}, {firstName} {middleName}
-                </p>
-                <p
-                  className="text-bold mb-3 text-xl font-bold"
-                  style={{ textTransform: "uppercase" }}
-                >
-                  PROGRAM: {program} {yearLevel}
-                </p>
-                <p
-                  className="text-bold mb-3 text-xl font-bold"
-                  style={{ textTransform: "uppercase" }}
-                >
-                  DEPT/OFFICE: {office}
-                </p>
-              </div>
-            </div>
+            <div></div>
             <hr className="my-5 border-t-2 border-gray-300" />
             <div className="flex flex-col">
               <p className="text-bold text-center text-xl font-bold mb-8">
@@ -198,7 +206,9 @@ export const OASStatus = () => {
                 <p className="text-bold text-xl">
                   SUPERIOR&#39;S EVALUATION OVERALL RATING:
                 </p>
-                <p className="text-bold text-xl font-bold">4.8</p>
+                <p className="text-bold text-xl font-bold">
+                  {summaryEvaluation.superiorOverallRating}
+                </p>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">ACADEMIC PERFORMANCE:</p>
@@ -216,13 +226,15 @@ export const OASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">TIMEKEEPING STATUS:</p>
-                <p className="text-bold text-xl font-bold text-green">
-                  EXCELLENT
+                <p className="text-bold text-xl font-bold">
+                  {summaryEvaluation.timekeepingStatus}
                 </p>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">ALLOWED FOR ENROLLMENT:</p>
-                <p className="text-bold text-xl font-bold text-green">YES</p>
+                <p className="text-bold text-xl font-bold text-green">
+                  {summaryEvaluation.enrollmentAllowed}
+                </p>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">NUMBER OF UNITS ALLOWED:</p>

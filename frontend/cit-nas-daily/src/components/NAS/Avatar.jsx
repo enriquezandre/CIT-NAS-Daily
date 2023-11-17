@@ -5,7 +5,8 @@ export const Avatar = ({ avatar, handleAvatarChange }) => {
     <div className="avatar-square" style={{ width: '200px', height: '200px', border: '2px solid gray', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       {avatar ? (
         <img
-          src={URL.createObjectURL(avatar)}
+          src={`data:image/png;base64,${avatar}`}
+          //src={URL.createObjectURL(avatar)}
           alt="Avatar"
           className="avatar-image"
           style={{ width: '100%', height: '100%' }}

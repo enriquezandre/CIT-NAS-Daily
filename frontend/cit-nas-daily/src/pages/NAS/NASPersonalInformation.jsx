@@ -28,12 +28,14 @@ export const NASPersonalInformation = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-
+        
         const response = await api.get(`/NAS/${nasId}`);
-        console.log(response);
         const nasData = response.data;
 
-        setStudentId(nasData.userId); // should be studentId but I think there is no student ID in NAS Info
+        const officeresponse = await api.get(`Offices/${nasId}/NAS`);
+        const officeName = officeresponse.data.name;
+
+        setStudentId(nasData.username); // should be studentId but I think there is no student ID in NAS Info
         setFirstName(nasData.firstName);
         setMiddleName(nasData.middleName);
         setLastName(nasData.lastName);
@@ -41,8 +43,12 @@ export const NASPersonalInformation = () => {
         setBday(new Date(nasData.birthDate).toLocaleDateString());
         setCourse(nasData.course);
         setYearLevel(nasData.yearLevel.toString());
-        setOffice(nasData.officeId.toString()); // to be changed, need an endpoint to get office by ID to retrieve the name
+        setOffice(officeName);
         setDateStarted(new Date(nasData.dateStarted).toLocaleDateString());
+        
+        if(nasData.image != null){
+          setAvatar(nasData.image);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -51,11 +57,37 @@ export const NASPersonalInformation = () => {
     fetchNas();
   }, [nasId]);
 
-  const handleAvatarChange = (e) => {
-    // Handle the image selection
+  const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
+
     if (file) {
-      setAvatar(file);
+      const api = axios.create({
+        baseURL: `https://localhost:7001/api/NAS/photo/${nasId}`, // Include nasId in the URL
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await api.put('', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        
+        if (response.status === 200) {
+          const responseData = response.data;
+          setAvatar(responseData.image);
+          window.location.reload();
+        } else {
+          console.error('Image upload failed');
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
     }
   };
 
@@ -66,7 +98,7 @@ export const NASPersonalInformation = () => {
           <div className="flex">
             <div className="flex-1 pr-5">
               <Field
-                label="Student ID:"
+                label="User ID:"
                 id="studentId"
                 type="text"
                 value={studentId}
@@ -138,7 +170,7 @@ export const NASPersonalInformation = () => {
           label="Office Assigned:"
           id="office"
           type="text"
-          value={office.toUpperCase()}
+          value={office}
           onChange={(e) => setOffice(e.target.value)}
           readOnly={true}
         />
