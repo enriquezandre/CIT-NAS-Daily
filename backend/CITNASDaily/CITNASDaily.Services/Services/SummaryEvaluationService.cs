@@ -52,10 +52,9 @@ namespace CITNASDaily.Services.Services
             return await _summaryEvaluationRepository.UpdateSummaryEvaluationAsync(summaryEvaluation);
         }
 
-        public async Task<SummaryEvaluation?> UploadGrades(SummaryEvaluationGradeUpdateDto summary, IFormFile file)
+        public async Task<SummaryEvaluation?> UploadGrades(int nasId, int year, Semester semester, IFormFile file)
         {
-            var summaryeval = _mapper.Map<SummaryEvaluation>(summary);
-            return await _summaryEvaluationRepository.UploadGrades(summaryeval, file);
+            return await _summaryEvaluationRepository.UploadGrades(nasId, year, semester, file);
         }
     }
 }

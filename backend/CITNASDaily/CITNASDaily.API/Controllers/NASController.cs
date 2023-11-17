@@ -176,9 +176,9 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpPut("grades", Name = "UploadGrades")]
+        [HttpPut("grades/{nasId}/{year}/{semester}", Name = "UploadGrades")]
         [Authorize]
-        public async Task<IActionResult> UploadGrades(SummaryEvaluationGradeUpdateDto summary, [FromForm] IFormFile file)
+        public async Task<IActionResult> UploadGrades(int nasId, int year, int semester, [FromForm] IFormFile file)
         {
             try
             {
@@ -187,8 +187,12 @@ namespace CITNASDaily.API.Controllers
                 {
                     return Forbid();
                 }
-                
-                var nasGrades = await _summaryEvaluationService.UploadGrades(summary, file);
+                Console.WriteLine("NAS ID: " + nasId);
+                Console.WriteLine("year: " + year);
+                Console.WriteLine("semester: " + semester);
+
+
+                var nasGrades = await _summaryEvaluationService.UploadGrades(nasId, year, (Semester)semester, file);
 
                 if (nasGrades == null)
                 {

@@ -16,6 +16,6 @@ namespace CITNASDaily.Services.Contracts
         Task<IEnumerable<SummaryEvaluationDto?>> GetSummaryEvaluationsAsync();
         Task<SummaryEvaluation?> GetSummaryEvaluationByNASIdSemesterYearAsync(int nasId, Semester semester, int year);
         Task<SummaryEvaluation?> UpdateSummaryEvaluationAsync(SummaryEvaluationUpdateDto summaryEvaluation);
-        Task<SummaryEvaluation?> UploadGrades(SummaryEvaluationGradeUpdateDto summary, IFormFile file);
+        Task<SummaryEvaluation?> UploadGrades(int nasId, int year, Semester semester, IFormFile file);
     }
 }
