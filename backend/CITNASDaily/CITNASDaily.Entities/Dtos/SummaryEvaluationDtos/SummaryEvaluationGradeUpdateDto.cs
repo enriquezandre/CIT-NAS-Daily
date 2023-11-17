@@ -13,6 +13,5 @@ namespace CITNASDaily.Entities.Dtos.SummaryEvaluationDtos
         public int nasId { get; set; }
         public Semester Semester { get; set; }
         public int SchoolYear { get; set; }
-        public byte[]? AcademicPerformance { get; set; }
     }
 }

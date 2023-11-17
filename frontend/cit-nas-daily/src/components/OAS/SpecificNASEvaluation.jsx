@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { Button } from "flowbite-react";
-import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { SuperiorEval } from "../../components/SuperiorEval";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
-export const OASEvaluation = () => {
+export const SpecificNASEvaluation = () => {
   const [selectedSY, setSelectedSY] = useState("2324");
   const [selectedSem, setSelectedSem] = useState("First");
   const [firstName, setFirstname] = useState("");
@@ -13,7 +12,7 @@ export const OASEvaluation = () => {
   const [office, setOffice] = useState("");
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
-  const [nasId, setNasId] = useState(1);
+  const nasId = useParams().nasId;
   const handleSelectSY = (event) => {
     const value = event.target.value;
     setSelectedSY(value);
@@ -76,23 +75,10 @@ export const OASEvaluation = () => {
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
             <div
-              className={`flex items-center w-auto ${
-                nasId === 1 ? "ml-10" : ""
-              }`}
+              className="font-bold ml-10"
+              style={{ textTransform: "uppercase" }}
             >
-              <div>
-                {nasId > 1 && (
-                  <Button
-                    className="text-black"
-                    onClick={() => setNasId(nasId - 1)}
-                  >
-                    <HiOutlineArrowLeft className="h-6 w-6" />
-                  </Button>
-                )}
-              </div>
-              <div className="font-bold" style={{ textTransform: "uppercase" }}>
-                NAS NAME: {lastName}, {firstName} {middleName}
-              </div>
+              NAS NAME: {lastName}, {firstName} {middleName}
             </div>
             <li>
               <p
@@ -133,12 +119,6 @@ export const OASEvaluation = () => {
                   </button>
                 </div>
               </div>
-              <Button
-                className="text-black"
-                onClick={() => setNasId(nasId + 1)}
-              >
-                <HiOutlineArrowRight className="h-6 w-6" />
-              </Button>
             </li>
           </ul>
           <div className="px-8 py-4">

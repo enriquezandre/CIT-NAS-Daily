@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Button } from "flowbite-react";
-import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
-import { SuperiorEval } from "../../components/SuperiorEval";
+import { EvaluateGrades } from "../../components/OAS/EvaluateGrades";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export const OASEvaluation = () => {
+export const SpecificNASStatus = () => {
+  const [isViewingEvaluateGrades, setIsViewingEvaluateGrades] = useState(false);
   const [selectedSY, setSelectedSY] = useState("2324");
   const [selectedSem, setSelectedSem] = useState("First");
   const [firstName, setFirstname] = useState("");
@@ -13,15 +13,15 @@ export const OASEvaluation = () => {
   const [office, setOffice] = useState("");
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
-  const [nasId, setNasId] = useState(1);
-  const handleSelectSY = (event) => {
-    const value = event.target.value;
-    setSelectedSY(value);
+  const nasId = useParams().nasId;
+  const [summaryEvaluation, setSummaryEvaluation] = useState({});
+
+  const openEvaluateGrades = () => {
+    setIsViewingEvaluateGrades(true);
   };
 
-  const handleSelectSem = (event) => {
-    const value = event.target.value;
-    setSelectedSem(getSemesterValue(value));
+  const closeEvaluateGrades = () => {
+    setIsViewingEvaluateGrades(false);
   };
 
   function getSemesterValue(sem) {
@@ -48,13 +48,21 @@ export const OASEvaluation = () => {
           },
         });
 
-        const nasResponse = await api.get(`/NAS/${nasId}/noimg`);
-        console.log(nasResponse);
-        const nasData = nasResponse.data;
+        const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
+        console.log(nasresponse);
+        const nasData = nasresponse.data;
 
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
         const officeData = officeResponse.data;
 
+        const summaryEvaluationResponse = await api.get(
+          `SummaryEvaluation/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}/${nasId}`
+        );
+        const summaryEvaluationData = summaryEvaluationResponse.data;
+
+        setSummaryEvaluation(summaryEvaluationData);
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
@@ -70,29 +78,26 @@ export const OASEvaluation = () => {
     console.log("Selected SY:", selectedSY);
   }, [selectedSY, selectedSem, nasId]);
 
+  const handleSelectSY = (event) => {
+    const value = event.target.value;
+    setSelectedSY(value);
+  };
+
+  const handleSelectSem = (event) => {
+    const value = event.target.value;
+    setSelectedSem(value);
+  };
+
   return (
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
             <div
-              className={`flex items-center w-auto ${
-                nasId === 1 ? "ml-10" : ""
-              }`}
+              className="font-bold ml-10"
+              style={{ textTransform: "uppercase" }}
             >
-              <div>
-                {nasId > 1 && (
-                  <Button
-                    className="text-black"
-                    onClick={() => setNasId(nasId - 1)}
-                  >
-                    <HiOutlineArrowLeft className="h-6 w-6" />
-                  </Button>
-                )}
-              </div>
-              <div className="font-bold" style={{ textTransform: "uppercase" }}>
-                NAS NAME: {lastName}, {firstName} {middleName}
-              </div>
+              NAS NAME: {lastName}, {firstName} {middleName}
             </div>
             <li>
               <p
@@ -133,12 +138,6 @@ export const OASEvaluation = () => {
                   </button>
                 </div>
               </div>
-              <Button
-                className="text-black"
-                onClick={() => setNasId(nasId + 1)}
-              >
-                <HiOutlineArrowRight className="h-6 w-6" />
-              </Button>
             </li>
           </ul>
           <div className="px-8 py-4">
@@ -177,14 +176,50 @@ export const OASEvaluation = () => {
                 </select>
               </div>
             </div>
+            <div></div>
             <hr className="my-5 border-t-2 border-gray-300" />
-            <div>
-              {" "}
-              <SuperiorEval
-                nasId={nasId}
-                selectedSem={getSemesterValue(selectedSem)}
-                selectedSY={selectedSY}
-              />
+            <div className="flex flex-col">
+              <p className="text-bold text-center text-xl font-bold mb-8">
+                PERFORMANCE EVALUATION
+              </p>
+              <div className="flex flex-row gap-6 justify-start items-center mb-4">
+                <p className="text-bold text-xl">
+                  SUPERIOR&#39;S EVALUATION OVERALL RATING:
+                </p>
+                <p className="text-bold text-xl font-bold">
+                  {summaryEvaluation.superiorOverallRating}
+                </p>
+              </div>
+              <div className="flex flex-row gap-6 justify-start items-center mb-4">
+                <p className="text-bold text-xl">ACADEMIC PERFORMANCE:</p>
+                <button
+                  type="button"
+                  className="text-primary bg-secondary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5"
+                  onClick={openEvaluateGrades}
+                >
+                  EVALUATE GRADES
+                </button>
+                <EvaluateGrades
+                  show={isViewingEvaluateGrades}
+                  close={closeEvaluateGrades}
+                />
+              </div>
+              <div className="flex flex-row gap-6 justify-start items-center mb-4">
+                <p className="text-bold text-xl">TIMEKEEPING STATUS:</p>
+                <p className="text-bold text-xl font-bold">
+                  {summaryEvaluation.timekeepingStatus}
+                </p>
+              </div>
+              <div className="flex flex-row gap-6 justify-start items-center mb-4">
+                <p className="text-bold text-xl">ALLOWED FOR ENROLLMENT:</p>
+                <p className="text-bold text-xl font-bold text-green">
+                  {summaryEvaluation.enrollmentAllowed}
+                </p>
+              </div>
+              <div className="flex flex-row gap-6 justify-start items-center mb-4">
+                <p className="text-bold text-xl">NUMBER OF UNITS ALLOWED:</p>
+                <p className="text-bold text-xl font-bold">_____</p>
+              </div>
             </div>
           </div>
         </div>

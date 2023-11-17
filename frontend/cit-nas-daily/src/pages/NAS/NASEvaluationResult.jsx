@@ -8,7 +8,6 @@ export const NASEvaluationResult = () => {
   const [selectedSem, setSelectedSem] = useState("First");
   const [fileUploaded, setFileUploaded] = useState(false);
   const [summaryEvaluation, setSummaryEvaluation] = useState({});
-  const [fileByteArray, setFileByteArray] = useState(null);
   const { nasId } = useParams();
 
   const sy_options = ["2324", "2223", "2122", "2021"];
@@ -24,34 +23,43 @@ export const NASEvaluationResult = () => {
     setSelectedSem(value);
   };
 
-  const handleFileUpload = (event) => {
-    if (event.target.files.length > 0) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        const byteArray = new Uint8Array(reader.result);
-        const hexArray = Array.from(
-          byteArray,
-          (byte) => `0x${byte.toString(16).padStart(2, "0")}`
-        );
-        setFileByteArray(hexArray);
-      };
-
-      reader.onerror = () => {
-        console.error("There was an error reading the file!");
-      };
-
-      reader.readAsArrayBuffer(file);
-
-      setFileUploaded(true); // Step 3: Update state when a file is selected
-    } else {
-      setFileUploaded(false);
-    }
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    setFileUploaded(file);
   };
 
-  function handleSubmit() {
-    console.log(fileByteArray);
+  const handleSubmit = async () => {
+    const semNum = sem_options.indexOf(selectedSem);
+
+    if(fileUploaded){
+      const api = axios.create({
+        baseURL: `https://localhost:7001/api/NAS/grades/${nasId}/${selectedSY}/${semNum}`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      try{
+        const formData = new FormData();
+        formData.append('file', fileUploaded);
+
+        const response = await api.put('', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        
+        if (response.status === 200) {
+          const responseData = response.data;
+          setFileUploaded(responseData.grade);
+          window.location.reload();
+        } else {
+          console.error('Grade upload failed');
+        }
+      } catch (error) {
+        console.error('Error uploading grades:', error);
+      }
+    }
   }
 
   function getSemesterValue(sem) {
@@ -190,7 +198,8 @@ export const NASEvaluationResult = () => {
                     ) : null}
                   </div>
                 ) : summaryEvaluation.allCoursesPassed === null ||
-                  summaryEvaluation.allCoursesPassed === undefined ? (
+                  summaryEvaluation.allCoursesPassed === undefined || 
+                  summaryEvaluation.allCoursesPassed === false ? (
                   <span className="text-yellow">PENDING</span>
                 ) : summaryEvaluation.allCoursesPassed ? (
                   <span className="text-green">ALL PASSED</span>

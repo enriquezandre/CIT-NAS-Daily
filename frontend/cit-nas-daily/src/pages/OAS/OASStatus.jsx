@@ -11,8 +11,6 @@ export const OASStatus = () => {
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
-  const [program, setProgram] = useState("");
-  const [yearLevel, setYearLevel] = useState();
   const [office, setOffice] = useState("");
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
@@ -51,7 +49,7 @@ export const OASStatus = () => {
           },
         });
 
-        const nasresponse = await api.get(`/NAS/${nasId}`);
+        const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
         console.log(nasresponse);
         const nasData = nasresponse.data;
 
@@ -70,8 +68,6 @@ export const OASStatus = () => {
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
         setOffice(officeData.name);
-        setProgram(nasData.course);
-        setYearLevel(nasData.yearLevel);
       } catch (error) {
         console.error(error);
       }
@@ -97,7 +93,7 @@ export const OASStatus = () => {
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
+          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
             <div
               className={`flex items-center w-auto ${
                 nasId === 1 ? "ml-10" : ""
@@ -113,9 +109,20 @@ export const OASStatus = () => {
                   </Button>
                 )}
               </div>
+              <div className="font-bold" style={{ textTransform: "uppercase" }}>
+                NAS NAME: {lastName}, {firstName} {middleName}
+              </div>
             </div>
+            <li>
+              <p
+                className="font-bold text-center"
+                style={{ textTransform: "uppercase" }}
+              >
+                DEPT/OFFICE: {office}
+              </p>
+            </li>
             <li className="flex justify-end">
-              <div className="flex justify-end">
+              <div className="flex ">
                 <div className="relative w-auto">
                   <input
                     type="search"
@@ -189,28 +196,7 @@ export const OASStatus = () => {
                 </select>
               </div>
             </div>
-            <div>
-              <div className="grid grid-cols-1 sm:grid-cols-2">
-                <p
-                  className="text-bold mb-3 text-xl font-bold"
-                  style={{ textTransform: "uppercase" }}
-                >
-                  NAS NAME: {lastName}, {firstName} {middleName}
-                </p>
-                <p
-                  className="text-bold mb-3 text-xl font-bold"
-                  style={{ textTransform: "uppercase" }}
-                >
-                  PROGRAM: {program} {yearLevel}
-                </p>
-                <p
-                  className="text-bold mb-3 text-xl font-bold"
-                  style={{ textTransform: "uppercase" }}
-                >
-                  DEPT/OFFICE: {office}
-                </p>
-              </div>
-            </div>
+            <div></div>
             <hr className="my-5 border-t-2 border-gray-300" />
             <div className="flex flex-col">
               <p className="text-bold text-center text-xl font-bold mb-8">

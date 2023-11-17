@@ -28,15 +28,14 @@ export const NASPersonalInformation = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-
+        
         const response = await api.get(`/NAS/${nasId}`);
-        console.log(response);
         const nasData = response.data;
 
         const officeresponse = await api.get(`Offices/${nasId}/NAS`);
         const officeName = officeresponse.data.name;
 
-        setStudentId(nasData.userId); // should be studentId but I think there is no student ID in NAS Info
+        setStudentId(nasData.username); // should be studentId but I think there is no student ID in NAS Info
         setFirstName(nasData.firstName);
         setMiddleName(nasData.middleName);
         setLastName(nasData.lastName);
@@ -46,6 +45,10 @@ export const NASPersonalInformation = () => {
         setYearLevel(nasData.yearLevel.toString());
         setOffice(officeName);
         setDateStarted(new Date(nasData.dateStarted).toLocaleDateString());
+        
+        if(nasData.image != null){
+          setAvatar(nasData.image);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -54,11 +57,37 @@ export const NASPersonalInformation = () => {
     fetchNas();
   }, [nasId]);
 
-  const handleAvatarChange = (e) => {
-    // Handle the image selection
+  const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
+
     if (file) {
-      setAvatar(file);
+      const api = axios.create({
+        baseURL: `https://localhost:7001/api/NAS/photo/${nasId}`, // Include nasId in the URL
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await api.put('', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        
+        if (response.status === 200) {
+          const responseData = response.data;
+          setAvatar(responseData.image);
+          window.location.reload();
+        } else {
+          console.error('Image upload failed');
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
     }
   };
 

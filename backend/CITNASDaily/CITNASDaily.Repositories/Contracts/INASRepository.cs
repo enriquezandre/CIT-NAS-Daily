@@ -1,4 +1,6 @@
-﻿using CITNASDaily.Entities.Models;
+﻿using CITNASDaily.Entities.Dtos.NASDtos;
+using CITNASDaily.Entities.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace CITNASDaily.Repositories.Contracts
 {
@@ -9,5 +11,6 @@ namespace CITNASDaily.Repositories.Contracts
         Task<IQueryable<NAS?>> GetNASByOfficeIdAsync(int officeId);
         Task<int> GetNASIdByUsernameAsync(string username);
         Task<IEnumerable<NAS>?> GetAllNASAsync();
+        Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file);
     }
 }

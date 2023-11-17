@@ -1,6 +1,8 @@
-﻿using CITNASDaily.Entities.Models;
+﻿using CITNASDaily.Entities.Dtos.NASDtos;
+using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Context;
 using CITNASDaily.Repositories.Contracts;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 
@@ -45,6 +47,30 @@ namespace CITNASDaily.Repositories.Repositories
                 return nas.Id;
             }
             return 0;
+        }
+
+        public async Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file)
+        {
+            var existingNas = await _context.NAS.FindAsync(nasId);
+
+            if (file == null || file.Length == 0)
+            {
+                return null;
+            }
+
+            if (existingNas != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    var imageData = memoryStream.ToArray();
+                    existingNas.Image = imageData;
+                    await _context.SaveChangesAsync();
+                    return existingNas.Image;
+                }
+            }
+
+            return null;
         }
     }
 }

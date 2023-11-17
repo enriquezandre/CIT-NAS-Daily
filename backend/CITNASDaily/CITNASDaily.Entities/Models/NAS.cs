@@ -41,6 +41,6 @@ namespace CITNASDaily.Entities.Models
         public int? UnitsAllowed { get; set; }
         [Required]
         public DateTime DateStarted { get; set; }
-        public string? ImageLink { get; set; }
+        public byte[]? Image { get; set; }
     }
 }

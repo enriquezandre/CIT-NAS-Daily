@@ -153,7 +153,7 @@ export const SuperiorEvaluation = () => {
           },
         });
 
-        const response = await api.get(`/NAS/${nasId}`);
+        const response = await api.get(`/NAS/${nasId}/noimg`);
         const nasdata = response.data;
 
         console.log(nasdata);

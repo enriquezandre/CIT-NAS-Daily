@@ -5,6 +5,7 @@ using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Repositories.Repositories;
 using CITNASDaily.Services.Contracts;
+using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 
 namespace CITNASDaily.Services.Services
@@ -45,6 +46,13 @@ namespace CITNASDaily.Services.Services
             return _mapper.Map<NASDto>(nas);
         }
 
+        public async Task<NASDtoNoImage?> GetNASNoImageAsync(int nasId)
+        {
+            var nas = await _nasRepository.GetNASAsync(nasId);
+
+            return _mapper.Map<NASDtoNoImage>(nas);
+        }
+
         public async Task<Guid?> GetNASUserIdByUsernameAsync(string username)
         {
             var user = await _userRepository.GetUserByUsernameAsync(username);
@@ -71,6 +79,19 @@ namespace CITNASDaily.Services.Services
         public async Task<IEnumerable<NAS>?> GetAllNASAsync()
         {
             return await _nasRepository.GetAllNASAsync();
+        }
+
+        public async Task<IEnumerable<NASDtoNoImage>?> GetAllNASNoImageAsync()
+        {
+            var nas = await _nasRepository.GetAllNASAsync();
+            var nasNoImg = _mapper.Map<IEnumerable<NASDtoNoImage>>(nas);
+
+            return nasNoImg;
+        }
+
+        public async Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file)
+        {
+            return await _nasRepository.UploadPhotoAsync(nasId, file);
         }
     }
 }
