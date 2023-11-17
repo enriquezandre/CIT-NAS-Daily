@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY }) => {
+export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY, openModal }) => {
   const { nasId } = useParams();
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
 
@@ -133,11 +133,17 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY 
               {summary.DutyOn ? formatTime(summary.DutyOn.dateTime.split("T")[1]) : ""}
             </Table.Cell>
             <Table.Cell>
-              {summary.DutyOff
-                ? summary.DutyOff === "NO RECORD"
-                  ? "NO RECORD"
-                  : formatTime(summary.DutyOff.dateTime.split("T")[1])
-                : ""}
+              {summary.DutyOff ? (
+                summary.DutyOff === "NO RECORD" ? (
+                  <button className="text-red" onClick={openModal}>
+                    NO RECORD
+                  </button>
+                ) : (
+                  formatTime(summary.DutyOff.dateTime.split("T")[1])
+                )
+              ) : (
+                ""
+              )}
             </Table.Cell>
             <Table.Cell>
               {summary.OvertimeOn ? formatTime(summary.OvertimeOn.dateTime.split("T")[1]) : ""}
@@ -157,4 +163,5 @@ AttendanceSummaryTable.propTypes = {
   selectedMonth: PropTypes.number.isRequired,
   selectedSem: PropTypes.string.isRequired,
   selectedSY: PropTypes.string.isRequired,
+  openModal: PropTypes.func.isRequired,
 };

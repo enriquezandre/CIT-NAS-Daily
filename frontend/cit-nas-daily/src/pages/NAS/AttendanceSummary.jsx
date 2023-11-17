@@ -3,26 +3,12 @@ import { useState, useEffect } from "react";
 import { DataDisplayBox } from "../../components/DataDisplayBox.jsx";
 import { AttendanceSummaryTable } from "../../components/NAS/AttendanceSummaryTable.jsx";
 import { useParams } from "react-router-dom";
+import { ValidationModal } from "../../components/NAS/ValidationModal.jsx";
 import axios from "axios";
 
-const first_sem = [
-  "All",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+const first_sem = ["All", "August", "September", "October", "November", "December"];
 
-const second_sem = [
-  "All",
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-];
+const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
 
 const summer = ["All", "June", "July", "August"];
 
@@ -35,6 +21,7 @@ export const AttendanceSummary = () => {
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
+  const [isOpen, setIsOpen] = useState(false);
   const { nasId } = useParams();
 
   useEffect(() => {
@@ -92,6 +79,18 @@ export const AttendanceSummary = () => {
     console.log("Selected Month:", value);
   };
 
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const handleSubmit = () => {
+    console.log("Submitted");
+  };
+
   useEffect(() => {
     const fetchNas = async () => {
       try {
@@ -103,9 +102,7 @@ export const AttendanceSummary = () => {
           },
         });
 
-        const timekeepingresponse = await api.get(
-          `/TimekeepingSummary/${nasId}`
-        );
+        const timekeepingresponse = await api.get(`/TimekeepingSummary/${nasId}`);
         let timekeepingdata = timekeepingresponse.data[0];
         console.log(timekeepingdata);
 
@@ -224,10 +221,12 @@ export const AttendanceSummary = () => {
               selectedMonth={selectedMonthIndex}
               selectedSem={selectedSem}
               selectedSY={selectedSY}
+              openModal={openModal}
             />
           </div>
         </div>
       </div>
+      <ValidationModal isOpen={isOpen} closeModal={closeModal} handleSubmit={handleSubmit} />
     </div>
   );
 };
