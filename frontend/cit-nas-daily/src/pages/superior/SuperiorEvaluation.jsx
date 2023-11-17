@@ -165,34 +165,30 @@ export const SuperiorEvaluation = () => {
     fetchNas();
   }, [nasId, selectedSem, selectedSY]);
 
-  useEffect(
-    () => {
-      const fetchEvalData = async () => {
-        try {
-          // Create an Axios instance with the Authorization header
-          const api = axios.create({
-            baseURL: "https://localhost:7001/api",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          });
+  useEffect(() => {
+    const fetchEvalData = async () => {
+      try {
+        // Create an Axios instance with the Authorization header
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
 
-          const evaluationResponse = await api.get(
-            `SuperiorEvaluationRating?nasId=${nasId}&semester=${getSemesterValue(
-              selectedSem
-            )}&year=${selectedSY}`
-          );
-          const evalData = evaluationResponse.data;
-          setEvalData(evalData);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      fetchEvalData();
-    },
-    [nasId, selectedSem, selectedSY],
-    evalData
-  );
+        const evaluationResponse = await api.get(
+          `SuperiorEvaluationRating?nasId=${nasId}&semester=${getSemesterValue(
+            selectedSem
+          )}&year=${selectedSY}`
+        );
+        const evalData = evaluationResponse.data;
+        setEvalData(evalData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchEvalData();
+  }, [nasId, selectedSem, selectedSY, evalData]);
 
   useEffect(() => {
     const calculateCategorySum = (category) => {
@@ -299,6 +295,7 @@ export const SuperiorEvaluation = () => {
         <PerfSummary show={isViewingPerfSummary} close={closePerfSummary} />
         {isSubmitted ? (
           <SuperiorEval
+            nasId={nasId}
             selectedSem={getSemesterValue(selectedSem)}
             selectedSY={selectedSY}
           />
