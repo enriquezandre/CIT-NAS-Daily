@@ -57,11 +57,14 @@ namespace CITNASDaily.Repositories.Repositories
                 existingNAS.OfficeId = nas.OfficeId;
                 existingNAS.YearLevel = nas.YearLevel;
                 existingNAS.Course = nas.Course;
-                existingNAS.SchoolYears = nas.SchoolYears;
-                existingNAS.Semesters = nas.Semesters;
+                existingNAS.EnNo = existingNAS.EnNo;
+                existingNAS.FirstName = existingNAS.FirstName;
+                existingNAS.LastName = existingNAS.LastName;
+                existingNAS.MiddleName = existingNAS.MiddleName;
+                existingNAS.ImageLink = existingNAS.ImageLink;
                 existingNAS.UnitsAllowed = nas.UnitsAllowed;
 
-                foreach (var sy in existingNAS.SchoolYears)
+                foreach (var sy in nas.SchoolYears)
                 {
                     var schoolyear = new NASSchoolYear
                     {
@@ -71,7 +74,7 @@ namespace CITNASDaily.Repositories.Repositories
 
                     await _context.NASSchoolYears.AddAsync(schoolyear);
                 }
-                foreach (var sem in existingNAS.Semesters)
+                foreach (var sem in nas.Semesters)
                 {
                     var semester = new NASSemester
                     {
@@ -82,7 +85,16 @@ namespace CITNASDaily.Repositories.Repositories
                 }
 
                 await _context.SaveChangesAsync();
-                return existingNAS;
+                var retNas = _context.NAS
+                    .Include(n => n.SchoolYears)
+                    .Include(n => n.Semesters)
+                    .FirstOrDefault(n => n.Id == nasId);
+
+                // Filter the SchoolYears and Semesters related to NAS based on the condition
+                retNas.SchoolYears = retNas.SchoolYears.Where(sy => sy.NASId == existingNAS.Id).ToList();
+                retNas.Semesters = retNas.Semesters.Where(s => s.NASId == existingNAS.Id).ToList();
+
+                return retNas;
             }
             return null;
         }
