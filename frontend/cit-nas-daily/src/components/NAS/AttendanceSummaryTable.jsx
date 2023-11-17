@@ -1,5 +1,5 @@
 "use client";
-import { Button, Table } from "flowbite-react";
+import { Table } from "flowbite-react";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
