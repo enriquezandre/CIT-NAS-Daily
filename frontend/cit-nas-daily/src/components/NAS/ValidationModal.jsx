@@ -39,7 +39,7 @@ export const ValidationModal = ({ isOpen, closeModal, handleSubmit }) => {
             <div>
               <img src={icon} alt="infoicon" style={{ width: "35px", height: "35px" }} />
             </div>
-            <div className="text-center">
+            <div className="text-center pt-3">
               <p className="font-bold text-lg">Appeal to the</p>
               <p className="font-bold text-lg">Office of Admission and Scholarships?</p>
             </div>
