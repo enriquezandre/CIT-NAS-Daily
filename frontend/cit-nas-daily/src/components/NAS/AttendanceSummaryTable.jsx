@@ -1,5 +1,5 @@
 "use client";
-import { Table } from "flowbite-react";
+import { Button, Table } from "flowbite-react";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
@@ -135,9 +135,7 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
             <Table.Cell>
               {summary.DutyOff ? (
                 summary.DutyOff === "NO RECORD" ? (
-                  <button className="text-red" onClick={openModal}>
-                    NO RECORD
-                  </button>
+                  <span className="text-red">NO RECORD</span>
                 ) : (
                   formatTime(summary.DutyOff.dateTime.split("T")[1])
                 )
@@ -151,7 +149,11 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
             <Table.Cell>
               {summary.OverTimeOff ? formatTime(summary.OverTimeOff.dateTime.split("T")[1]) : ""}
             </Table.Cell>
-            <Table.Cell></Table.Cell>
+            <Table.Cell>
+              <button className="hover:underline" onClick={openModal}>
+                YES
+              </button>
+            </Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>
