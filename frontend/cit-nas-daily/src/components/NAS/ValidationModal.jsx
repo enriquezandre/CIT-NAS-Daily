@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Modal } from "flowbite-react";
 import PropType from "prop-types";
 import icon from "../../assets/Vector.png";
-import { UploadGradesModal } from "./UploadGradesModal";
+import { UploadExcuseLetterModal } from "./UploadExcuseLetterModal";
 
 export const ValidationModal = ({ isOpen, closeModal, handleSubmit }) => {
   const [isConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
@@ -76,7 +76,7 @@ export const ValidationModal = ({ isOpen, closeModal, handleSubmit }) => {
           </div>
         </Modal.Footer>
       </Modal>
-      <UploadGradesModal
+      <UploadExcuseLetterModal
         isOpen={isConfirmationModalOpen}
         closeModal={handleCloseValidationModal}
         handleSubmit={handleSubmit}
