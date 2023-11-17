@@ -55,6 +55,11 @@ export const SpecificNASStatus = () => {
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
         const officeData = officeResponse.data;
 
+        setFirstname(nasData.firstName);
+        setMiddlename(nasData.middleName);
+        setLastname(nasData.lastName);
+        setOffice(officeData.name);
+
         const summaryEvaluationResponse = await api.get(
           `SummaryEvaluation/${selectedSY}/${getSemesterValue(
             selectedSem
@@ -63,10 +68,6 @@ export const SpecificNASStatus = () => {
         const summaryEvaluationData = summaryEvaluationResponse.data;
 
         setSummaryEvaluation(summaryEvaluationData);
-        setFirstname(nasData.firstName);
-        setMiddlename(nasData.middleName);
-        setLastname(nasData.lastName);
-        setOffice(officeData.name);
       } catch (error) {
         console.error(error);
       }
