@@ -20,6 +20,8 @@ namespace CITNASDaily.Repositories.Context
         public DbSet<TimekeepingSummary> TimekeepingSummaries { get; set; }
         public DbSet<BiometricLog> BiometricLogs { get; set; }
         public DbSet<Validation> Validations { get; set; }
+        public DbSet<NASSchoolYear> NASSchoolYears { get; set; }
+        public DbSet<NASSemester> NASSemesters { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -87,6 +89,16 @@ namespace CITNASDaily.Repositories.Context
             //    Id = 1,
             //    SuperiorId = 1,
             //});
+
+            modelBuilder.Entity<NAS>()
+                .HasMany(n => n.SchoolYears)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("NAS_SchoolYears"));
+
+            modelBuilder.Entity<NAS>()
+                .HasMany(n => n.Semesters)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("NAS_StudentSemesters"));
         }
     }
 }

@@ -10,6 +10,7 @@ namespace CITNASDaily.Utils.Mappings
         public NASProfile()
         {
             CreateMap<NAS, NASDto>().ReverseMap();
+            CreateMap<NAS, NASUpdateDto>().ReverseMap();
 
             CreateMap<NAS, NASCreateDto>()
                 .ReverseMap()

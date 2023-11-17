@@ -1,4 +1,5 @@
-﻿using CITNASDaily.Entities.Models;
+﻿using CITNASDaily.Entities.Dtos.NASDtos;
+using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Context;
 using CITNASDaily.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,45 @@ namespace CITNASDaily.Repositories.Repositories
                 return nas.Id;
             }
             return 0;
+        }
+
+        public async Task<NAS?> UpdateNASAsync(int nasId, NAS nas)
+        {
+            var existingNAS = await _context.NAS.FirstOrDefaultAsync(n => n.Id == nasId);
+
+            if (existingNAS != null)
+            {
+                existingNAS.OfficeId = nas.OfficeId;
+                existingNAS.YearLevel = nas.YearLevel;
+                existingNAS.Course = nas.Course;
+                existingNAS.SchoolYears = nas.SchoolYears;
+                existingNAS.Semesters = nas.Semesters;
+                existingNAS.UnitsAllowed = nas.UnitsAllowed;
+
+                foreach (var sy in existingNAS.SchoolYears)
+                {
+                    var schoolyear = new NASSchoolYear
+                    {
+                        NASId = nasId,
+                        Year = sy.Year
+                    };
+
+                    await _context.NASSchoolYears.AddAsync(schoolyear);
+                }
+                foreach (var sem in existingNAS.Semesters)
+                {
+                    var semester = new NASSemester
+                    {
+                        NASId = nasId,
+                        Semester = sem.Semester
+                    };
+                    await _context.NASSemesters.AddAsync(semester);
+                }
+
+                await _context.SaveChangesAsync();
+                return existingNAS;
+            }
+            return null;
         }
     }
 }

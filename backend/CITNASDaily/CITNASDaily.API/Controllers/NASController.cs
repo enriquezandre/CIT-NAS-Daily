@@ -65,7 +65,7 @@ namespace CITNASDaily.API.Controllers
             {
                 var nas = await _nasService.GetNASByOfficeIdAsync(officeId);
 
-                if(nas.IsNullOrEmpty()){
+                if (nas.IsNullOrEmpty()) {
                     return NotFound("No NAS under your office yet.");
                 }
 
@@ -102,7 +102,7 @@ namespace CITNASDaily.API.Controllers
 
         [HttpGet("{username}/id", Name = "GetNASId")]
         [Authorize]
-        public async Task<IActionResult> GetNASIdAsync (string username)
+        public async Task<IActionResult> GetNASIdAsync(string username)
         {
             try
             {
@@ -184,7 +184,7 @@ namespace CITNASDaily.API.Controllers
                 {
                     return Forbid();
                 }
-                
+
                 var nasGrades = await _summaryEvaluationService.UploadGrades(summary);
 
                 if (nasGrades == null)
@@ -197,6 +197,31 @@ namespace CITNASDaily.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error uploading grades.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpPut("{nasId}", Name = "UpdateNAS")]
+        [Authorize]
+        public async Task<IActionResult> UpdateNAS(int nasId, [FromBody] NASUpdateDto nasUpdate)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+                var nas = await _nasService.UpdateNASAsync(nasId, nasUpdate);
+                if(nas == null)
+                {
+                    return BadRequest("Failed to Update NAS");
+                }
+                return Ok(nas);
+
+            } catch(Exception ex)
+            {
+                _logger.LogError(ex, "Error updating nas.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }

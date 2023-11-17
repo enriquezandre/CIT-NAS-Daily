@@ -33,6 +33,7 @@ namespace CITNASDaily.Services.Services
             }
 
             nas.UserId = userId;
+
             var createdSuperior = await _nasRepository.CreateNASAsync(nas);
 
             return _mapper.Map<NASDto>(createdSuperior);
@@ -71,6 +72,15 @@ namespace CITNASDaily.Services.Services
         public async Task<IEnumerable<NAS>?> GetAllNASAsync()
         {
             return await _nasRepository.GetAllNASAsync();
+        }
+
+        public async Task<NAS?> UpdateNASAsync(int nasId, NASUpdateDto nasUpdate)
+        {
+            var nas = _mapper.Map<NAS>(nasUpdate);
+
+            var updatedNAS = await _nasRepository.UpdateNASAsync(nasId, nas);
+
+            return _mapper.Map<NAS>(updatedNAS);
         }
     }
 }

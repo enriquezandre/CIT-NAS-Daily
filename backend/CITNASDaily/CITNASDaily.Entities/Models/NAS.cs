@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Entities.Models
 {
@@ -17,7 +18,11 @@ namespace CITNASDaily.Entities.Models
         [JsonIgnore]
         public int? OfficeId { get; set; }
         //public Office? Office { get; set; }
-
+        public string? StudentIDNo { get; set; }
+        //public int SchoolYearId { get; set; }
+        public List<NASSchoolYear>? SchoolYears { get; set; }
+        //public int SemesterId { get; set; }
+        public List<NASSemester>? Semesters { get; set; }
         public int? EnNo { get; set; }
         public List<BiometricLog>? BiometricLogs { get; set; }
 

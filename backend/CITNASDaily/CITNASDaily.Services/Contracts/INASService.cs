@@ -12,5 +12,6 @@ namespace CITNASDaily.Services.Contracts
         Task<List<NAS?>> GetNASByOfficeIdAsync(int officeId);
         Task<int> GetNASIdByUsernameAsync(string username);
         Task<IEnumerable<NAS>?> GetAllNASAsync();
+        Task<NAS?> UpdateNASAsync(int nasId, NASUpdateDto nasUpdate);
     }
 }
