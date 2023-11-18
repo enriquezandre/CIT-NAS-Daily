@@ -121,7 +121,7 @@ export const ViewScheduleTable = () => {
         },
       });
 
-      // Make a DELETE request to the specified endpoint with the nasId as a query parameter
+      //Make delete request
       await api.delete(`/Schedule`, {
         params: {
           nasId: nasId,
