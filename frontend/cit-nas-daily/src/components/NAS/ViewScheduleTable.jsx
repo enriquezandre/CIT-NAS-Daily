@@ -112,9 +112,35 @@ export const ViewScheduleTable = () => {
     return total;
   };
 
+  const deleteSchedule = async (nasId) => {
+    try {
+      const api = axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      // Make a DELETE request to the specified endpoint with the nasId as a query parameter
+      await api.delete(`/Schedule`, {
+        params: {
+          nasId: nasId,
+        },
+      });
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting schedule:", error);
+    }
+  };
+
+  const handleAddSched = () => {
+    deleteSchedule(nasId);
+  };
+
   return (
     <div>
-      <div className="pb-10" style={{ display: "flex", justifyContent: "center" }}>
+      <div className="pb-3" style={{ display: "flex", justifyContent: "center" }}>
         <table className="w-10/12 border-collapse border">
           <thead>
             <tr>
@@ -154,6 +180,15 @@ export const ViewScheduleTable = () => {
             </tr>
           </tbody>
         </table>
+      </div>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <button
+          className="bg-primary text-white py-2 px-5 rounded-lg hover:font-semibold"
+          style={{ width: "12em" }}
+          onClick={handleAddSched}
+        >
+          Add new schedule
+        </button>
       </div>
     </div>
   );
