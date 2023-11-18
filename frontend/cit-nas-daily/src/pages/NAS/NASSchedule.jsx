@@ -229,17 +229,6 @@ export const NASSchedule = () => {
   }, [nasId]);
 
   const dataExist = apiData && apiData.length > 0;
-
-  // useEffect(() => {
-  //   if (dataExist) {
-  //     const updatedFlags = { ...semesterFlags };
-  //     updatedFlags[selectedSem] = true;
-  //     setSemesterFlags(updatedFlags);
-  //   }
-  // }, [dataExist, selectedSem]);
-
-  // console.log(semesterFlags[selectedSem]);
-
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">

@@ -1,9 +1,23 @@
+import { useRef, useState } from "react";
+import PropTypes from "prop-types";
 import { Modal } from "flowbite-react";
-import icon from "../../assets/Vector.png";
-import PropType from "prop-types";
 
-export const ScheduleModal = ({ isOpen, closeModal, handleSubmit }) => {
+export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) => {
+  const fileInputRef = useRef(null);
+  const [selectedFileName, setSelectedFileName] = useState(null);
+
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    console.log("Selected file:", selectedFile);
+    setSelectedFileName(selectedFile ? selectedFile.name : null);
+  };
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
   const handleConfirm = () => {
+    // Add any additional logic or validation before calling handleSubmit
     handleSubmit();
     closeModal();
   };
@@ -23,6 +37,7 @@ export const ScheduleModal = ({ isOpen, closeModal, handleSubmit }) => {
           }}
         ></div>
       )}
+
       <Modal
         show={isOpen}
         className="rounded-2xl"
@@ -35,12 +50,21 @@ export const ScheduleModal = ({ isOpen, closeModal, handleSubmit }) => {
         }}
       >
         <Modal.Body>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
             <div>
-              <img src={icon} alt="infoicon" style={{ width: "35px", height: "35px" }} />
+              <p className="font-bold text-lg">Upload Excuse Letter</p>
             </div>
-            <div className="text-center pt-3">
-              <p className="font-bold text-lg">Confirm schedule?</p>
+            <div className="pt-5">
+              <input
+                type="file"
+                onChange={handleFileChange}
+                ref={fileInputRef}
+                style={{ display: "none" }}
+              />
+              <button className="bg-primary text-white py-1 px-5" onClick={handleButtonClick}>
+                Choose Files
+              </button>
+              <span className="ml-3">{selectedFileName || "No file selected"}</span>
             </div>
           </div>
         </Modal.Body>
@@ -55,7 +79,7 @@ export const ScheduleModal = ({ isOpen, closeModal, handleSubmit }) => {
           <div className="flex justify-end items-center">
             <div className="flex m-2">
               <button className="bg-primary text-white py-2 px-6 rounded-full" onClick={closeModal}>
-                No
+                Cancel
               </button>
             </div>
             <div className="flex m-2">
@@ -63,7 +87,7 @@ export const ScheduleModal = ({ isOpen, closeModal, handleSubmit }) => {
                 className="bg-primary text-white py-2 px-6 rounded-full"
                 onClick={handleConfirm}
               >
-                Yes
+                Submit
               </button>
             </div>
           </div>
@@ -73,8 +97,8 @@ export const ScheduleModal = ({ isOpen, closeModal, handleSubmit }) => {
   );
 };
 
-ScheduleModal.propTypes = {
-  isOpen: PropType.bool.isRequired,
-  closeModal: PropType.func.isRequired,
-  handleSubmit: PropType.func.isRequired,
+UploadExcuseLetterModal.propTypes = {
+  isOpen: PropTypes.bool,
+  closeModal: PropTypes.func,
+  handleSubmit: PropTypes.func,
 };

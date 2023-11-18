@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import PropType from "prop-types";
 import { ScheduleRow } from "./SetScheduleRow";
 
 export const ScheduleTable = ({
@@ -108,4 +108,39 @@ export const ScheduleTable = ({
       </tbody>
     </table>
   );
+};
+
+ScheduleTable.propTypes = {
+  days: PropType.arrayOf(PropType.string).isRequired,
+  schedule: PropType.objectOf(
+    PropType.shape({
+      isBroken: PropType.bool.isRequired,
+      items: PropType.arrayOf(
+        PropType.shape({
+          start: PropType.string.isRequired,
+          end: PropType.string.isRequired,
+          totalHours: PropType.number.isRequired,
+        })
+      ).isRequired,
+    })
+  ).isRequired,
+  scheduleChanges: PropType.objectOf(
+    PropType.shape({
+      isBroken: PropType.bool.isRequired,
+      items: PropType.arrayOf(
+        PropType.shape({
+          start: PropType.string.isRequired,
+          end: PropType.string.isRequired,
+          totalHours: PropType.number.isRequired,
+        })
+      ).isRequired,
+    })
+  ).isRequired,
+  handleToggleBrokenSchedule: PropType.func.isRequired,
+  handleAddScheduleRow: PropType.func.isRequired,
+  handleRemoveScheduleRow: PropType.func.isRequired,
+  handleStartTimeChange: PropType.func.isRequired,
+  handleEndTimeChange: PropType.func.isRequired,
+  openModal: PropType.func.isRequired,
+  overallHours: PropType.number.isRequired,
 };

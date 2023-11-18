@@ -5,11 +5,7 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const AttendanceSummaryTable = ({
-  selectedMonth,
-  selectedSem,
-  selectedSY,
-}) => {
+export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY, openModal }) => {
   const { nasId } = useParams();
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
 
@@ -57,12 +53,8 @@ export const AttendanceSummaryTable = ({
           if (logs) {
             return {
               dateTime: dateString,
-              DutyOn: logs.DutyOn.sort(
-                (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
-              )[0],
-              DutyOff: logs.DutyOff.sort(
-                (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
-              )[0],
+              DutyOn: logs.DutyOn.sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime))[0],
+              DutyOff: logs.DutyOff.sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime))[0],
               OvertimeOn: logs.OvertimeOn.sort(
                 (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
               )[0],
@@ -85,12 +77,8 @@ export const AttendanceSummaryTable = ({
           const date = new Date(item.dateTime);
           const month = date.getMonth();
           const year = date.getFullYear();
-          const first = parseInt(
-            year.toString().substring(0, 2) + selectedSY.substring(0, 2)
-          );
-          const second = parseInt(
-            year.toString().substring(0, 2) + selectedSY.substring(2)
-          );
+          const first = parseInt(year.toString().substring(0, 2) + selectedSY.substring(0, 2));
+          const second = parseInt(year.toString().substring(0, 2) + selectedSY.substring(2));
           switch (selectedMonth) {
             case -1:
               return month >= 7 && month <= 11 && year === first;
@@ -142,28 +130,30 @@ export const AttendanceSummaryTable = ({
           <Table.Row key={summary.dateTime}>
             <Table.Cell>{summary.dateTime}</Table.Cell>
             <Table.Cell>
-              {summary.DutyOn
-                ? formatTime(summary.DutyOn.dateTime.split("T")[1])
-                : ""}
+              {summary.DutyOn ? formatTime(summary.DutyOn.dateTime.split("T")[1]) : ""}
             </Table.Cell>
             <Table.Cell>
-              {summary.DutyOff
-                ? summary.DutyOff === "NO RECORD"
-                  ? "NO RECORD"
-                  : formatTime(summary.DutyOff.dateTime.split("T")[1])
-                : ""}
+              {summary.DutyOff ? (
+                summary.DutyOff === "NO RECORD" ? (
+                  <span className="text-red">NO RECORD</span>
+                ) : (
+                  formatTime(summary.DutyOff.dateTime.split("T")[1])
+                )
+              ) : (
+                ""
+              )}
             </Table.Cell>
             <Table.Cell>
-              {summary.OvertimeOn
-                ? formatTime(summary.OvertimeOn.dateTime.split("T")[1])
-                : ""}
+              {summary.OvertimeOn ? formatTime(summary.OvertimeOn.dateTime.split("T")[1]) : ""}
             </Table.Cell>
             <Table.Cell>
-              {summary.OverTimeOff
-                ? formatTime(summary.OverTimeOff.dateTime.split("T")[1])
-                : ""}
+              {summary.OverTimeOff ? formatTime(summary.OverTimeOff.dateTime.split("T")[1]) : ""}
             </Table.Cell>
-            <Table.Cell></Table.Cell>
+            <Table.Cell>
+              <button className="hover:underline" onClick={openModal}>
+                YES
+              </button>
+            </Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>
@@ -175,4 +165,5 @@ AttendanceSummaryTable.propTypes = {
   selectedMonth: PropTypes.number.isRequired,
   selectedSem: PropTypes.string.isRequired,
   selectedSY: PropTypes.string.isRequired,
+  openModal: PropTypes.func.isRequired,
 };
