@@ -181,12 +181,21 @@ export const ViewScheduleTable = () => {
           </tbody>
         </table>
       </div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div style={{ display: "flex", justifyContent: "center", paddingTop: "1.5em" }}>
         <button
-          className="bg-primary text-white py-2 px-5 rounded-lg hover:font-semibold"
+          className="bg-primary text-white py-2 px-3 rounded-lg hover:font-semibold flex justify-center items-center"
           style={{ width: "12em" }}
           onClick={handleAddSched}
         >
+          <svg
+            className="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+          </svg>
           Add new schedule
         </button>
       </div>
