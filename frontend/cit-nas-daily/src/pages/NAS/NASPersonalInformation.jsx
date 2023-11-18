@@ -28,7 +28,7 @@ export const NASPersonalInformation = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        
+
         const response = await api.get(`/NAS/${nasId}`);
         const nasData = response.data;
 
@@ -45,8 +45,8 @@ export const NASPersonalInformation = () => {
         setYearLevel(nasData.yearLevel.toString());
         setOffice(officeName);
         setDateStarted(new Date(nasData.dateStarted).toLocaleDateString());
-        
-        if(nasData.image != null){
+
+        if (nasData.image != null) {
           setAvatar(nasData.image);
         }
       } catch (error) {
@@ -67,26 +67,26 @@ export const NASPersonalInformation = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      
+
       try {
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append("file", file);
 
-        const response = await api.put('', formData, {
+        const response = await api.put("", formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         });
-        
+
         if (response.status === 200) {
           const responseData = response.data;
           setAvatar(responseData.image);
           window.location.reload();
         } else {
-          console.error('Image upload failed');
+          console.error("Image upload failed");
         }
       } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error("Error uploading image:", error);
       }
     }
   };
