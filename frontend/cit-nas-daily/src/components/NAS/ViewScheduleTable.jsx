@@ -138,6 +138,10 @@ export const ViewScheduleTable = () => {
     deleteSchedule(nasId);
   };
 
+  const dummyFunction = () => {
+    console.log("Submitted");
+  };
+
   return (
     <div>
       <div className="pb-3" style={{ display: "flex", justifyContent: "center" }}>
@@ -185,7 +189,7 @@ export const ViewScheduleTable = () => {
         <button
           className="bg-primary text-white py-2 px-3 rounded-lg hover:font-semibold flex justify-center items-center"
           style={{ width: "12em" }}
-          onClick={handleAddSched}
+          onClick={dummyFunction}
         >
           <svg
             className="w-4 h-4 mr-2"
