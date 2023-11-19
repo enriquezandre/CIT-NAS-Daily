@@ -56,13 +56,16 @@ export const ConfirmAddScheduleModal = ({ isOpen, closeModal, handleSubmit }) =>
         >
           <div className="flex justify-end items-center">
             <div className="flex m-2">
-              <button className="bg-primary text-white py-2 px-6 rounded-full" onClick={closeModal}>
+              <button
+                className="bg-primary text-white py-2 px-6 rounded-full hover:bg-secondary hover:text-primary"
+                onClick={closeModal}
+              >
                 No
               </button>
             </div>
             <div className="flex m-2">
               <button
-                className="bg-primary text-white py-2 px-6 rounded-full"
+                className="bg-primary text-white py-2 px-6 rounded-full hover:bg-secondary hover:text-primary"
                 onClick={handleConfirm}
               >
                 Yes
