@@ -70,6 +70,7 @@ export const SpecificNASStatus = () => {
         setSummaryEvaluation(summaryEvaluationData);
       } catch (error) {
         console.error(error);
+        setSummaryEvaluation({});
       }
     };
 
@@ -219,7 +220,6 @@ export const SpecificNASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">NUMBER OF UNITS ALLOWED:</p>
-                <p className="text-bold text-xl font-bold">_____</p>
               </div>
             </div>
           </div>

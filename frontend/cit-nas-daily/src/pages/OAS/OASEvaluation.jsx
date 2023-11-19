@@ -14,6 +14,7 @@ export const OASEvaluation = () => {
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
+
   const handleSelectSY = (event) => {
     const value = event.target.value;
     setSelectedSY(value);
@@ -65,9 +66,6 @@ export const OASEvaluation = () => {
     };
 
     fetchNas();
-
-    console.log("Selected Sem:", selectedSem);
-    console.log("Selected SY:", selectedSY);
   }, [selectedSY, selectedSem, nasId]);
 
   return (

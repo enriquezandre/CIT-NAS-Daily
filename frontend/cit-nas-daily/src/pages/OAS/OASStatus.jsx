@@ -70,6 +70,7 @@ export const OASStatus = () => {
         setSummaryEvaluation(summaryEvaluationData);
       } catch (error) {
         console.error(error);
+        setSummaryEvaluation({});
       }
     };
 
