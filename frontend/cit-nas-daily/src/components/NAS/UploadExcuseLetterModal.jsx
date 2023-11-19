@@ -21,14 +21,19 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
       const selectedFile = fileInputRef.current.files[0];
 
       if (selectedFile) {
-        // Convert the selected file to Base64
-        const base64String = await fileToBase64(selectedFile);
-        console.log("Base64-encoded string:", base64String);
+        // Check if the selected file is a PDF
+        if (selectedFile.type === "application/pdf") {
+          // Convert the selected file to Base64
+          const base64String = await fileToBase64(selectedFile);
+          console.log("Base64-encoded string:", base64String);
 
-        // Pass the Base64-encoded string to the handleSubmit function
-        handleSubmit(base64String);
+          // Pass the Base64-encoded string to the handleSubmit function
+          handleSubmit(base64String);
 
-        closeModal();
+          closeModal();
+        } else {
+          console.error("Invalid file type. Please select a PDF file.");
+        }
       } else {
         console.error("No file selected");
       }
