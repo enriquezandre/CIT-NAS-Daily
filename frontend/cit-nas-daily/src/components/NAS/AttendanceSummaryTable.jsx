@@ -150,9 +150,13 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
               {summary.OverTimeOff ? formatTime(summary.OverTimeOff.dateTime.split("T")[1]) : ""}
             </Table.Cell>
             <Table.Cell>
-              <button className="hover:underline" onClick={openModal}>
-                YES
-              </button>
+              {summary.DutyOff === "NO RECORD" ? (
+                <button className="hover:underline" onClick={openModal}>
+                  YES
+                </button>
+              ) : (
+                "" // Record exists, leave the cell blank
+              )}
             </Table.Cell>
           </Table.Row>
         ))}
