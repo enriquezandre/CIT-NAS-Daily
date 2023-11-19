@@ -300,7 +300,13 @@ export const SuperiorEvaluation = () => {
             VIEW PERFORMANCE SUMMARY
           </button>
         </div>
-        <PerfSummary show={isViewingPerfSummary} close={closePerfSummary} />
+        <PerfSummary
+          show={isViewingPerfSummary}
+          close={closePerfSummary}
+          nasId={nasId}
+          selectedSem={selectedSem}
+          selectedSY={selectedSY}
+        />
         {isSubmitted ? (
           <SuperiorEval
             nasId={nasId}

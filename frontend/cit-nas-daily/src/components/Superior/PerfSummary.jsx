@@ -4,15 +4,20 @@ import { Table } from "flowbite-react";
 
 import { useState, useEffect } from "react";
 import { MonthlySummary } from "../MonthlySummary";
-import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export const PerfSummary = ({ show, close }) => {
-  const nasId = useParams().nasId;
+export const PerfSummary = ({
+  show,
+  close,
+  nasId,
+  selectedSem,
+  selectedSY,
+}) => {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [activitySummaries, setActivitySummaries] = useState([]);
   const [filteredSummaries, setFilteredSummaries] = useState([]);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
+  const [timekeepingStatus, setTimekeepingStatus] = useState("");
 
   const months = [
     "January",
@@ -28,6 +33,19 @@ export const PerfSummary = ({ show, close }) => {
     "November",
     "December",
   ];
+
+  function getSemesterValue(sem) {
+    switch (sem) {
+      case "First":
+        return 0;
+      case "Second":
+        return 1;
+      case "Summer":
+        return 3;
+      default:
+        return "Invalid semester";
+    }
+  }
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -65,13 +83,25 @@ export const PerfSummary = ({ show, close }) => {
         }
 
         setTimekeepingSummaries(timekeepingdata);
+
+        const summaryEvaluationResponse = await api.get(
+          `SummaryEvaluation/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}/${nasId}`
+        );
+        const summaryEvaluationData = summaryEvaluationResponse.data;
+        setTimekeepingStatus(summaryEvaluationData.timekeepingStatus);
       } catch (error) {
         console.error(error);
+        setTimekeepingStatus("");
+        setActivitySummaries([]);
+        setFilteredSummaries([]);
+        setTimekeepingSummaries([]);
       }
     };
 
     fetchNas();
-  }, [nasId]);
+  }, [nasId, selectedSem, selectedSY]);
 
   const handleChange = (event) => {
     const newSelectedMonth = event.target.value;
@@ -122,7 +152,13 @@ export const PerfSummary = ({ show, close }) => {
               <div>
                 <h3 className="flex gap-6 text-xl text-left w-full font-semibold">
                   TIMEKEEPING STATUS:
-                  <p className="text-secondary">GOOD</p>
+                  {timekeepingStatus === "EXCELLENT" ? (
+                    <p className="text-green">{timekeepingStatus}</p>
+                  ) : timekeepingStatus === "GOOD" ? (
+                    <p className="text-secondary">{timekeepingStatus}</p>
+                  ) : (
+                    <p className="text-red">{timekeepingStatus}</p>
+                  )}
                 </h3>
               </div>
               <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
@@ -227,4 +263,7 @@ export const PerfSummary = ({ show, close }) => {
 PerfSummary.propTypes = {
   show: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
+  nasId: PropTypes.number.isRequired,
+  selectedSem: PropTypes.number.isRequired,
+  selectedSY: PropTypes.number.isRequired,
 };
