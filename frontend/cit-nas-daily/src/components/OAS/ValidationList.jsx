@@ -1,9 +1,12 @@
 import { Avatar } from "flowbite-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { ValidationStatusModal } from "./ValidationStatusModal"; // Import the modal
 
 export const ValidationList = () => {
   const [validation, setValidation] = useState([]);
+  const [isStatusModalOpen, setStatusModalOpen] = useState(false);
+  const [selectedValidationItem, setSelectedValidationItem] = useState(null);
 
   const formatDateString = (dateString) => {
     const options = {
@@ -20,11 +23,24 @@ export const ValidationList = () => {
   };
 
   const viewPDF = (base64String) => {
-    // Open a new window with the PDF content
     const newWindow = window.open();
     newWindow.document.write(
       `<iframe width='100%' height='100%' src='data:application/pdf;base64,${base64String}'></iframe>`
     );
+  };
+
+  const openStatusModal = (item) => {
+    setSelectedValidationItem(item);
+    setStatusModalOpen(true);
+  };
+
+  const closeStatusModal = () => {
+    setSelectedValidationItem(null);
+    setStatusModalOpen(false);
+  };
+
+  const handleSubmit = async (status) => {
+    console.log(status);
   };
 
   useEffect(() => {
@@ -40,9 +56,7 @@ export const ValidationList = () => {
         const response = await api.get("/Validation");
         const validationData = await Promise.all(
           response.data.map(async (item) => {
-            // Fetch NAS details using nasId
             const nasResponse = await api.get(`/NAS/${item.nasId}`);
-            // Add NAS name to the item
             return {
               ...item,
               nasName: nasResponse.data.fullName,
@@ -60,37 +74,47 @@ export const ValidationList = () => {
   }, []);
 
   return (
-    <div className="grid gap-3">
-      {validation.map((item) => (
-        <div
-          key={item.id}
-          className="border border-solid rounded-md p-3 flex items-center justify-between"
-        >
-          <div className="flex items-center">
-            <Avatar rounded />
-            <p className="ml-5">
-              <span>{item.nasName}</span>
-              <br />
-              <span className="text-xs">{formatDateString(item.dateSubmitted)}</span>
-            </p>
+    <>
+      <div className="grid gap-3">
+        {validation.map((item) => (
+          <div
+            key={item.id}
+            className="border border-solid rounded-md p-3 flex items-center justify-between"
+          >
+            <div className="flex items-center">
+              <Avatar rounded />
+              <p className="ml-5">
+                <span>{item.nasName}</span>
+                <br />
+                <span className="text-xs">{formatDateString(item.dateSubmitted)}</span>
+              </p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                className="text-white bg-primary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5 h-[2.6rem]"
+                onClick={() => viewPDF(item.nasLetter)}
+              >
+                View Letter
+              </button>
+              <button
+                type="button"
+                className="text-white bg-primary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5 h-[2.6rem]"
+                onClick={() => openStatusModal(item)} // Open the status modal for the specific item
+              >
+                Update status
+              </button>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <button
-              type="button"
-              className="text-white bg-primary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5 h-[2.6rem]"
-              onClick={() => viewPDF(item.nasLetter)}
-            >
-              View Letter
-            </button>
-            <button
-              type="button"
-              className="text-white bg-primary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5 h-[2.6rem]"
-            >
-              Update status
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+      {/* Status Modal */}
+      <ValidationStatusModal
+        isOpen={isStatusModalOpen}
+        closeModal={closeStatusModal}
+        handleSubmit={handleSubmit}
+        selectedItem={selectedValidationItem}
+      />
+    </>
   );
 };
