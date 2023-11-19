@@ -39,10 +39,6 @@ export const ValidationList = () => {
     setStatusModalOpen(false);
   };
 
-  const handleSubmit = async (status) => {
-    console.log(status);
-  };
-
   useEffect(() => {
     const fetchValidation = async () => {
       try {
@@ -72,6 +68,33 @@ export const ValidationList = () => {
 
     fetchValidation();
   }, []);
+
+  const handleSubmit = async (selectedOption, mudHours) => {
+    try {
+      const api = axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const validationId = selectedValidationItem.id;
+
+      // Create an object to send in the PUT request
+      const requestData = {
+        validationStatus: selectedOption,
+        makeUpHours: mudHours,
+      };
+
+      // Make the PUT request to update the validation status
+      await api.put(`/Validation?validationId=${validationId}`, requestData);
+
+      // Close the modal after the request is successful
+      closeStatusModal();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
