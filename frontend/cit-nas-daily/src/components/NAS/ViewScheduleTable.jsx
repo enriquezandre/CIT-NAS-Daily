@@ -178,6 +178,6 @@ export const ViewScheduleTable = ({ openModal }) => {
   );
 };
 
-ViewScheduleTable.PropTypes = {
+ViewScheduleTable.propTypes = {
   openModal: PropTypes.func,
 };
