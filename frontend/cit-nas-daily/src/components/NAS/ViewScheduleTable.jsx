@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export const ViewScheduleTable = () => {
+export const ViewScheduleTable = ({ openModal }) => {
   const { nasId } = useParams();
   const [totalHours, setTotalHours] = useState(0);
   const [schedule, setSchedule] = useState({
@@ -112,36 +112,6 @@ export const ViewScheduleTable = () => {
     return total;
   };
 
-  const deleteSchedule = async (nasId) => {
-    try {
-      const api = axios.create({
-        baseURL: "https://localhost:7001/api",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      //Make delete request
-      await api.delete(`/Schedule`, {
-        params: {
-          nasId: nasId,
-        },
-      });
-
-      window.location.reload();
-    } catch (error) {
-      console.error("Error deleting schedule:", error);
-    }
-  };
-
-  const handleAddSched = () => {
-    deleteSchedule(nasId);
-  };
-
-  const dummyFunction = () => {
-    console.log("Submitted");
-  };
-
   return (
     <div>
       <div className="pb-3" style={{ display: "flex", justifyContent: "center" }}>
@@ -189,7 +159,7 @@ export const ViewScheduleTable = () => {
         <button
           className="bg-primary text-white py-2 px-3 rounded-lg hover:font-semibold flex justify-center items-center"
           style={{ width: "12em" }}
-          onClick={dummyFunction}
+          onClick={openModal}
         >
           <svg
             className="w-4 h-4 mr-2"

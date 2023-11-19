@@ -1,6 +1,13 @@
 import { Modal } from "flowbite-react";
+import icon from "../../assets/Vector.png";
+import PropType from "prop-types";
 
-export const ConfirmAddScheduleModal = () => {
+export const ConfirmAddScheduleModal = ({ isOpen, closeModal, handleSubmit }) => {
+  const handleConfirm = () => {
+    handleSubmit();
+    closeModal();
+  };
+
   return (
     <div>
       {isOpen && (
@@ -33,7 +40,9 @@ export const ConfirmAddScheduleModal = () => {
               <img src={icon} alt="infoicon" style={{ width: "35px", height: "35px" }} />
             </div>
             <div className="text-center pt-3">
-              <p className="font-bold text-lg">Confirm schedule?</p>
+              <p className="font-semibold text-lg">
+                Adding a new schedule will replace your existing schedule. Do you want to proceed?
+              </p>
             </div>
           </div>
         </Modal.Body>
@@ -64,4 +73,10 @@ export const ConfirmAddScheduleModal = () => {
       </Modal>
     </div>
   );
+};
+
+ConfirmAddScheduleModal.propTypes = {
+  isOpen: PropType.bool.isRequired,
+  closeModal: PropType.func.isRequired,
+  handleSubmit: PropType.func.isRequired,
 };
