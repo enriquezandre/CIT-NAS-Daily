@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useState } from 'react';
 import { ShowGrades } from './ShowGrades';
 
-export const EvaluateGrades = ({ show, close }) => {
+export const EvaluateGrades = ({ show, close, grade }) => {
     const [isViewingShowGrades, setIsViewingShowGrades] = useState(false);
 
     const openShowGrades = () => {
@@ -25,7 +25,7 @@ export const EvaluateGrades = ({ show, close }) => {
                                     GRADE EVALUATION
                                 </p>
                                 <button type="button" className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-lg text-sm px-5 py-2.5 my-10" onClick={openShowGrades}>EVALUATE GRADES</button>
-                                <ShowGrades show={isViewingShowGrades} close={closeShowGrades} />
+                                <ShowGrades show={isViewingShowGrades} close={closeShowGrades} grade={grade}/>
                                 <div className="flex flex-row w-full items-center gap-6 mb-10">
                                 <p className="text-xl text-left w-2/4">ALL COURSES PASSED:</p>
                                 <div className="flex flex-row gap-2 justify-center items-center w-1/4">
@@ -60,4 +60,5 @@ export const EvaluateGrades = ({ show, close }) => {
 EvaluateGrades.propTypes = {
   show: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
+  grade: PropTypes.string.isRequired,
 };

@@ -125,5 +125,37 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("grades/{nasId}/{year}/{semester}", Name = "GetNASGradePicture")]
+        [Authorize]
+        public async Task<IActionResult> GetNASGradePicture(int nasId, int year, int semester)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+                Console.WriteLine("NAS ID: " + nasId);
+                Console.WriteLine("year: " + year);
+                Console.WriteLine("semester: " + semester);
+
+
+                var nasGrades = await _summaryEvaluationService.GetNASGradePicture(nasId, year, (Semester)semester);
+
+                if (nasGrades == null)
+                {
+                    return BadRequest("NAS hasn't uploaded grades yet.");
+                }
+
+                return Ok(nasGrades);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retreiving grades.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
     }
 }

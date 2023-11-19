@@ -128,5 +128,14 @@ namespace CITNASDaily.Repositories.Repositories
 
             return null;
         }
+
+        public async Task<byte[]?> GetNASGradePicture(int nasId, int year, Semester semester)
+        {
+            var existingEval = await _context.SummaryEvaluations
+                                                .Where(se => se.nasId == nasId && se.Semester == semester && se.SchoolYear == year)
+                                                .FirstOrDefaultAsync();
+
+            return existingEval?.AcademicPerformance;
+        }
     }
 }

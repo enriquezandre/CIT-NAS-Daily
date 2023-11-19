@@ -56,5 +56,10 @@ namespace CITNASDaily.Services.Services
         {
             return await _summaryEvaluationRepository.UploadGrades(nasId, year, semester, file);
         }
+
+        public async Task<byte[]?> GetNASGradePicture(int nasId, int year, Semester semester)
+        {
+            return await _summaryEvaluationRepository.GetNASGradePicture(nasId, year, semester);
+        }
     }
 }
