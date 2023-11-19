@@ -50,11 +50,16 @@ export const OASStatus = () => {
         });
 
         const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
-        console.log(nasresponse);
         const nasData = nasresponse.data;
+        console.log(nasData);
 
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
         const officeData = officeResponse.data;
+
+        setFirstname(nasData.firstName);
+        setMiddlename(nasData.middleName);
+        setLastname(nasData.lastName);
+        setOffice(officeData.name);
 
         const summaryEvaluationResponse = await api.get(
           `SummaryEvaluation/${selectedSY}/${getSemesterValue(
@@ -62,14 +67,10 @@ export const OASStatus = () => {
           )}/${nasId}`
         );
         const summaryEvaluationData = summaryEvaluationResponse.data;
-
         setSummaryEvaluation(summaryEvaluationData);
-        setFirstname(nasData.firstName);
-        setMiddlename(nasData.middleName);
-        setLastname(nasData.lastName);
-        setOffice(officeData.name);
       } catch (error) {
         console.error(error);
+        setSummaryEvaluation({});
       }
     };
 
@@ -77,7 +78,7 @@ export const OASStatus = () => {
 
     console.log("Selected Sem:", selectedSem);
     console.log("Selected SY:", selectedSY);
-  }, [selectedSY, selectedSem, nasId]);
+  }, [selectedSY, selectedSem, nasId, firstName, middleName, lastName]);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -238,7 +239,6 @@ export const OASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">NUMBER OF UNITS ALLOWED:</p>
-                <p className="text-bold text-xl font-bold">_____</p>
               </div>
             </div>
           </div>
