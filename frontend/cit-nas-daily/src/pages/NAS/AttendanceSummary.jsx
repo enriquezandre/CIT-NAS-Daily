@@ -87,8 +87,31 @@ export const AttendanceSummary = () => {
     setIsOpen(false);
   };
 
-  const handleSubmit = () => {
-    console.log("Submitted");
+  const handleSubmit = async (base64String) => {
+    const api = axios.create({
+      baseURL: "https://localhost:7001/api",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    try {
+      const requestData = {
+        nasId: nasId,
+        nasLetter: base64String,
+      };
+
+      const response = await api.post("/Validation", requestData);
+
+      if (response.status === 200 || response.status === 201) {
+        console.log("Submitted successfully");
+      } else {
+        console.error("Submission failed");
+      }
+    } catch (error) {
+      console.error("Error during submission:", error);
+    }
   };
 
   useEffect(() => {
