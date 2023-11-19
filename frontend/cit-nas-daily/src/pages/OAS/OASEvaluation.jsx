@@ -21,7 +21,7 @@ export const OASEvaluation = () => {
 
   const handleSelectSem = (event) => {
     const value = event.target.value;
-    setSelectedSem(getSemesterValue(value));
+    setSelectedSem(value);
   };
 
   function getSemesterValue(sem) {

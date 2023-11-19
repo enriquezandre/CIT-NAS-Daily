@@ -20,7 +20,7 @@ export const SpecificNASEvaluation = () => {
 
   const handleSelectSem = (event) => {
     const value = event.target.value;
-    setSelectedSem(getSemesterValue(value));
+    setSelectedSem(value);
   };
 
   function getSemesterValue(sem) {
