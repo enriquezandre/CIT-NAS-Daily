@@ -47,29 +47,34 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
               <div className="pb-5">
                 <p className="pr-3">Status: </p>
                 <select
+                  id="status"
                   value={selectedOption}
                   onChange={handleOptionChange}
                   className="p-2 border border-solid rounded-md h-[2.6rem] w-[11rem] bg-[#ebeced]"
                 >
-                  <option value="">Choose Response</option>
-                  <option value="excused">Excused</option>
-                  <option value="unexcused">Unexcused</option>
-                  <option value="formakeupduty">For Make Up Duty</option>
-                  <option value="approved">Approved</option>
-                  <option value="disapproved">Disapproved</option>
-                  <option value="warning">Warning</option>
-                  <option value="lastwarning">Last Warning</option>
-                  <option value="report">Report to Office</option>
+                  <option value={0}>Choose Response</option>
+                  <option value={1}>Excused</option>
+                  <option value={2}>Unexcused</option>
+                  <option value={3}>For Make Up Duty</option>
+                  <option value={4}>Approved</option>
+                  <option value={5}>Disapproved</option>
+                  <option value={6}>Warning</option>
+                  <option value={7}>Last Warning</option>
+                  <option value={8}>Report to Office</option>
                 </select>
               </div>
-              <div className="pb-5">
-                <p className="pr-3">Make-up duty hours: </p>
+              <div
+                className={`pb-5 ${selectedOption !== "3" ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                <p>Make-up duty hours:</p>
                 <input
                   type="text"
                   value={mudHours}
+                  id="mudHours"
                   onChange={handleMudHoursChange}
                   className="p-2 border border-solid rounded-md h-[2.6rem] w-[11rem] bg-[#ffffff]"
                   placeholder="No. of hours"
+                  disabled={selectedOption !== "3"}
                 />
               </div>
             </div>
