@@ -69,8 +69,13 @@ export const ValidationList = () => {
     fetchValidation();
   }, []);
 
-  const handleSubmit = async (selectedOption, mudHours) => {
+  const handleSubmit = async (validationStatus, mudHours) => {
     try {
+      if (!selectedValidationItem) {
+        console.error("Selected item is null");
+        return;
+      }
+
       const api = axios.create({
         baseURL: "https://localhost:7001/api",
         headers: {
@@ -80,16 +85,19 @@ export const ValidationList = () => {
 
       const validationId = selectedValidationItem.id;
 
-      // Create an object to send in the PUT request
       const requestData = {
-        validationStatus: selectedOption,
+        validationStatus: validationStatus,
         makeUpHours: mudHours,
       };
 
-      // Make the PUT request to update the validation status
-      await api.put(`/Validation?validationId=${validationId}`, requestData);
+      const response = await api.put(`/Validation?validationId=${validationId}`, requestData);
 
-      // Close the modal after the request is successful
+      if (response.status === 200 || response.status === 201) {
+        console.log("Submitted successfully");
+      } else {
+        console.error("Submission failed");
+      }
+
       closeStatusModal();
     } catch (error) {
       console.error(error);
