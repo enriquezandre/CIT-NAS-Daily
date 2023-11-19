@@ -55,6 +55,11 @@ export const SpecificNASStatus = () => {
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
         const officeData = officeResponse.data;
 
+        setFirstname(nasData.firstName);
+        setMiddlename(nasData.middleName);
+        setLastname(nasData.lastName);
+        setOffice(officeData.name);
+
         const summaryEvaluationResponse = await api.get(
           `SummaryEvaluation/${selectedSY}/${getSemesterValue(
             selectedSem
@@ -63,12 +68,9 @@ export const SpecificNASStatus = () => {
         const summaryEvaluationData = summaryEvaluationResponse.data;
 
         setSummaryEvaluation(summaryEvaluationData);
-        setFirstname(nasData.firstName);
-        setMiddlename(nasData.middleName);
-        setLastname(nasData.lastName);
-        setOffice(officeData.name);
       } catch (error) {
         console.error(error);
+        setSummaryEvaluation({});
       }
     };
 
@@ -106,38 +108,6 @@ export const SpecificNASStatus = () => {
               >
                 DEPT/OFFICE: {office}
               </p>
-            </li>
-            <li className="flex justify-end">
-              <div className="flex ">
-                <div className="relative w-auto">
-                  <input
-                    type="search"
-                    className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
-                    placeholder="Search NAS..."
-                    required
-                  />
-                  <button
-                    type="submit"
-                    className="absolute top-0 right-0 p-2.5 text-sm font-medium h-full"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
             </li>
           </ul>
           <div className="px-8 py-4">
@@ -218,7 +188,6 @@ export const SpecificNASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">NUMBER OF UNITS ALLOWED:</p>
-                <p className="text-bold text-xl font-bold">_____</p>
               </div>
             </div>
           </div>

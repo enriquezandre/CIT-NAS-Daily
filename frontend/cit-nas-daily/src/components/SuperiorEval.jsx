@@ -60,35 +60,41 @@ export const SuperiorEval = ({ nasId, selectedSem, selectedSY }) => {
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-xl">Attendance and Punctuality:</p>
                 <p className="text-xl">
-                  {evaluationData.attendanceAndPunctuality / 2}
+                  {(evaluationData.attendanceAndPunctuality / 2).toFixed(1)}
                 </p>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-xl">Quality of Work - Output:</p>
-                <p className="text-xl">{evaluationData.qualOfWorkOutput / 3}</p>
+                <p className="text-xl">
+                  {(evaluationData.qualOfWorkOutput / 3).toFixed(1)}
+                </p>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-xl">Quantity of Work - Output:</p>
-                <p className="text-xl">{evaluationData.quanOfWorkOutput / 2}</p>
+                <p className="text-xl">
+                  {(evaluationData.quanOfWorkOutput / 2).toFixed(1)}
+                </p>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-xl">Attitude and Work Behaviour:</p>
                 <p className="text-xl">
-                  {evaluationData.attitudeAndWorkBehaviour / 5}
+                  {(evaluationData.attitudeAndWorkBehaviour / 5).toFixed(1)}
                 </p>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-xl">
                   Overall Assessment of NAS Performance:
                 </p>
-                <p className="text-xl">{evaluationData.overallAssessment}</p>
+                <p className="text-xl">
+                  {(evaluationData.overallAssessment / 1).toFixed(1)}
+                </p>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-xl font-bold">
                   Superior&#39;s Evaluation Overall Rating:
                 </p>
                 <p className="text-xl font-bold">
-                  {evaluationData.overallRating}
+                  {(evaluationData.overallRating / 1).toFixed(1)}
                 </p>
               </div>
             </div>
