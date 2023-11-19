@@ -7,6 +7,7 @@ export const NASEvaluationResult = () => {
   const [selectedSY, setSelectedSY] = useState("2324");
   const [selectedSem, setSelectedSem] = useState("First");
   const [fileUploaded, setFileUploaded] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [summaryEvaluation, setSummaryEvaluation] = useState({});
   const { nasId } = useParams();
 
@@ -31,7 +32,7 @@ export const NASEvaluationResult = () => {
   const handleSubmit = async () => {
     const semNum = sem_options.indexOf(selectedSem);
 
-    if(fileUploaded){
+    if (fileUploaded) {
       const api = axios.create({
         baseURL: `https://localhost:7001/api/NAS/grades/${nasId}/${selectedSY}/${semNum}`,
         headers: {
@@ -39,28 +40,29 @@ export const NASEvaluationResult = () => {
         },
       });
 
-      try{
+      try {
         const formData = new FormData();
-        formData.append('file', fileUploaded);
+        formData.append("file", fileUploaded);
 
-        const response = await api.put('', formData, {
+        const response = await api.put("", formData, {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         });
-        
+
         if (response.status === 200) {
           const responseData = response.data;
           setFileUploaded(responseData.grade);
           window.location.reload();
+          setSubmitted(true);
         } else {
-          console.error('Grade upload failed');
+          console.error("Grade upload failed");
         }
       } catch (error) {
-        console.error('Error uploading grades:', error);
+        console.error("Error uploading grades:", error);
       }
     }
-  }
+  };
 
   function getSemesterValue(sem) {
     switch (sem) {
@@ -95,9 +97,9 @@ export const NASEvaluationResult = () => {
         console.log(summaryEvaluationData);
       } catch (error) {
         console.error(error);
+        setSummaryEvaluation({});
       }
     };
-
     fetchEvalResult();
   }, [selectedSY, selectedSem, nasId]);
 
@@ -152,7 +154,7 @@ export const NASEvaluationResult = () => {
                   {summaryEvaluation.superiorOverallRating}
                 </div>
               </div>
-              <div className="flex flex-row gap-24 justify-start items-center text-lg mt-2">
+              <div className="flex flex-row gap-28 justify-start items-center text-lg mt-2">
                 <div>TIMEKEEPING STATUS:</div>
                 <div className="font-bold text-green">
                   {summaryEvaluation.timekeepingStatus}
@@ -180,7 +182,8 @@ export const NASEvaluationResult = () => {
               </div>
               <div className="flex flex-row gap-36 justify-start items-center text-lg mt-2">
                 <div>GRADE STATUS:</div>
-                {summaryEvaluation.academicPerformance === null ? (
+                {summaryEvaluation.academicPerformance === null ||
+                summaryEvaluation.academicPerformance === undefined ? (
                   <div className="text-sm">
                     <input
                       type="file"
@@ -198,7 +201,7 @@ export const NASEvaluationResult = () => {
                     ) : null}
                   </div>
                 ) : summaryEvaluation.allCoursesPassed === null ||
-                  summaryEvaluation.allCoursesPassed === undefined || 
+                  summaryEvaluation.allCoursesPassed === undefined ||
                   summaryEvaluation.allCoursesPassed === false ? (
                   <span className="text-yellow">PENDING</span>
                 ) : summaryEvaluation.allCoursesPassed ? (
@@ -209,14 +212,18 @@ export const NASEvaluationResult = () => {
               </div>
             </div>
           </div>
-          <div className="mt-7 bg-good p-3 rounded-lg">
-            <p>
-              Please upload your grades to finalize your evaluation and number
-              of units allowed for you to enroll. Lorem ipsum dolor sit amet,
-              consectetur adipiscing elit. Nam porttitor sed justo sit amet
-              pharetra. Vivamus sit amet pretium velit. Curabitur vitae metus
-              sed enim convallis rhoncus.
-            </p>
+          <div className="mt-7 ">
+            {submitted ? (
+              <div className="p-3 rounded-lg bg-good">
+                Thank you for submitting your grades. Please wait for the
+                response of OAS.
+              </div>
+            ) : (
+              <div className="p-3 rounded-lg bg-warning">
+                Please upload your grades to finalize your evaluation and number
+                of units allowed for you to enroll.
+              </div>
+            )}
           </div>
         </div>
       </div>
