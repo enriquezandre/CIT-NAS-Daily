@@ -4,6 +4,7 @@ import { MasterlistTable } from "../../components/OAS/MasterlistTable";
 export const OASMasterlist = () => {
   const [selectedSY, setSelectedSY] = useState("2324");
   const [selectedSem, setSelectedSem] = useState("First");
+  const [searchInput, setSearchInput] = useState("");
 
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
@@ -30,6 +31,8 @@ export const OASMasterlist = () => {
                     type="search"
                     className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
                     placeholder="Search NAS..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
                     required
                   />
                   <button
@@ -92,7 +95,7 @@ export const OASMasterlist = () => {
                 </select>
               </div>
             </div>
-            <MasterlistTable />
+            <MasterlistTable searchInput={searchInput} />
           </div>
         </div>
       </div>

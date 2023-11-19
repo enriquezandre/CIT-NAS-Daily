@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import axios from "axios";
 
-export const MasterlistTable = () => {
+export const MasterlistTable = ({ searchInput }) => {
   const [nasData, setNasData] = useState([]);
+  const [filteredNASData, setFilteredNASData] = useState([]);
 
   const header = [
     "No.",
@@ -91,6 +93,16 @@ export const MasterlistTable = () => {
     fetchNas();
   });
 
+  useEffect(() => {
+    const filteredData = nasData.filter(
+      (nas) =>
+        nas.lastName.toLowerCase().includes(searchInput.toLowerCase()) ||
+        nas.firstName.toLowerCase().includes(searchInput.toLowerCase()) ||
+        nas.middleName.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    setFilteredNASData(filteredData);
+  }, [searchInput, nasData]);
+
   return (
     <div className="overflow-x-auto">
       <table className="table-auto mx-auto mb-8">
@@ -108,7 +120,7 @@ export const MasterlistTable = () => {
           </tr>
         </thead>
         <tbody>
-          {nasData.map((nas, index) => (
+          {filteredNASData.map((nas, index) => (
             <tr key={index}>
               <td className="border-2 border-black text-center px-4 py-2">
                 {nas.id}
@@ -192,4 +204,8 @@ export const MasterlistTable = () => {
       </table>
     </div>
   );
+};
+
+MasterlistTable.propTypes = {
+  searchInput: PropTypes.string.isRequired,
 };
