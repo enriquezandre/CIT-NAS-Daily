@@ -1,19 +1,10 @@
-import { useState } from "react";
 import { Modal } from "flowbite-react";
-import PropType from "prop-types";
 import icon from "../../assets/Vector.png";
-import { UploadExcuseLetterModal } from "./UploadExcuseLetterModal";
+import PropType from "prop-types";
 
-export const ValidationModal = ({ isOpen, closeModal, handleSubmit }) => {
-  const [isConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
-
-  const handleYes = () => {
-    setConfirmationModalOpen(true);
-    closeModal();
-  };
-
-  const handleCloseValidationModal = () => {
-    setConfirmationModalOpen(false);
+export const ConfirmAddScheduleModal = ({ isOpen, closeModal, handleSubmit }) => {
+  const handleConfirm = () => {
+    handleSubmit();
     closeModal();
   };
 
@@ -49,8 +40,9 @@ export const ValidationModal = ({ isOpen, closeModal, handleSubmit }) => {
               <img src={icon} alt="infoicon" style={{ width: "35px", height: "35px" }} />
             </div>
             <div className="text-center pt-3">
-              <p className="font-bold text-lg">Appeal to the</p>
-              <p className="font-bold text-lg">Office of Admission and Scholarships?</p>
+              <p className="font-semibold text-lg">
+                Adding a new schedule will replace your existing schedule. Do you want to proceed?
+              </p>
             </div>
           </div>
         </Modal.Body>
@@ -74,7 +66,7 @@ export const ValidationModal = ({ isOpen, closeModal, handleSubmit }) => {
             <div className="flex m-2">
               <button
                 className="bg-primary text-white py-2 px-6 rounded-full hover:bg-secondary hover:text-primary"
-                onClick={handleYes}
+                onClick={handleConfirm}
               >
                 Yes
               </button>
@@ -82,16 +74,11 @@ export const ValidationModal = ({ isOpen, closeModal, handleSubmit }) => {
           </div>
         </Modal.Footer>
       </Modal>
-      <UploadExcuseLetterModal
-        isOpen={isConfirmationModalOpen}
-        closeModal={handleCloseValidationModal}
-        handleSubmit={handleSubmit}
-      />
     </div>
   );
 };
 
-ValidationModal.propTypes = {
+ConfirmAddScheduleModal.propTypes = {
   isOpen: PropType.bool.isRequired,
   closeModal: PropType.func.isRequired,
   handleSubmit: PropType.func.isRequired,

@@ -3,24 +3,34 @@ import { useParams } from "react-router-dom";
 import { ScheduleTable } from "../../components/NAS/SetScheduleTable.jsx";
 import { ScheduleModal } from "../../components/NAS/ConfirmScheduleModal.jsx";
 import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable.jsx";
+import { ConfirmAddScheduleModal } from "../../components/NAS/ConfirmAddScheduleModal.jsx";
 import axios from "axios";
 
 export const NASSchedule = () => {
   const { nasId } = useParams();
   const [selectedSem, setSelectedSem] = useState("First");
   const [selectedSY, setSelectedSY] = useState("2324");
-  const [isOpen, setIsOpen] = useState(false); // Manage isOpen state here
+  const [isSchedModalOpen, setSchedModalOpen] = useState(false);
+  const [isAddSchedModalOpen, setAddSchedModalOpen] = useState(false);
   const [apiData, setApiData] = useState(null);
 
   const sy_options = ["2021", "2122", "2223", "2324"];
   const sem_options = ["First", "Second", "Summer"];
 
-  const openModal = () => {
-    setIsOpen(true);
+  const openSetSchedModal = () => {
+    setSchedModalOpen(true);
   };
 
-  const closeModal = () => {
-    setIsOpen(false);
+  const closeSetSchedModal = () => {
+    setSchedModalOpen(false);
+  };
+
+  const openAddSchedModal = () => {
+    setAddSchedModalOpen(true);
+  };
+
+  const closeAddSchedModal = () => {
+    setAddSchedModalOpen(false);
   };
 
   const handleSelectSY = (value) => {
@@ -229,6 +239,33 @@ export const NASSchedule = () => {
   }, [nasId]);
 
   const dataExist = apiData && apiData.length > 0;
+
+  const deleteSchedule = async (nasId) => {
+    try {
+      const api = axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      //Make delete request
+      await api.delete(`/Schedule`, {
+        params: {
+          nasId: nasId,
+        },
+      });
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting schedule:", error);
+    }
+  };
+
+  const handleAddSched = () => {
+    deleteSchedule(nasId);
+  };
+
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
@@ -274,7 +311,7 @@ export const NASSchedule = () => {
           </div>
           <div className="pt-10">
             {dataExist ? (
-              <ViewScheduleTable apiData={apiData} />
+              <ViewScheduleTable apiData={apiData} openModal={openAddSchedModal} />
             ) : (
               <ScheduleTable
                 days={days}
@@ -285,14 +322,23 @@ export const NASSchedule = () => {
                 handleRemoveScheduleRow={handleRemoveScheduleRow}
                 handleStartTimeChange={handleStartTimeChange}
                 handleEndTimeChange={handleEndTimeChange}
-                openModal={openModal}
+                openModal={openSetSchedModal}
                 overallHours={overallHours}
               />
             )}
           </div>
         </div>
       </div>
-      <ScheduleModal isOpen={isOpen} closeModal={closeModal} handleSubmit={handleSubmit} />
+      <ScheduleModal
+        isOpen={isSchedModalOpen}
+        closeModal={closeSetSchedModal}
+        handleSubmit={handleSubmit}
+      />
+      <ConfirmAddScheduleModal
+        isOpen={isAddSchedModalOpen}
+        closeModal={closeAddSchedModal}
+        handleSubmit={handleAddSched}
+      />
     </div>
   );
 };

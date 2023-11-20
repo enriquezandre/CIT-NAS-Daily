@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 import axios from "axios";
 
-export const ViewScheduleTable = () => {
+export const ViewScheduleTable = ({ openModal }) => {
   const { nasId } = useParams();
   const [totalHours, setTotalHours] = useState(0);
   const [schedule, setSchedule] = useState({
@@ -112,32 +113,6 @@ export const ViewScheduleTable = () => {
     return total;
   };
 
-  const deleteSchedule = async (nasId) => {
-    try {
-      const api = axios.create({
-        baseURL: "https://localhost:7001/api",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      //Make delete request
-      await api.delete(`/Schedule`, {
-        params: {
-          nasId: nasId,
-        },
-      });
-
-      window.location.reload();
-    } catch (error) {
-      console.error("Error deleting schedule:", error);
-    }
-  };
-
-  const handleAddSched = () => {
-    deleteSchedule(nasId);
-  };
-
   return (
     <div>
       <div className="pb-3" style={{ display: "flex", justifyContent: "center" }}>
@@ -181,15 +156,28 @@ export const ViewScheduleTable = () => {
           </tbody>
         </table>
       </div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      <div style={{ display: "flex", justifyContent: "center", paddingTop: "1.5em" }}>
         <button
-          className="bg-primary text-white py-2 px-5 rounded-lg hover:font-semibold"
+          className="bg-primary text-white py-2 px-3 rounded-lg hover:font-semibold flex justify-center items-center"
           style={{ width: "12em" }}
-          onClick={handleAddSched}
+          onClick={openModal}
         >
+          <svg
+            className="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+          </svg>
           Add new schedule
         </button>
       </div>
     </div>
   );
+};
+
+ViewScheduleTable.propTypes = {
+  openModal: PropTypes.func,
 };

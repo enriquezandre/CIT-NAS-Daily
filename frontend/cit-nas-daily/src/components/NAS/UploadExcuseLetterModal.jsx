@@ -16,10 +16,46 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
     fileInputRef.current.click();
   };
 
-  const handleConfirm = () => {
-    // Add any additional logic or validation before calling handleSubmit
-    handleSubmit();
-    closeModal();
+  const handleConfirm = async () => {
+    try {
+      const selectedFile = fileInputRef.current.files[0];
+
+      if (selectedFile) {
+        // Check if the selected file is a PDF
+        if (selectedFile.type === "application/pdf") {
+          // Convert the selected file to Base64
+          const base64String = await fileToBase64(selectedFile);
+          console.log("Base64-encoded string:", base64String);
+
+          // Pass the Base64-encoded string to the handleSubmit function
+          handleSubmit(base64String);
+
+          closeModal();
+        } else {
+          console.error("Invalid file type. Please select a PDF file.");
+        }
+      } else {
+        console.error("No file selected");
+      }
+    } catch (error) {
+      console.error("Error during file processing:", error);
+    }
+  };
+
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        const base64String = reader.result.split(",")[1];
+        resolve(base64String);
+      };
+
+      reader.onerror = (error) => {
+        reject(error);
+      };
+    });
   };
 
   return (
@@ -78,13 +114,16 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
         >
           <div className="flex justify-end items-center">
             <div className="flex m-2">
-              <button className="bg-primary text-white py-2 px-6 rounded-full" onClick={closeModal}>
+              <button
+                className="bg-primary text-white py-2 px-6 rounded-full  hover:bg-secondary hover:text-primary"
+                onClick={closeModal}
+              >
                 Cancel
               </button>
             </div>
             <div className="flex m-2">
               <button
-                className="bg-primary text-white py-2 px-6 rounded-full"
+                className="bg-primary text-white py-2 px-6 rounded-full  hover:bg-secondary hover:text-primary"
                 onClick={handleConfirm}
               >
                 Submit
