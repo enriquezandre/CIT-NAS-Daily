@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OfficeOpenXml;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -131,6 +132,9 @@ app.Seed();
 
 app.MapControllers();
 
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+
 app.Run();
 
 
@@ -179,6 +183,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IScheduleRepository, ScheduleRepository>();
     services.AddScoped<IBiometricLogRepository, BiometricLogRepository>();
     services.AddScoped<IValidationRepository, ValidationRepository>();
+    services.AddScoped<IDTRRepository, DTRRepository>();
 
     // Register services
     services.AddScoped<ISuperiorService, SuperiorService>();
@@ -195,4 +200,5 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IScheduleService, ScheduleService>();
     services.AddScoped<IBiometricLogService, BiometricLogService>();
     services.AddScoped<IValidationService, ValidationService>();
+    services.AddScoped<IDTRService, DTRService>();
 }
