@@ -47,30 +47,37 @@ export const PerfSummary = ({
     }
   }
 
+  const api = axios.create({
+    baseURL: "https://localhost:7001/api",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
   useEffect(() => {
-    const fetchNas = async () => {
+    const fetchActivitiesSummary = async () => {
       try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await api.get(`/ActivitiesSummary/${nasId}`);
+        const data = response.data;
+        setActivitySummaries(data);
+        setFilteredSummaries(data);
+      } catch (error) {
+        console.error(error);
+        setActivitySummaries([]);
+        setFilteredSummaries([]);
+      }
+    };
 
-        const activitiesresponse = await api.get(`/ActivitiesSummary/${nasId}`);
-        const activitiesdata = activitiesresponse.data;
+    fetchActivitiesSummary();
+  }, [nasId, api]);
 
-        setActivitySummaries(activitiesdata);
-        setFilteredSummaries(activitiesdata);
-
-        const timekeepingresponse = await api.get(
-          `/TimekeepingSummary/${nasId}`
-        );
-        let timekeepingdata = timekeepingresponse.data[0];
-        if (!timekeepingdata) {
-          // If there's no record
-          timekeepingdata = {
+  useEffect(() => {
+    const fetchTimekeepingSummary = async () => {
+      try {
+        const response = await api.get(`/TimekeepingSummary/${nasId}`);
+        let data = response.data[0];
+        if (!data) {
+          data = {
             excused: "NR",
             failedToPunch: "NR",
             lateOver10Mins: "NR",
@@ -81,27 +88,34 @@ export const PerfSummary = ({
             unexcused: "NR",
           };
         }
-
-        setTimekeepingSummaries(timekeepingdata);
-
-        const summaryEvaluationResponse = await api.get(
-          `SummaryEvaluation/${selectedSY}/${getSemesterValue(
-            selectedSem
-          )}/${nasId}`
-        );
-        const summaryEvaluationData = summaryEvaluationResponse.data;
-        setTimekeepingStatus(summaryEvaluationData.timekeepingStatus);
+        setTimekeepingSummaries(data);
       } catch (error) {
         console.error(error);
-        setTimekeepingStatus("");
-        setActivitySummaries([]);
-        setFilteredSummaries([]);
         setTimekeepingSummaries([]);
       }
     };
 
-    fetchNas();
-  }, [nasId, selectedSem, selectedSY]);
+    fetchTimekeepingSummary();
+  }, [nasId, api]);
+
+  useEffect(() => {
+    const fetchSummaryEvaluation = async () => {
+      try {
+        const response = await api.get(
+          `SummaryEvaluation/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}/${nasId}`
+        );
+        const data = response.data;
+        setTimekeepingStatus(data.timekeepingStatus);
+      } catch (error) {
+        console.error(error);
+        setTimekeepingStatus("");
+      }
+    };
+
+    fetchSummaryEvaluation();
+  }, [nasId, selectedSem, selectedSY, api]);
 
   const handleChange = (event) => {
     const newSelectedMonth = event.target.value;
