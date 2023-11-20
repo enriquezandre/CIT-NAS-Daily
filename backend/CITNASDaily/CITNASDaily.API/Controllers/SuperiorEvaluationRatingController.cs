@@ -40,14 +40,21 @@ namespace CITNASDaily.API.Controllers
                     return Forbid();
                 }
 
-                var createdSuperiorEvaluationRating = await _superiorEvaluationRatingService.CreateSuperiorEvaluationRatingAsync(superiorEvaluationRatingCreate);
+                var rating = await _superiorEvaluationRatingService.CreateSuperiorEvaluationRatingAsync(superiorEvaluationRatingCreate);
 
-                if (createdSuperiorEvaluationRating == null)
+                if (rating == null)
                 {
                     return BadRequest("Creation Failed.");
                 }
 
-                return CreatedAtRoute("GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYear", new { nasId = createdSuperiorEvaluationRating.NASId, semester = createdSuperiorEvaluationRating.Semester, year = createdSuperiorEvaluationRating.SchoolYear }, createdSuperiorEvaluationRating);
+                var summary = await _summaryEvaluationService.UpdateSuperiorRatingAsync(rating.NASId, rating.SchoolYear, rating.Semester, rating.OverallRating);
+
+                if (summary == null)
+                {
+                    return BadRequest("Updating Overall Rating Failed.");
+                }
+
+                return CreatedAtRoute("GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYear", new { nasId = rating.NASId, semester = rating.Semester, year = rating.SchoolYear }, rating);
             }
             catch (Exception ex)
             {

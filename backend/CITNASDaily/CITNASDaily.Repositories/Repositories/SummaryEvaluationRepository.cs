@@ -23,34 +23,6 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<SummaryEvaluation?> CreateSummaryEvaluationAsync(SummaryEvaluation summaryEvaluation)
         {
-            var tkSummary = await _context.TimekeepingSummaries
-                                        .Where(r => r.NASId == summaryEvaluation.nasId && r.Semester == summaryEvaluation.Semester && r.SchoolYear == summaryEvaluation.SchoolYear)
-                                        .FirstOrDefaultAsync();
-
-            if (tkSummary == null)
-            {
-                return null;
-            }
-
-            if(tkSummary.Excused == 0 && tkSummary.Unexcused == 0 && tkSummary.FailedToPunch == 0
-                && tkSummary.LateOver10Mins == 0 && tkSummary.LateOver45Mins == 0 && tkSummary.MakeUpDutyHours == 0)
-            {
-                summaryEvaluation.TimekeepingStatus = "EXCELLENT";
-            }
-            else if((tkSummary.Excused <= 3 && tkSummary.Excused >= 0) ||
-                (tkSummary.Unexcused <= 3 && tkSummary.Unexcused >= 0) ||
-                (tkSummary.FailedToPunch <= 3 && tkSummary.FailedToPunch >= 0) ||
-                (tkSummary.LateOver10Mins <= 3 && tkSummary.LateOver10Mins >= 0) ||
-                (tkSummary.LateOver45Mins <= 3 && tkSummary.LateOver45Mins >= 0) ||
-                (tkSummary.MakeUpDutyHours <= 5 && tkSummary.MakeUpDutyHours >= 0))
-            {
-                summaryEvaluation.TimekeepingStatus = "GOOD";
-            }
-            else
-            {
-                summaryEvaluation.TimekeepingStatus = "POOR";
-            }
-
             if (Enum.IsDefined(typeof(Semester), summaryEvaluation.Semester))
             {
                 var existingSummary = await _context.SummaryEvaluations.FirstOrDefaultAsync(s => s.nasId == summaryEvaluation.nasId && s.Semester == summaryEvaluation.Semester && s.SchoolYear == summaryEvaluation.SchoolYear);
@@ -136,6 +108,22 @@ namespace CITNASDaily.Repositories.Repositories
                                                 .FirstOrDefaultAsync();
 
             return existingEval?.AcademicPerformance;
+        }
+
+        public async Task<SummaryEvaluation?> UpdateSuperiorRatingAsync(int nasId, int year, Semester semester, float rating)
+        {
+            var existingEval = await _context.SummaryEvaluations
+                                                .Where(se => se.nasId == nasId && se.Semester == semester && se.SchoolYear == year)
+                                                .FirstOrDefaultAsync();
+
+            if(existingEval != null)
+            {
+                existingEval.SuperiorOverallRating = rating;
+                await _context.SaveChangesAsync();
+                return existingEval;
+            }
+
+            return null;
         }
     }
 }
