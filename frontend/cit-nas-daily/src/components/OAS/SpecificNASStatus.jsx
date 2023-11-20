@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { EvaluateGrades } from "../../components/OAS/EvaluateGrades";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -17,6 +17,17 @@ export const SpecificNASStatus = () => {
   const [summaryEvaluation, setSummaryEvaluation] = useState({});
   const [grade, setGrades] = useState(null);
 
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
+
   const openEvaluateGrades = () => {
     setIsViewingEvaluateGrades(true);
   };
@@ -25,66 +36,52 @@ export const SpecificNASStatus = () => {
     setIsViewingEvaluateGrades(false);
   };
 
-  function getSemesterValue(sem) {
-    switch (sem) {
-      case "First":
-        return 0;
-      case "Second":
-        return 1;
-      case "Summer":
-        return 3;
-      default:
-        return "Invalid semester";
-    }
-  }
-
-  const api = axios.create({
-    baseURL: "https://localhost:7001/api",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 3;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   useEffect(() => {
-    const fetchNas = async () => {
+    const fetchNasAndOffice = async () => {
       try {
-        const response = await api.get(`/NAS/${nasId}/noimg`);
-        const data = response.data;
-        setFirstname(data.firstName);
-        setMiddlename(data.middleName);
-        setLastname(data.lastName);
+        const [nasResponse, officeResponse] = await Promise.all([
+          api.get(`/NAS/${nasId}/noimg`),
+          api.get(`Offices/${nasId}/NAS`),
+        ]);
+        const nasData = nasResponse.data;
+        setFirstname(nasData.firstName);
+        setMiddlename(nasData.middleName);
+        setLastname(nasData.lastName);
+        const officeData = officeResponse.data;
+        setOffice(officeData.name);
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchNas();
-  }, [nasId, api]);
-
-  useEffect(() => {
-    const fetchOffice = async () => {
-      try {
-        const response = await api.get(`Offices/${nasId}/NAS`);
-        const data = response.data;
-        setOffice(data.name);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchOffice();
+    fetchNasAndOffice();
   }, [nasId, api]);
 
   useEffect(() => {
     const fetchSummaryEvaluation = async () => {
+      if (!nasId || !selectedSem || !selectedSY) return;
       try {
         const response = await api.get(
           `SummaryEvaluation/${selectedSY}/${getSemesterValue(
             selectedSem
           )}/${nasId}`
         );
-        const data = response.data;
-        setSummaryEvaluation(data);
+        setSummaryEvaluation(response.data);
       } catch (error) {
         console.error(error);
         setSummaryEvaluation({});
@@ -92,10 +89,11 @@ export const SpecificNASStatus = () => {
     };
 
     fetchSummaryEvaluation();
-  }, [nasId, selectedSem, selectedSY, api]);
+  }, [nasId, selectedSem, selectedSY, api, getSemesterValue]);
 
   useEffect(() => {
     const fetchSummaryEvaluationGrades = async () => {
+      if (!nasId || !selectedSem || !selectedSY) return;
       try {
         const response = await api.get(
           `SummaryEvaluation/grades/${nasId}/${selectedSY}/${getSemesterValue(
@@ -109,7 +107,7 @@ export const SpecificNASStatus = () => {
     };
 
     fetchSummaryEvaluationGrades();
-  }, [nasId, selectedSem, selectedSY, api]);
+  }, [nasId, selectedSem, selectedSY, api, getSemesterValue]);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
