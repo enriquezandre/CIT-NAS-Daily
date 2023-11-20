@@ -167,7 +167,9 @@ void ConfigureServices(IServiceCollection services)
         typeof(ScheduleProfile),
         typeof(BiometricLogProfile),
         typeof(SummaryEvaluationProfile),
-        typeof(ValidationProfile)
+        typeof(ValidationProfile),
+        typeof(NASSemesterProfile),
+        typeof(NASSchoolYearProfile)
         );
 
     // Register repositories

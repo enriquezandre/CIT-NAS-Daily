@@ -72,5 +72,46 @@ namespace CITNASDaily.Repositories.Repositories
 
             return null;
         }
+
+        public async Task<NAS?> UpdateNASAsync(int nasId, NAS nas)
+        {
+            var existingNAS = await _context.NAS.FirstOrDefaultAsync(n => n.Id == nasId);
+
+            if (existingNAS != null)
+            {
+                existingNAS.OfficeId = nas.OfficeId;
+                existingNAS.YearLevel = nas.YearLevel;
+                existingNAS.Course = nas.Course;
+                existingNAS.UnitsAllowed = nas.UnitsAllowed;
+
+                foreach (var sy in nas.SchoolYears)
+                {
+                    var schoolyear = new NASSchoolYear
+                    {
+                        NASId = nasId,
+                        Year = sy.Year
+                    };
+
+                    await _context.NASSchoolYears.AddAsync(schoolyear);
+                }
+                foreach (var sem in nas.Semesters)
+                {
+                    var semester = new NASSemester
+                    {
+                        NASId = nasId,
+                        Semester = sem.Semester
+                    };
+                    await _context.NASSemesters.AddAsync(semester);
+                }
+
+                await _context.SaveChangesAsync();
+                
+                existingNAS.SchoolYears = _context.NASSchoolYears.Where(sy => sy.NASId == existingNAS.Id).ToList();
+                existingNAS.Semesters = _context.NASSemesters.Where(sy => sy.NASId == existingNAS.Id).ToList();
+                
+                return existingNAS;
+            }
+            return null;
+        }
     }
 }
