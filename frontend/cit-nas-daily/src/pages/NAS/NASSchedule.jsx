@@ -9,7 +9,7 @@ import axios from "axios";
 const first_sem = ["August", "September", "October", "November", "December"];
 const second_sem = ["January", "February", "March", "April", "May"];
 const summer = ["June", "July", "August"];
-const currentDate = new Date("2023-08-01");
+const currentDate = new Date();
 const currentMonth = currentDate.toLocaleString("en-US", { month: "long" });
 
 let currentSem;
