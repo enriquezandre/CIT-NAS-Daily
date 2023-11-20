@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
-import PropTypes from "prop-types";
 import axios from "axios";
 
-export const MasterlistTable = ({ searchInput }) => {
+export const ManageUsersTable = () => {
   const [nasData, setNasData] = useState([]);
-  const [filteredNASData, setFilteredNASData] = useState([]);
 
   const header = [
     "No.",
@@ -12,21 +10,10 @@ export const MasterlistTable = ({ searchInput }) => {
     "Last Name",
     "First Name",
     "Middle Name",
-    "Gender",
-    "Birthdate",
     "Program",
     "Year",
-    "No. of Units Allowed",
-    "Date Started",
     "Department Assigned",
-    "EA",
-    "UEA",
-    "L>10 mins.",
-    "L>45 mins.",
-    "FTP",
-    "FOR MAKE UP",
-    "OT",
-    "REMARKS",
+    "Actions",
   ];
 
   useEffect(() => {
@@ -93,16 +80,6 @@ export const MasterlistTable = ({ searchInput }) => {
     fetchNas();
   });
 
-  useEffect(() => {
-    const filteredData = nasData.filter(
-      (nas) =>
-        nas.lastName.toLowerCase().includes(searchInput.toLowerCase()) ||
-        nas.firstName.toLowerCase().includes(searchInput.toLowerCase()) ||
-        nas.middleName.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    setFilteredNASData(filteredData);
-  }, [searchInput, nasData]);
-
   return (
     <div className="overflow-x-auto">
       <table className="table-auto mx-auto mb-8">
@@ -120,7 +97,7 @@ export const MasterlistTable = ({ searchInput }) => {
           </tr>
         </thead>
         <tbody>
-          {filteredNASData.map((nas, index) => (
+          {nasData.map((nas, index) => (
             <tr key={index}>
               <td className="border-2 border-black text-center px-4 py-2">
                 {nas.id}
@@ -149,15 +126,6 @@ export const MasterlistTable = ({ searchInput }) => {
               </td>
               <td
                 className="border-2 border-black text-center px-4 py-2"
-                style={{ textTransform: "capitalize" }}
-              >
-                {nas.gender}
-              </td>
-              <td className="border-2 border-black text-center px-4 py-2">
-                {new Date(nas.birthDate).toLocaleDateString()}
-              </td>
-              <td
-                className="border-2 border-black text-center px-4 py-2"
                 style={{ textTransform: "uppercase" }}
               >
                 {nas.course}
@@ -165,47 +133,31 @@ export const MasterlistTable = ({ searchInput }) => {
               <td className="border-2 border-black text-center px-4 py-2">
                 {nas.yearLevel}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
-                {nas.unitsAllowed}
-              </td>
-              <td className="border-2 border-black text-center px-4 py-2">
-                {new Date(nas.dateStarted).toLocaleDateString()}
-              </td>
               <td
                 className="border-2 border-black text-center px-4 py-2"
                 style={{ textTransform: "uppercase" }}
               >
                 {nas.office ? nas.office.name : "N/A"}{" "}
-                {/* Display the office name or "N/A" if not available */}
               </td>
               <td className="border-2 border-black text-center px-4 py-2">
-                {nas.timekeeping ? nas.timekeeping.excused : "NR"}
+                <div className="flex gap-4">
+                  <div className="">
+                    <button className="bg-secondary hover:bg-primary hover:text-white focus:outline-none rounded-lg text-sm px-5 py-2.5 ">
+                      Edit
+                    </button>
+                  </div>
+
+                  <div>
+                    <button className="bg-secondary hover:bg-primary hover:text-white focus:outline-none rounded-lg text-sm px-5 py-2.5">
+                      Delete
+                    </button>
+                  </div>
+                </div>
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
-                {nas.timekeeping ? nas.timekeeping.unexcused : "NR"}
-              </td>
-              <td className="border-2 border-black text-center px-4 py-2">
-                {nas.timekeeping ? nas.timekeeping.lateOver10Mins : "NR"}
-              </td>
-              <td className="border-2 border-black text-center px-4 py-2">
-                {nas.timekeeping ? nas.timekeeping.lateOver45Mins : "NR"}
-              </td>
-              <td className="border-2 border-black text-center px-4 py-2">
-                {nas.timekeeping ? nas.timekeeping.failedToPunch : "NR"}
-              </td>
-              <td className="border-2 border-black text-center px-4 py-2">
-                {nas.timekeeping ? nas.timekeeping.makeUpDutyHours : "NR"}
-              </td>
-              <td className="border-2 border-black text-center px-4 py-2"> </td>
-              <td className="border-2 border-black text-center px-4 py-2"> </td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
   );
-};
-
-MasterlistTable.propTypes = {
-  searchInput: PropTypes.string.isRequired,
 };

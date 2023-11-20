@@ -6,6 +6,7 @@ import { OASEvaluation } from "../../pages/OAS/OASEvaluation";
 import { OASStatus } from "../../pages/OAS/OASStatus";
 import { OASMasterlist } from "../../pages/OAS/OASMasterlist";
 import { OASValidation } from "../../pages/OAS/OASValidation";
+import { OASManageUsers } from "../../pages/OAS/OASManageUsers";
 export const OASTabs = () => {
   const [activeTab, setActiveTab] = useState(1);
 
@@ -77,6 +78,16 @@ export const OASTabs = () => {
           >
             NAS Masterlist
           </button>
+          <button
+            className={`${
+              activeTab === 7
+                ? "font-bold bg-primary text-white"
+                : "bg-secondary"
+            } px-4 py-2 rounded-tr-lg w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
+            onClick={() => handleTabClick(7)}
+          >
+            Manage Users
+          </button>
         </div>
         <div className="p-4 bg-white rounded-b-lg">
           {/* Content for each tab */}
@@ -108,6 +119,11 @@ export const OASTabs = () => {
           {activeTab === 6 && (
             <div>
               <OASMasterlist />
+            </div>
+          )}
+          {activeTab === 7 && (
+            <div>
+              <OASManageUsers />
             </div>
           )}
         </div>

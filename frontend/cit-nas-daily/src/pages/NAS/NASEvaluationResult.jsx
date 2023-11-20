@@ -31,6 +31,9 @@ export const NASEvaluationResult = () => {
 
   const handleSubmit = async () => {
     const semNum = sem_options.indexOf(selectedSem);
+    console.log("NAS ID: " + nasId)
+    console.log("selectedSY: " + selectedSY)
+    console.log("semNum: " + semNum)
 
     if (fileUploaded) {
       const api = axios.create({
@@ -53,7 +56,6 @@ export const NASEvaluationResult = () => {
         if (response.status === 200) {
           const responseData = response.data;
           setFileUploaded(responseData.grade);
-          window.location.reload();
           setSubmitted(true);
         } else {
           console.error("Grade upload failed");
