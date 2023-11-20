@@ -20,6 +20,7 @@ namespace CITNASDaily.Repositories.Context
         public DbSet<TimekeepingSummary> TimekeepingSummaries { get; set; }
         public DbSet<BiometricLog> BiometricLogs { get; set; }
         public DbSet<Validation> Validations { get; set; }
+        public DbSet<DailyTimeRecord> DailyTimeRecords { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
