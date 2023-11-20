@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const ViewScheduleTable = ({ openModal }) => {
+export const ViewScheduleTable = ({ openModal, currentMonth }) => {
   const { nasId } = useParams();
   const [totalHours, setTotalHours] = useState(0);
   const [schedule, setSchedule] = useState({
@@ -14,6 +14,7 @@ export const ViewScheduleTable = ({ openModal }) => {
     Friday: [],
     Saturday: [],
   });
+  const endOfSem = ["December", "May", "August"];
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -98,6 +99,7 @@ export const ViewScheduleTable = ({ openModal }) => {
       .padStart(2, "0")} ${ampm}`;
   };
 
+  //if broken sched, separate sched with ";"
   const formatTimeSlots = (items) => {
     const timeSlots = items.map(
       (item) => `${formatTime(item.startTime)} - ${formatTime(item.endTime)}`
@@ -105,12 +107,22 @@ export const ViewScheduleTable = ({ openModal }) => {
     return items.length > 1 ? timeSlots.join("; ") : timeSlots[0];
   };
 
+  // calculate overall total number of hours
   const calculateNumOfHours = (items) => {
     let total = 0;
     items.forEach((item) => {
       total += item.totalHours;
     });
     return total;
+  };
+
+  //check if
+  const isEndOfSem = (currentMonth) => {
+    if (endOfSem.includes(currentMonth)) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   return (
@@ -158,9 +170,16 @@ export const ViewScheduleTable = ({ openModal }) => {
       </div>
       <div style={{ display: "flex", justifyContent: "center", paddingTop: "1.5em" }}>
         <button
-          className="bg-primary text-white py-2 px-3 rounded-lg hover:font-semibold flex justify-center items-center"
-          style={{ width: "12em" }}
-          onClick={openModal}
+          className={`py-2 px-3 rounded-lg flex justify-center items-center ${
+            isEndOfSem(currentMonth) ? "hover: font-semibold" : ""
+          }`}
+          style={{
+            backgroundColor: isEndOfSem(currentMonth) ? "#88333a" : "#c5c5c5",
+            color: "white",
+            width: "12em",
+          }}
+          onClick={isEndOfSem(currentMonth) ? openModal : undefined}
+          disabled={!isEndOfSem(currentMonth)}
         >
           <svg
             className="w-4 h-4 mr-2"
@@ -179,5 +198,6 @@ export const ViewScheduleTable = ({ openModal }) => {
 };
 
 ViewScheduleTable.propTypes = {
-  openModal: PropTypes.func,
+  openModal: PropTypes.func.isRequired,
+  currentMonth: PropTypes.string.isRequired,
 };

@@ -6,16 +6,31 @@ import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable.jsx";
 import { ConfirmAddScheduleModal } from "../../components/NAS/ConfirmAddScheduleModal.jsx";
 import axios from "axios";
 
+const first_sem = ["August", "September", "October", "November", "December"];
+const second_sem = ["January", "February", "March", "April", "May"];
+const summer = ["June", "July", "August"];
+const currentDate = new Date();
+const currentMonth = currentDate.toLocaleString("en-US", { month: "long" });
+
+let currentSem;
+if (first_sem.includes(currentMonth)) {
+  currentSem = "First";
+} else if (second_sem.includes(currentMonth)) {
+  currentSem = "Second";
+} else if (summer.includes(currentMonth)) {
+  currentSem = "Summer";
+} else {
+  currentSem = "";
+}
+
 export const NASSchedule = () => {
   const { nasId } = useParams();
-  const [selectedSem, setSelectedSem] = useState("First");
+  const [selectedSem, setSelectedSem] = useState(currentSem);
   const [selectedSY, setSelectedSY] = useState("2324");
   const [isSchedModalOpen, setSchedModalOpen] = useState(false);
   const [isAddSchedModalOpen, setAddSchedModalOpen] = useState(false);
   const [apiData, setApiData] = useState(null);
-
   const sy_options = ["2021", "2122", "2223", "2324"];
-  const sem_options = ["First", "Second", "Summer"];
 
   const openSetSchedModal = () => {
     setSchedModalOpen(true);
@@ -41,11 +56,7 @@ export const NASSchedule = () => {
     setSelectedSem(value);
   };
 
-  // const [semesterFlags, setSemesterFlags] = useState({
-  //   First: false,
-  //   Second: false,
-  //   Summer: false,
-  // });
+  //
 
   // functions for SetScheduleTable starts here
 
@@ -219,6 +230,7 @@ export const NASSchedule = () => {
 
   // functions for SetScheduleTable ends here
 
+  //fetch schedule
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
@@ -238,8 +250,10 @@ export const NASSchedule = () => {
     fetchSchedule();
   }, [nasId]);
 
+  //check if there is sched
   const dataExist = apiData && apiData.length > 0;
 
+  //delete schedule
   const deleteSchedule = async (nasId) => {
     try {
       const api = axios.create({
@@ -300,18 +314,18 @@ export const NASSchedule = () => {
                   className=" w-full text-base border rounded-md"
                   disabled
                 >
-                  {sem_options.map((sem, index) => (
-                    <option key={index} value={sem}>
-                      {sem}
-                    </option>
-                  ))}
+                  <option>{currentSem}</option>
                 </select>
               </div>
             </div>
           </div>
           <div className="pt-10">
             {dataExist ? (
-              <ViewScheduleTable apiData={apiData} openModal={openAddSchedModal} />
+              <ViewScheduleTable
+                apiData={apiData}
+                openModal={openAddSchedModal}
+                currentMonth={currentMonth}
+              />
             ) : (
               <ScheduleTable
                 days={days}
