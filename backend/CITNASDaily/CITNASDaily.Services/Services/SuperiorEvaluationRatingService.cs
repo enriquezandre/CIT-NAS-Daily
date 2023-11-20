@@ -17,49 +17,23 @@ namespace CITNASDaily.Services.Services
     public class SuperiorEvaluationRatingService : ISuperiorEvaluationRatingService
     {
         public readonly ISuperiorEvaluationRatingRepository _superiorEvaluationRatingRepository;
-        public readonly ISummaryEvaluationService _summaryEvaluationService;
         private readonly IMapper _mapper;
-        public SuperiorEvaluationRatingService(ISuperiorEvaluationRatingRepository superiorEvaluationRatingRepository, IMapper mapper, ISummaryEvaluationService summaryEvaluationService)
+        public SuperiorEvaluationRatingService(ISuperiorEvaluationRatingRepository superiorEvaluationRatingRepository, IMapper mapper)
         {
             _superiorEvaluationRatingRepository = superiorEvaluationRatingRepository;
             _mapper = mapper;
-            _summaryEvaluationService = summaryEvaluationService;
         }
 
         public async Task<SuperiorEvaluationRating?> CreateSuperiorEvaluationRatingAsync(SuperiorEvaluationRatingCreateDto SuperiorEvaluationRatingDto)
         {
             var superiorEvaluationRating = _mapper.Map<SuperiorEvaluationRating>(SuperiorEvaluationRatingDto);
-
-            var createdEvaluationRating = await _superiorEvaluationRatingRepository.CreateSuperiorEvaluationRatingAsync(superiorEvaluationRating);
-
-            if (createdEvaluationRating != null)
-            {
-
-                //summary eval
-
-                SummaryEvaluationCreateDto summary = new SummaryEvaluationCreateDto
-                {
-                    nasId = createdEvaluationRating.NASId,
-                    Semester = createdEvaluationRating.Semester,
-                    SchoolYear = createdEvaluationRating.SchoolYear,
-                    SuperiorOverallRating = createdEvaluationRating.OverallRating
-                };
-                await _summaryEvaluationService.CreateSummaryEvaluationAsync(summary);
-
-                return createdEvaluationRating;
-            }
-            return null;
+            return await _superiorEvaluationRatingRepository.CreateSuperiorEvaluationRatingAsync(superiorEvaluationRating);
         }
 
         public async Task<SuperiorEvaluationRating?> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(int nasId, Semester semester, int year)
         {
             var evaluationRating = await _superiorEvaluationRatingRepository.GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(nasId, semester, year);
-
-            if (evaluationRating != null)
-            {
-                return evaluationRating;
-            }
-            return null;
+            return await _superiorEvaluationRatingRepository.GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(nasId, semester, year);
         }
     }
 }

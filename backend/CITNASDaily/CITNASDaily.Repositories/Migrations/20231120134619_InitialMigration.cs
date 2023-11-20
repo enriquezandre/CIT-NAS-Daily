@@ -71,13 +71,13 @@ namespace CITNASDaily.Repositories.Migrations
                     nasId = table.Column<int>(type: "int", nullable: false),
                     Semester = table.Column<int>(type: "int", nullable: false),
                     SchoolYear = table.Column<int>(type: "int", nullable: false),
-                    SuperiorOverallRating = table.Column<float>(type: "real", nullable: false),
+                    SuperiorOverallRating = table.Column<float>(type: "real", nullable: true),
                     AcademicPerformance = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    TimekeepingStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EnrollmentAllowed = table.Column<bool>(type: "bit", nullable: false),
-                    UnitsAllowed = table.Column<int>(type: "int", nullable: false),
-                    AllCoursesPassed = table.Column<bool>(type: "bit", nullable: false),
-                    NoOfCoursesFailed = table.Column<int>(type: "int", nullable: false)
+                    TimekeepingStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EnrollmentAllowed = table.Column<bool>(type: "bit", nullable: true),
+                    UnitsAllowed = table.Column<int>(type: "int", nullable: true),
+                    AllCoursesPassed = table.Column<bool>(type: "bit", nullable: true),
+                    NoOfCoursesFailed = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -98,7 +98,8 @@ namespace CITNASDaily.Repositories.Migrations
                     FailedToPunch = table.Column<int>(type: "int", nullable: true),
                     LateOver10Mins = table.Column<int>(type: "int", nullable: true),
                     LateOver45Mins = table.Column<int>(type: "int", nullable: true),
-                    MakeUpDutyHours = table.Column<double>(type: "float", nullable: true)
+                    MakeUpDutyHours = table.Column<double>(type: "float", nullable: true),
+                    TimekeepingStatus = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

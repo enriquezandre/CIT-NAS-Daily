@@ -19,5 +19,6 @@ namespace CITNASDaily.Entities.Models
         public int? LateOver10Mins { get; set; }
         public int? LateOver45Mins { get; set; }
         public double? MakeUpDutyHours { get; set; }
+        public string? TimekeepingStatus { get; set; }
     }
 }

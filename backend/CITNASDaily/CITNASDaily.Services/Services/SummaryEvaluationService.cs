@@ -61,5 +61,10 @@ namespace CITNASDaily.Services.Services
         {
             return await _summaryEvaluationRepository.GetNASGradePicture(nasId, year, semester);
         }
+
+        public async Task<SummaryEvaluation?> UpdateSuperiorRatingAsync(int nasId, int year, Semester semester, float rating)
+        {
+            return await _summaryEvaluationRepository.UpdateSuperiorRatingAsync(nasId, year, semester, rating);
+        }
     }
 }

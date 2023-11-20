@@ -5,6 +5,7 @@ using CITNASDaily.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.API.Controllers
 {
@@ -39,7 +40,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (createdTimekeepingSummary == null)
                 {
-                    return BadRequest("Creatiion Failed.");
+                    return BadRequest("Creation Failed.");
                 }
 
                 return CreatedAtRoute("GetAllTimekeepingSummaryByNASId", new { nasId = createdTimekeepingSummary.NASId }, createdTimekeepingSummary);
@@ -85,6 +86,31 @@ namespace CITNASDaily.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting Superior.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("{year}/{semester}/{nasId}", Name = "GetTimekeepingSummaryByNASIdSemesterYear")]
+        [Authorize]
+        public async Task<IActionResult> GetTimekeepingSummaryByNASIdSemesterYear(int nasId, Semester semester, int year)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
+                var summaryEval = await _timekeepingSummaryService.GetTimekeepingSummaryByNASIdSemesterYearAsync(nasId, semester, year);
+
+                if (summaryEval == null)
+                {
+                    return NotFound("No timekeeping summary yet.");
+                }
+
+                return Ok(summaryEval);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting timekeeping summary.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
