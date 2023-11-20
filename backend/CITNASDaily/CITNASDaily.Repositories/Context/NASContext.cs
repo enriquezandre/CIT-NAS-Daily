@@ -91,7 +91,7 @@ namespace CITNASDaily.Repositories.Context
             //    SuperiorId = 1,
             //});
 
-            modelBuilder.Entity<NAS>()
+            /*modelBuilder.Entity<NAS>()
                 .HasMany(n => n.SchoolYears)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("NAS_SchoolYears"));
@@ -99,7 +99,7 @@ namespace CITNASDaily.Repositories.Context
             modelBuilder.Entity<NAS>()
                 .HasMany(n => n.Semesters)
                 .WithMany()
-                .UsingEntity(j => j.ToTable("NAS_StudentSemesters"));
+                .UsingEntity(j => j.ToTable("NAS_StudentSemesters"));*/
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using CITNASDaily.Entities.Dtos.NASDtos;
+using CITNASDaily.Entities.Dtos.SchoolYearDto;
+using CITNASDaily.Entities.Dtos.StudentSemesterDto;
 using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
@@ -24,8 +26,6 @@ namespace CITNASDaily.Services.Services
         }
         public async Task<NASDto?> CreateNASAsync(string username, NASCreateDto nasCreate)
         {
-            var nas = _mapper.Map<NAS>(nasCreate);
-
             var userId = await GetNASUserIdByUsernameAsync(username);
 
             if (userId == null)
@@ -33,10 +33,21 @@ namespace CITNASDaily.Services.Services
                 return null;
             }
 
+            var nas = _mapper.Map<NAS>(nasCreate);
             nas.UserId = userId;
             var createdSuperior = await _nasRepository.CreateNASAsync(nas);
 
-            return _mapper.Map<NASDto>(createdSuperior);
+            var createdSY = await _nasRepository.AddSchoolYear(createdSuperior.Id, nasCreate.SchoolYear);
+            var sy = _mapper.Map<List<NASSchoolYearCreateDto>>(createdSY);
+
+            var createdSem = await _nasRepository.AddSemester(createdSuperior.Id, nasCreate.Semester);
+            var sem = _mapper.Map<List<NASSemesterCreateDto>>(createdSem);
+
+            var result = _mapper.Map<NASDto>(createdSuperior);
+            result.SchoolYear = sy;
+            result.Semester = sem;
+
+            return result;
         }
 
         public async Task<NASDto?> GetNASAsync(int nasId)
@@ -94,13 +105,22 @@ namespace CITNASDaily.Services.Services
             return await _nasRepository.UploadPhotoAsync(nasId, file);
         }
 
-        public async Task<NAS?> UpdateNASAsync(int nasId, NASUpdateDto nasUpdate)
+        public async Task<NASDto?> UpdateNASAsync(int nasId, NASUpdateDto nasUpdate)
         {
             var nas = _mapper.Map<NAS>(nasUpdate);
 
             var updatedNAS = await _nasRepository.UpdateNASAsync(nasId, nas);
 
-            return _mapper.Map<NAS>(updatedNAS);
+            var createdSY = await _nasRepository.AddSchoolYear(updatedNAS.Id, nasUpdate.SchoolYears);
+            var sy = _mapper.Map<List<NASSchoolYearCreateDto>>(createdSY);
+
+            var createdSem = await _nasRepository.AddSemester(updatedNAS.Id, nasUpdate.Semesters);
+            var sem = _mapper.Map<List<NASSemesterCreateDto>>(createdSem);
+
+            var result = _mapper.Map<NASDto>(updatedNAS);
+            result.SchoolYear = sy;
+            result.Semester = sem;
+            return result;
         }
     }
 }

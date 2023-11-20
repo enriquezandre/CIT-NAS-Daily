@@ -19,9 +19,9 @@ namespace CITNASDaily.Entities.Models
         //public Office? Office { get; set; }
         public string? StudentIDNo { get; set; }
         //public int SchoolYearId { get; set; }
-        public List<NASSchoolYear>? SchoolYears { get; set; }
+        //public List<NASSchoolYear>? SchoolYears { get; set; }
         //public int SemesterId { get; set; }
-        public List<NASSemester>? Semesters { get; set; }
+        //public List<NASSemester>? Semesters { get; set; }
 
         public int? EnNo { get; set; }
         public List<BiometricLog>? BiometricLogs { get; set; }
