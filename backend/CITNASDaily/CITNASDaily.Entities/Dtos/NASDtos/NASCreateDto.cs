@@ -6,6 +6,9 @@ namespace CITNASDaily.Entities.Dtos.NASDtos
     public class NASCreateDto
     {
         [Required]
+        [RegularExpression(@"^\d{1,2}-\d{1,4}-\d{1,3}$", ErrorMessage = "Student ID input must follow 00-0000-000")]
+        public string? StudentIDNo { get; set; }
+        [Required]
         public string? Username { get; set; }
         [Required]
         public string? FirstName { get; set; }

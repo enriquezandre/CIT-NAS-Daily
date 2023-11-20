@@ -93,5 +93,14 @@ namespace CITNASDaily.Services.Services
         {
             return await _nasRepository.UploadPhotoAsync(nasId, file);
         }
+
+        public async Task<NAS?> UpdateNASAsync(int nasId, NASUpdateDto nasUpdate)
+        {
+            var nas = _mapper.Map<NAS>(nasUpdate);
+
+            var updatedNAS = await _nasRepository.UpdateNASAsync(nasId, nas);
+
+            return _mapper.Map<NAS>(updatedNAS);
+        }
     }
 }

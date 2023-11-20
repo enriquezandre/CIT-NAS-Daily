@@ -28,6 +28,7 @@ namespace CITNASDaily.Utils.Mappings
                 .ForMember(n => n.DateStarted, op => op.MapFrom(dto => dto.DateStarted));
 
             CreateMap<NAS, NASPhotoUpdateDto>().ReverseMap();
+            CreateMap<NAS, NASUpdateDto>().ReverseMap();
         }
     }
 }
