@@ -39,54 +39,78 @@ export const OASStatus = () => {
     }
   }
 
+  const api = axios.create({
+    baseURL: "https://localhost:7001/api",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
   useEffect(() => {
     const fetchNas = async () => {
       try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await api.get(`/NAS/${nasId}/noimg`);
+        const data = response.data;
+        setFirstname(data.firstName);
+        setMiddlename(data.middleName);
+        setLastname(data.lastName);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-        const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
-        const nasData = nasresponse.data;
-        console.log(nasData);
+    fetchNas();
+  }, [nasId, api]);
 
-        const officeResponse = await api.get(`Offices/${nasId}/NAS`);
-        const officeData = officeResponse.data;
+  useEffect(() => {
+    const fetchOffice = async () => {
+      try {
+        const response = await api.get(`Offices/${nasId}/NAS`);
+        const data = response.data;
+        setOffice(data.name);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-        setFirstname(nasData.firstName);
-        setMiddlename(nasData.middleName);
-        setLastname(nasData.lastName);
-        setOffice(officeData.name);
+    fetchOffice();
+  }, [nasId, api]);
 
-        const summaryEvaluationResponse = await api.get(
-          `SummaryEvaluation/${selectedSY}/${getSemesterValue(
-            selectedSem
-          )}/${nasId}`
-        );
-        const summaryEvaluationData = summaryEvaluationResponse.data;
-        setSummaryEvaluation(summaryEvaluationData);
-
-        const summaryEvaluationGrades = await api.get(
+  useEffect(() => {
+    const fetchSummaryEvaluationGrades = async () => {
+      try {
+        const response = await api.get(
           `SummaryEvaluation/grades/${nasId}/${selectedSY}/${getSemesterValue(
             selectedSem
           )}`
         );
-        setGrades(summaryEvaluationGrades.data);
+        setGrades(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSummaryEvaluationGrades();
+  }, [nasId, selectedSem, selectedSY, api]);
+
+  useEffect(() => {
+    const fetchSummaryEvaluation = async () => {
+      try {
+        const response = await api.get(
+          `SummaryEvaluation/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}/${nasId}`
+        );
+        const data = response.data;
+        setSummaryEvaluation(data);
       } catch (error) {
         console.error(error);
         setSummaryEvaluation({});
       }
     };
 
-    fetchNas();
-
-    console.log("Selected Sem:", selectedSem);
-    console.log("Selected SY:", selectedSY);
-  }, [selectedSY, selectedSem, grade, nasId, firstName, middleName, lastName]);
+    fetchSummaryEvaluation();
+  }, [nasId, selectedSem, selectedSY, api]);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
