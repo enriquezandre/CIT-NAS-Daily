@@ -18,5 +18,6 @@ namespace CITNASDaily.Services.Contracts
         Task<SummaryEvaluation?> UpdateSummaryEvaluationAsync(SummaryEvaluationUpdateDto summaryEvaluation);
         Task<SummaryEvaluation?> UploadGrades(int nasId, int year, Semester semester, IFormFile file);
         Task<byte[]?> GetNASGradePicture(int nasId, int year, Semester semester);
+        Task<SummaryEvaluation?> UpdateSuperiorRatingAsync(int nasId, int year, Semester semester, float rating);
     }
 }
