@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { MasterlistTable } from "../../components/OAS/MasterlistTable";
+import { ManageUsersTable } from "../../components/OAS/ManageUsersTable";
 
-export const OASMasterlist = () => {
+export const OASManageUsers = () => {
   const [selectedSY, setSelectedSY] = useState("2324");
   const [selectedSem, setSelectedSem] = useState("First");
-  const [searchInput, setSearchInput] = useState("");
+  const [selectedUserType, setSelectedUserType] = useState("NAS");
 
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
+  const user_type = ["NAS", "Superior"];
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -19,20 +20,44 @@ export const OASMasterlist = () => {
     setSelectedSem(value);
   };
 
+  const handleSelectedUserType = (event) => {
+    const value = event.target.value;
+    setSelectedUserType(value);
+  };
+
   return (
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex justify-end items-center text-lg font-medium rounded-t-lg bg-grey px-8 py-4">
-            <li className="w-1/4">
-              <div className="flex justify-end">
-                <div className="relative w-full">
+          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
+            <div className="flex flex-row items-center">
+              <div className="flex items-center">
+                <p className="ml-5 mr-4 font-bold">User Type:</p>
+                <div>
+                  <select
+                    id="sy"
+                    name="sy"
+                    value={selectedUserType}
+                    onChange={handleSelectedUserType}
+                    className=" w-full text-base border rounded-md"
+                  >
+                    {Array.isArray(user_type) &&
+                      user_type.map((usertype, index) => (
+                        <option key={index} value={usertype}>
+                          {usertype}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <li className="flex justify-end">
+              <div className="flex">
+                <div className="relative w-auto">
                   <input
                     type="search"
                     className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
                     placeholder="Search NAS..."
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
                     required
                   />
                   <button
@@ -95,7 +120,7 @@ export const OASMasterlist = () => {
                 </select>
               </div>
             </div>
-            <MasterlistTable searchInput={searchInput} />
+            <ManageUsersTable />
           </div>
         </div>
       </div>
