@@ -244,18 +244,24 @@ export const OASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">ACADEMIC PERFORMANCE:</p>
-                <button
-                  type="button"
-                  className="text-primary bg-secondary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5"
-                  onClick={openEvaluateGrades}
-                >
-                  EVALUATE GRADES
-                </button>
-                <EvaluateGrades
-                  show={isViewingEvaluateGrades}
-                  close={closeEvaluateGrades}
-                  grade={grade}
-                />
+                {grade === null ? (
+                  <div className="text-xl font-bold">NOT YET UPLOADED</div>
+                ) : (
+                  <div>
+                    <button
+                      type="button"
+                      className="text-primary bg-secondary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5"
+                      onClick={openEvaluateGrades}
+                    >
+                      EVALUATE GRADES
+                    </button>
+                    <EvaluateGrades
+                      show={isViewingEvaluateGrades}
+                      close={closeEvaluateGrades}
+                      grade={grade}
+                    />
+                  </div>
+                )}
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">TIMEKEEPING STATUS:</p>
