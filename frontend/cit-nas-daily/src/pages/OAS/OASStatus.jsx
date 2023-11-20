@@ -75,7 +75,6 @@ export const OASStatus = () => {
             selectedSem
           )}`
         );
-        console.log("Response: " + summaryEvaluationGrades.status)
         setGrades(summaryEvaluationGrades.data);
       } catch (error) {
         console.error(error);
@@ -87,10 +86,6 @@ export const OASStatus = () => {
 
     console.log("Selected Sem:", selectedSem);
     console.log("Selected SY:", selectedSY);
-    console.log("Academic Perf: " + grade);
-    console.log("Data: " + nasId + " " + selectedSY + " " + getSemesterValue(
-            selectedSem
-          ))
   }, [selectedSY, selectedSem, grade, nasId, firstName, middleName, lastName]);
 
   const handleSelectSY = (event) => {

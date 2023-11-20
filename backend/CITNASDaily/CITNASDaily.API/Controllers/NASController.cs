@@ -235,10 +235,6 @@ namespace CITNASDaily.API.Controllers
                 {
                     return Forbid();
                 }
-                Console.WriteLine("NAS ID: " + nasId);
-                Console.WriteLine("year: " + year);
-                Console.WriteLine("semester: " + semester);
-
 
                 var nasGrades = await _summaryEvaluationService.UploadGrades(nasId, year, (Semester)semester, file);
 

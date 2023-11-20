@@ -15,6 +15,7 @@ export const SpecificNASStatus = () => {
   const sem_options = ["First", "Second", "Summer"];
   const nasId = useParams().nasId;
   const [summaryEvaluation, setSummaryEvaluation] = useState({});
+  const [grade, setGrades] = useState(null);
 
   const openEvaluateGrades = () => {
     setIsViewingEvaluateGrades(true);
@@ -66,8 +67,14 @@ export const SpecificNASStatus = () => {
           )}/${nasId}`
         );
         const summaryEvaluationData = summaryEvaluationResponse.data;
-
         setSummaryEvaluation(summaryEvaluationData);
+
+        const summaryEvaluationGrades = await api.get(
+          `SummaryEvaluation/grades/${nasId}/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}`
+        );
+        setGrades(summaryEvaluationGrades.data);
       } catch (error) {
         console.error(error);
         setSummaryEvaluation({});
@@ -172,6 +179,7 @@ export const SpecificNASStatus = () => {
                 <EvaluateGrades
                   show={isViewingEvaluateGrades}
                   close={closeEvaluateGrades}
+                  grade={grade}
                 />
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
