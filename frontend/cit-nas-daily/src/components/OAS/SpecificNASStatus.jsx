@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { EvaluateGrades } from "../../components/OAS/EvaluateGrades";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -17,6 +17,17 @@ export const SpecificNASStatus = () => {
   const [summaryEvaluation, setSummaryEvaluation] = useState({});
   const [grade, setGrades] = useState(null);
 
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
+
   const openEvaluateGrades = () => {
     setIsViewingEvaluateGrades(true);
   };
@@ -25,67 +36,79 @@ export const SpecificNASStatus = () => {
     setIsViewingEvaluateGrades(false);
   };
 
-  function getSemesterValue(sem) {
-    switch (sem) {
-      case "First":
-        return 0;
-      case "Second":
-        return 1;
-      case "Summer":
-        return 3;
-      default:
-        return "Invalid semester";
-    }
-  }
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 3;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   useEffect(() => {
-    const fetchNas = async () => {
+    const fetchNasAndOffice = async () => {
       try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
-        console.log(nasresponse);
-        const nasData = nasresponse.data;
-
-        const officeResponse = await api.get(`Offices/${nasId}/NAS`);
-        const officeData = officeResponse.data;
-
+        const [nasResponse, officeResponse] = await Promise.all([
+          api.get(`/NAS/${nasId}/noimg`),
+          api.get(`Offices/${nasId}/NAS`),
+        ]);
+        const nasData = nasResponse.data;
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
+        const officeData = officeResponse.data;
         setOffice(officeData.name);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-        const summaryEvaluationResponse = await api.get(
+    fetchNasAndOffice();
+  }, [nasId, api]);
+
+  useEffect(() => {
+    const fetchSummaryEvaluation = async () => {
+      if (!nasId || !selectedSem || !selectedSY) return;
+      try {
+        const response = await api.get(
           `SummaryEvaluation/${selectedSY}/${getSemesterValue(
             selectedSem
           )}/${nasId}`
         );
-        const summaryEvaluationData = summaryEvaluationResponse.data;
-        setSummaryEvaluation(summaryEvaluationData);
-
-        const summaryEvaluationGrades = await api.get(
-          `SummaryEvaluation/grades/${nasId}/${selectedSY}/${getSemesterValue(
-            selectedSem
-          )}`
-        );
-        setGrades(summaryEvaluationGrades.data);
+        setSummaryEvaluation(response.data);
       } catch (error) {
         console.error(error);
         setSummaryEvaluation({});
       }
     };
 
-    fetchNas();
+    fetchSummaryEvaluation();
+  }, [nasId, selectedSem, selectedSY, api, getSemesterValue]);
 
-    console.log("Selected Sem:", selectedSem);
-    console.log("Selected SY:", selectedSY);
-  }, [selectedSY, selectedSem, nasId]);
+  useEffect(() => {
+    const fetchSummaryEvaluationGrades = async () => {
+      if (!nasId || !selectedSem || !selectedSY) return;
+      try {
+        const response = await api.get(
+          `SummaryEvaluation/grades/${nasId}/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}`
+        );
+        setGrades(response.data);
+      } catch (error) {
+        console.error(error);
+        setGrades(null);
+      }
+    };
+
+    fetchSummaryEvaluationGrades();
+  }, [nasId, selectedSem, selectedSY, api, getSemesterValue]);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -169,18 +192,24 @@ export const SpecificNASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">ACADEMIC PERFORMANCE:</p>
-                <button
-                  type="button"
-                  className="text-primary bg-secondary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5"
-                  onClick={openEvaluateGrades}
-                >
-                  EVALUATE GRADES
-                </button>
-                <EvaluateGrades
-                  show={isViewingEvaluateGrades}
-                  close={closeEvaluateGrades}
-                  grade={grade}
-                />
+                {grade === null ? (
+                  <div className="text-xl font-bold">NOT YET UPLOADED</div>
+                ) : (
+                  <div>
+                    <button
+                      type="button"
+                      className="text-primary bg-secondary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5"
+                      onClick={openEvaluateGrades}
+                    >
+                      EVALUATE GRADES
+                    </button>
+                    <EvaluateGrades
+                      show={isViewingEvaluateGrades}
+                      close={closeEvaluateGrades}
+                      grade={grade}
+                    />
+                  </div>
+                )}
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">TIMEKEEPING STATUS:</p>
@@ -190,9 +219,15 @@ export const SpecificNASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">ALLOWED FOR ENROLLMENT:</p>
-                <p className="text-bold text-xl font-bold text-green">
-                  {summaryEvaluation.enrollmentAllowed}
-                </p>
+                <div
+                  className={`font-bold text-xl ${
+                    summaryEvaluation.enrollmentAllowed
+                      ? "text-green"
+                      : "text-red"
+                  }`}
+                >
+                  {summaryEvaluation.enrollmentAllowed ? "YES" : "NO"}
+                </div>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">NUMBER OF UNITS ALLOWED:</p>
