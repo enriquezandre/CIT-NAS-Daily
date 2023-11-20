@@ -16,6 +16,7 @@ export const OASStatus = () => {
   const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
   const [summaryEvaluation, setSummaryEvaluation] = useState({});
+  const [grade, setGrades] = useState(null);
 
   const openEvaluateGrades = () => {
     setIsViewingEvaluateGrades(true);
@@ -32,7 +33,7 @@ export const OASStatus = () => {
       case "Second":
         return 1;
       case "Summer":
-        return 3;
+        return 2;
       default:
         return "Invalid semester";
     }
@@ -68,6 +69,13 @@ export const OASStatus = () => {
         );
         const summaryEvaluationData = summaryEvaluationResponse.data;
         setSummaryEvaluation(summaryEvaluationData);
+
+        const summaryEvaluationGrades = await api.get(
+          `SummaryEvaluation/grades/${nasId}/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}`
+        );
+        setGrades(summaryEvaluationGrades.data);
       } catch (error) {
         console.error(error);
         setSummaryEvaluation({});
@@ -78,7 +86,7 @@ export const OASStatus = () => {
 
     console.log("Selected Sem:", selectedSem);
     console.log("Selected SY:", selectedSY);
-  }, [selectedSY, selectedSem, nasId, firstName, middleName, lastName]);
+  }, [selectedSY, selectedSem, grade, nasId, firstName, middleName, lastName]);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -223,6 +231,7 @@ export const OASStatus = () => {
                 <EvaluateGrades
                   show={isViewingEvaluateGrades}
                   close={closeEvaluateGrades}
+                  grade={grade}
                 />
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
