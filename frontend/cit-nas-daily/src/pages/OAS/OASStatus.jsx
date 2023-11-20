@@ -271,9 +271,15 @@ export const OASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">ALLOWED FOR ENROLLMENT:</p>
-                <p className="text-bold text-xl font-bold text-green">
-                  {summaryEvaluation.enrollmentAllowed}
-                </p>
+                <div
+                  className={`font-bold text-xl ${
+                    summaryEvaluation.enrollmentAllowed
+                      ? "text-green"
+                      : "text-red"
+                  }`}
+                >
+                  {summaryEvaluation.enrollmentAllowed ? "YES" : "NO"}
+                </div>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">NUMBER OF UNITS ALLOWED:</p>
