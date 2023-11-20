@@ -103,6 +103,7 @@ export const SpecificNASStatus = () => {
         setGrades(response.data);
       } catch (error) {
         console.error(error);
+        setGrades(null);
       }
     };
 
