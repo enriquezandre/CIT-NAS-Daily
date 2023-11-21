@@ -27,17 +27,40 @@ namespace CITNASDaily.Repositories.Repositories
             {
                 return null; //nas dont exist 
             }
+
+            //timekeeping status
+            if (timekeepingSummary.Excused == 0 && timekeepingSummary.Unexcused == 0 && timekeepingSummary.FailedToPunch == 0
+                && timekeepingSummary.LateOver10Mins == 0 && timekeepingSummary.LateOver45Mins == 0 && timekeepingSummary.MakeUpDutyHours == 0)
+            {
+                timekeepingSummary.TimekeepingStatus = "EXCELLENT";
+            }
+            else if ((timekeepingSummary.Excused <= 3 && timekeepingSummary.Excused >= 0) ||
+                (timekeepingSummary.Unexcused <= 3 && timekeepingSummary.Unexcused >= 0) ||
+                (timekeepingSummary.FailedToPunch <= 3 && timekeepingSummary.FailedToPunch >= 0) ||
+                (timekeepingSummary.LateOver10Mins <= 3 && timekeepingSummary.LateOver10Mins >= 0) ||
+                (timekeepingSummary.LateOver45Mins <= 3 && timekeepingSummary.LateOver45Mins >= 0) ||
+                (timekeepingSummary.MakeUpDutyHours <= 5 && timekeepingSummary.MakeUpDutyHours >= 0))
+            {
+                timekeepingSummary.TimekeepingStatus = "GOOD";
+            }
+            else
+            {
+                timekeepingSummary.TimekeepingStatus = "POOR";
+            }
+
             if (Enum.IsDefined(typeof(Semester), timekeepingSummary.Semester)) {
                 //checks time keeping summary with the same semester already exists
                 var existingSummary = await _context.TimekeepingSummaries.FirstOrDefaultAsync(s => s.NASId == timekeepingSummary.NASId && s.Semester == timekeepingSummary.Semester && s.SchoolYear == timekeepingSummary.SchoolYear);
                 if (existingSummary == null)
                 {
-                    //this part is for setting the year in TK Summary
-                    if (existingNAS == null)
+                    SummaryEvaluation sumEval = new SummaryEvaluation
                     {
-                        return null;
-                    }
-                    //timekeepingSummary.Year = existingNAS.YearLevel; //SET YEAR LEVEL
+                        nasId = timekeepingSummary.NASId,
+                        Semester = timekeepingSummary.Semester,
+                        SchoolYear = timekeepingSummary.SchoolYear,
+                        TimekeepingStatus = timekeepingSummary.TimekeepingStatus
+                    };
+                    await _context.SummaryEvaluations.AddAsync(sumEval);
                     await _context.TimekeepingSummaries.AddAsync(timekeepingSummary);
                     await _context.SaveChangesAsync();
                     return timekeepingSummary;
@@ -55,6 +78,11 @@ namespace CITNASDaily.Repositories.Repositories
         public async Task<IQueryable<TimekeepingSummary>?> GetAllTimekeepingSummaryByNASIdAsync(int nasId)
         {
             return await Task.FromResult(_context.TimekeepingSummaries.Where(e => e.NASId == nasId));
+        }
+
+        public async Task<TimekeepingSummary?> GetTimekeepingSummaryByNASIdSemesterYearAsync(int nasId, Semester semester, int year)
+        {
+            return await _context.TimekeepingSummaries.FirstOrDefaultAsync(s => s.NASId == nasId && s.Semester == semester && s.SchoolYear == year);
         }
     }
 }

@@ -2,7 +2,9 @@
 using CITNASDaily.Entities.Dtos.TimekeepingSummaryDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
+using CITNASDaily.Repositories.Repositories;
 using CITNASDaily.Services.Contracts;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Services.Services
 {
@@ -42,6 +44,11 @@ namespace CITNASDaily.Services.Services
                 return timekeepingSummary.ToList();
             }
             return null;
+        }
+
+        public async Task<TimekeepingSummary?> GetTimekeepingSummaryByNASIdSemesterYearAsync(int nasId, Semester semester, int year)
+        {
+            return await _timekeepingSummaryRepository.GetTimekeepingSummaryByNASIdSemesterYearAsync(nasId, semester, year);
         }
     }
 }

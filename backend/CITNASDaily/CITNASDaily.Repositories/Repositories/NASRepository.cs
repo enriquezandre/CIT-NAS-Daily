@@ -1,4 +1,6 @@
 ﻿using CITNASDaily.Entities.Dtos.NASDtos;
+using CITNASDaily.Entities.Dtos.SchoolYearDto;
+using CITNASDaily.Entities.Dtos.StudentSemesterDto;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Context;
 using CITNASDaily.Repositories.Contracts;
@@ -71,6 +73,78 @@ namespace CITNASDaily.Repositories.Repositories
             }
 
             return null;
+        }
+
+        public async Task<NAS?> UpdateNASAsync(int nasId, NAS nas)
+        {
+            var existingNAS = await _context.NAS.FirstOrDefaultAsync(n => n.Id == nasId);
+
+            if (existingNAS != null)
+            {
+                existingNAS.OfficeId = nas.OfficeId;
+                existingNAS.YearLevel = nas.YearLevel;
+                existingNAS.Course = nas.Course;
+                existingNAS.UnitsAllowed = nas.UnitsAllowed;
+
+                var syDelete = _context.NASSchoolYears.Where(sy => sy.NASId == nasId);
+                if (syDelete != null)
+                {
+                    _context.NASSchoolYears.RemoveRange(syDelete);
+                }
+
+                var semDelete = _context.NASSemesters.Where(sem => sem.NASId == nasId);
+                if (semDelete != null)
+                {
+                    _context.NASSemesters.RemoveRange(semDelete);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return existingNAS;
+            }
+            return null;
+        }
+
+        public async Task<List<NASSchoolYear>?> AddSchoolYear(int nasId, List<NASSchoolYearCreateDto> data)
+        {
+            var addedSchoolYears = new List<NASSchoolYear>();
+
+            foreach (var sy in data)
+            {
+                var schoolyear = new NASSchoolYear
+                {
+                    NASId = nasId,
+                    Year = sy.Year
+                };
+
+                await _context.NASSchoolYears.AddAsync(schoolyear);
+                addedSchoolYears.Add(schoolyear);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return addedSchoolYears;
+        }
+
+        public async Task<List<NASSemester>?> AddSemester(int nasId, List<NASSemesterCreateDto> data)
+        {
+            var addedSemesters = new List<NASSemester>();
+
+            foreach (var sy in data)
+            {
+                var semester = new NASSemester
+                {
+                    NASId = nasId,
+                    Semester = sy.Semester
+                };
+
+                await _context.NASSemesters.AddAsync(semester);
+                addedSemesters.Add(semester);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return addedSemesters;
         }
     }
 }
