@@ -147,6 +147,7 @@ namespace CITNASDaily.Repositories.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OfficeId = table.Column<int>(type: "int", nullable: false),
+                    StudentIdNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EnNo = table.Column<int>(type: "int", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     MiddleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -216,44 +217,6 @@ namespace CITNASDaily.Repositories.Migrations
                         name: "FK_Superior_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "NASSchoolYear",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NASId = table.Column<int>(type: "int", nullable: false),
-                    Year = table.Column<int>(type: "int", nullable: false),
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_NASSchoolYear", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_NASSchoolYear_NAS_NASId",
-                        column: x => x.NASId,
-                        principalTable: "NAS",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "NASSemester",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NASId = table.Column<int>(type: "int", nullable: false),
-                    Semester = table.Column<int>(type: "int", nullable: false),
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_NASSemester", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_NASSemester_NAS_NASId",
-                        column: x => x.NASId,
-                        principalTable: "NAS",
                         principalColumn: "Id");
                 });
 
@@ -419,6 +382,12 @@ namespace CITNASDaily.Repositories.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "NASSemester");
+
+            migrationBuilder.DropTable(
+                name: "NASSchoolYear");
+
             migrationBuilder.DropTable(
                 name: "ActivitiesSummary");
 
