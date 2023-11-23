@@ -6,7 +6,7 @@ import { OASEvaluation } from "../../pages/OAS/OASEvaluation";
 import { OASStatus } from "../../pages/OAS/OASStatus";
 import { OASMasterlist } from "../../pages/OAS/OASMasterlist";
 import { OASValidation } from "../../pages/OAS/OASValidation";
-import { OASManageUsers } from "../../pages/OAS/OASManageUsers";
+import { OASManageData } from "../../pages/OAS/OASManageData";
 export const OASTabs = () => {
   const [activeTab, setActiveTab] = useState(1);
 
@@ -86,7 +86,7 @@ export const OASTabs = () => {
             } px-4 py-2 rounded-tr-lg w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(7)}
           >
-            Manage Users
+            Manage Data
           </button>
         </div>
         <div className="p-4 bg-white rounded-b-lg">
@@ -123,7 +123,7 @@ export const OASTabs = () => {
           )}
           {activeTab === 7 && (
             <div>
-              <OASManageUsers />
+              <OASManageData />
             </div>
           )}
         </div>
