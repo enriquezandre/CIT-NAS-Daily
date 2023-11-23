@@ -98,7 +98,7 @@ export const NASPersonalInformation = () => {
           <div className="flex">
             <div className="flex-1 pr-5">
               <Field
-                label="User ID:"
+                label="Student ID:"
                 id="studentId"
                 type="text"
                 value={studentId}
