@@ -1,24 +1,23 @@
 import { useState, useEffect } from "react";
-import { ActivitiesFormModal } from "./ActivitiesFormModal";
+// import { ActivitiesFormModal } from "./ActivitiesFormModal";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
 export const TimeLogCard = () => {
   const { nasId } = useParams();
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [formIsOpen, setFormIsOpen] = useState(false);
+  // const [formIsOpen, setFormIsOpen] = useState(false);
   const [nas, setNas] = useState({});
-  const [inOut, setInOut] = useState("");
-  const [time, setTime] = useState("");
-  const [latestEntry, setLatestEntry] = useState("");
+  // const [inOut, setInOut] = useState("");
+  // const [latestEntry, setLatestEntry] = useState("");
 
-  const openForm = () => {
-    setFormIsOpen(true);
-  };
+  // const openForm = () => {
+  //   setFormIsOpen(true);
+  // };
 
-  const closeForm = () => {
-    setFormIsOpen(false);
-  };
+  // const closeForm = () => {
+  //   setFormIsOpen(false);
+  // };
 
   useEffect(() => {
     // Update the current date and time every second
@@ -50,10 +49,11 @@ export const TimeLogCard = () => {
     return date.toLocaleTimeString();
   };
 
-  const formatTimeLog = (time) => {
-    const [hour, minute] = time.split(":");
-    return `${hour % 12 || 12}:${minute} ${hour < 12 ? "AM" : "PM"}`;
-  };
+  // BIOMETRICS IMPLEMENTATION WILL ALL BE COMMENTED
+  // const formatTimeLog = (time) => {
+  //   const [hour, minute] = time.split(":");
+  //   return `${hour % 12 || 12}:${minute} ${hour < 12 ? "AM" : "PM"}`;
+  // };
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -69,39 +69,40 @@ export const TimeLogCard = () => {
         const response = await api.get(`/NAS/${nasId}/noimg`);
         setNas(response.data);
 
-        const logresponse = await api.get(`BiometricLogs?nasId=${nasId}`);
-        const latestLog = logresponse.data.sort(
-          (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
-        )[0];
-        if (
-          new Date(latestLog.dateTime).toLocaleDateString() !==
-          new Date().toLocaleDateString()
-        ) {
-          setInOut(""); // Set inOut to an empty string every new day and no record of time in yet
-        } else {
-          setInOut(latestLog.inOut); // ["DutyOn", "DutyOff", "OvertimeOn", "OvertimeOff"]
-        }
-        setTime(latestLog.dateTime);
+        // BIOMETRICS IMPLEMENTATION WILL ALL BE COMMENTED
+        // const logresponse = await api.get(`BiometricLogs?nasId=${nasId}`);
+        // const latestLog = logresponse.data.sort(
+        //   (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
+        // )[0];
+        // if (
+        //   new Date(latestLog.dateTime).toLocaleDateString() !==
+        //   new Date().toLocaleDateString()
+        // ) {
+        //   setInOut(""); // Set inOut to an empty string every new day and no record of time in yet
+        // } else {
+        //   setInOut(latestLog.inOut); // ["DutyOn", "DutyOff", "OvertimeOn", "OvertimeOff"]
+        // }
+        // setTime(latestLog.dateTime);
 
-        const activitiesresponse = await api.get(`ActivitiesSummary/${nasId}`);
-        const activities = activitiesresponse.data;
-        if (activities.length > 0) {
-          // Sort the activities by 'dateOfEntry' in descending order
-          activities.sort(
-            (a, b) => new Date(b.dateOfEntry) - new Date(a.dateOfEntry)
-          );
+        // const activitiesresponse = await api.get(`ActivitiesSummary/${nasId}`);
+        // const activities = activitiesresponse.data;
+        // if (activities.length > 0) {
+        //   // Sort the activities by 'dateOfEntry' in descending order
+        //   activities.sort(
+        //     (a, b) => new Date(b.dateOfEntry) - new Date(a.dateOfEntry)
+        //   );
 
-          setLatestEntry(activities[0].dateOfEntry);
-          console.log(inOut);
-        } else {
-          console.log("No activities found");
-        }
+        //   setLatestEntry(activities[0].dateOfEntry);
+        //   console.log(inOut);
+        // } else {
+        //   console.log("No activities found");
+        // }
       } catch (error) {
         console.error(error);
       }
     };
     fetchNas();
-  }, [nasId, latestEntry, inOut]);
+  }, [nasId]);
 
   return (
     <div className="flex justify-center items-center mx-1 mb-6">
@@ -123,6 +124,7 @@ export const TimeLogCard = () => {
             </div>
           </div>
           <div>
+            {/* BIOMETRICS IMPLEMENTATION WILL ALL BE COMMENTED
             <div className="mt-10 mr-28 text-2xl font-bold text-gray">
               {inOut === "DutyOn"
                 ? "TIMED IN: " + formatTimeLog(time.split("T")[1])
@@ -134,8 +136,8 @@ export const TimeLogCard = () => {
                 ? "OVERTIME OUT: " + formatTimeLog(time.split("T")[1])
                 : "NOT YET TIMED IN"}
             </div>
-            {/* This will show only if user has already have a record on time-out on the current day*/}
-            <div className="mt-7 text-xl">
+            This will show only if user has already have a record on time-out on the current day */}
+            {/* <div className="mt-7 text-xl">
               {inOut === "DutyOff" &&
               new Date(latestEntry).toLocaleDateString().split("T")[0] !==
                 new Date().toLocaleDateString().split("T")[0] ? (
@@ -152,7 +154,7 @@ export const TimeLogCard = () => {
                   />
                 </>
               ) : null}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
