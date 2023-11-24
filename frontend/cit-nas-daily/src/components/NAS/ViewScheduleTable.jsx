@@ -14,7 +14,8 @@ export const ViewScheduleTable = ({ openModal, currentMonth }) => {
     Friday: [],
     Saturday: [],
   });
-  const endOfSem = ["December", "May", "August"];
+
+  const endOfSem = ["January", "June", "August"];
 
   useEffect(() => {
     const fetchSchedule = async () => {
