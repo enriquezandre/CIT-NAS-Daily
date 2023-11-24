@@ -56,10 +56,7 @@ export const NASSchedule = () => {
     setSelectedSem(value);
   };
 
-  //
-
   // functions for SetScheduleTable starts here
-
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const [schedule, setSchedule] = useState({
@@ -227,7 +224,6 @@ export const NASSchedule = () => {
       console.error(error);
     }
   };
-
   // functions for SetScheduleTable ends here
 
   //fetch schedule
