@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CITNASDaily.Entities.Dtos.NASDtos;
 using CITNASDaily.Entities.Dtos.SchoolYearDto;
-using CITNASDaily.Entities.Dtos.StudentSemesterDto;
 using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
@@ -9,6 +8,7 @@ using CITNASDaily.Repositories.Repositories;
 using CITNASDaily.Services.Contracts;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Services.Services
 {
@@ -16,14 +16,21 @@ namespace CITNASDaily.Services.Services
     {
         private readonly INASRepository _nasRepository;
         private readonly IUserRepository _userRepository;
+        private readonly INASSchoolYearSemesterRepository _schoolYearSemRepository;
+        private readonly IOfficeRepository _officeRepository;
         private readonly IMapper _mapper;
 
-        public NASService(IUserRepository userRepository, INASRepository nasRepository, IMapper mapper)
+        public NASService(IUserRepository userRepository, INASRepository nasRepository, INASSchoolYearSemesterRepository schoolYearSemRepository, IOfficeRepository officeRepository, IMapper mapper)
         {
             _userRepository = userRepository;
-            _mapper = mapper;
             _nasRepository = nasRepository;
+            _schoolYearSemRepository = schoolYearSemRepository;
+            _officeRepository = officeRepository;
+            _mapper = mapper;
         }
+
+        #region CreateNAS
+
         public async Task<NASDto?> CreateNASAsync(string username, NASCreateDto nasCreate)
         {
             var userId = await GetNASUserIdByUsernameAsync(username);
@@ -35,34 +42,20 @@ namespace CITNASDaily.Services.Services
 
             var nas = _mapper.Map<NAS>(nasCreate);
             nas.UserId = userId;
-            var createdSuperior = await _nasRepository.CreateNASAsync(nas);
+            var createdNAS = await _nasRepository.CreateNASAsync(nas);
 
-            var createdSY = await _nasRepository.AddSchoolYear(createdSuperior.Id, nasCreate.SchoolYear);
-            var sy = _mapper.Map<List<NASSchoolYearCreateDto>>(createdSY);
+            var createdSY = await _schoolYearSemRepository.AddSchoolYearSemesterAsync(createdNAS.Id, nasCreate.SYSem);
+            var sy = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(createdSY);
 
-            var createdSem = await _nasRepository.AddSemester(createdSuperior.Id, nasCreate.Semester);
-            var sem = _mapper.Map<List<NASSemesterCreateDto>>(createdSem);
-
-            var result = _mapper.Map<NASDto>(createdSuperior);
-            result.SchoolYear = sy;
-            result.Semester = sem;
+            var result = _mapper.Map<NASDto>(createdNAS);
+            result.SYSem = sy;
 
             return result;
         }
 
-        public async Task<NASDto?> GetNASAsync(int nasId)
-        {
-            var nas = await _nasRepository.GetNASAsync(nasId);
+        #endregion
 
-            return _mapper.Map<NASDto>(nas);
-        }
-
-        public async Task<NASDtoNoImage?> GetNASNoImageAsync(int nasId)
-        {
-            var nas = await _nasRepository.GetNASAsync(nasId);
-
-            return _mapper.Map<NASDtoNoImage>(nas);
-        }
+        #region GetNAS
 
         public async Task<Guid?> GetNASUserIdByUsernameAsync(string username)
         {
@@ -76,10 +69,88 @@ namespace CITNASDaily.Services.Services
             return user.Id;
         }
 
-        public async Task<List<NAS?>> GetNASByOfficeIdAsync(int officeId)
+        public async Task<NASDto?> GetNASAsync(int nasId)
         {
-            var nasByOffice = await _nasRepository.GetNASByOfficeIdAsync(officeId);
-            return nasByOffice.ToList();
+            var nas = await _nasRepository.GetNASAsync(nasId);
+
+            if(nas == null)
+            {
+                return null;
+            }
+
+            var nasDto = _mapper.Map<NASDto>(nas);
+            var office = await _officeRepository.GetOfficeByNASIdAsync(nas.Id);
+
+            nasDto.OfficeName = office.Name;
+
+            var getSY = await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nas.Id);
+            nasDto.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(getSY);
+
+            return nasDto;
+        }
+
+        public async Task<NASDtoNoImage?> GetNASNoImageAsync(int nasId)
+        {
+            var nas = await _nasRepository.GetNASAsync(nasId);
+
+            if (nas == null)
+            {
+                return null;
+            }
+
+            var nasDto = _mapper.Map<NASDtoNoImage>(nas);
+            var office = await _officeRepository.GetOfficeByNASIdAsync(nas.Id);
+
+            nasDto.OfficeName = office.Name;
+
+            var getSY = await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nas.Id);
+            nasDto.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(getSY);
+
+            return nasDto;
+        }
+
+        public async Task<IEnumerable<NASDto>?> GetAllNASAsync()
+        {
+            var nasList = await _nasRepository.GetAllNASAsync();
+            var nasDto = _mapper.Map<List<NASDto>>(nasList);
+
+            foreach (var nas in nasDto)
+            {
+                nas.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nas.Id));
+                nas.OfficeName = await _officeRepository.GetOfficeNameAsync(nas.OfficeId);
+            }
+
+            return nasDto;
+        }
+
+        public async Task<IEnumerable<NASDtoNoImage>?> GetAllNASNoImageAsync()
+        {
+            var nasList = await _nasRepository.GetAllNASAsync();
+            var nasDto = _mapper.Map<List<NASDtoNoImage>>(nasList);
+
+            foreach (var nas in nasDto)
+            {
+                nas.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nas.Id));
+                nas.OfficeName = await _officeRepository.GetOfficeNameAsync(nas.OfficeId);
+            }
+
+            return nasDto;
+        }
+
+        public async Task<IEnumerable<NASDtoNoImage>?> GetAllNasBySYSemesterAsync(int year, Semester semester)
+        {
+            var nasIdList = await _schoolYearSemRepository.GetAllNasIdBySYSemesterAsync(year, semester);
+
+            var nasList = await _nasRepository.GetAllNasBySYSemesterAsync(nasIdList);
+            var nasDto = _mapper.Map<List<NASDtoNoImage>>(nasList);
+
+            foreach (var nas in nasDto)
+            {
+                nas.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nas.Id));
+                nas.OfficeName = await _officeRepository.GetOfficeNameAsync(nas.OfficeId);
+            }
+
+            return nasDto;
         }
 
         public async Task<int> GetNASIdByUsernameAsync(string username)
@@ -87,18 +158,21 @@ namespace CITNASDaily.Services.Services
             return await _nasRepository.GetNASIdByUsernameAsync(username);
         }
 
-        public async Task<IEnumerable<NAS>?> GetAllNASAsync()
+        public async Task<List<NASDto?>> GetNASByOfficeIdAsync(int officeId)
         {
-            return await _nasRepository.GetAllNASAsync();
+            var nasByOffice = await _nasRepository.GetNASByOfficeIdAsync(officeId);
+            var nasDto = _mapper.Map<List<NASDto>>(nasByOffice);
+
+            foreach (var nas in nasDto)
+            {
+                nas.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nas.Id));
+                nas.OfficeName = await _officeRepository.GetOfficeNameAsync(nas.OfficeId);
+            }
+
+            return nasDto;
         }
 
-        public async Task<IEnumerable<NASDtoNoImage>?> GetAllNASNoImageAsync()
-        {
-            var nas = await _nasRepository.GetAllNASAsync();
-            var nasNoImg = _mapper.Map<IEnumerable<NASDtoNoImage>>(nas);
-
-            return nasNoImg;
-        }
+        #endregion
 
         public async Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file)
         {
@@ -111,15 +185,13 @@ namespace CITNASDaily.Services.Services
 
             var updatedNAS = await _nasRepository.UpdateNASAsync(nasId, nas);
 
-            var createdSY = await _nasRepository.AddSchoolYear(updatedNAS.Id, nasUpdate.SchoolYears);
-            var sy = _mapper.Map<List<NASSchoolYearCreateDto>>(createdSY);
-
-            var createdSem = await _nasRepository.AddSemester(updatedNAS.Id, nasUpdate.Semesters);
-            var sem = _mapper.Map<List<NASSemesterCreateDto>>(createdSem);
+            var createdSY = await _schoolYearSemRepository.AddSchoolYearSemesterAsync(updatedNAS.Id, nasUpdate.SYSem);
+            var sy = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(createdSY);
 
             var result = _mapper.Map<NASDto>(updatedNAS);
-            result.SchoolYear = sy;
-            result.Semester = sem;
+            result.SYSem = sy;
+            result.OfficeName = await _officeRepository.GetOfficeNameAsync(result.OfficeId);
+
             return result;
         }
     }

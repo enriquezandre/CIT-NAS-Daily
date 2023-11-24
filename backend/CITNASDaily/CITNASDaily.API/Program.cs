@@ -168,7 +168,6 @@ void ConfigureServices(IServiceCollection services)
         typeof(BiometricLogProfile),
         typeof(SummaryEvaluationProfile),
         typeof(ValidationProfile),
-        typeof(NASSemesterProfile),
         typeof(NASSchoolYearProfile)
         );
 
@@ -186,6 +185,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IBiometricLogRepository, BiometricLogRepository>();
     services.AddScoped<IValidationRepository, ValidationRepository>();
     services.AddScoped<IDTRRepository, DTRRepository>();
+    services.AddScoped<INASSchoolYearSemesterRepository, NASSchoolYearSemesterRepository>();
 
     // Register services
     services.AddScoped<ISuperiorService, SuperiorService>();

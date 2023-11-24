@@ -8,5 +8,6 @@ namespace CITNASDaily.Repositories.Contracts
         Task<IEnumerable<Office?>> GetOfficesAsync();
         Task<Office?> GetOfficeBySuperiorIdAsync(int superiorId);
         Task<Office?> GetOfficeByNASIdAsync(int nasId);
+        Task<string?> GetOfficeNameAsync(int officeId);
     }
 }

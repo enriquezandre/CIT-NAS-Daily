@@ -1,5 +1,4 @@
 ﻿using CITNASDaily.Entities.Dtos.SchoolYearDto;
-using CITNASDaily.Entities.Dtos.StudentSemesterDto;
 
 namespace CITNASDaily.Entities.Dtos.NASDtos
 {
@@ -9,7 +8,9 @@ namespace CITNASDaily.Entities.Dtos.NASDtos
         public string? StudentIDNo { get; set; }
         public Guid? UserId { get; set; }
         public string? Username { get; set; }
-        public int? OfficeId { get; set; }
+        public List<NASSchoolYearSemesterCreateDto>? SYSem { get; set; }
+        public int OfficeId { get; set; }
+        public string? OfficeName { get; set; }
         public int? EnNo { get; set; }
         public string? FirstName { get; set; }
         public string? MiddleName { get; set; }
@@ -20,8 +21,6 @@ namespace CITNASDaily.Entities.Dtos.NASDtos
         public string? Course { get; set; }
         public int? YearLevel { get; set; }
         public int? UnitsAllowed { get; set; }
-        public List<NASSchoolYearCreateDto>? SchoolYear { get; set; }
-        public List<NASSemesterCreateDto>? Semester { get; set; }
         public DateTime? DateStarted { get; set; }
         public byte[]? Image { get; set; }
     }

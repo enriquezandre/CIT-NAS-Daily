@@ -50,5 +50,17 @@ namespace CITNASDaily.Repositories.Repositories
             }
             return office;
         }
+
+        public async Task<string?> GetOfficeNameAsync(int officeId)
+        {
+            var office = await _context.Offices.FindAsync(officeId);
+
+            if (office == null)
+            {
+                return null;
+            }
+
+            return office.Name;
+        }
     }
 }

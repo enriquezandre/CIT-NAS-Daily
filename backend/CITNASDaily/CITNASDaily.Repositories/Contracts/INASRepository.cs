@@ -1,6 +1,5 @@
 ﻿using CITNASDaily.Entities.Dtos.NASDtos;
 using CITNASDaily.Entities.Dtos.SchoolYearDto;
-using CITNASDaily.Entities.Dtos.StudentSemesterDto;
 using CITNASDaily.Entities.Models;
 using Microsoft.AspNetCore.Http;
 
@@ -10,12 +9,11 @@ namespace CITNASDaily.Repositories.Contracts
     {
         Task<NAS?> CreateNASAsync(NAS nas);
         Task<NAS?> GetNASAsync(int nasId);
-        Task<IQueryable<NAS?>> GetNASByOfficeIdAsync(int officeId);
-        Task<int> GetNASIdByUsernameAsync(string username);
         Task<IEnumerable<NAS>?> GetAllNASAsync();
+        Task<IEnumerable<NAS>?> GetAllNasBySYSemesterAsync(List<int> nasIdList);
+        Task<int> GetNASIdByUsernameAsync(string username);
+        Task<IEnumerable<NAS?>> GetNASByOfficeIdAsync(int officeId);
         Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file);
         Task<NAS?> UpdateNASAsync(int nasId, NAS nas);
-        Task<List<NASSchoolYear>?> AddSchoolYear(int nasId, List<NASSchoolYearCreateDto> data);
-        Task<List<NASSemester>?> AddSemester(int nasId, List<NASSemesterCreateDto> data);
     }
 }
