@@ -126,8 +126,7 @@ export const MasterlistTable = ({ searchInput }) => {
                 {nas.id}
               </td>
               <td className="border-2 border-black text-center px-4 py-2">
-                {nas.id}
-                {/*TO DO: CHANGE TO STUDENT ID NUMBER */}
+                {nas.studentIDNo}
               </td>
               <td
                 className="border-2 border-black text-center px-4 py-2"
