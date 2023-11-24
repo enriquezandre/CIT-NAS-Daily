@@ -1,5 +1,4 @@
 ﻿using CITNASDaily.Entities.Dtos.SchoolYearDto;
-using CITNASDaily.Entities.Dtos.StudentSemesterDto;
 using CITNASDaily.Entities.Models;
 using System;
 using System.Collections.Generic;
@@ -14,8 +13,7 @@ namespace CITNASDaily.Entities.Dtos.NASDtos
         public int? OfficeId { get; set; }
         public int? YearLevel { get; set; }
         public string? Course { get; set; }
-        public List<NASSchoolYearCreateDto>? SchoolYears { get; set; }
-        public List<NASSemesterCreateDto>? Semesters { get; set; }
+        public List<NASSchoolYearSemesterCreateDto>? SYSem { get; set; }
         public int? UnitsAllowed { get; set; }
     }
 }

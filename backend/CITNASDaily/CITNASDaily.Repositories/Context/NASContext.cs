@@ -20,8 +20,7 @@ namespace CITNASDaily.Repositories.Context
         public DbSet<TimekeepingSummary> TimekeepingSummaries { get; set; }
         public DbSet<BiometricLog> BiometricLogs { get; set; }
         public DbSet<Validation> Validations { get; set; }
-        public DbSet<NASSchoolYear> NASSchoolYears { get; set; }
-        public DbSet<NASSemester> NASSemesters { get; set; }
+        public DbSet<NASSchoolYearSemester> NASSchoolYears { get; set; }
         public DbSet<DailyTimeRecord> DailyTimeRecords { get; set; }
 
 
