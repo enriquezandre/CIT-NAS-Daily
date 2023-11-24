@@ -6,6 +6,7 @@ namespace CITNASDaily.Entities.Dtos.NASDtos
     public class NASDto
     {
         public int Id { get; set; }
+        public string? StudentIDNo { get; set; }
         public Guid? UserId { get; set; }
         public string? Username { get; set; }
         public int? OfficeId { get; set; }
