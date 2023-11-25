@@ -46,6 +46,28 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        [HttpGet("{year}/{semester}", Name = "GetAllDTRBySYSem")]
+        [Authorize]
+        public async Task<IActionResult> GetAllDTRBySYSem(int year, int semester)
+        {
+            try
+            {
+                var dtr = await _dtrService.GetDTRsBySYSemesterAsync(year, (Semester)semester);
+
+                if (dtr == null)
+                {
+                    return NotFound("There are no DTRs.");
+                }
+
+                return Ok(dtr);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting DTR.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
         [HttpPost("UploadExcel/{year}/{semester}")]
         public async Task<IActionResult> UploadExcel(IFormFile file, int year, int semester)
         {

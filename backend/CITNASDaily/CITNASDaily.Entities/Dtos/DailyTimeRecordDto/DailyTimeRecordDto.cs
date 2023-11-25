@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-using static CITNASDaily.Entities.Enums.Enums;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CITNASDaily.Entities.Models
+namespace CITNASDaily.Entities.Dtos.DailyTimeRecordDto
 {
-    public class DailyTimeRecord
+    public class DailyTimeRecordDto
     {
-        [Key]
         public int Id { get; set; }
         public string? NasName { get; set; }
         public string? Date { get; set; }
@@ -15,7 +17,5 @@ namespace CITNASDaily.Entities.Models
         public string? OvertimeOut { get; set; }
         public string? WorkTime { get; set; }
         public string? TotalWorkTime { get; set; }
-        public Semester Semester { get; set; }
-        public int SchoolYear { get; set; }
     }
 }
