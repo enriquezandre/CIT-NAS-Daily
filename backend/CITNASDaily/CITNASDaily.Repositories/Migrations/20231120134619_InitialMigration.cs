@@ -42,7 +42,9 @@ namespace CITNASDaily.Repositories.Migrations
                     OvertimeIn = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OvertimeOut = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TotalWorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TotalWorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Semester = table.Column<int>(type: "int", nullable: false),
+                    SchoolYear = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

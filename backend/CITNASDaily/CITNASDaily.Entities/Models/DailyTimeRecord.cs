@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Entities.Models
 {
@@ -14,5 +15,9 @@ namespace CITNASDaily.Entities.Models
         public string? OvertimeOut { get; set; }
         public string? WorkTime { get; set; }
         public string? TotalWorkTime { get; set; }
+        [Required]
+        public Semester Semester { get; set; }
+        [Required]
+        public int SchoolYear { get; set; }
     }
 }
