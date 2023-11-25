@@ -280,7 +280,9 @@ namespace CITNASDaily.Repositories.Migrations
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BrokenSched = table.Column<bool>(type: "bit", nullable: false),
-                    TotalHours = table.Column<float>(type: "real", nullable: false)
+                    TotalHours = table.Column<float>(type: "real", nullable: false),
+                    Semester = table.Column<int>(type: "int", nullable: false),
+                    SchoolYear = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

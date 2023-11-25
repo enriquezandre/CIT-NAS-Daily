@@ -32,6 +32,11 @@ namespace CITNASDaily.Repositories.Repositories
             return await Task.FromResult(_context.Schedules.Where(s => s.NASId == nasId));
         }
 
+        public async Task<IEnumerable<Schedule>> GetSchedulesByNASIdSYSemesterAsync(int nasId, int year, Semester semester)
+        {
+            return await _context.Schedules.Where(s => s.NASId == nasId && s.Semester == semester && s.SchoolYear == year).ToListAsync();
+        }
+
         public async Task DeleteSchedulesByNASIdAsync(int nasId)
         {
             var existingSchedules = await _context.Schedules
