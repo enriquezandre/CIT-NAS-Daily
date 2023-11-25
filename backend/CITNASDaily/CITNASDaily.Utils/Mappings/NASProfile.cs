@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CITNASDaily.Entities.Dtos.NASDtos;
 using CITNASDaily.Entities.Dtos.SchoolYearDto;
-using CITNASDaily.Entities.Dtos.StudentSemesterDto;
 using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Entities.Models;
 
@@ -31,8 +30,7 @@ namespace CITNASDaily.Utils.Mappings
 
             CreateMap<NAS, NASPhotoUpdateDto>().ReverseMap();
             CreateMap<NAS, NASUpdateDto>().ReverseMap();
-            CreateMap<NAS, NASSchoolYearCreateDto>().ReverseMap();
-            CreateMap<NAS, NASSemesterCreateDto>().ReverseMap();
+            CreateMap<NAS, NASSchoolYearSemesterCreateDto>().ReverseMap();
         }
     }
 }

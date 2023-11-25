@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using CITNASDaily.Entities.Dtos.SchoolYearDto;
-using CITNASDaily.Entities.Dtos.StudentSemesterDto;
 using CITNASDaily.Entities.Models;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace CITNASDaily.Utils.Mappings
     {
         public NASSchoolYearProfile()
         {
-            CreateMap<NASSchoolYear, NASSchoolYearCreateDto>().ReverseMap();
+            CreateMap<NASSchoolYearSemester, NASSchoolYearSemesterCreateDto>().ReverseMap();
         }
     }
 }

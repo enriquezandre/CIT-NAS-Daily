@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CITNASDaily.Entities.Dtos.SchoolYearDto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,9 @@ namespace CITNASDaily.Entities.Dtos.NASDtos
         public string? StudentIDNo { get; set; }
         public Guid? UserId { get; set; }
         public string? Username { get; set; }
-        public int? OfficeId { get; set; }
+        public List<NASSchoolYearSemesterCreateDto>? SYSem { get; set; }
+        public int OfficeId { get; set; }
+        public string? OfficeName { get; set; }
         public int? EnNo { get; set; }
         public string? FirstName { get; set; }
         public string? MiddleName { get; set; }
