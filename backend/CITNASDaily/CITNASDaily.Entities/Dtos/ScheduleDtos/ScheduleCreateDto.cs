@@ -21,5 +21,7 @@ namespace CITNASDaily.Entities.Dtos.ScheduleDtos
         public bool BrokenSched { get; set; }
         [Required]
         public float TotalHours { get; set; }
+        public Semester Semester { get; set; }
+        public int SchoolYear { get; set; }
     }
 }

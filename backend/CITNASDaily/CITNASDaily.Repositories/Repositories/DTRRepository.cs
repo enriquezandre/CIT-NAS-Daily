@@ -2,6 +2,7 @@
 using CITNASDaily.Repositories.Context;
 using CITNASDaily.Repositories.Contracts;
 using Microsoft.EntityFrameworkCore;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Repositories.Repositories
 {
@@ -22,6 +23,11 @@ namespace CITNASDaily.Repositories.Repositories
         public async Task<IEnumerable<DailyTimeRecord>> GetDTRs()
         {
             return await _context.DailyTimeRecords.ToListAsync();
+        }
+
+        public async Task<IEnumerable<DailyTimeRecord>> GetDTRsBySYSemesterAsync(int year, Semester semester)
+        {
+            return await _context.DailyTimeRecords.Where(d => d.SchoolYear == year && d.Semester == semester).ToListAsync();
         }
 
         public async Task SaveDTRs(IEnumerable<DailyTimeRecord> records)

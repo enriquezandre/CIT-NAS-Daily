@@ -183,13 +183,15 @@ namespace CITNASDaily.Services.Services
         {
             var nas = _mapper.Map<NAS>(nasUpdate);
 
-            var updatedNAS = await _nasRepository.UpdateNASAsync(nasId, nas);
+            var updateNAS = await _nasRepository.UpdateNASAsync(nasId, nas);
 
-            var createdSY = await _schoolYearSemRepository.AddSchoolYearSemesterAsync(updatedNAS.Id, nasUpdate.SYSem);
+            var createdSY = await _schoolYearSemRepository.AddSchoolYearSemesterAsync(updateNAS.Id, nasUpdate.SYSem);
             var sy = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(createdSY);
 
-            var result = _mapper.Map<NASDto>(updatedNAS);
-            result.SYSem = sy;
+            var newUpdate = await _nasRepository.GetNASAsync(updateNAS.Id);
+
+            var result = _mapper.Map<NASDto>(newUpdate);
+            result.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(await _schoolYearSemRepository.GetSchoolYearSemesterAsync(result.Id));
             result.OfficeName = await _officeRepository.GetOfficeNameAsync(result.OfficeId);
 
             return result;

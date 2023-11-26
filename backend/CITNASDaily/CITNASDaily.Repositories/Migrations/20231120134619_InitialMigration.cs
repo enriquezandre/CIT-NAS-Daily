@@ -42,7 +42,9 @@ namespace CITNASDaily.Repositories.Migrations
                     OvertimeIn = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OvertimeOut = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TotalWorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TotalWorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Semester = table.Column<int>(type: "int", nullable: false),
+                    SchoolYear = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -278,7 +280,9 @@ namespace CITNASDaily.Repositories.Migrations
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BrokenSched = table.Column<bool>(type: "bit", nullable: false),
-                    TotalHours = table.Column<float>(type: "real", nullable: false)
+                    TotalHours = table.Column<float>(type: "real", nullable: false),
+                    Semester = table.Column<int>(type: "int", nullable: false),
+                    SchoolYear = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
