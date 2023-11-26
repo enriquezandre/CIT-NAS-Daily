@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OfficeOpenXml;
 using System.Security.Claims;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.API.Controllers
 {
@@ -45,8 +46,30 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpPost("UploadExcel")]
-        public async Task<IActionResult> UploadExcel(IFormFile file)
+        [HttpGet("{year}/{semester}", Name = "GetAllDTRBySYSem")]
+        [Authorize]
+        public async Task<IActionResult> GetAllDTRBySYSem(int year, int semester)
+        {
+            try
+            {
+                var dtr = await _dtrService.GetDTRsBySYSemesterAsync(year, (Semester)semester);
+
+                if (dtr == null)
+                {
+                    return NotFound("There are no DTRs.");
+                }
+
+                return Ok(dtr);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting DTR.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpPost("UploadExcel/{year}/{semester}")]
+        public async Task<IActionResult> UploadExcel(IFormFile file, int year, int semester)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -70,7 +93,9 @@ namespace CITNASDaily.API.Controllers
                             OvertimeIn = worksheet.Cells[i, 5].Value?.ToString(),
                             OvertimeOut = worksheet.Cells[i, 6].Value?.ToString(),
                             WorkTime = worksheet.Cells[i, 7].Value?.ToString(),
-                            TotalWorkTime = worksheet.Cells[i, 8].Value?.ToString()
+                            TotalWorkTime = worksheet.Cells[i, 8].Value?.ToString(),
+                            SchoolYear = year,
+                            Semester = (Semester) semester
                         };
 
                         records.Add(record);

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using CITNASDaily.Entities.Dtos.DailyTimeRecordDto;
 using CITNASDaily.Entities.Dtos.ScheduleDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
+using CITNASDaily.Repositories.Repositories;
 using CITNASDaily.Services.Contracts;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -9,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Services.Services
 {
@@ -44,6 +47,23 @@ namespace CITNASDaily.Services.Services
                 return sched.ToList();
             }
             return null;
+        }
+
+        public async Task<ScheduleListDto> GetSchedulesByNASIdSYSemesterAsync(int nasId, int year, Semester semester)
+        {
+            var schedList = await _scheduleRepository.GetSchedulesByNASIdSYSemesterAsync(nasId, year, semester);
+
+            var schedDto = _mapper.Map<List<ScheduleDto>>(schedList);
+
+            ScheduleListDto scheduleListDto = new ScheduleListDto
+            {
+                NASId = nasId,
+                SchoolYear = year,
+                Semester = semester,
+                Schedules = schedDto
+            };
+
+            return scheduleListDto;
         }
 
         public async Task DeleteSchedulesByNASIdAsync(int nasId)

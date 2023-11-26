@@ -5,6 +5,7 @@ using CITNASDaily.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.API.Controllers
 {
@@ -33,6 +34,31 @@ namespace CITNASDaily.API.Controllers
                 if (currentUser == null) return Forbid();
 
                 var schedule = await _scheduleService.GetSchedulesByNASIdAsync(nasId);
+
+                if (schedule == null)
+                {
+                    return NotFound("Schedule not found");
+                }
+
+                return Ok(schedule);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting Schedule.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("{nasId}/{year}/{semester}", Name = "GetSchedulesByNASIdSYSemester")]
+        [Authorize]
+        public async Task<IActionResult> GetSchedulesByNASIdSYSemester(int nasId, int year, int semester)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
+                var schedule = await _scheduleService.GetSchedulesByNASIdSYSemesterAsync(nasId, year, (Semester)semester);
 
                 if (schedule == null)
                 {

@@ -11,8 +11,6 @@ namespace CITNASDaily.Entities.Dtos.ScheduleDtos
 {
     public class ScheduleDto
     {
-        public int Id { get; set; }
-        public int NASId { get; set; }
         public DaysOfTheWeek DayOfWeek { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
