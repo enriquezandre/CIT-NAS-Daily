@@ -27,6 +27,18 @@ export const AttendanceSummaryTable = ({
     []
   );
 
+  const formatTime = (timeStr) => {
+    if (timeStr) {
+      const [hours, minutes] = timeStr.split(":");
+      const date = new Date();
+      date.setHours(hours);
+      date.setMinutes(minutes);
+      const options = { hour: "numeric", minute: "numeric", hour12: true };
+      return date.toLocaleTimeString("en-US", options);
+    }
+    return null;
+  };
+
   useEffect(() => {
     const fetchDataByNames = async () => {
       try {
@@ -36,7 +48,7 @@ export const AttendanceSummaryTable = ({
         setLastName(nasData.lastName);
 
         const dtrresponse = await api.get(
-          `DTR/GetByNasName/${firstName}/${lastName}`
+          `DTR/GetByNasName/${firstName}/${lastName}` //TO DO: ADD YEAR AND SEM PARAMS
         );
         const dtrdata = dtrresponse.data;
         console.log(dtrdata);
@@ -66,24 +78,18 @@ export const AttendanceSummaryTable = ({
         {attendanceSummaries.map((summary) => (
           <Table.Row key={summary.id}>
             <Table.Cell>{summary.date}</Table.Cell>
-            <Table.Cell>{summary.timeIn ? summary.timeIn : ""}</Table.Cell>
             <Table.Cell>
-              {summary.timeOut ? (
-                summary.timeOut === "NO RECORD" ? (
-                  <span className="text-red">NO RECORD</span>
-                ) : (
-                  summary.timeOut
-                )
-              ) : (
-                ""
-              )}
+              {summary.timeIn === "FTP IN"
+                ? "FTP IN"
+                : formatTime(summary.timeIn)}
             </Table.Cell>
             <Table.Cell>
-              {summary.overtimeIn ? summary.overtimeIn : ""}
+              {summary.timeOut === "FTP OUT"
+                ? "FTP OUT"
+                : formatTime(summary.timeOut)}
             </Table.Cell>
-            <Table.Cell>
-              {summary.overtimeOut ? summary.overtimeOut : ""}
-            </Table.Cell>
+            <Table.Cell>{formatTime(summary.overtimeIn)}</Table.Cell>
+            <Table.Cell>{formatTime(summary.overtimeOut)}</Table.Cell>
             <Table.Cell>
               {summary.timeOut === "NO RECORD" ? (
                 <button className="hover:underline" onClick={openModal}>
