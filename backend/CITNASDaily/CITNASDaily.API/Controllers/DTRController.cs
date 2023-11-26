@@ -46,13 +46,13 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("{year}/{semester}", Name = "GetAllDTRBySYSem")]
+        [HttpGet("{year}/{semester}/{firstName}/{lastName}", Name = "GetAllDTRBySYSem")]
         [Authorize]
-        public async Task<IActionResult> GetAllDTRBySYSem(int year, int semester)
+        public async Task<IActionResult> GetAllDTRBySYSem(int year, int semester, string firstName, string lastName, [FromQuery] string middleName = "")
         {
             try
             {
-                var dtr = await _dtrService.GetDTRsBySYSemesterAsync(year, (Semester)semester);
+                var dtr = await _dtrService.GetDTRsBySYSemesterAsync(year, (Semester)semester, firstName, lastName, middleName);
 
                 if (dtr == null)
                 {

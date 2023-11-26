@@ -9,6 +9,6 @@ namespace CITNASDaily.Services.Contracts
         Task<IEnumerable<DailyTimeRecord>?> GetAllDTRAsync();
         Task SaveDTRs(IEnumerable<DailyTimeRecord> records);
         Task<IEnumerable<DailyTimeRecord>?> GetDTRByNasNameAsync(string nasName);
-        Task<DailyTimeRecordListDto> GetDTRsBySYSemesterAsync(int year, Semester semester);
+        Task<DailyTimeRecordListDto> GetDTRsBySYSemesterAsync(int year, Semester semester, string firstName, string lastName, string middleName);
     }
 }

@@ -33,9 +33,9 @@ namespace CITNASDaily.Services.Services
             await _dtrRepository.SaveDTRs(records);
         }
 
-        public async Task<DailyTimeRecordListDto> GetDTRsBySYSemesterAsync(int year, Semester semester)
+        public async Task<DailyTimeRecordListDto> GetDTRsBySYSemesterAsync(int year, Semester semester, string firstName, string lastName, string middleName)
         {
-            var dtrList = await _dtrRepository.GetDTRsBySYSemesterAsync(year, semester);
+            var dtrList = await _dtrRepository.GetDTRsBySYSemesterAsync(year, semester, firstName, lastName, middleName);
 
             var dtrDto = _mapper.Map<List<DailyTimeRecordDto>>(dtrList);
 
