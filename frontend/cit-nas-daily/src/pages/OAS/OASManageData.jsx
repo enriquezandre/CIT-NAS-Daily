@@ -30,6 +30,19 @@ export const OASManageData = () => {
     setSelectedSem(value);
   };
 
+  function getSemesterValue(sem) {
+    switch (sem) {
+      case "First":
+        return 0;
+      case "Second":
+        return 1;
+      case "Summer":
+        return 3;
+      default:
+        return "Invalid semester";
+    }
+  }
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
 
@@ -56,11 +69,15 @@ export const OASManageData = () => {
     formData.append("file", fileUploaded);
 
     try {
-      const response = await api.post("/DTR/UploadExcel", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await api.post(
+        `/DTR/UploadExcel/${selectedSY}/${getSemesterValue(selectedSem)}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       if (response.status === 200) {
         alert("File uploaded successfully");
         setFileUploaded(false); // Reset the file input after successful upload
