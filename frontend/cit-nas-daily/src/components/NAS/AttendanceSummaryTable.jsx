@@ -14,6 +14,7 @@ export const AttendanceSummaryTable = ({
   const { nasId } = useParams();
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
   const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
 
   const api = useMemo(
@@ -26,6 +27,21 @@ export const AttendanceSummaryTable = ({
       }),
     []
   );
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 3;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   const formatTime = (timeStr) => {
     if (timeStr) {
@@ -46,20 +62,33 @@ export const AttendanceSummaryTable = ({
         const nasData = nasResponse.data;
         setFirstName(nasData.firstName);
         setLastName(nasData.lastName);
+        setMiddleName(nasData.middleName);
 
         const dtrresponse = await api.get(
-          `DTR/GetByNasName/${firstName}/${lastName}` //TO DO: ADD YEAR AND SEM PARAMS
+          `DTR/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}/${firstName}/${lastName}?middleName=${middleName}`
         );
         const dtrdata = dtrresponse.data;
         console.log(dtrdata);
-        setAttendanceSummaries(dtrdata);
+        setAttendanceSummaries(dtrdata.dailyTimeRecords);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchDataByNames();
-  }, [nasId, selectedMonth, selectedSem, selectedSY, api, firstName, lastName]);
+  }, [
+    nasId,
+    selectedMonth,
+    selectedSem,
+    selectedSY,
+    api,
+    firstName,
+    middleName,
+    lastName,
+    getSemesterValue,
+  ]);
 
   return (
     <Table hoverable>
@@ -75,32 +104,33 @@ export const AttendanceSummaryTable = ({
         </Table.HeadCell>
       </Table.Head>
       <Table.Body className="divide-y">
-        {attendanceSummaries.map((summary) => (
-          <Table.Row key={summary.id}>
-            <Table.Cell>{summary.date}</Table.Cell>
-            <Table.Cell>
-              {summary.timeIn === "FTP IN"
-                ? "FTP IN"
-                : formatTime(summary.timeIn)}
-            </Table.Cell>
-            <Table.Cell>
-              {summary.timeOut === "FTP OUT"
-                ? "FTP OUT"
-                : formatTime(summary.timeOut)}
-            </Table.Cell>
-            <Table.Cell>{formatTime(summary.overtimeIn)}</Table.Cell>
-            <Table.Cell>{formatTime(summary.overtimeOut)}</Table.Cell>
-            <Table.Cell>
-              {summary.timeOut === "NO RECORD" ? (
-                <button className="hover:underline" onClick={openModal}>
-                  YES
-                </button>
-              ) : (
-                "" // Record exists, leave the cell blank
-              )}
-            </Table.Cell>
-          </Table.Row>
-        ))}
+        {Array.isArray(attendanceSummaries) &&
+          attendanceSummaries.map((summary) => (
+            <Table.Row key={summary.id}>
+              <Table.Cell>{summary.date}</Table.Cell>
+              <Table.Cell>
+                {summary.timeIn === "FTP IN"
+                  ? "FTP IN"
+                  : formatTime(summary.timeIn)}
+              </Table.Cell>
+              <Table.Cell>
+                {summary.timeOut === "FTP OUT"
+                  ? "FTP OUT"
+                  : formatTime(summary.timeOut)}
+              </Table.Cell>
+              <Table.Cell>{formatTime(summary.overtimeIn)}</Table.Cell>
+              <Table.Cell>{formatTime(summary.overtimeOut)}</Table.Cell>
+              <Table.Cell>
+                {summary.timeOut === "NO RECORD" ? (
+                  <button className="hover:underline" onClick={openModal}>
+                    YES
+                  </button>
+                ) : (
+                  "" // Record exists, leave the cell blank
+                )}
+              </Table.Cell>
+            </Table.Row>
+          ))}
       </Table.Body>
     </Table>
   );
