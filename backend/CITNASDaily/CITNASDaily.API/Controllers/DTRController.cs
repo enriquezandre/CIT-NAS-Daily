@@ -100,12 +100,6 @@ namespace CITNASDaily.API.Controllers
                             Semester = (Semester) semester
                         };
 
-                        Console.WriteLine(record.FirstName);
-                        Console.WriteLine(record.TimeIn); 
-                        Console.WriteLine(record.TimeOut); 
-                        Console.WriteLine(record.TotalWorkTime);
-                        Console.WriteLine(record.SchoolYear);
-
                         records.Add(record);
                     }
 
