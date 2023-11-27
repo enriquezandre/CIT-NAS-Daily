@@ -11,14 +11,19 @@ const second_sem = ["January", "February", "March", "April", "May"];
 const summer = ["June", "July", "August"];
 const currentDate = new Date();
 const currentMonth = currentDate.toLocaleString("en-US", { month: "long" });
+// const year = currentDate.getFullYear();
+// const lastTwoDigits = year % 100;
+// const schoolYear =
+//   lastTwoDigits.toString().padStart(2, "0") + (lastTwoDigits + 1).toString().padStart(2, "0");
 
+//checks if what is the semester based on the current month
 let currentSem;
 if (first_sem.includes(currentMonth)) {
-  currentSem = "First";
+  currentSem = 0;
 } else if (second_sem.includes(currentMonth)) {
-  currentSem = "Second";
+  currentSem = 1;
 } else if (summer.includes(currentMonth)) {
-  currentSem = "Summer";
+  currentSem = 2;
 } else {
   currentSem = "";
 }
@@ -48,11 +53,13 @@ export const NASSchedule = () => {
     setAddSchedModalOpen(false);
   };
 
-  const handleSelectSY = (value) => {
+  const handleSelectSY = (event) => {
+    const value = event.target.value;
     setSelectedSY(value);
   };
 
-  const handleSelectSem = (value) => {
+  const handleSelectSem = (event) => {
+    const value = event.target.value;
     setSelectedSem(value);
   };
 
@@ -183,6 +190,8 @@ export const NASSchedule = () => {
               new Date().toISOString().split("T")[0] + "T" + scheduleItem.end + ":00.000Z";
             const brokenSched = true;
             const totalHours = scheduleItem.totalHours;
+            const semester = currentSem;
+            const schoolYear = selectedSY;
 
             // Send the schedule data for each row
             const response = await api.post("https://localhost:7001/api/Schedule", {
@@ -192,6 +201,8 @@ export const NASSchedule = () => {
               endTime,
               brokenSched,
               totalHours,
+              semester,
+              schoolYear,
             });
 
             console.log(response.data);
@@ -205,6 +216,8 @@ export const NASSchedule = () => {
             new Date().toISOString().split("T")[0] + "T" + scheduleItem.end + ":00.000Z";
           const brokenSched = false;
           const totalHours = scheduleItem.totalHours;
+          const semester = currentSem;
+          const schoolYear = selectedSY;
 
           // Send the schedule data for the single row
           const response = await api.post("https://localhost:7001/api/Schedule", {
@@ -214,6 +227,8 @@ export const NASSchedule = () => {
             endTime,
             brokenSched,
             totalHours,
+            semester,
+            schoolYear,
           });
 
           window.location.reload();
@@ -290,7 +305,7 @@ export const NASSchedule = () => {
                   value={selectedSY}
                   onChange={handleSelectSY}
                   className=" w-full text-base border rounded-md"
-                  disabled
+                  //disabled
                 >
                   {Array.isArray(sy_options) &&
                     sy_options.map((sy, index) => (
@@ -305,12 +320,12 @@ export const NASSchedule = () => {
                 <select
                   id="sem"
                   name="sem"
-                  value={selectedSem}
                   onChange={handleSelectSem}
-                  className=" w-full text-base border rounded-md"
-                  disabled
+                  className="w-full text-base border rounded-md"
                 >
-                  <option>{currentSem}</option>
+                  <option value={0}>First</option>
+                  <option value={1}>Second</option>
+                  <option value={2}>Summer</option>
                 </select>
               </div>
             </div>
