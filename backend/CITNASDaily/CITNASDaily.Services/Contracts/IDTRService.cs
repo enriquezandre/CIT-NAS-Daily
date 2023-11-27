@@ -1,4 +1,6 @@
-﻿using CITNASDaily.Entities.Models;
+﻿using CITNASDaily.Entities.Dtos.DailyTimeRecordDto;
+using CITNASDaily.Entities.Models;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Services.Contracts
 {
@@ -6,7 +8,7 @@ namespace CITNASDaily.Services.Contracts
     {
         Task<IEnumerable<DailyTimeRecord>?> GetAllDTRAsync();
         Task SaveDTRs(IEnumerable<DailyTimeRecord> records);
-        Task<IEnumerable<DailyTimeRecord>?> GetDTRByNasNameAsync(string nasName);
-
+        Task<IEnumerable<DailyTimeRecord>?> GetDTRByNasNameAsync(string firstName, string lastName, string middleName);
+        Task<DailyTimeRecordListDto> GetDTRsBySYSemesterAsync(int year, Semester semester, string firstName, string lastName, string middleName);
     }
 }

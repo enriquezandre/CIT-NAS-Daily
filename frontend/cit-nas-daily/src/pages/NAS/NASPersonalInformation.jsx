@@ -35,7 +35,7 @@ export const NASPersonalInformation = () => {
         const officeresponse = await api.get(`Offices/${nasId}/NAS`);
         const officeName = officeresponse.data.name;
 
-        setStudentId(nasData.studentIDNo); // should be studentId but I think there is no student ID in NAS Info
+        setStudentId(nasData.studentIDNo);
         setFirstName(nasData.firstName);
         setMiddleName(nasData.middleName);
         setLastName(nasData.lastName);

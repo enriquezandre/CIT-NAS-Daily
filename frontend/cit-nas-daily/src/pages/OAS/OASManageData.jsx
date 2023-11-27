@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { ManageUsersTable } from "../../components/OAS/ManageUsersTable";
 import axios from "axios";
 
 export const OASManageData = () => {
@@ -30,6 +29,19 @@ export const OASManageData = () => {
     setSelectedSem(value);
   };
 
+  function getSemesterValue(sem) {
+    switch (sem) {
+      case "First":
+        return 0;
+      case "Second":
+        return 1;
+      case "Summer":
+        return 3;
+      default:
+        return "Invalid semester";
+    }
+  }
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
 
@@ -56,11 +68,15 @@ export const OASManageData = () => {
     formData.append("file", fileUploaded);
 
     try {
-      const response = await api.post("/DTR/UploadExcel", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await api.post(
+        `/DTR/UploadExcel/${selectedSY}/${getSemesterValue(selectedSem)}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       if (response.status === 200) {
         alert("File uploaded successfully");
         setFileUploaded(false); // Reset the file input after successful upload
@@ -116,38 +132,6 @@ export const OASManageData = () => {
                 </div>
               </div>
             </div>
-            <li className="flex justify-end">
-              <div className="flex">
-                <div className="relative w-auto">
-                  <input
-                    type="search"
-                    className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
-                    placeholder="Search NAS..."
-                    required
-                  />
-                  <button
-                    type="submit"
-                    className="absolute top-0 right-0 p-2.5 text-sm font-medium h-full"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </li>
           </ul>
           <div className="px-8 py-4">
             <div className="flex mt-2 mb-8">
@@ -169,7 +153,6 @@ export const OASManageData = () => {
                 ) : null}
               </div>
             </div>
-            <ManageUsersTable />
           </div>
         </div>
       </div>

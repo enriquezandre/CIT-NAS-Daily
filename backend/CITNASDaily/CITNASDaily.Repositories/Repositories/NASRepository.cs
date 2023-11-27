@@ -102,12 +102,6 @@ namespace CITNASDaily.Repositories.Repositories
                 existingNAS.Course = nas.Course;
                 existingNAS.UnitsAllowed = nas.UnitsAllowed;
 
-                var syDelete = _context.NASSchoolYears.Where(sy => sy.NASId == nasId);
-                if (syDelete != null)
-                {
-                    _context.NASSchoolYears.RemoveRange(syDelete);
-                }
-
                 await _context.SaveChangesAsync();
 
                 return existingNAS;

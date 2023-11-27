@@ -35,14 +35,18 @@ namespace CITNASDaily.Repositories.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NasName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    MiddleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TimeIn = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TimeOut = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OvertimeIn = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OvertimeOut = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TotalWorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TotalWorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Semester = table.Column<int>(type: "int", nullable: false),
+                    SchoolYear = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -278,7 +282,9 @@ namespace CITNASDaily.Repositories.Migrations
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BrokenSched = table.Column<bool>(type: "bit", nullable: false),
-                    TotalHours = table.Column<float>(type: "real", nullable: false)
+                    TotalHours = table.Column<float>(type: "real", nullable: false),
+                    Semester = table.Column<int>(type: "int", nullable: false),
+                    SchoolYear = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
