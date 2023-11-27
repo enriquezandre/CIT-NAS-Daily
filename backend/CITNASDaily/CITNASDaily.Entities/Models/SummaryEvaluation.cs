@@ -18,7 +18,7 @@ namespace CITNASDaily.Entities.Models
         [Required]
         public string? TimekeepingStatus { get; set; }
         public bool EnrollmentAllowed { get; set; }
-        public int UnitsAllowed { get; set; }
+        public int? UnitsAllowed { get; set; }
         public bool AllCoursesPassed { get; set; }
         public int NoOfCoursesFailed { get; set; }
     }
