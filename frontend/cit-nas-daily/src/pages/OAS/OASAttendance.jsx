@@ -250,7 +250,6 @@ export const OASAttendance = () => {
               <Button
                 className="text-black"
                 onClick={() => {
-                  setSearchInput("");
                   setNasId(nasId + 1);
                 }}
               >

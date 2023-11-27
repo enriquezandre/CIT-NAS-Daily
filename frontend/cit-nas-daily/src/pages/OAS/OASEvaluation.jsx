@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { SuperiorEval } from "../../components/SuperiorEval";
@@ -14,6 +14,23 @@ export const OASEvaluation = () => {
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
+  const [nasArray, setNasArray] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
+
+  const handleSearchChange = (event) => {
+    setSearchInput(event.target.value);
+  };
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -41,14 +58,6 @@ export const OASEvaluation = () => {
   useEffect(() => {
     const fetchNas = async () => {
       try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
         const nasResponse = await api.get(`/NAS/${nasId}/noimg`);
         console.log(nasResponse);
         const nasData = nasResponse.data;
@@ -66,7 +75,36 @@ export const OASEvaluation = () => {
     };
 
     fetchNas();
-  }, [selectedSY, selectedSem, nasId]);
+  }, [selectedSY, selectedSem, nasId, api]);
+
+  useEffect(() => {
+    const fetchNasData = async () => {
+      try {
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get(`/NAS/noimg`);
+        setNasArray(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchNasData();
+  }, []);
+
+  useEffect(() => {
+    const results = nasArray.filter((data) =>
+      data.fullName.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    if (results[0]) {
+      setNasId(results[0].id);
+    }
+  }, [searchInput, nasArray]);
 
   return (
     <>
@@ -107,6 +145,8 @@ export const OASEvaluation = () => {
                     type="search"
                     className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
                     placeholder="Search NAS..."
+                    value={searchInput}
+                    onChange={handleSearchChange}
                     required
                   />
                   <button
