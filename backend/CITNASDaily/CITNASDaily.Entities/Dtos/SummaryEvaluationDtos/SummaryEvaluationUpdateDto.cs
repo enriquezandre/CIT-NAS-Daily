@@ -13,7 +13,8 @@ namespace CITNASDaily.Entities.Dtos.SummaryEvaluationDtos
         public int nasId { get; set; }
         public Semester Semester { get; set; }
         public int SchoolYear { get; set; }
-        public bool AllCoursesPassed { get; set; }
+        public bool? EnrollmentAllowed { get; set; } = null;
+        public bool? AllCoursesPassed { get; set; } = null;
         public int NoOfCoursesFailed { get; set; }
     }
 }
