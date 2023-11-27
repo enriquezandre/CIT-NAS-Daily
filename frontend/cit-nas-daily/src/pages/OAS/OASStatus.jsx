@@ -17,6 +17,8 @@ export const OASStatus = () => {
   const [nasId, setNasId] = useState(1);
   const [summaryEvaluation, setSummaryEvaluation] = useState({});
   const [grade, setGrades] = useState(null);
+  const [nasArray, setNasArray] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
 
   const api = useMemo(
     () =>
@@ -28,6 +30,10 @@ export const OASStatus = () => {
       }),
     []
   );
+
+  const handleSearchChange = (event) => {
+    setSearchInput(event.target.value);
+  };
 
   const openEvaluateGrades = () => {
     setIsViewingEvaluateGrades(true);
@@ -111,6 +117,35 @@ export const OASStatus = () => {
     fetchSummaryEvaluationGrades();
   }, [nasId, selectedSem, selectedSY, api, getSemesterValue]);
 
+  useEffect(() => {
+    const fetchNasData = async () => {
+      try {
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get(`/NAS/noimg`);
+        setNasArray(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchNasData();
+  }, []);
+
+  useEffect(() => {
+    const results = nasArray.filter((data) =>
+      data.fullName.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    if (results[0]) {
+      setNasId(results[0].id);
+    }
+  }, [searchInput, nasArray]);
+
   const handleSelectSY = (event) => {
     const value = event.target.value;
     setSelectedSY(value);
@@ -160,6 +195,8 @@ export const OASStatus = () => {
                     type="search"
                     className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
                     placeholder="Search NAS..."
+                    value={searchInput}
+                    onChange={handleSearchChange}
                     required
                   />
                   <button
