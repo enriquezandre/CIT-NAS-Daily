@@ -9,12 +9,16 @@ import axios from "axios";
 const first_sem = ["August", "September", "October", "November", "December"];
 const second_sem = ["January", "February", "March", "April", "May"];
 const summer = ["June", "July", "August"];
+
+//get current month for basis of semester
 const currentDate = new Date();
 const currentMonth = currentDate.toLocaleString("en-US", { month: "long" });
-// const year = currentDate.getFullYear();
-// const lastTwoDigits = year % 100;
-// const schoolYear =
-//   lastTwoDigits.toString().padStart(2, "0") + (lastTwoDigits + 1).toString().padStart(2, "0");
+
+//get school year dynamically
+const year = currentDate.getFullYear();
+const lastTwoDigits = year % 100;
+const schoolYear =
+  lastTwoDigits.toString().padStart(2, "0") + (lastTwoDigits + 1).toString().padStart(2, "0");
 
 //checks if what is the semester based on the current month
 let currentSem;
@@ -30,12 +34,9 @@ if (first_sem.includes(currentMonth)) {
 
 export const NASSchedule = () => {
   const { nasId } = useParams();
-  const [selectedSem, setSelectedSem] = useState(currentSem);
-  const [selectedSY, setSelectedSY] = useState("2324");
   const [isSchedModalOpen, setSchedModalOpen] = useState(false);
   const [isAddSchedModalOpen, setAddSchedModalOpen] = useState(false);
   const [apiData, setApiData] = useState(null);
-  const sy_options = ["2021", "2122", "2223", "2324"];
 
   const openSetSchedModal = () => {
     setSchedModalOpen(true);
@@ -51,16 +52,6 @@ export const NASSchedule = () => {
 
   const closeAddSchedModal = () => {
     setAddSchedModalOpen(false);
-  };
-
-  const handleSelectSY = (event) => {
-    const value = event.target.value;
-    setSelectedSY(value);
-  };
-
-  const handleSelectSem = (event) => {
-    const value = event.target.value;
-    setSelectedSem(value);
   };
 
   // functions for SetScheduleTable starts here
@@ -191,7 +182,7 @@ export const NASSchedule = () => {
             const brokenSched = true;
             const totalHours = scheduleItem.totalHours;
             const semester = currentSem;
-            const schoolYear = selectedSY;
+            const schoolYear = schoolYear;
 
             // Send the schedule data for each row
             const response = await api.post("https://localhost:7001/api/Schedule", {
@@ -217,7 +208,7 @@ export const NASSchedule = () => {
           const brokenSched = false;
           const totalHours = scheduleItem.totalHours;
           const semester = currentSem;
-          const schoolYear = selectedSY;
+          const schoolYear = schoolYear;
 
           // Send the schedule data for the single row
           const response = await api.post("https://localhost:7001/api/Schedule", {
@@ -299,33 +290,16 @@ export const NASSchedule = () => {
             <div className="flex mt-2 ml-2">
               <div className="w-36 z-10 flex">
                 <div className="mr-2">SY:</div>
-                <select
-                  id="sy"
-                  name="sy"
-                  value={selectedSY}
-                  onChange={handleSelectSY}
-                  className=" w-full text-base border rounded-md"
-                  //disabled
-                >
-                  {Array.isArray(sy_options) &&
-                    sy_options.map((sy, index) => (
-                      <option key={index} value={sy}>
-                        {sy}
-                      </option>
-                    ))}
+                <select id="sy" name="sy" className=" w-full text-base border rounded-md" disabled>
+                  <option>{schoolYear}</option>
                 </select>
               </div>
               <div className="w-48 z-10 flex ml-5">
                 <div className="mr-2">SEMESTER:</div>
-                <select
-                  id="sem"
-                  name="sem"
-                  onChange={handleSelectSem}
-                  className="w-full text-base border rounded-md"
-                >
-                  <option value={0}>First</option>
-                  <option value={1}>Second</option>
-                  <option value={2}>Summer</option>
+                <select id="sem" name="sem" className="w-full text-base border rounded-md" disabled>
+                  {currentSem === 0 && <option value="First">First</option>}
+                  {currentSem === 1 && <option value="Second">Second</option>}
+                  {currentSem === 2 && <option value="Summer">Summer</option>}
                 </select>
               </div>
             </div>
