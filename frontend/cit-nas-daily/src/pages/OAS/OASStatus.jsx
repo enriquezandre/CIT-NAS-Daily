@@ -296,6 +296,9 @@ export const OASStatus = () => {
                       show={isViewingEvaluateGrades}
                       close={closeEvaluateGrades}
                       grade={grade}
+                      nasId={nasId}
+                      selectedSY={selectedSY}
+                      selectedSem={selectedSem}
                     />
                   </div>
                 )}
@@ -320,6 +323,9 @@ export const OASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">NUMBER OF UNITS ALLOWED:</p>
+                <p className="text-bold text-xl font-bold">
+                  {summaryEvaluation.unitsAllowed}
+                </p>
               </div>
             </div>
           </div>
