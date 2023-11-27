@@ -35,9 +35,9 @@ namespace CITNASDaily.Repositories.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     MiddleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TimeIn = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TimeOut = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -45,8 +45,8 @@ namespace CITNASDaily.Repositories.Migrations
                     OvertimeOut = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TotalWorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Semester = table.Column<int>(type: "int", nullable: false),
-                    SchoolYear = table.Column<int>(type: "int", nullable: false)
+                    Semester = table.Column<int>(type: "int", nullable: true),
+                    SchoolYear = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
