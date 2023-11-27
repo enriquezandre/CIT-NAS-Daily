@@ -6,34 +6,20 @@ import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable.jsx";
 import { ConfirmAddScheduleModal } from "../../components/NAS/ConfirmAddScheduleModal.jsx";
 import axios from "axios";
 
-const first_sem = ["August", "September", "October", "November", "December"];
-const second_sem = ["January", "February", "March", "April", "May"];
-const summer = ["June", "July", "August"];
-
-//get current month for basis of semester
 const currentDate = new Date();
+
+//get current Month
 const currentMonth = currentDate.toLocaleString("en-US", { month: "long" });
 
 //get school year dynamically
 const year = currentDate.getFullYear();
 const lastTwoDigits = year % 100;
-const schoolYear =
+const schYr =
   lastTwoDigits.toString().padStart(2, "0") + (lastTwoDigits + 1).toString().padStart(2, "0");
-
-//checks if what is the semester based on the current month
-let currentSem;
-if (first_sem.includes(currentMonth)) {
-  currentSem = 0;
-} else if (second_sem.includes(currentMonth)) {
-  currentSem = 1;
-} else if (summer.includes(currentMonth)) {
-  currentSem = 2;
-} else {
-  currentSem = "";
-}
 
 export const NASSchedule = () => {
   const { nasId } = useParams();
+  const [selectedSem, setSelectedSem] = useState(0);
   const [isSchedModalOpen, setSchedModalOpen] = useState(false);
   const [isAddSchedModalOpen, setAddSchedModalOpen] = useState(false);
   const [apiData, setApiData] = useState(null);
@@ -52,6 +38,11 @@ export const NASSchedule = () => {
 
   const closeAddSchedModal = () => {
     setAddSchedModalOpen(false);
+  };
+
+  const handleSelectedSem = (event) => {
+    const value = event.target.value;
+    setSelectedSem(value);
   };
 
   // functions for SetScheduleTable starts here
@@ -80,7 +71,7 @@ export const NASSchedule = () => {
     updatedSchedule[day].items[index].start = value;
     setSchedule(updatedSchedule);
 
-    console.log(`Start Time for ${day}, Row ${index}: ${value}`);
+    // console.log(`Start Time for ${day}, Row ${index}: ${value}`);
     setScheduleChanges({ ...scheduleChanges, [day]: true });
   };
 
@@ -89,7 +80,7 @@ export const NASSchedule = () => {
     updatedSchedule[day].items[index].end = value;
     setSchedule(updatedSchedule);
 
-    console.log(`End Time for ${day}, Row ${index}: ${value}`);
+    // console.log(`End Time for ${day}, Row ${index}: ${value}`);
     setScheduleChanges({ ...scheduleChanges, [day]: true });
   };
 
@@ -161,15 +152,15 @@ export const NASSchedule = () => {
 
   const overallHours = calculateOverallTotalHours();
 
+  const api = axios.create({
+    baseURL: "https://localhost:7001/api",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
   const handleSubmit = async () => {
     try {
-      const api = axios.create({
-        baseURL: "https://localhost:7001/api",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
       // Loop through days and send each day's schedule to the backend
       days.forEach(async (day) => {
         if (schedule[day].isBroken) {
@@ -181,11 +172,11 @@ export const NASSchedule = () => {
               new Date().toISOString().split("T")[0] + "T" + scheduleItem.end + ":00.000Z";
             const brokenSched = true;
             const totalHours = scheduleItem.totalHours;
-            const semester = currentSem;
-            const schoolYear = schoolYear;
+            const semester = selectedSem;
+            const schoolYear = schYr;
 
             // Send the schedule data for each row
-            const response = await api.post("https://localhost:7001/api/Schedule", {
+            await api.post("https://localhost:7001/api/Schedule", {
               nasId,
               dayOfWeek,
               startTime,
@@ -195,8 +186,6 @@ export const NASSchedule = () => {
               semester,
               schoolYear,
             });
-
-            console.log(response.data);
           });
         } else {
           const scheduleItem = schedule[day].items[0];
@@ -207,11 +196,11 @@ export const NASSchedule = () => {
             new Date().toISOString().split("T")[0] + "T" + scheduleItem.end + ":00.000Z";
           const brokenSched = false;
           const totalHours = scheduleItem.totalHours;
-          const semester = currentSem;
-          const schoolYear = schoolYear;
+          const semester = selectedSem;
+          const schoolYear = schYr;
 
           // Send the schedule data for the single row
-          const response = await api.post("https://localhost:7001/api/Schedule", {
+          await api.post("https://localhost:7001/api/Schedule", {
             nasId,
             dayOfWeek,
             startTime,
@@ -223,7 +212,6 @@ export const NASSchedule = () => {
           });
 
           window.location.reload();
-          console.log(response);
         }
       });
     } catch (error) {
@@ -236,35 +224,26 @@ export const NASSchedule = () => {
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const response = await api.get(`/Schedule/${nasId}`);
+        const response = await api.get(`/Schedule/${nasId}/${schYr}/${selectedSem}`);
         setApiData(response.data); // Use response.data here, not nasData
       } catch (error) {
         console.error(error);
       }
     };
     fetchSchedule();
-  }, [nasId]);
+  }, [nasId, schYr, selectedSem]);
 
   //check if there is sched
-  const dataExist = apiData && apiData.length > 0;
+  const dataExist =
+    apiData &&
+    apiData.schedules &&
+    Array.isArray(apiData.schedules) &&
+    apiData.schedules.length > 0;
+  console.log(dataExist);
 
   //delete schedule
   const deleteSchedule = async (nasId) => {
     try {
-      const api = axios.create({
-        baseURL: "https://localhost:7001/api",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
       //Make delete request
       await api.delete(`/Schedule`, {
         params: {
@@ -286,30 +265,37 @@ export const NASSchedule = () => {
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
         <div className="m-2">
-          <div className="flex mt-2 ml-2">
-            <div className="flex mt-2 ml-2">
+          <div className="flex">
+            <div className="flex">
               <div className="w-36 z-10 flex">
                 <div className="mr-2">SY:</div>
                 <select id="sy" name="sy" className=" w-full text-base border rounded-md" disabled>
-                  <option>{schoolYear}</option>
+                  <option>{schYr}</option>
                 </select>
               </div>
               <div className="w-48 z-10 flex ml-5">
                 <div className="mr-2">SEMESTER:</div>
-                <select id="sem" name="sem" className="w-full text-base border rounded-md" disabled>
-                  {currentSem === 0 && <option value="First">First</option>}
-                  {currentSem === 1 && <option value="Second">Second</option>}
-                  {currentSem === 2 && <option value="Summer">Summer</option>}
+                <select
+                  id="sem"
+                  name="sem"
+                  onChange={handleSelectedSem}
+                  className="w-full text-base border rounded-md"
+                >
+                  <option value={0}>First</option>
+                  <option value={1}>Second</option>
+                  <option value={2}>Summer</option>
                 </select>
               </div>
             </div>
           </div>
-          <div className="pt-10">
+          <div className="pt-5">
             {dataExist ? (
               <ViewScheduleTable
                 apiData={apiData}
                 openModal={openAddSchedModal}
                 currentMonth={currentMonth}
+                schoolYear={schYr}
+                semester={selectedSem}
               />
             ) : (
               <ScheduleTable
