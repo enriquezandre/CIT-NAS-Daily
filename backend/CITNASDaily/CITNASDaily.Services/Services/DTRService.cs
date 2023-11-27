@@ -23,9 +23,9 @@ namespace CITNASDaily.Services.Services
             return await _dtrRepository.GetDTRs();
         }
 
-        public async Task<IEnumerable<DailyTimeRecord>?> GetDTRByNasNameAsync(string nasName)
+        public async Task<IEnumerable<DailyTimeRecord>?> GetDTRByNasNameAsync(string firstName, string lastName, string middleName)
         {
-            return await _dtrRepository.GetDTRByNasNameAsync(nasName);
+            return await _dtrRepository.GetDTRByNasNameAsync(firstName, lastName, middleName);
         }
 
         public async Task SaveDTRs(IEnumerable<DailyTimeRecord> records)

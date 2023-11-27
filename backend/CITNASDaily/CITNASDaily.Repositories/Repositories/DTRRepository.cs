@@ -15,9 +15,10 @@ namespace CITNASDaily.Repositories.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<DailyTimeRecord>> GetDTRByNasNameAsync(string nasName)
+        public async Task<IEnumerable<DailyTimeRecord>> GetDTRByNasNameAsync(string firstName, string lastName, string middleName)
         {
-            return await _context.DailyTimeRecords.Where(dtr => dtr.NasName == nasName).ToListAsync();
+            return await _context.DailyTimeRecords.Where(d => d.FirstName == firstName &&
+                d.LastName == lastName && d.MiddleName == middleName).ToListAsync();
         }
 
         public async Task<IEnumerable<DailyTimeRecord>> GetDTRs()
@@ -27,8 +28,10 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<IEnumerable<DailyTimeRecord>> GetDTRsBySYSemesterAsync(int year, Semester semester, string firstName, string lastName, string middleName)
         {
-            var fullName = string.IsNullOrEmpty(middleName) ? $"{firstName} {lastName}" : $"{firstName} {middleName} {lastName}";
-            return await _context.DailyTimeRecords.Where(d => d.SchoolYear == year && d.Semester == semester && d.NasName == fullName).ToListAsync();
+            return await _context.DailyTimeRecords
+                .Where(d => d.SchoolYear == year && d.Semester == semester && d.FirstName == firstName && 
+                d.LastName == lastName && d.MiddleName == middleName)
+                .ToListAsync();
         }
 
         public async Task SaveDTRs(IEnumerable<DailyTimeRecord> records)
