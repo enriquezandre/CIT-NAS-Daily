@@ -26,14 +26,24 @@ export const NASEvaluationResult = () => {
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
-    setFileUploaded(file);
+    if (file) {
+      const fileSizeInKB = file.size / 1024;
+      const maxSizeAllowed = 500;
+
+      if (fileSizeInKB > maxSizeAllowed) {
+        alert("File size must be less than 500KB.");
+        return;
+      } else {
+        setFileUploaded(file);
+      }
+    }
   };
 
   const handleSubmit = async () => {
     const semNum = sem_options.indexOf(selectedSem);
-    console.log("NAS ID: " + nasId)
-    console.log("selectedSY: " + selectedSY)
-    console.log("semNum: " + semNum)
+    console.log("NAS ID: " + nasId);
+    console.log("selectedSY: " + selectedSY);
+    console.log("semNum: " + semNum);
 
     if (fileUploaded) {
       const api = axios.create({
