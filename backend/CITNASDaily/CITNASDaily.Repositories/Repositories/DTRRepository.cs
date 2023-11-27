@@ -26,8 +26,13 @@ namespace CITNASDaily.Repositories.Repositories
             return await _context.DailyTimeRecords.ToListAsync();
         }
 
-        public async Task<IEnumerable<DailyTimeRecord>> GetDTRsBySYSemesterAsync(int year, Semester semester, string firstName, string lastName, string middleName)
+        public async Task<IEnumerable<DailyTimeRecord>> GetDTRsBySYSemesterAsync(int year, Semester semester, string firstName, string lastName, string? middleName)
         {
+            if(middleName == "")
+            {
+                middleName = null;
+            }
+
             return await _context.DailyTimeRecords
                 .Where(d => d.SchoolYear == year && d.Semester == semester && d.FirstName == firstName && 
                 d.LastName == lastName && d.MiddleName == middleName)
