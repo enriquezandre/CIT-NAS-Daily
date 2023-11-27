@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const ViewScheduleTable = ({ openModal, currentMonth }) => {
+export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semester }) => {
   const { nasId } = useParams();
   const [totalHours, setTotalHours] = useState(0);
   const [schedule, setSchedule] = useState({
@@ -15,7 +15,7 @@ export const ViewScheduleTable = ({ openModal, currentMonth }) => {
     Saturday: [],
   });
 
-  const endOfSem = ["January", "June", "August"];
+  const endOfSy = ["May", "June"];
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -27,38 +27,44 @@ export const ViewScheduleTable = ({ openModal, currentMonth }) => {
           },
         });
 
-        const response = await api.get(`/Schedule/${nasId}`);
+        const response = await api.get(`/Schedule/${nasId}/${schoolYear}/${semester}`);
         const nasData = response.data;
 
         // Update the schedule state with the fetched data
-        const updatedSchedule = {
-          Monday: [],
-          Tuesday: [],
-          Wednesday: [],
-          Thursday: [],
-          Friday: [],
-          Saturday: [],
-        };
+        // Check if nasData.schedules is an array
+        if (Array.isArray(nasData.schedules)) {
+          // Update the schedule state with the fetched data
+          const updatedSchedule = {
+            Monday: [],
+            Tuesday: [],
+            Wednesday: [],
+            Thursday: [],
+            Friday: [],
+            Saturday: [],
+          };
 
-        nasData.forEach((item) => {
-          const dayOfWeek = item.dayOfWeek;
-          const dayName = getDayName(dayOfWeek);
+          nasData.schedules.forEach((item) => {
+            const dayOfWeek = item.dayOfWeek;
+            const dayName = getDayName(dayOfWeek);
 
-          if (updatedSchedule[dayName]) {
-            updatedSchedule[dayName].push(item);
-          } else {
-            console.error(`Invalid day of the week: ${dayOfWeek}`);
-          }
-        });
+            if (updatedSchedule[dayName]) {
+              updatedSchedule[dayName].push(item);
+            } else {
+              console.error(`Invalid day of the week: ${dayOfWeek}`);
+            }
+          });
 
-        setSchedule(updatedSchedule);
+          setSchedule(updatedSchedule);
+        } else {
+          console.error("Invalid data structure received from the API");
+        }
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchSchedule();
-  }, [nasId]);
+  }, [nasId, schoolYear, semester]);
 
   useEffect(() => {
     // Calculate the total hours when the schedule updates
@@ -117,9 +123,9 @@ export const ViewScheduleTable = ({ openModal, currentMonth }) => {
     return total;
   };
 
-  //check if
-  const isEndOfSem = (currentMonth) => {
-    if (endOfSem.includes(currentMonth)) {
+  //check if end of school year
+  const isEndOfSy = (currentMonth) => {
+    if (endOfSy.includes(currentMonth)) {
       return true;
     } else {
       return false;
@@ -172,15 +178,15 @@ export const ViewScheduleTable = ({ openModal, currentMonth }) => {
       <div style={{ display: "flex", justifyContent: "center", paddingTop: "1.5em" }}>
         <button
           className={`py-2 px-3 rounded-lg flex justify-center items-center ${
-            isEndOfSem(currentMonth) ? "hover: font-semibold" : ""
+            isEndOfSy(currentMonth) ? "hover: font-semibold" : ""
           }`}
           style={{
-            backgroundColor: isEndOfSem(currentMonth) ? "#88333a" : "#c5c5c5",
+            backgroundColor: isEndOfSy(currentMonth) ? "#88333a" : "#c5c5c5",
             color: "white",
             width: "12em",
           }}
-          onClick={isEndOfSem(currentMonth) ? openModal : undefined}
-          disabled={!isEndOfSem(currentMonth)}
+          onClick={isEndOfSy(currentMonth) ? openModal : undefined}
+          disabled={!isEndOfSy(currentMonth)}
         >
           <svg
             className="w-4 h-4 mr-2"
@@ -201,4 +207,6 @@ export const ViewScheduleTable = ({ openModal, currentMonth }) => {
 ViewScheduleTable.propTypes = {
   openModal: PropTypes.func.isRequired,
   currentMonth: PropTypes.string.isRequired,
+  schoolYear: PropTypes.string.isRequired,
+  semester: PropTypes.string.isRequired,
 };
