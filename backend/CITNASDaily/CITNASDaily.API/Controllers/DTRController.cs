@@ -46,13 +46,13 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("{year}/{semester}", Name = "GetAllDTRBySYSem")]
+        [HttpGet("{year}/{semester}/{firstName}/{lastName}", Name = "GetAllDTRBySYSem")]
         [Authorize]
-        public async Task<IActionResult> GetAllDTRBySYSem(int year, int semester)
+        public async Task<IActionResult> GetAllDTRBySYSem(int year, int semester, string firstName, string lastName, [FromQuery] string middleName = "")
         {
             try
             {
-                var dtr = await _dtrService.GetDTRsBySYSemesterAsync(year, (Semester)semester);
+                var dtr = await _dtrService.GetDTRsBySYSemesterAsync(year, (Semester)semester, firstName, lastName, middleName);
 
                 if (dtr == null)
                 {
@@ -86,14 +86,16 @@ namespace CITNASDaily.API.Controllers
                     {
                         DailyTimeRecord record = new DailyTimeRecord
                         {
-                            NasName = worksheet.Cells[i, 1].Value?.ToString(),
-                            Date = worksheet.Cells[i, 2].Value?.ToString(),
-                            TimeIn = worksheet.Cells[i, 3].Value?.ToString(),
-                            TimeOut = worksheet.Cells[i, 4].Value?.ToString(),
-                            OvertimeIn = worksheet.Cells[i, 5].Value?.ToString(),
-                            OvertimeOut = worksheet.Cells[i, 6].Value?.ToString(),
-                            WorkTime = worksheet.Cells[i, 7].Value?.ToString(),
-                            TotalWorkTime = worksheet.Cells[i, 8].Value?.ToString(),
+                            FirstName = worksheet.Cells[i, 1].Value?.ToString(),
+                            MiddleName = worksheet.Cells[i, 2].Value?.ToString(),
+                            LastName = worksheet.Cells[i, 3].Value?.ToString(),
+                            Date = worksheet.Cells[i, 4].Value?.ToString(),
+                            TimeIn = worksheet.Cells[i, 5].Value?.ToString(),
+                            TimeOut = worksheet.Cells[i, 6].Value?.ToString(),
+                            OvertimeIn = worksheet.Cells[i, 7].Value?.ToString(),
+                            OvertimeOut = worksheet.Cells[i, 8].Value?.ToString(),
+                            WorkTime = worksheet.Cells[i, 9].Value?.ToString(),
+                            TotalWorkTime = worksheet.Cells[i, 10].Value?.ToString(),
                             SchoolYear = year,
                             Semester = (Semester) semester
                         };
@@ -120,7 +122,7 @@ namespace CITNASDaily.API.Controllers
                     return Forbid();
                 }
                 var fullName = string.IsNullOrEmpty(middleName) ? $"{firstName} {lastName}" : $"{firstName} {middleName} {lastName}";
-                var dtr = await _dtrService.GetDTRByNasNameAsync(fullName);
+                var dtr = await _dtrService.GetDTRByNasNameAsync(firstName, lastName, middleName);
 
                 if (dtr == null || !dtr.Any())
                 {

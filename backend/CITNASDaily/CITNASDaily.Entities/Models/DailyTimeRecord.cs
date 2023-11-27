@@ -7,7 +7,14 @@ namespace CITNASDaily.Entities.Models
     {
         [Key]
         public int Id { get; set; }
-        public string? NasName { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string? FirstName { get; set; }
+        [MaxLength(50)]
+        public string? MiddleName { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string? LastName { get; set; }
         public string? Date { get; set; }
         public string? TimeIn { get; set; }
         public string? TimeOut { get; set; }
