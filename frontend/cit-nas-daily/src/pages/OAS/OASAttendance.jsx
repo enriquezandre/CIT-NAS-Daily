@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { MonthlySummary } from "../../components/MonthlySummary";
 import { WeeklyAttendance } from "../../components/OAS/WeeklyAttendance";
 import { Button } from "flowbite-react";
@@ -40,20 +40,28 @@ export const OASAttendance = () => {
   const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
+  const [nasArray, setNasArray] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
+
+  const handleSearchChange = (event) => {
+    setSearchInput(event.target.value);
+  };
 
   useEffect(() => {
     const fetchNas = async () => {
       try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
         const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
-        console.log(nasresponse);
         const nasData = nasresponse.data;
 
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
@@ -119,10 +127,36 @@ export const OASAttendance = () => {
     }
 
     setSelectedMonthIndex(selectedMonthIndex);
-    console.log("Selected Sem:", selectedSem);
-    console.log("Selected Month Index:", selectedMonthIndex);
-    console.log("Selected SY:", selectedSY);
-  }, [selectedSY, selectedSem, selectedMonth, nasId]);
+  }, [selectedSY, selectedSem, selectedMonth, nasId, api]);
+
+  useEffect(() => {
+    const fetchNasData = async () => {
+      try {
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get(`/NAS/noimg`);
+        setNasArray(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchNasData();
+  }, []);
+
+  useEffect(() => {
+    const results = nasArray.filter((data) =>
+      data.fullName.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    if (results[0]) {
+      setNasId(results[0].id);
+    }
+  }, [searchInput, nasArray]);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -142,7 +176,6 @@ export const OASAttendance = () => {
     } else {
       setSelectedMonth(value);
     }
-    console.log("Selected Month:", value);
   };
 
   console.log(nasId);
@@ -161,7 +194,9 @@ export const OASAttendance = () => {
                 {nasId > 1 && (
                   <Button
                     className="text-black"
-                    onClick={() => setNasId(nasId - 1)}
+                    onClick={() => {
+                      setNasId(nasId - 1);
+                    }}
                   >
                     <HiOutlineArrowLeft className="h-6 w-6" />
                   </Button>
@@ -186,6 +221,8 @@ export const OASAttendance = () => {
                     type="search"
                     className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
                     placeholder="Search NAS..."
+                    value={searchInput}
+                    onChange={handleSearchChange}
                     required
                   />
                   <button
@@ -212,7 +249,10 @@ export const OASAttendance = () => {
               </div>
               <Button
                 className="text-black"
-                onClick={() => setNasId(nasId + 1)}
+                onClick={() => {
+                  setSearchInput("");
+                  setNasId(nasId + 1);
+                }}
               >
                 <HiOutlineArrowRight className="h-6 w-6" />
               </Button>
