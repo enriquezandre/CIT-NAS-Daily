@@ -41,6 +41,9 @@ namespace CITNASDaily.Services.Services
 
             DailyTimeRecordListDto dailyTimeRecordListDto = new DailyTimeRecordListDto
             {
+                FirstName = firstName,
+                MiddleName = middleName,
+                LastName = lastName,
                 SchoolYear = year,
                 Semester = semester,
                 DailyTimeRecords = dtrDto

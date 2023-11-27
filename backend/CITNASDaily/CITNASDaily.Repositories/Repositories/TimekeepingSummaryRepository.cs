@@ -58,7 +58,8 @@ namespace CITNASDaily.Repositories.Repositories
                         nasId = timekeepingSummary.NASId,
                         Semester = timekeepingSummary.Semester,
                         SchoolYear = timekeepingSummary.SchoolYear,
-                        TimekeepingStatus = timekeepingSummary.TimekeepingStatus
+                        TimekeepingStatus = timekeepingSummary.TimekeepingStatus,
+                        UnitsAllowed = existingNAS.UnitsAllowed
                     };
                     await _context.SummaryEvaluations.AddAsync(sumEval);
                     await _context.TimekeepingSummaries.AddAsync(timekeepingSummary);

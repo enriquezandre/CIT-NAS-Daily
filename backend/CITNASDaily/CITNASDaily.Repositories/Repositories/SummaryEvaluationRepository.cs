@@ -54,7 +54,6 @@ namespace CITNASDaily.Repositories.Repositories
                                                 .FirstOrDefaultAsync();
             if(existingEval != null)
             {
-                existingEval.UnitsAllowed = summaryEvaluation.UnitsAllowed;
                 existingEval.AllCoursesPassed = summaryEvaluation.AllCoursesPassed;
                 existingEval.NoOfCoursesFailed = summaryEvaluation.NoOfCoursesFailed;
 
@@ -65,6 +64,11 @@ namespace CITNASDaily.Repositories.Repositories
                 else
                 {
                     existingEval.EnrollmentAllowed = false;
+                }
+
+                if(existingEval.NoOfCoursesFailed > 0)
+                {
+                    existingEval.UnitsAllowed = existingEval.UnitsAllowed - (3 * existingEval.NoOfCoursesFailed);
                 }
 
                 await _context.SaveChangesAsync();
