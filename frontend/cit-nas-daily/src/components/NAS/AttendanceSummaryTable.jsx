@@ -63,6 +63,10 @@ export const AttendanceSummaryTable = ({
         setFirstName(nasData.firstName);
         setLastName(nasData.lastName);
         setMiddleName(nasData.middleName);
+        console.log(firstName);
+        if (nasData.middleName === null) {
+          setMiddleName(null);
+        }
 
         const dtrresponse = await api.get(
           `DTR/${selectedSY}/${getSemesterValue(
