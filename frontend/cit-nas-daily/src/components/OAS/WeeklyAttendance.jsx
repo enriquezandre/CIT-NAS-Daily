@@ -1,138 +1,81 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
 export const WeeklyAttendance = ({
-  nasId,
+  firstName,
+  lastName,
+  middleName,
   selectedMonth,
   selectedSem,
   selectedSY,
 }) => {
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
 
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
+
+  const formatTime = (timeStr) => {
+    if (timeStr) {
+      const [hours, minutes] = timeStr.split(":");
+      const date = new Date();
+      date.setHours(hours);
+      date.setMinutes(minutes);
+      const options = { hour: "numeric", minute: "numeric", hour12: true };
+      return date.toLocaleTimeString("en-US", options);
+    }
+    return null;
+  };
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 3;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const fetchNas = async () => {
       try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const response = await api.get(`BiometricLogs?nasId=${nasId}`);
-        const data = response.data;
-
-        if (!data || data.length === 0) {
-          setAttendanceSummaries([
-            {
-              dateTime: null,
-              DutyOn: null,
-              DutyOff: "NO RECORD",
-              OvertimeOn: null,
-              OverTimeOff: null,
-            },
-          ]);
-          return;
-        }
-
-        // TO DO: DATE RANGE FOR FIRST, SECOND, SUMMER SEMESTER
-        const startDate = new Date("2021-01-01");
-        const endDate = new Date();
-        endDate.setHours(23, 59, 59, 999);
-        const dateRange = [];
-        for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
-          dateRange.push(new Date(d));
-        }
-
-        // Group the data by date
-        const groupedData = data.reduce((acc, curr) => {
-          const date = curr.dateTime.split("T")[0];
-          if (!acc[date]) {
-            acc[date] = {
-              DutyOn: [],
-              DutyOff: [],
-              OvertimeOn: [],
-              OvertimeOff: [],
-            };
-          }
-          acc[date][curr.inOut].push(curr);
-          return acc;
-        }, {});
-
-        // Create a record for each date in the date range
-        const latestLogs = dateRange.map((date) => {
-          const dateString = date.toISOString().split("T")[0];
-          const logs = groupedData[dateString];
-          if (logs) {
-            return {
-              dateTime: dateString,
-              DutyOn: logs.DutyOn.sort(
-                (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
-              )[0],
-              DutyOff: logs.DutyOff.sort(
-                (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
-              )[0],
-              OvertimeOn: logs.OvertimeOn.sort(
-                (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
-              )[0],
-              OvertimeOff: logs.OvertimeOff.sort(
-                (a, b) => new Date(b.dateTime) - new Date(a.dateTime)
-              )[0],
-            };
-          } else {
-            return {
-              dateTime: dateString,
-              DutyOn: null,
-              DutyOff: "NO RECORD",
-              OvertimeOn: null,
-              OverTimeOff: null,
-            };
-          }
-        });
-
-        const filteredData = latestLogs.filter((item) => {
-          const date = new Date(item.dateTime);
-          const month = date.getMonth();
-          const year = date.getFullYear();
-          const first = parseInt(
-            year.toString().substring(0, 2) + selectedSY.substring(0, 2)
-          );
-          const second = parseInt(
-            year.toString().substring(0, 2) + selectedSY.substring(2)
-          );
-          switch (selectedMonth) {
-            case -1:
-              return month >= 7 && month <= 11 && year === first;
-            case -2:
-              return month >= 0 && month <= 5 && year === second;
-            case -3:
-              return month >= 5 && month <= 7 && year === second;
-          }
-
-          switch (selectedSem) {
-            case "First":
-              return month === selectedMonth && year === first;
-            case "Second":
-              return month === selectedMonth && year === second;
-            case "Summer":
-              return month === selectedMonth && year === second;
-          }
-        });
-        console.log(nasId);
-        setAttendanceSummaries(filteredData);
-        console.log(filteredData);
+        const dtrresponse = await api.get(
+          `DTR/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}/${firstName}/${lastName}?middleName=${middleName}`
+        );
+        const dtrdata = dtrresponse.data;
+        console.log(dtrdata);
+        setAttendanceSummaries(dtrdata.dailyTimeRecords);
       } catch (error) {
         console.error(error);
       }
     };
     fetchNas();
-  }, [nasId, selectedMonth, selectedSem, selectedSY]);
-
-  const formatTime = (time) => {
-    const [hour, minute] = time.split(":");
-    return `${hour % 12 || 12}:${minute} ${hour < 12 ? "AM" : "PM"}`;
-  };
+  }, [
+    selectedMonth,
+    selectedSem,
+    selectedSY,
+    api,
+    firstName,
+    middleName,
+    lastName,
+    getSemesterValue,
+  ]);
 
   return (
     <table className="w-4/5 mx-auto mb-8">
@@ -146,42 +89,39 @@ export const WeeklyAttendance = ({
         </tr>
       </thead>
       <tbody>
-        {attendanceSummaries.map((summary) => (
-          <tr key={summary.dateTime}>
-            <td className="border px-4 py-8 w-1/5 text-center">
-              {summary.dateTime}
-            </td>
-            <td className="border px-4 py-2 w-1/5 text-center">
-              {summary.DutyOn
-                ? formatTime(summary.DutyOn.dateTime.split("T")[1])
-                : ""}
-            </td>
-            <td className="border px-4 py-2 w-1/5 text-center">
-              {summary.DutyOff
-                ? summary.DutyOff === "NO RECORD"
-                  ? "NO RECORD"
-                  : formatTime(summary.DutyOff.dateTime.split("T")[1])
-                : ""}
-            </td>
-            <td className="border px-4 py-2 w-1/5 text-center">
-              {summary.OvertimeOn
-                ? formatTime(summary.OvertimeOn.dateTime.split("T")[1])
-                : ""}
-            </td>
-            <td className="border px-4 py-2 w-1/5 text-center">
-              {summary["OverTime Off"]
-                ? formatTime(summary["OverTime Off"].dateTime.split("T")[1])
-                : ""}
-            </td>
-          </tr>
-        ))}
+        {Array.isArray(attendanceSummaries) &&
+          attendanceSummaries.map((summary) => (
+            <tr key={summary.id}>
+              <td className="border px-4 py-8 w-1/5 text-center">
+                {summary.date}
+              </td>
+              <td className="border px-4 py-2 w-1/5 text-center">
+                {summary.timeIn === "FTP IN"
+                  ? "FTP IN"
+                  : formatTime(summary.timeIn)}
+              </td>
+              <td className="border px-4 py-2 w-1/5 text-center">
+                {summary.timeOut === "FTP OUT"
+                  ? "FTP OUT"
+                  : formatTime(summary.timeOut)}
+              </td>
+              <td className="border px-4 py-2 w-1/5 text-center">
+                {formatTime(summary.overtimeIn)}
+              </td>
+              <td className="border px-4 py-2 w-1/5 text-center">
+                {formatTime(summary.overtimeOut)}
+              </td>
+            </tr>
+          ))}
       </tbody>
     </table>
   );
 };
 
 WeeklyAttendance.propTypes = {
-  nasId: PropTypes.number.isRequired,
+  firstName: PropTypes.string.isRequired,
+  lastName: PropTypes.string.isRequired,
+  middleName: PropTypes.string.isRequired,
   selectedMonth: PropTypes.number.isRequired,
   selectedSem: PropTypes.string.isRequired,
   selectedSY: PropTypes.string.isRequired,
