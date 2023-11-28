@@ -2,24 +2,9 @@
 import { useState, useEffect } from "react";
 import { ActivitiesSummaryTable } from "../../components/NAS/ActivitiesSummaryTable.jsx";
 
-const first_sem = [
-  "All",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+const first_sem = ["All", "August", "September", "October", "November", "December"];
 
-const second_sem = [
-  "All",
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-];
+const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
 
 const summer = ["All", "June", "July", "August"];
 
@@ -91,7 +76,7 @@ export const ActivitiesSummary = () => {
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
         <div className="m-2">
-          <div className="flex mt-2 ml-2">
+          <div className="flex mt-2">
             <div className="w-36 z-10 flex">
               <div className="mr-2">SY:</div>
               <select

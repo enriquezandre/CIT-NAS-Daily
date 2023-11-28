@@ -41,7 +41,8 @@ export const ConfirmAddScheduleModal = ({ isOpen, closeModal, handleSubmit }) =>
             </div>
             <div className="text-center pt-3">
               <p className="font-semibold text-lg">
-                Adding a new schedule will replace your existing schedule. Do you want to proceed?
+                Adding a new schedule will replace your schedule from the previous school year. Do
+                you want to proceed?
               </p>
             </div>
           </div>

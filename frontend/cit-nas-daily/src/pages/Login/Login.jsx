@@ -8,22 +8,19 @@ import axios from "axios";
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await axios.post(
-        "https://localhost:7001/api/Auth/login",
-        {
-          username,
-          password,
-        }
-      );
+      const response = await axios.post("https://localhost:7001/api/Auth/login", {
+        username,
+        password,
+      });
 
       localStorage.setItem("token", response.data);
-      console.log(response.data);
 
       // Create an Axios instance with the Authorization header after login
       const api = axios.create({
@@ -60,7 +57,11 @@ export const Login = () => {
           navigate("Unknown role");
       }
     } catch (error) {
-      console.error(error);
+      if ((error.response && error.response.status === 400) || error.response.status === 404) {
+        setError("Invalid username or password");
+      } else {
+        setError("An error occurred");
+      }
     }
   };
 
@@ -81,9 +82,12 @@ export const Login = () => {
                 <input
                   type="text"
                   id="username"
-                  className="text-input"
+                  className="text-input text-black p-2"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setError(""); // Clear error when there are changes in the password
+                  }}
                 />
                 <label htmlFor="password" className="input-label">
                   Enter Password
@@ -91,11 +95,15 @@ export const Login = () => {
                 <input
                   type="password"
                   id="password"
-                  className="text-input"
+                  className="h-9 mb-2 text-black p-2" // Add mb-2 to reduce margin-bottom
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setError(""); // Clear error when there are changes in the password
+                  }}
                 />
-                <input type="submit" className="button-submit" value="Login" />
+                <div className="h-5 mb-3 text-white">{error}</div>
+                <input type="submit" className="button-submit hover:cursor-pointer" value="Login" />
               </div>
             </form>
           </div>
