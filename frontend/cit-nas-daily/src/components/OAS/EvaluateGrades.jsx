@@ -1,15 +1,77 @@
 "use client";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ShowGrades } from "./ShowGrades";
+import axios from "axios";
 
-export const EvaluateGrades = ({ show, close, grade }) => {
+export const EvaluateGrades = ({
+  show,
+  close,
+  grade,
+  nasId,
+  selectedSY,
+  selectedSem,
+}) => {
   const [isViewingShowGrades, setIsViewingShowGrades] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [numCoursesFailed, setNumCoursesFailed] = useState(0);
+  const [numCoursesFailed, setNumCoursesFailed] = useState(null);
+  const [allCoursesPassed, setAllCoursesPassed] = useState(null);
 
-  const handleInputChange = (value) => {
-    setNumCoursesFailed(value);
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 3;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
+
+  const handleInputChange = (event) => {
+    const target = event.target;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    const name = target.name;
+
+    if (name === "course-passed") {
+      setAllCoursesPassed(value === "yes");
+    } else if (name === "num-courses-failed") {
+      setNumCoursesFailed(value);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const api = axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const requestData = {
+        nasId: nasId,
+        semester: getSemesterValue(selectedSem),
+        schoolYear: selectedSY,
+        allCoursesPassed: allCoursesPassed,
+        noOfCoursesFailed: numCoursesFailed,
+      };
+
+      const response = await api.put(`/SummaryEvaluation`, requestData);
+      console.log(requestData);
+
+      if (response.status === 200 || response.status === 201) {
+        alert("Submitted successfully");
+      } else {
+        alert("Submission failed");
+      }
+      close();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const openShowGrades = () => {
@@ -52,6 +114,7 @@ export const EvaluateGrades = ({ show, close, grade }) => {
                       value="yes"
                       name="course-passed"
                       className="h-5 w-5"
+                      onChange={handleInputChange}
                     />
                     <label
                       htmlFor="default-radio-1"
@@ -67,6 +130,7 @@ export const EvaluateGrades = ({ show, close, grade }) => {
                       value="no"
                       name="course-passed"
                       className="h-5 w-5"
+                      onChange={handleInputChange}
                     />
                     <label
                       htmlFor="default-radio-2"
@@ -83,13 +147,15 @@ export const EvaluateGrades = ({ show, close, grade }) => {
                   </p>
                   <input
                     type="number"
+                    name="num-courses-failed"
                     className="w-1/4 border-2 border-gray-300 rounded-md px-2"
-                    onChange={(e) => handleInputChange(e.target.value)}
+                    onChange={handleInputChange}
                   />
                 </div>
                 <button
                   type="button"
                   className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-xl text-sm px-20 py-2.5"
+                  onClick={handleSubmit}
                 >
                   SUBMIT
                 </button>
@@ -113,4 +179,7 @@ EvaluateGrades.propTypes = {
   show: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
   grade: PropTypes.string.isRequired,
+  nasId: PropTypes.number.isRequired,
+  selectedSY: PropTypes.number.isRequired,
+  selectedSem: PropTypes.number.isRequired,
 };

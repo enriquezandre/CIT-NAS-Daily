@@ -24,6 +24,23 @@ export const NASEvaluationResult = () => {
     setSelectedSem(value);
   };
 
+  const getSavedState = () => {
+    const savedFileUploaded = localStorage.getItem("fileUploaded");
+    const savedSubmitted = localStorage.getItem("submitted");
+
+    if (savedFileUploaded) {
+      setFileUploaded(JSON.parse(savedFileUploaded));
+    }
+
+    if (savedSubmitted) {
+      setSubmitted(JSON.parse(savedSubmitted));
+    }
+  };
+
+  useEffect(() => {
+    getSavedState();
+  }, []);
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -36,6 +53,10 @@ export const NASEvaluationResult = () => {
       } else {
         setFileUploaded(file);
       }
+    }
+    if (fileUploaded) {
+      setFileUploaded(file);
+      localStorage.setItem("fileUploaded", JSON.stringify(file)); // Save fileUploaded to localStorage
     }
   };
 
@@ -73,6 +94,8 @@ export const NASEvaluationResult = () => {
       } catch (error) {
         console.error("Error uploading grades:", error);
       }
+      setSubmitted(true);
+      localStorage.setItem("submitted", JSON.stringify(true)); // Save submitted to localStorage
     }
   };
 
@@ -204,17 +227,18 @@ export const NASEvaluationResult = () => {
                       onChange={handleFileUpload}
                     />
                     {fileUploaded ? (
-                      <button
-                        className="py-2 rounded-md bg-secondary w-24 items-center justify center hover:bg-primary hover:text-white"
-                        onClick={handleSubmit}
-                      >
-                        Submit
-                      </button>
+                      submitted ? null : (
+                        <button
+                          className="py-2 rounded-md bg-secondary w-24 items-center justify center hover:bg-primary hover:text-white"
+                          onClick={handleSubmit}
+                        >
+                          Submit
+                        </button>
+                      )
                     ) : null}
                   </div>
                 ) : summaryEvaluation.allCoursesPassed === null ||
-                  summaryEvaluation.allCoursesPassed === undefined ||
-                  summaryEvaluation.allCoursesPassed === false ? (
+                  summaryEvaluation.allCoursesPassed === undefined ? (
                   <span className="text-yellow">PENDING</span>
                 ) : summaryEvaluation.allCoursesPassed ? (
                   <span className="text-green">ALL PASSED</span>
