@@ -41,19 +41,26 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task SaveDTRs(IEnumerable<DailyTimeRecord> records)
         {
-            foreach(var dtr in records)
+            var existingRecords = await _context.DailyTimeRecords.AnyAsync();
+
+            if (existingRecords)
             {
-                var existingDTR = await _context.DailyTimeRecords
-                    .FirstOrDefaultAsync(e => e.FirstName == dtr.FirstName && e.MiddleName == dtr.MiddleName && e.LastName == dtr.LastName 
-                    && e.Date == dtr.Date && e.TimeIn == dtr.TimeIn && e.TimeOut == dtr.TimeOut && e.OvertimeIn == dtr.OvertimeIn &&
-                    e.OvertimeOut == dtr.OvertimeOut && e.WorkTime == dtr.WorkTime && e.TotalWorkTime == dtr.TotalWorkTime
-                    && e.Semester == dtr.Semester && e.SchoolYear == dtr.SchoolYear);
-                
-                if(existingDTR == null)
-                {
-                    await _context.DailyTimeRecords.AddAsync(dtr);
-                }
+                await _context.DailyTimeRecords.ExecuteDeleteAsync();
+                await _context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT('DailyTimeRecord', RESEED, 0)");
             }
+
+            foreach (var dtr in records)
+            {
+                if(dtr.FirstName == null && dtr.MiddleName == null && dtr.LastName == null &&
+                    dtr.Date == null && dtr.TimeIn == null && dtr.TimeOut == null &&
+                    dtr.OvertimeIn == null && dtr.OvertimeOut == null && dtr.WorkTime == null
+                    && dtr.TotalWorkTime == null)
+                {
+                    continue;
+                }
+                await _context.DailyTimeRecords.AddAsync(dtr);
+            }
+
             await _context.SaveChangesAsync();
         }
     }
