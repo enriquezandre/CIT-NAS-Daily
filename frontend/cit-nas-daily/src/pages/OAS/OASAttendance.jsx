@@ -5,25 +5,8 @@ import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import axios from "axios";
 
-const first_sem = [
-  "All",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const second_sem = [
-  "All",
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-];
-
+const first_sem = ["All", "August", "September", "October", "November", "December"];
+const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
 const summer = ["All", "June", "July", "August"];
 
 export const OASAttendance = () => {
@@ -67,9 +50,7 @@ export const OASAttendance = () => {
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
         const officeData = officeResponse.data;
 
-        const timekeepingresponse = await api.get(
-          `/TimekeepingSummary/${nasId}`
-        );
+        const timekeepingresponse = await api.get(`/TimekeepingSummary/${nasId}`);
         let timekeepingdata = timekeepingresponse.data[0];
         console.log(timekeepingdata);
 
@@ -185,11 +166,7 @@ export const OASAttendance = () => {
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
-            <div
-              className={`flex items-center w-auto ${
-                nasId === 1 ? "ml-10" : ""
-              }`}
-            >
+            <div className={`flex items-center w-auto ${nasId === 1 ? "ml-10" : ""}`}>
               <div>
                 {nasId > 1 && (
                   <Button
@@ -207,10 +184,7 @@ export const OASAttendance = () => {
               </div>
             </div>
             <li>
-              <p
-                className="font-bold text-center"
-                style={{ textTransform: "uppercase" }}
-              >
+              <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
                 DEPT/OFFICE: {office}
               </p>
             </li>
@@ -311,13 +285,9 @@ export const OASAttendance = () => {
               </div>
             </div>
             <div className="flex flex-col justify-center items-center gap-4">
-              <p className="text-xl font-bold text-primary">
-                MONTHLY SUMMARY OF ABSENCES/LATE
-              </p>
+              <p className="text-xl font-bold text-primary">MONTHLY SUMMARY OF ABSENCES/LATE</p>
               <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
-              <p className="text-xl font-bold text-primary">
-                WEEKLY ATTENDANCE
-              </p>
+              <p className="text-xl font-bold text-primary">WEEKLY ATTENDANCE</p>
               <WeeklyAttendance
                 firstName={firstName}
                 lastName={lastName}
@@ -325,6 +295,7 @@ export const OASAttendance = () => {
                 selectedMonth={selectedMonthIndex}
                 selectedSem={selectedSem}
                 selectedSY={selectedSY}
+                nasId={nasId}
               />
             </div>
           </div>
