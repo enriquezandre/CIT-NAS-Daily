@@ -158,18 +158,20 @@ namespace CITNASDaily.Services.Services
             return await _nasRepository.GetNASIdByUsernameAsync(username);
         }
 
-        public async Task<List<NASDto?>> GetNASByOfficeIdAsync(int officeId)
+        public async Task<NasByOfficeIdListDto> GetNASByOfficeIdSYSemesterAsync(int officeId, int year, Semester semester)
         {
-            var nasByOffice = await _nasRepository.GetNASByOfficeIdAsync(officeId);
-            var nasDto = _mapper.Map<List<NASDto>>(nasByOffice);
+            var nasByOffice = await _nasRepository.GetNASByOfficeIdSYSemesterAsync(officeId, year, semester);
+            var nasDto = _mapper.Map<List<NASDtoNoImage>>(nasByOffice);
 
-            foreach (var nas in nasDto)
+            NasByOfficeIdListDto nas = new NasByOfficeIdListDto
             {
-                nas.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nas.Id));
-                nas.OfficeName = await _officeRepository.GetOfficeNameAsync(nas.OfficeId);
-            }
+                OfficeId = officeId,
+                SchoolYear = year,
+                Semester = semester,
+                NASEntries = nasDto
+            };
 
-            return nasDto;
+            return nas;
         }
 
         #endregion

@@ -210,15 +210,15 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("{officeId}/offices", Name = "GetNASByOfficeIdAsync")]
+        [HttpGet("{officeId}/{year}/{semester}", Name = "GetNASByOfficeIdSYSemester")]
         [Authorize]
-        public async Task<IActionResult> GetNASByOfficeIdAsync(int officeId)
+        public async Task<IActionResult> GetNASByOfficeIdSYSemester(int officeId, int year, int semester)
         {
             try
             {
-                var nas = await _nasService.GetNASByOfficeIdAsync(officeId);
+                var nas = await _nasService.GetNASByOfficeIdSYSemesterAsync(officeId, year, (Semester)semester);
 
-                if (nas.IsNullOrEmpty())
+                if (nas == null)
                 {
                     return NotFound("No NAS under your office yet.");
                 }
