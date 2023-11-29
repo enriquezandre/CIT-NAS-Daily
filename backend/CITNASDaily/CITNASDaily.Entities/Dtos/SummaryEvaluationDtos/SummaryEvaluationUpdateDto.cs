@@ -16,5 +16,6 @@ namespace CITNASDaily.Entities.Dtos.SummaryEvaluationDtos
         public bool? EnrollmentAllowed { get; set; } = null;
         public bool? AllCoursesPassed { get; set; } = null;
         public int NoOfCoursesFailed { get; set; }
+        public string? Responded { get; set; }
     }
 }

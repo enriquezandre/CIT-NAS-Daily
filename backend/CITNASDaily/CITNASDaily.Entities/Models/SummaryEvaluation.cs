@@ -21,5 +21,6 @@ namespace CITNASDaily.Entities.Models
         public int? UnitsAllowed { get; set; }
         public bool AllCoursesPassed { get; set; }
         public int NoOfCoursesFailed { get; set; }
+        public string? Responded { get; set; }
     }
 }
