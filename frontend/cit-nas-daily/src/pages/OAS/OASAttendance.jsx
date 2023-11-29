@@ -42,6 +42,7 @@ export const OASAttendance = () => {
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [maxNasId, setMaxNasId] = useState(1);
 
   const api = useMemo(
     () =>
@@ -141,6 +142,9 @@ export const OASAttendance = () => {
 
         const response = await api.get(`/NAS/noimg`);
         setNasArray(response.data);
+
+        const maxId = Math.max(...response.data.map((nas) => nas.id), 1);
+        setMaxNasId(maxId);
       } catch (error) {
         console.error(error);
       }
@@ -247,14 +251,18 @@ export const OASAttendance = () => {
                   </button>
                 </div>
               </div>
-              <Button
-                className="text-black"
-                onClick={() => {
-                  setNasId(nasId + 1);
-                }}
-              >
-                <HiOutlineArrowRight className="h-6 w-6" />
-              </Button>
+              {nasId < maxNasId ? (
+                <Button
+                  className="text-black"
+                  onClick={() => {
+                    setNasId(nasId + 1);
+                  }}
+                >
+                  <HiOutlineArrowRight className="h-6 w-6" />
+                </Button>
+              ) : (
+                ""
+              )}
             </li>
           </ul>
           <div className="px-8 py-4">
