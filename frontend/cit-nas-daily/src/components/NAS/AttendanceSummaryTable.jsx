@@ -74,6 +74,7 @@ export const AttendanceSummaryTable = ({
           )}/${firstName}/${lastName}?middleName=${middleName}`
         );
         const dtrdata = dtrresponse.data;
+
         const filteredData = dtrdata.dailyTimeRecords.filter((summary) => {
           if (selectedMonth === 0) {
             return true;
@@ -82,7 +83,7 @@ export const AttendanceSummaryTable = ({
             return summaryMonth === selectedMonth;
           }
         });
-        console.log("SELECTED MONTH", selectedMonth);
+
         setAttendanceSummaries(filteredData);
       } catch (error) {
         console.error(error);
