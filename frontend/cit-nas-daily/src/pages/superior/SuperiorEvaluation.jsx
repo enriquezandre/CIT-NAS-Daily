@@ -52,7 +52,7 @@ export const SuperiorEvaluation = () => {
   const { nasId } = useParams();
   const [nas, setNas] = useState({});
   const [selectedOptions, setSelectedOptions] = useState({});
-  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSY, setSelectedSY] = useState(2324);
   const [selectedSem, setSelectedSem] = useState("First");
   const [isViewingPerfSummary, setIsViewingPerfSummary] = useState(false);
   const [attendanceAndPunctuality, setAttendanceAndPunctuality] = useState();
