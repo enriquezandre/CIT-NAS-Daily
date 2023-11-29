@@ -52,7 +52,10 @@ namespace CITNASDaily.Repositories.Repositories
             var existingEval = await _context.SummaryEvaluations
                                                 .Where(se => se.nasId == summaryEvaluation.nasId && se.Semester == summaryEvaluation.Semester && se.SchoolYear == summaryEvaluation.SchoolYear)
                                                 .FirstOrDefaultAsync();
-            if(existingEval != null)
+            var nas = await _context.NAS
+                .FindAsync(summaryEvaluation.nasId);
+
+            if (existingEval != null && nas != null)
             {
                 existingEval.AllCoursesPassed = summaryEvaluation.AllCoursesPassed;
                 existingEval.NoOfCoursesFailed = summaryEvaluation.NoOfCoursesFailed;
@@ -68,7 +71,7 @@ namespace CITNASDaily.Repositories.Repositories
 
                 if(existingEval.NoOfCoursesFailed > 0)
                 {
-                    existingEval.UnitsAllowed = existingEval.UnitsAllowed - (3 * existingEval.NoOfCoursesFailed);
+                    existingEval.UnitsAllowed = nas.UnitsAllowed - (3 * existingEval.NoOfCoursesFailed);
                 }
 
                 await _context.SaveChangesAsync();

@@ -41,7 +41,19 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task SaveDTRs(IEnumerable<DailyTimeRecord> records)
         {
-            await _context.DailyTimeRecords.AddRangeAsync(records);
+            foreach(var dtr in records)
+            {
+                var existingDTR = await _context.DailyTimeRecords
+                    .FirstOrDefaultAsync(e => e.FirstName == dtr.FirstName && e.MiddleName == dtr.MiddleName && e.LastName == dtr.LastName 
+                    && e.Date == dtr.Date && e.TimeIn == dtr.TimeIn && e.TimeOut == dtr.TimeOut && e.OvertimeIn == dtr.OvertimeIn &&
+                    e.OvertimeOut == dtr.OvertimeOut && e.WorkTime == dtr.WorkTime && e.TotalWorkTime == dtr.TotalWorkTime
+                    && e.Semester == dtr.Semester && e.SchoolYear == dtr.SchoolYear);
+                
+                if(existingDTR == null)
+                {
+                    await _context.DailyTimeRecords.AddAsync(dtr);
+                }
+            }
             await _context.SaveChangesAsync();
         }
     }
