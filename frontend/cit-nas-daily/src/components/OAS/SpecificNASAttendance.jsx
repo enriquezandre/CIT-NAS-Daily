@@ -228,7 +228,9 @@ export const SpecificNASAttendance = () => {
                 WEEKLY ATTENDANCE
               </p>
               <WeeklyAttendance
-                nasId={nasId}
+                firstName={firstName}
+                lastName={lastName}
+                middleName={middleName}
                 selectedMonth={selectedMonthIndex}
                 selectedSem={selectedSem}
                 selectedSY={selectedSY}
