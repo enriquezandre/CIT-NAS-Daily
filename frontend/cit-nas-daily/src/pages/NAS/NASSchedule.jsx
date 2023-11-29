@@ -6,7 +6,7 @@ import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable.jsx";
 import { ConfirmAddScheduleModal } from "../../components/NAS/ConfirmAddScheduleModal.jsx";
 import axios from "axios";
 
-const currentDate = new Date();
+const currentDate = new Date("2023-05-01");
 
 //get current Month
 const currentMonth = currentDate.toLocaleString("en-US", { month: "long" });
@@ -45,7 +45,7 @@ export const NASSchedule = () => {
     setSelectedSem(value);
   };
 
-  // functions for SetScheduleTable starts here
+  // ------------ functions for SetScheduleTable starts here
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const [schedule, setSchedule] = useState({
@@ -218,7 +218,7 @@ export const NASSchedule = () => {
       console.error(error);
     }
   };
-  // functions for SetScheduleTable ends here
+  // -------- functions for SetScheduleTable ends here
 
   //fetch schedule
   useEffect(() => {
