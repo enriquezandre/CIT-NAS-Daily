@@ -30,7 +30,7 @@ export const SpecificNASAttendance = () => {
   const [selectedSem, setSelectedSem] = useState("First");
   const [monthOptions, setMonthOptions] = useState(first_sem);
   const [selectedMonth, setSelectedMonth] = useState("All");
-  const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
+  const [selectedMonthIndex, setSelectedMonthIndex] = useState(0);
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
@@ -94,23 +94,23 @@ export const SpecificNASAttendance = () => {
     switch (selectedSem) {
       case "First":
         setMonthOptions(first_sem);
-        selectedMonthIndex = first_sem.indexOf(selectedMonth) + 6;
+        selectedMonthIndex = first_sem.indexOf(selectedMonth) + 7;
         if (selectedMonth === "All") {
-          selectedMonthIndex = -1;
+          selectedMonthIndex = 0;
         }
         break;
       case "Second":
         setMonthOptions(second_sem);
-        selectedMonthIndex = second_sem.indexOf(selectedMonth) - 1;
+        selectedMonthIndex = second_sem.indexOf(selectedMonth);
         if (selectedMonth === "All") {
-          selectedMonthIndex = -2;
+          selectedMonthIndex = 0;
         }
         break;
       case "Summer":
         setMonthOptions(summer);
         selectedMonthIndex = summer.indexOf(selectedMonth) + 5;
         if (selectedMonth === "All") {
-          selectedMonthIndex = -3;
+          selectedMonthIndex = 0;
         }
         break;
       default:
@@ -118,9 +118,6 @@ export const SpecificNASAttendance = () => {
     }
 
     setSelectedMonthIndex(selectedMonthIndex);
-    console.log("Selected Sem:", selectedSem);
-    console.log("Selected Month Index:", selectedMonthIndex);
-    console.log("Selected SY:", selectedSY);
   }, [selectedSY, selectedSem, selectedMonth, nasId]);
 
   const handleSelectSY = (event) => {

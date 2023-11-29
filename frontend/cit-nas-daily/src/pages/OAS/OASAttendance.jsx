@@ -104,23 +104,23 @@ export const OASAttendance = () => {
     switch (selectedSem) {
       case "First":
         setMonthOptions(first_sem);
-        selectedMonthIndex = first_sem.indexOf(selectedMonth) + 6;
+        selectedMonthIndex = first_sem.indexOf(selectedMonth) + 7;
         if (selectedMonth === "All") {
-          selectedMonthIndex = -1;
+          selectedMonthIndex = 0;
         }
         break;
       case "Second":
         setMonthOptions(second_sem);
-        selectedMonthIndex = second_sem.indexOf(selectedMonth) - 1;
+        selectedMonthIndex = second_sem.indexOf(selectedMonth);
         if (selectedMonth === "All") {
-          selectedMonthIndex = -2;
+          selectedMonthIndex = 0;
         }
         break;
       case "Summer":
         setMonthOptions(summer);
         selectedMonthIndex = summer.indexOf(selectedMonth) + 5;
         if (selectedMonth === "All") {
-          selectedMonthIndex = -3;
+          selectedMonthIndex = 0;
         }
         break;
       default:
