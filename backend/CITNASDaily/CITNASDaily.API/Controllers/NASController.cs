@@ -254,6 +254,28 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        [HttpGet("sysem", Name = "GetAllSYAndSem")]
+        [Authorize]
+        public async Task<IActionResult> GetAllSYAndSem()
+        {
+            try
+            {
+                var sysem = await _nasService.GetAllSYAndSem();
+
+                if (sysem == null)
+                {
+                    return NotFound("No school year and sem.");
+                }
+
+                return Ok(sysem);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting school year and sem");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
         #endregion
 
         #region UpdateUpload

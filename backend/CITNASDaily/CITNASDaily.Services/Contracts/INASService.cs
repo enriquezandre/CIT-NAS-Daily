@@ -16,6 +16,7 @@ namespace CITNASDaily.Services.Contracts
         Task<IEnumerable<NASDtoNoImage>?> GetAllNasBySYSemesterAsync(int year, Semester semester);
         Task<int> GetNASIdByUsernameAsync(string username);
         Task<NasByOfficeIdListDto> GetNASByOfficeIdSYSemesterAsync(int officeId, int year, Semester semester);
+        Task<List<NASSYSemOnly>> GetAllSYAndSem();
         Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file);
         Task<NASDto?> UpdateNASAsync(int nasId, NASUpdateDto nasUpdate);
     }

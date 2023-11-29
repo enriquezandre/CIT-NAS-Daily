@@ -174,6 +174,11 @@ namespace CITNASDaily.Services.Services
             return nas;
         }
 
+        public async Task<List<NASSYSemOnly>> GetAllSYAndSem()
+        {
+            return await _schoolYearSemRepository.GetAllSYAndSem();
+        }
+
         #endregion
 
         public async Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file)
