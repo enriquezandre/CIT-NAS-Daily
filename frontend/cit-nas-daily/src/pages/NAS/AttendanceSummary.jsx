@@ -132,17 +132,18 @@ export const AttendanceSummary = () => {
         if (!timekeepingdata) {
           // If there's no record
           timekeepingdata = {
-            excused: "NR",
-            failedToPunch: "NR",
-            lateOver10Mins: "NR",
-            lateOver45Mins: "NR",
-            makeUpDutyHours: "NR",
-            schoolYear: "NR",
-            semester: "NR",
-            unexcused: "NR",
+            excused: 0,
+            failedToPunch: 0,
+            lateOver10Mins: 0,
+            lateOver45Mins: 0,
+            makeUpDutyHours: 0,
+            schoolYear: 0,
+            semester: 0,
+            unexcused: 0,
           };
         }
         console.log(timekeepingdata);
+
         setTimekeepingSummaries(timekeepingdata);
       } catch (error) {
         console.error(error);
