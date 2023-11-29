@@ -74,8 +74,16 @@ export const AttendanceSummaryTable = ({
           )}/${firstName}/${lastName}?middleName=${middleName}`
         );
         const dtrdata = dtrresponse.data;
-        console.log(dtrdata);
-        setAttendanceSummaries(dtrdata.dailyTimeRecords);
+        const filteredData = dtrdata.dailyTimeRecords.filter((summary) => {
+          if (selectedMonth === 0) {
+            return true;
+          } else {
+            const summaryMonth = parseInt(summary.date.split("-")[1], 10);
+            return summaryMonth === selectedMonth;
+          }
+        });
+        console.log("SELECTED MONTH", selectedMonth);
+        setAttendanceSummaries(filteredData);
       } catch (error) {
         console.error(error);
       }
