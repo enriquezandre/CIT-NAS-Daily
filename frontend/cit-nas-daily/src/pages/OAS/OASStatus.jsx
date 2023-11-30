@@ -6,7 +6,7 @@ import axios from "axios";
 
 export const OASStatus = () => {
   const [isViewingEvaluateGrades, setIsViewingEvaluateGrades] = useState(false);
-  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSY, setSelectedSY] = useState(2324);
   const [selectedSem, setSelectedSem] = useState("First");
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
