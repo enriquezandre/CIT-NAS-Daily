@@ -1,17 +1,32 @@
 "use client";
 import { Card, Avatar } from "flowbite-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const NASList = ({ office }) => {
+export const NASList = ({ office, selectedSY, selectedSem }) => {
   const [nasList, setNasList] = useState([]);
   const navigate = useNavigate();
 
   const handleNASClick = (nasId) => {
     navigate(`/oas/${nasId}`);
   };
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 3;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const fetchNasList = async () => {
@@ -23,15 +38,18 @@ export const NASList = ({ office }) => {
           },
         });
 
-        const response = await api.get(`/NAS/${office.id}/offices`);
-        setNasList(response.data);
+        const response = await api.get(
+          `/NAS/${office.id}/${selectedSY}/${getSemesterValue(selectedSem)}`
+        );
+        console.log(response.data);
+        setNasList(response.data.nasEntries);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchNasList();
-  }, [office.id]);
+  }, [office.id, selectedSY, selectedSem, getSemesterValue]);
 
   return (
     <div className="flex justify-center items-center">
@@ -63,5 +81,7 @@ NASList.propTypes = {
     id: PropTypes.number,
     name: PropTypes.string,
   }).isRequired,
+  selectedSY: PropTypes.number,
+  selectedSem: PropTypes.number,
 };
 export default NASList;

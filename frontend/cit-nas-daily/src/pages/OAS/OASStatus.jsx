@@ -301,11 +301,11 @@ export const OASStatus = () => {
                 ) : responded ? (
                   allCoursesPassed ? (
                     <div className="font-bold text-xl text-green">
-                      All Courses Passed
+                      ALL COURSES PASSED
                     </div>
                   ) : (
                     <div className="font-bold text-xl text-red">
-                      Not All Courses Passed
+                      FAILED COURSE/S
                     </div>
                   )
                 ) : (
