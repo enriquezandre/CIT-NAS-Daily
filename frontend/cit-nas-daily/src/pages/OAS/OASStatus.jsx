@@ -113,7 +113,6 @@ export const OASStatus = () => {
           )}`
         );
         setGrades(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error(error);
         setGrades(null);
