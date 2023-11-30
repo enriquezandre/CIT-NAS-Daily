@@ -1,4 +1,5 @@
-﻿using CITNASDaily.Entities.Dtos.TimekeepingSummaryDtos;
+﻿using CITNASDaily.Entities.Dtos.NASDtos;
+using CITNASDaily.Entities.Dtos.TimekeepingSummaryDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Services.Contracts;
 using CITNASDaily.Services.Services;
@@ -111,6 +112,32 @@ namespace CITNASDaily.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting timekeeping summary.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpPut("{nasId}/{year}/{semester}", Name = "UpdateTimekeepingSummary")]
+        [Authorize]
+        public async Task<IActionResult> UpdateTimekeepingSummary(int nasId, int year, int semester, [FromBody] TimekeepingSummaryUpdateDto tkUpdate)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+                var tk = await _timekeepingSummaryService.UpdateTimekeepingSummaryAsync(nasId, year, (Semester) semester, tkUpdate);
+                if (tk == null)
+                {
+                    return BadRequest("Failed to Update timekeeping summary");
+                }
+                return Ok(tk);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating timekeeping summary.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }

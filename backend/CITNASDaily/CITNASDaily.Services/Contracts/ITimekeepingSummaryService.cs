@@ -15,5 +15,6 @@ namespace CITNASDaily.Services.Contracts
         Task<IEnumerable<TimekeepingSummary>?> GetAllTimekeepingSummaryAsync();
         Task<List<TimekeepingSummary>?> GetAllTimekeepingSummaryByNASIdAsync(int nasId);
         Task<TimekeepingSummary?> GetTimekeepingSummaryByNASIdSemesterYearAsync(int nasId, Semester semester, int year);
+        Task<TimekeepingSummary?> UpdateTimekeepingSummaryAsync(int nasId, int year, Semester semester, TimekeepingSummaryUpdateDto tkUpdate);
     }
 }

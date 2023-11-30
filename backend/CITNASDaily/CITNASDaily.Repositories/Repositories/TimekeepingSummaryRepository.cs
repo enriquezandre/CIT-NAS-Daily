@@ -85,5 +85,39 @@ namespace CITNASDaily.Repositories.Repositories
         {
             return await _context.TimekeepingSummaries.FirstOrDefaultAsync(s => s.NASId == nasId && s.Semester == semester && s.SchoolYear == year);
         }
+
+        public async Task<TimekeepingSummary?> UpdateTimekeepingSummaryAsync(int nasId, int year, Semester semester, TimekeepingSummary tk)
+        {
+            var existingTK = await _context.TimekeepingSummaries.FirstOrDefaultAsync(t => t.NASId == nasId && t.SchoolYear == year && t.Semester == semester);
+            
+            if (existingTK != null)
+            {
+                existingTK.Excused = tk.Excused;
+                existingTK.Unexcused = tk.Unexcused;
+                existingTK.MakeUpDutyHours = tk.MakeUpDutyHours;
+
+                //timekeeping status
+                if (existingTK.Excused == 0 && existingTK.Unexcused == 0 && existingTK.MakeUpDutyHours == 0)
+                {
+                    existingTK.TimekeepingStatus = "EXCELLENT";
+                }
+                else if ((existingTK.Excused <= 3 && existingTK.Excused >= 0) &&
+                    (existingTK.Unexcused <= 3 && existingTK.Unexcused >= 0) &&
+                    (existingTK.MakeUpDutyHours <= 5 && existingTK.MakeUpDutyHours >= 0))
+                {
+                    existingTK.TimekeepingStatus = "GOOD";
+                }
+                else
+                {
+                    existingTK.TimekeepingStatus = "POOR";
+                }
+
+                await _context.SaveChangesAsync();
+
+                return existingTK;
+            }
+
+            return null;
+        }
     }
 }

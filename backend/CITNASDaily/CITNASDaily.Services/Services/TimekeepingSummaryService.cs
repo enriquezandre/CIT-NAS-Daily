@@ -50,5 +50,12 @@ namespace CITNASDaily.Services.Services
         {
             return await _timekeepingSummaryRepository.GetTimekeepingSummaryByNASIdSemesterYearAsync(nasId, semester, year);
         }
+
+        public async Task<TimekeepingSummary?> UpdateTimekeepingSummaryAsync(int nasId, int year, Semester semester, TimekeepingSummaryUpdateDto tkUpdate)
+        {
+            var tk = _mapper.Map<TimekeepingSummary>(tkUpdate);
+
+            return await _timekeepingSummaryRepository.UpdateTimekeepingSummaryAsync(nasId, year, semester, tk);
+        }
     }
 }
