@@ -12,14 +12,16 @@ export const OASStatus = () => {
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
-  const sy_options = ["2324", "2223", "2122", "2021"];
-  const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
   const [summaryEvaluation, setSummaryEvaluation] = useState({});
   const [grade, setGrades] = useState(null);
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [maxNasId, setMaxNasId] = useState(1);
+  const [responded, setResponded] = useState(null);
+  const [allCoursesPassed, setAllCoursesPassed] = useState(null);
+  const sy_options = ["2324", "2223", "2122", "2021"];
+  const sem_options = ["First", "Second", "Summer"];
 
   const api = useMemo(
     () =>
@@ -90,6 +92,8 @@ export const OASStatus = () => {
           )}/${nasId}`
         );
         setSummaryEvaluation(response.data);
+        setResponded(response.data.responded);
+        setAllCoursesPassed(response.data.allCoursesPassed);
       } catch (error) {
         console.error(error);
         setSummaryEvaluation({});
@@ -109,6 +113,7 @@ export const OASStatus = () => {
           )}`
         );
         setGrades(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error(error);
         setGrades(null);
@@ -293,6 +298,16 @@ export const OASStatus = () => {
                 <p className="text-bold text-xl">ACADEMIC PERFORMANCE:</p>
                 {grade === null ? (
                   <div className="text-xl font-bold">NOT YET UPLOADED</div>
+                ) : responded ? (
+                  allCoursesPassed ? (
+                    <div className="font-bold text-xl text-green">
+                      All Courses Passed
+                    </div>
+                  ) : (
+                    <div className="font-bold text-xl text-red">
+                      Not All Courses Passed
+                    </div>
+                  )
                 ) : (
                   <div>
                     <button
