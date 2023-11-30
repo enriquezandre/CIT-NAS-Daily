@@ -13,6 +13,7 @@ namespace CITNASDaily.Utils.Mappings
     {
         public TimekeepingSummaryProfile() {
             CreateMap<TimekeepingSummary, TimekeepingSummaryCreateDto>().ReverseMap();
+            CreateMap<TimekeepingSummary, TimekeepingSummaryUpdateDto>().ReverseMap();
         }
     }
 }
