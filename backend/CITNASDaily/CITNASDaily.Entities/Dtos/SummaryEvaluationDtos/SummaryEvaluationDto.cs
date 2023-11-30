@@ -12,5 +12,6 @@ namespace CITNASDaily.Entities.Dtos.SummaryEvaluationDtos
         public string? TimekeepingStatus { get; set; }
         public bool EnrollmentAllowed { get; set; }
         public int UnitsAllowed { get; set; }
+        public string? Responded { get; set; }
     }
 }
