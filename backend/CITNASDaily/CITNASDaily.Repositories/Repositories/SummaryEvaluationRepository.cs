@@ -59,6 +59,7 @@ namespace CITNASDaily.Repositories.Repositories
             {
                 existingEval.AllCoursesPassed = summaryEvaluation.AllCoursesPassed;
                 existingEval.NoOfCoursesFailed = summaryEvaluation.NoOfCoursesFailed;
+                existingEval.Responded = summaryEvaluation.Responded;
 
                 if(existingEval.AllCoursesPassed == true && (existingEval.SuperiorOverallRating >= 3 && existingEval.SuperiorOverallRating <= 5) && existingEval.TimekeepingStatus != "POOR")
                 {
