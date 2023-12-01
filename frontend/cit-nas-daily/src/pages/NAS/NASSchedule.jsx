@@ -6,7 +6,7 @@ import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable.jsx";
 import { ConfirmAddScheduleModal } from "../../components/NAS/ConfirmAddScheduleModal.jsx";
 import axios from "axios";
 
-const currentDate = new Date("2023-05-01");
+const currentDate = new Date();
 
 //get current Month
 const currentMonth = currentDate.toLocaleString("en-US", { month: "long" });
