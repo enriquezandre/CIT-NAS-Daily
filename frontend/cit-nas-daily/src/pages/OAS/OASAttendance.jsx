@@ -19,7 +19,8 @@ export const OASAttendance = () => {
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
-  const sy_options = ["2324", "2223", "2122", "2021"];
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
   const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
@@ -41,6 +42,23 @@ export const OASAttendance = () => {
   const handleSearchChange = (event) => {
     setSearchInput(event.target.value);
   };
+
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, [api]);
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -167,7 +185,7 @@ export const OASAttendance = () => {
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
             <div className={`flex items-center w-auto ${nasId === 1 ? "ml-10" : ""}`}>
@@ -250,10 +268,10 @@ export const OASAttendance = () => {
                   onChange={handleSelectSY}
                   className=" w-full text-base border rounded-md"
                 >
-                  {Array.isArray(sy_options) &&
-                    sy_options.map((sy, index) => (
-                      <option key={index} value={sy}>
-                        {sy}
+                  {Array.isArray(uniqueYears) &&
+                    uniqueYears.map((year, index) => (
+                      <option key={index} value={year}>
+                        {year}
                       </option>
                     ))}
                 </select>
