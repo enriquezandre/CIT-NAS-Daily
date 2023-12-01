@@ -260,6 +260,7 @@ export const OASStatus = () => {
                   value={selectedSY}
                   onChange={handleSelectSY}
                   className=" w-full text-base border rounded-md"
+                  style={{ width: "6rem" }}
                 >
                   {Array.isArray(uniqueYears) &&
                     uniqueYears.map((year, index) => (
@@ -277,6 +278,7 @@ export const OASStatus = () => {
                   value={selectedSem}
                   onChange={handleSelectSem}
                   className=" w-full text-base border rounded-md"
+                  style={{ width: "6rem" }}
                 >
                   {sem_options.map((sem, index) => (
                     <option key={index} value={sem}>
