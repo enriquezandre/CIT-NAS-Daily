@@ -26,7 +26,8 @@ namespace CITNASDaily.Services.Services
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, userDto.Id.ToString()),
-                new Claim(ClaimTypes.Name, userDto.Username)
+                new Claim(ClaimTypes.Name, userDto.Username),
+                new Claim(ClaimTypes.Role, userDto.Role)
             };
 
             var token = new JwtSecurityToken(

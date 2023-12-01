@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OfficeOpenXml;
 using Swashbuckle.AspNetCore.Filters;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -80,7 +81,6 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme).Build();
-
 });
 
 // Register Authentication

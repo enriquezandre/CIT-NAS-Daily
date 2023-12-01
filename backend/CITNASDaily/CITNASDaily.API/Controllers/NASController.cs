@@ -1,15 +1,8 @@
 ﻿using CITNASDaily.Entities.Dtos.NASDtos;
-using CITNASDaily.Entities.Dtos.SummaryEvaluationDtos;
-using CITNASDaily.Entities.Dtos.SuperiorDtos;
-using CITNASDaily.Entities.Models;
 using CITNASDaily.Services.Contracts;
-using CITNASDaily.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Security.Claims;
 using static CITNASDaily.Entities.Enums.Enums;
 
@@ -37,7 +30,7 @@ namespace CITNASDaily.API.Controllers
         #region CreateNAS
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(NASDto), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateNAS([FromBody] NASCreateDto nasCreate)
         {
