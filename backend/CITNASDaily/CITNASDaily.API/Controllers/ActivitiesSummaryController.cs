@@ -28,7 +28,7 @@ namespace CITNASDaily.API.Controllers
         /// <param name="activitiesSummaryCreate"></param>
         /// <returns>Newly created activities summary</returns>
         /// <response code="201">Successfully created activities summary</response>
-        /// <response code="400">act summary are invalid</response>
+        /// <response code="400">act summary details are invalid</response>
         /// <response code="500">Internal server error</response>
         /// <response code="403">Forbidden error</response>
         [HttpPost]
@@ -62,13 +62,29 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
+        /// <summary>
+        /// Gets all activities summary
+        /// </summary>
+        /// <returns>All activities summary</returns>
+        /// <response code="200">Successfully retrieved created activities summary</response>
+        /// <response code="400">act summary details are invalid</response>
+        /// <response code="500">Internal server error</response>
+        /// <response code="403">Forbidden error</response>
         [HttpGet]
         [Authorize]
+        [ProducesResponseType(typeof(ActivitiesSummary), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllActivitiesSummary()
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
                 var activitiesSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryAsync();
                 if (activitiesSummaries == null) return BadRequest();
                 return Ok(activitiesSummaries);
@@ -79,13 +95,30 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
-
+        /// <summary>
+        /// Gets an activities summary by nasId
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <returns>an activities summary</returns>
+        /// <response code="200">Successfully retrieved created activities summary</response>
+        /// <response code="404">act summary not found</response>
+        /// <response code="500">Internal server error</response>
+        /// <response code="403">Forbidden error</response>
         [HttpGet("{nasId}", Name = "GetAllActivitiesSummary")]
         [Authorize]
+        [ProducesResponseType(typeof(ActivitiesSummary), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllActivitiesSummary(int nasId)
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
                 var actSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryByNASIdAsync(nasId);
 
                 if (actSummaries == null)
@@ -101,13 +134,32 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
-
+        /// <summary>
+        /// Gets an activities summary by nasId, month, and year
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <param name="month"></param>
+        /// <param name="year"></param>
+        /// <returns>an activities summary</returns>
+        /// <response code="200">Successfully retrieved created activities summary</response>
+        /// <response code="404">act summary not found</response>
+        /// <response code="500">Internal server error</response>
+        /// <response code="403">Forbidden error</response>
         [HttpGet("{nasId}/{year}/{month}", Name = "GetAllActivitiesSummaryByNASIdMonthYear")]
         [Authorize]
+        [ProducesResponseType(typeof(ActivitiesSummary), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllActivitiesSummary(int nasId, int month, int year)
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
                 var actSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryByNASIdMonthYearAsync(nasId, month, year);
 
                 if (actSummaries == null)
