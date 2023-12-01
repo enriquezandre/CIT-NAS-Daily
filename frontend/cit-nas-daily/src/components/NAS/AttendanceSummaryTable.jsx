@@ -36,7 +36,7 @@ export const AttendanceSummaryTable = ({
         case "Second":
           return 1;
         case "Summer":
-          return 3;
+          return 2;
         default:
           return "Invalid semester";
       }
@@ -139,7 +139,7 @@ export const AttendanceSummaryTable = ({
             year.toString().substring(0, 2) + selectedSY.substring(2)
           );
           switch (selectedMonth) {
-            case 0:
+            case -1:
               return month >= 7 && month <= 11 && year === first;
             case -2:
               return month >= 0 && month <= 5 && year === second;
