@@ -73,14 +73,87 @@ export const AttendanceSummaryTable = ({
             selectedSem
           )}/${firstName}/${lastName}?middleName=${middleName}`
         );
-        const dtrdata = dtrresponse.data;
+        const dtrdata = dtrresponse.data.dailyTimeRecords;
 
-        const filteredData = dtrdata.dailyTimeRecords.filter((summary) => {
-          if (selectedMonth === 0) {
-            return true;
+        const startDate = new Date("2021-01-01");
+        const endDate = new Date();
+        endDate.setHours(23, 59, 59, 999);
+        const dateRange = [];
+        for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+          dateRange.push(new Date(d));
+        }
+
+        console.log("DTR", dtrdata);
+
+        const groupedData = dtrdata.reduce((acc, curr) => {
+          const date = curr.date.split(" ")[0];
+          console.log("DATE", date);
+          if (!acc[date]) {
+            acc[date] = {
+              timeIn: curr.timeIn,
+              timeOut: curr.timeOut,
+              overtimeIn: curr.overtimeIn,
+              overtimeOut: curr.overtimeOut,
+            };
+            console.log("YAWA", acc[date]);
+          }
+          if (curr.inOut && curr.date) {
+            acc[date][curr.inOut].push(curr);
+          }
+          return acc;
+        }, {});
+
+        console.log("GROUPED", groupedData);
+
+        const latestLogs = dateRange.map((date) => {
+          const dateString = date.toISOString().split("T")[0];
+          const logs = groupedData[dateString];
+          // console.log("LOGS", logs);
+          if (logs) {
+            return {
+              date: dateString,
+              timeIn: logs.timeIn,
+              timeOut: logs.timeOut,
+              overtimeIn: logs.overtimeIn,
+              overtimeOut: logs.overtimeOut,
+            };
           } else {
-            const summaryMonth = parseInt(summary.date.split("-")[1], 10);
-            return summaryMonth === selectedMonth;
+            return {
+              date: dateString,
+              timeIn: null,
+              timeOut: null,
+              overtimeIn: null,
+              overtimeOut: null,
+            };
+          }
+        });
+
+        const filteredData = latestLogs.filter((item) => {
+          const date = new Date(item.date);
+          const month = date.getMonth();
+          const year = date.getFullYear();
+          const first = parseInt(
+            year.toString().substring(0, 2) + selectedSY.substring(0, 2)
+          );
+          const second = parseInt(
+            year.toString().substring(0, 2) + selectedSY.substring(2)
+          );
+          switch (selectedMonth) {
+            case 0:
+              return month >= 7 && month <= 11 && year === first;
+            case -2:
+              return month >= 0 && month <= 5 && year === second;
+            case -3:
+              return month >= 5 && month <= 7 && year === second;
+          }
+
+          switch (selectedSem) {
+            case "First":
+              return month === selectedMonth && year === first;
+            case "Second":
+              return month === selectedMonth && year === second;
+            case "Summer":
+              return month === selectedMonth && year === second;
           }
         });
 
@@ -105,7 +178,7 @@ export const AttendanceSummaryTable = ({
 
   return (
     <Table hoverable>
-      <Table.Head>
+      <Table.Head className="text-center">
         <Table.HeadCell>DATE</Table.HeadCell>
         <Table.HeadCell>TIME-IN</Table.HeadCell>
         <Table.HeadCell>TIME-OUT</Table.HeadCell>
@@ -116,7 +189,7 @@ export const AttendanceSummaryTable = ({
           <span className="sr-only">Edit</span>
         </Table.HeadCell>
       </Table.Head>
-      <Table.Body className="divide-y">
+      <Table.Body className="divide-y text-center">
         {Array.isArray(attendanceSummaries) &&
           attendanceSummaries.map((summary) => (
             <Table.Row key={summary.id}>
@@ -124,17 +197,24 @@ export const AttendanceSummaryTable = ({
               <Table.Cell>
                 {summary.timeIn === "FTP IN"
                   ? "FTP IN"
-                  : formatTime(summary.timeIn)}
+                  : summary.timeIn !== null
+                  ? formatTime(summary.timeIn)
+                  : "-"}
               </Table.Cell>
+
               <Table.Cell>
-                {summary.timeOut === "FTP OUT"
-                  ? "FTP OUT"
-                  : formatTime(summary.timeOut)}
+                {summary.timeOut === "FTP OUT" ? (
+                  "FTP OUT"
+                ) : summary.timeOut !== null ? (
+                  formatTime(summary.timeIn)
+                ) : (
+                  <p className="font-bold text-red">NO RECORD</p>
+                )}
               </Table.Cell>
               <Table.Cell>{formatTime(summary.overtimeIn)}</Table.Cell>
               <Table.Cell>{formatTime(summary.overtimeOut)}</Table.Cell>
               <Table.Cell>
-                {summary.timeOut === "NO RECORD" ? (
+                {summary.timeIn === null || summary.timeOut === null ? (
                   <button className="hover:underline" onClick={openModal}>
                     YES
                   </button>

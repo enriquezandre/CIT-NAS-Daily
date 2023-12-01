@@ -224,9 +224,9 @@ export const NASEvaluationResult = () => {
                   summaryEvaluation.responded === undefined ? (
                   <span className="text-yellow">PENDING</span>
                 ) : summaryEvaluation.allCoursesPassed ? (
-                  <span className="text-green">ALL PASSED</span>
+                  <span className="font-bold text-green">ALL PASSED</span>
                 ) : (
-                  <span className="text-red">FAILED A COURSE</span>
+                  <span className="font-bold text-red">FAILED A COURSE</span>
                 )}
               </div>
             </div>
