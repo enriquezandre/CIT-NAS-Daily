@@ -5,7 +5,7 @@ import { SuperiorEval } from "../../components/SuperiorEval";
 import axios from "axios";
 
 export const OASEvaluation = () => {
-  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSY, setSelectedSY] = useState(2324);
   const [selectedSem, setSelectedSem] = useState("First");
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
@@ -16,6 +16,7 @@ export const OASEvaluation = () => {
   const [nasId, setNasId] = useState(1);
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [maxNasId, setMaxNasId] = useState(1);
 
   const api = useMemo(
     () =>
@@ -89,6 +90,9 @@ export const OASEvaluation = () => {
 
         const response = await api.get(`/NAS/noimg`);
         setNasArray(response.data);
+
+        const maxId = Math.max(...response.data.map((nas) => nas.id), 1);
+        setMaxNasId(maxId);
       } catch (error) {
         console.error(error);
       }
@@ -171,12 +175,18 @@ export const OASEvaluation = () => {
                   </button>
                 </div>
               </div>
-              <Button
-                className="text-black"
-                onClick={() => setNasId(nasId + 1)}
-              >
-                <HiOutlineArrowRight className="h-6 w-6" />
-              </Button>
+              {nasId < maxNasId ? (
+                <Button
+                  className="text-black"
+                  onClick={() => {
+                    setNasId(nasId + 1);
+                  }}
+                >
+                  <HiOutlineArrowRight className="h-6 w-6" />
+                </Button>
+              ) : (
+                ""
+              )}
             </li>
           </ul>
           <div className="px-8 py-4">

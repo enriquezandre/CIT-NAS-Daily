@@ -15,6 +15,8 @@ export const EvaluateGrades = ({
   const [isViewingShowGrades, setIsViewingShowGrades] = useState(false);
   const [numCoursesFailed, setNumCoursesFailed] = useState(null);
   const [allCoursesPassed, setAllCoursesPassed] = useState(null);
+  const [enrollmentAllowed, setEnrollmentAllowed] = useState(null);
+  const [responded, setResponded] = useState("true");
 
   const getSemesterValue = useMemo(() => {
     return (sem) => {
@@ -31,16 +33,19 @@ export const EvaluateGrades = ({
     };
   }, []);
 
-  const handleInputChange = (event) => {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
+  const handleCoursePassedChange = (event) => {
+    const value = event.target.value;
+    setAllCoursesPassed(value === "yes");
+  };
 
-    if (name === "course-passed") {
-      setAllCoursesPassed(value === "yes");
-    } else if (name === "num-courses-failed") {
-      setNumCoursesFailed(value);
-    }
+  const handleCoursesFailed = (event) => {
+    const value = event.target.value;
+    setNumCoursesFailed(value);
+  };
+
+  const handleAllowEnrollment = (event) => {
+    const value = event.target.value;
+    setEnrollmentAllowed(value === "yes");
   };
 
   const handleSubmit = async () => {
@@ -52,16 +57,21 @@ export const EvaluateGrades = ({
         },
       });
 
+      setResponded("true");
+
       const requestData = {
         nasId: nasId,
         semester: getSemesterValue(selectedSem),
         schoolYear: selectedSY,
+        enrollmentAllowed: enrollmentAllowed,
         allCoursesPassed: allCoursesPassed,
         noOfCoursesFailed: numCoursesFailed,
+        responded: responded,
       };
 
-      const response = await api.put(`/SummaryEvaluation`, requestData);
       console.log(requestData);
+
+      const response = await api.put(`/SummaryEvaluation`, requestData);
 
       if (response.status === 200 || response.status === 201) {
         alert("Submitted successfully");
@@ -108,13 +118,12 @@ export const EvaluateGrades = ({
                   <p className="text-xl text-left w-2/4">ALL COURSES PASSED:</p>
                   <div className="flex flex-row gap-2 justify-center items-center w-1/4">
                     <input
-                      checked
                       id="default-radio-1"
                       type="radio"
                       value="yes"
                       name="course-passed"
                       className="h-5 w-5"
-                      onChange={handleInputChange}
+                      onChange={handleCoursePassedChange}
                     />
                     <label
                       htmlFor="default-radio-1"
@@ -130,7 +139,43 @@ export const EvaluateGrades = ({
                       value="no"
                       name="course-passed"
                       className="h-5 w-5"
-                      onChange={handleInputChange}
+                      onChange={handleCoursePassedChange}
+                    />
+                    <label
+                      htmlFor="default-radio-2"
+                      className="ml-2 text-xl font-medium text-red"
+                    >
+                      NO
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex flex-row w-full items-center gap-6 mb-10">
+                  <p className="text-xl text-left w-2/4">ALLOW ENROLLMENT:</p>
+                  <div className="flex flex-row gap-2 justify-center items-center w-1/4">
+                    <input
+                      id="default-radio-1"
+                      type="radio"
+                      value="yes"
+                      name="allow-enroll"
+                      className="h-5 w-5"
+                      onChange={handleAllowEnrollment}
+                    />
+                    <label
+                      htmlFor="default-radio-1"
+                      className="ml-2 text-xl font-medium text-green"
+                    >
+                      YES
+                    </label>
+                  </div>
+                  <div className="flex flex-row gap-2 justify-center items-center w-1/4">
+                    <input
+                      id="default-radio-2"
+                      type="radio"
+                      value="no"
+                      name="allow-enroll"
+                      className="h-5 w-5"
+                      onChange={handleAllowEnrollment}
                     />
                     <label
                       htmlFor="default-radio-2"
@@ -149,7 +194,7 @@ export const EvaluateGrades = ({
                     type="number"
                     name="num-courses-failed"
                     className="w-1/4 border-2 border-gray-300 rounded-md px-2"
-                    onChange={handleInputChange}
+                    onChange={handleCoursesFailed}
                   />
                 </div>
                 <button

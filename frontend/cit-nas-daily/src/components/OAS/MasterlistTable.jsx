@@ -1,10 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const MasterlistTable = ({ searchInput }) => {
+export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
   const [nasData, setNasData] = useState([]);
   const [filteredNASData, setFilteredNASData] = useState([]);
+
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
 
   const header = [
     "No.",
@@ -29,38 +40,39 @@ export const MasterlistTable = ({ searchInput }) => {
     "REMARKS",
   ];
 
+  function getSemesterValue(sem) {
+    switch (sem) {
+      case "First":
+        return 0;
+      case "Second":
+        return 1;
+      case "Summer":
+        return 3;
+      default:
+        return "Invalid semester";
+    }
+  }
+
   useEffect(() => {
     const fetchNas = async () => {
       try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const nasresponse = await api.get(`/NAS/noimg`);
+        const nasresponse = await api.get(
+          `/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`
+        );
         const nasData = nasresponse.data;
 
         const nasDataWithOffice = await Promise.all(
           nasData.map(async (nas) => {
             const nasId = nas.id;
+
             try {
-              const officeResponse = await api.get(`Offices/${nasId}/NAS`);
+              const [officeResponse, timekeepingresponse] = await Promise.all([
+                api.get(`Offices/${nasId}/NAS`),
+                api.get(`/TimekeepingSummary/${nasId}`),
+              ]);
               nas.office = officeResponse.data;
-            } catch (officeError) {
-              // Handle error when office data is not available
-              console.error("Error fetching office data for NAS:", officeError);
-              nas.office = { name: "N/A" };
-            }
 
-            try {
-              const timekeepingresponse = await api.get(
-                `/TimekeepingSummary/${nasId}`
-              );
               let timekeepingData = timekeepingresponse.data[0];
-
               if (!timekeepingData) {
                 timekeepingData = {
                   excused: "NR",
@@ -73,13 +85,20 @@ export const MasterlistTable = ({ searchInput }) => {
                   unexcused: "NR",
                 };
               }
-
               nas.timekeeping = timekeepingData;
-            } catch (timekeepingError) {
-              console.error(
-                "Error fetching timekeeping data for NAS:",
-                timekeepingError
-              );
+            } catch (error) {
+              console.error("Error fetching data for NAS:", error);
+              nas.office = { name: "N/A" };
+              nas.timekeeping = {
+                excused: "NR",
+                failedToPunch: "NR",
+                lateOver10Mins: "NR",
+                lateOver45Mins: "NR",
+                makeUpDutyHours: "NR",
+                schoolYear: "NR",
+                semester: "NR",
+                unexcused: "NR",
+              };
             }
             return nas;
           })
@@ -87,11 +106,14 @@ export const MasterlistTable = ({ searchInput }) => {
         setNasData(nasDataWithOffice);
       } catch (error) {
         console.error(error);
+        if (error.response.status === 404) {
+          setNasData([]);
+        }
       }
     };
 
     fetchNas();
-  });
+  }, [selectedSY, selectedSem, api]);
 
   useEffect(() => {
     const filteredData = nasData.filter(
@@ -207,4 +229,6 @@ export const MasterlistTable = ({ searchInput }) => {
 
 MasterlistTable.propTypes = {
   searchInput: PropTypes.string.isRequired,
+  selectedSY: PropTypes.number.isRequired,
+  selectedSem: PropTypes.number.isRequired,
 };

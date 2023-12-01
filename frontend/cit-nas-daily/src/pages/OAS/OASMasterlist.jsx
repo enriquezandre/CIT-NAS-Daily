@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MasterlistTable } from "../../components/OAS/MasterlistTable";
 
 export const OASMasterlist = () => {
-  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSY, setSelectedSY] = useState(2324);
   const [selectedSem, setSelectedSem] = useState("First");
   const [searchInput, setSearchInput] = useState("");
 
@@ -95,7 +95,11 @@ export const OASMasterlist = () => {
                 </select>
               </div>
             </div>
-            <MasterlistTable searchInput={searchInput} />
+            <MasterlistTable
+              searchInput={searchInput}
+              selectedSY={selectedSY}
+              selectedSem={selectedSem}
+            />
           </div>
         </div>
       </div>

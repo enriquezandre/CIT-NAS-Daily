@@ -5,17 +5,19 @@ import axios from "axios";
 
 export const SpecificNASStatus = () => {
   const [isViewingEvaluateGrades, setIsViewingEvaluateGrades] = useState(false);
-  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSY, setSelectedSY] = useState(2324);
   const [selectedSem, setSelectedSem] = useState("First");
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
+  const [summaryEvaluation, setSummaryEvaluation] = useState({});
+  const [grade, setGrades] = useState(null);
+  const [responded, setResponded] = useState(null);
+  const [allCoursesPassed, setAllCoursesPassed] = useState(null);
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const nasId = useParams().nasId;
-  const [summaryEvaluation, setSummaryEvaluation] = useState({});
-  const [grade, setGrades] = useState(null);
 
   const api = useMemo(
     () =>
@@ -82,6 +84,8 @@ export const SpecificNASStatus = () => {
           )}/${nasId}`
         );
         setSummaryEvaluation(response.data);
+        setResponded(response.data.responded);
+        setAllCoursesPassed(response.data.allCoursesPassed);
       } catch (error) {
         console.error(error);
         setSummaryEvaluation({});
@@ -194,6 +198,16 @@ export const SpecificNASStatus = () => {
                 <p className="text-bold text-xl">ACADEMIC PERFORMANCE:</p>
                 {grade === null ? (
                   <div className="text-xl font-bold">NOT YET UPLOADED</div>
+                ) : responded ? (
+                  allCoursesPassed ? (
+                    <div className="font-bold text-xl text-green">
+                      ALL COURSES PASSED
+                    </div>
+                  ) : (
+                    <div className="font-bold text-xl text-red">
+                      FAILED COURSE/S
+                    </div>
+                  )
                 ) : (
                   <div>
                     <button
@@ -207,6 +221,9 @@ export const SpecificNASStatus = () => {
                       show={isViewingEvaluateGrades}
                       close={closeEvaluateGrades}
                       grade={grade}
+                      nasId={nasId}
+                      selectedSY={selectedSY}
+                      selectedSem={selectedSem}
                     />
                   </div>
                 )}
@@ -231,6 +248,9 @@ export const SpecificNASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">NUMBER OF UNITS ALLOWED:</p>
+                <p className="text-bold text-xl font-bold">
+                  {summaryEvaluation.unitsAllowed}
+                </p>
               </div>
             </div>
           </div>
