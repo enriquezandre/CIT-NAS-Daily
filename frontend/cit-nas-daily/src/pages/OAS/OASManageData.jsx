@@ -7,6 +7,7 @@ export const OASManageData = () => {
   const [fileUploaded, setFileUploaded] = useState(false);
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
+  const [attendanceSummaries, setAttendanceSummaries] = useState([]);
 
   const api = useMemo(
     () =>
@@ -27,6 +28,18 @@ export const OASManageData = () => {
   const handleSelectSem = (event) => {
     const value = event.target.value;
     setSelectedSem(value);
+  };
+
+  const formatDtrTime = (timeStr) => {
+    if (timeStr) {
+      const [hours, minutes] = timeStr.split(":");
+      const date = new Date();
+      date.setHours(hours);
+      date.setMinutes(minutes);
+      const options = { hour: "numeric", minute: "numeric", hour12: true };
+      return date.toLocaleTimeString("en-US", options);
+    }
+    return null;
   };
 
   function getSemesterValue(sem) {
@@ -59,6 +72,92 @@ export const OASManageData = () => {
     setFileUploaded(file);
   };
 
+  const updateNasTimekeeping = async () => {
+    try {
+      const nasResponse = await api.get("/NAS");
+      const nasList = nasResponse.data;
+
+      for (const nas of nasList) {
+        // Extract necessary information for attendance and schedule check
+        const { id: nasId, firstName, lastName, middleName } = nas;
+
+        // Call the function to check attendance and schedule for each NAS
+        await checkAttendanceAndSchedule(nasId, firstName, lastName, middleName);
+      }
+    } catch (error) {
+      console.error("Error fetching NAS data: ", error);
+    }
+  };
+
+  const checkAttendanceAndSchedule = async (nasId, firstName, lastName, middleName) => {
+    try {
+      const dtrresponse = await api.get(
+        `DTR/${selectedSY}/${getSemesterValue(
+          selectedSem
+        )}/${firstName}/${lastName}?middleName=${middleName}`
+      );
+
+      const dtrdata = dtrresponse.data;
+
+      const scheduleResponse = await api.get(`/Schedule/${nasId}/${selectedSY}/0`);
+      const scheduleData = scheduleResponse.data;
+
+      // Calculate the totals for failedToPunch, lateOver10Mins, and lateOver45Mins
+      let totalFailedToPunch = 0;
+      let totalLateOver10Mins = 0;
+      let totalLateOver45Mins = 0;
+
+      const attendanceSummaries = dtrdata.dailyTimeRecords.map((attendance) => {
+        const attendanceDate = new Date(attendance.date);
+
+        // Adjust dayOfWeek calculation for Monday - Saturday week
+        const dayOfWeek = (attendanceDate.getDay() + 6) % 7;
+        const schedule = scheduleData.schedules.find((sched) => sched.dayOfWeek === dayOfWeek);
+
+        if (attendance.timeIn === "FTP IN" || attendance.timeOut === "FTP OUT") {
+          totalFailedToPunch = totalFailedToPunch + 1; //working
+        } else {
+          const timeIn = new Date("2023-08-14 " + formatDtrTime(attendance.timeIn));
+          const schedStartTime = new Date(schedule.startTime);
+
+          // Extract only the hours and minutes from the date objects
+          const hoursDiff = timeIn.getHours() - schedStartTime.getHours();
+          const minutesDiff = timeIn.getMinutes() - schedStartTime.getMinutes();
+
+          // Convert the time difference to minutes
+          const totalMinutesDifference = hoursDiff * 60 + minutesDiff;
+
+          if (totalMinutesDifference > 10) {
+            totalLateOver10Mins = totalLateOver10Mins + 1;
+          }
+
+          if (totalMinutesDifference > 45) {
+            totalLateOver45Mins = totalLateOver45Mins + 1;
+          }
+        }
+        return attendance;
+      });
+
+      setAttendanceSummaries(attendanceSummaries);
+
+      // Make the API call to post the summary
+      const postResponse = await api.post("/TimekeepingSummary", {
+        nasId,
+        semester: 0,
+        schoolYear: 2324,
+        excused: 0,
+        unexcused: 0,
+        failedToPunch: totalFailedToPunch,
+        lateOver10mins: totalLateOver10Mins,
+        lateOver45mins: totalLateOver45Mins,
+        makeUpDutyHours: 0,
+      });
+      console.log(postResponse);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!fileUploaded) {
       alert("No file uploaded");
@@ -80,6 +179,7 @@ export const OASManageData = () => {
       if (response.status === 200) {
         alert("File uploaded successfully");
         setFileUploaded(false); // Reset the file input after successful upload
+        //updateNasTimekeeping();
       } else {
         alert("File upload failed");
       }
