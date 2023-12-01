@@ -49,11 +49,12 @@ export const OASManageData = () => {
       case "Second":
         return 1;
       case "Summer":
-        return 3;
+        return 2;
       default:
         return "Invalid semester";
     }
   }
+  const selectedSemValue = getSemesterValue(selectedSem);
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -77,29 +78,30 @@ export const OASManageData = () => {
       const nasResponse = await api.get("/NAS");
       const nasList = nasResponse.data;
 
-      for (const nas of nasList) {
-        // Extract necessary information for attendance and schedule check
-        const { id: nasId, firstName, lastName, middleName } = nas;
-
-        // Call the function to check attendance and schedule for each NAS
-        await checkAttendanceAndSchedule(nasId, firstName, lastName, middleName);
-      }
+      await Promise.all(
+        nasList.map(async (nas) => {
+          const { id, firstName, lastName, middleName } = nas;
+          console.log("NAS Info: ", id, firstName, lastName, middleName);
+          await checkAttendanceAndSchedule(id, firstName, lastName, middleName);
+        })
+      );
     } catch (error) {
       console.error("Error fetching NAS data: ", error);
     }
   };
 
+  //function for checking attendance and schedule for each NAS
   const checkAttendanceAndSchedule = async (nasId, firstName, lastName, middleName) => {
     try {
       const dtrresponse = await api.get(
-        `DTR/${selectedSY}/${getSemesterValue(
-          selectedSem
-        )}/${firstName}/${lastName}?middleName=${middleName}`
+        `DTR/${selectedSY}/${selectedSemValue}/${firstName}/${lastName}?middleName=${middleName}`
       );
 
       const dtrdata = dtrresponse.data;
 
-      const scheduleResponse = await api.get(`/Schedule/${nasId}/${selectedSY}/0`);
+      const scheduleResponse = await api.get(
+        `/Schedule/${nasId}/${selectedSY}/${selectedSemValue}` //${selectedSemValue}
+      );
       const scheduleData = scheduleResponse.data;
 
       // Calculate the totals for failedToPunch, lateOver10Mins, and lateOver45Mins
@@ -114,27 +116,30 @@ export const OASManageData = () => {
         const dayOfWeek = (attendanceDate.getDay() + 6) % 7;
         const schedule = scheduleData.schedules.find((sched) => sched.dayOfWeek === dayOfWeek);
 
+        //check if there is FTP in dtr
         if (attendance.timeIn === "FTP IN" || attendance.timeOut === "FTP OUT") {
           totalFailedToPunch = totalFailedToPunch + 1; //working
-        } else {
-          const timeIn = new Date("2023-08-14 " + formatDtrTime(attendance.timeIn));
-          const schedStartTime = new Date(schedule.startTime);
-
-          // Extract only the hours and minutes from the date objects
-          const hoursDiff = timeIn.getHours() - schedStartTime.getHours();
-          const minutesDiff = timeIn.getMinutes() - schedStartTime.getMinutes();
-
-          // Convert the time difference to minutes
-          const totalMinutesDifference = hoursDiff * 60 + minutesDiff;
-
-          if (totalMinutesDifference > 10) {
-            totalLateOver10Mins = totalLateOver10Mins + 1;
-          }
-
-          if (totalMinutesDifference > 45) {
-            totalLateOver45Mins = totalLateOver45Mins + 1;
-          }
         }
+
+        //check if there is L10 and L45
+        const timeIn = new Date("2023-08-14 " + formatDtrTime(attendance.timeIn));
+        const schedStartTime = new Date(schedule.startTime);
+
+        // Extract only the hours and minutes from the date objects
+        const hoursDiff = timeIn.getHours() - schedStartTime.getHours();
+        const minutesDiff = timeIn.getMinutes() - schedStartTime.getMinutes();
+
+        // Convert the time difference to minutes
+        const totalMinutesDifference = hoursDiff * 60 + minutesDiff;
+
+        if (totalMinutesDifference > 45) {
+          totalLateOver45Mins = totalLateOver45Mins + 1;
+        } else if (totalMinutesDifference > 10) {
+          totalLateOver10Mins = totalLateOver10Mins + 1;
+        }
+
+        console.log("NAS timeIn/schedule :" + timeIn, schedStartTime);
+
         return attendance;
       });
 
@@ -143,8 +148,8 @@ export const OASManageData = () => {
       // Make the API call to post the summary
       const postResponse = await api.post("/TimekeepingSummary", {
         nasId,
-        semester: 0,
-        schoolYear: 2324,
+        semester: selectedSemValue,
+        schoolYear: selectedSY,
         excused: 0,
         unexcused: 0,
         failedToPunch: totalFailedToPunch,
@@ -179,7 +184,7 @@ export const OASManageData = () => {
       if (response.status === 200) {
         alert("File uploaded successfully");
         setFileUploaded(false); // Reset the file input after successful upload
-        //updateNasTimekeeping();
+        updateNasTimekeeping();
       } else {
         alert("File upload failed");
       }
