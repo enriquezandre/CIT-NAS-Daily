@@ -4,9 +4,14 @@ import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import axios from "axios";
 
+const currentYear = new Date().getFullYear();
+const initialSchoolYear = `${currentYear % 100}${(currentYear % 100) + 1}`.padStart(4, "20");
+
 export const OASStatus = () => {
   const [isViewingEvaluateGrades, setIsViewingEvaluateGrades] = useState(false);
-  const [selectedSY, setSelectedSY] = useState(2324);
+  const [selectedSY, setSelectedSY] = useState(initialSchoolYear);
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
   const [selectedSem, setSelectedSem] = useState("First");
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
@@ -20,7 +25,6 @@ export const OASStatus = () => {
   const [maxNasId, setMaxNasId] = useState(1);
   const [responded, setResponded] = useState(null);
   const [allCoursesPassed, setAllCoursesPassed] = useState(null);
-  const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
 
   const api = useMemo(
@@ -60,6 +64,23 @@ export const OASStatus = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, [api]);
 
   useEffect(() => {
     const fetchNasAndOffice = async () => {
@@ -240,10 +261,10 @@ export const OASStatus = () => {
                   onChange={handleSelectSY}
                   className=" w-full text-base border rounded-md"
                 >
-                  {Array.isArray(sy_options) &&
-                    sy_options.map((sy, index) => (
-                      <option key={index} value={sy}>
-                        {sy}
+                  {Array.isArray(uniqueYears) &&
+                    uniqueYears.map((year, index) => (
+                      <option key={index} value={year}>
+                        {year}
                       </option>
                     ))}
                 </select>

@@ -1,11 +1,15 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 
+const currentYear = new Date().getFullYear();
+const initialSchoolYear = `${currentYear % 100}${(currentYear % 100) + 1}`.padStart(4, "20");
+
 export const OASManageData = () => {
-  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSY, setSelectedSY] = useState(initialSchoolYear);
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
   const [selectedSem, setSelectedSem] = useState("First");
   const [fileUploaded, setFileUploaded] = useState(false);
-  const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
 
@@ -41,6 +45,23 @@ export const OASManageData = () => {
     }
     return null;
   };
+
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, [api]);
 
   function getSemesterValue(sem) {
     switch (sem) {
@@ -210,10 +231,10 @@ export const OASManageData = () => {
                       onChange={handleSelectSY}
                       className=" w-full text-base border rounded-md"
                     >
-                      {Array.isArray(sy_options) &&
-                        sy_options.map((sy, index) => (
-                          <option key={index} value={sy}>
-                            {sy}
+                      {Array.isArray(uniqueYears) &&
+                        uniqueYears.map((year, index) => (
+                          <option key={index} value={year}>
+                            {year}
                           </option>
                         ))}
                     </select>

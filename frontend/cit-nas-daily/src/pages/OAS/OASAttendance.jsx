@@ -5,12 +5,14 @@ import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import axios from "axios";
 
+//get current schoolyear
+const currentYear = new Date().getFullYear();
+const initialSchoolYear = `${currentYear % 100}${(currentYear % 100) + 1}`.padStart(4, "20");
 const first_sem = ["All", "August", "September", "October", "November", "December"];
 const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
 const summer = ["All", "June", "July", "August"];
 
 export const OASAttendance = () => {
-  const [selectedSY, setSelectedSY] = useState("2324");
   const [selectedSem, setSelectedSem] = useState("First");
   const [monthOptions, setMonthOptions] = useState(first_sem);
   const [selectedMonth, setSelectedMonth] = useState("All");
@@ -19,6 +21,7 @@ export const OASAttendance = () => {
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
+  const [selectedSY, setSelectedSY] = useState(initialSchoolYear);
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const sem_options = ["First", "Second", "Summer"];

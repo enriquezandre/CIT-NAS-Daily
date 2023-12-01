@@ -1,13 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+import axios from "axios";
 import { MasterlistTable } from "../../components/OAS/MasterlistTable";
 
+const currentYear = new Date().getFullYear();
+const initialSchoolYear = `${currentYear % 100}${(currentYear % 100) + 1}`.padStart(4, "20");
+
 export const OASMasterlist = () => {
-  const [selectedSY, setSelectedSY] = useState(2324);
+  const [selectedSY, setSelectedSY] = useState(initialSchoolYear);
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
   const [selectedSem, setSelectedSem] = useState("First");
   const [searchInput, setSearchInput] = useState("");
-
-  const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
+
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
+
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, [api]);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -70,10 +102,10 @@ export const OASMasterlist = () => {
                   onChange={handleSelectSY}
                   className=" w-full text-base border rounded-md"
                 >
-                  {Array.isArray(sy_options) &&
-                    sy_options.map((sy, index) => (
-                      <option key={index} value={sy}>
-                        {sy}
+                  {Array.isArray(uniqueYears) &&
+                    uniqueYears.map((year, index) => (
+                      <option key={index} value={year}>
+                        {year}
                       </option>
                     ))}
                 </select>

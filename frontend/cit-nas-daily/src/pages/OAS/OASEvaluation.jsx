@@ -4,14 +4,19 @@ import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { SuperiorEval } from "../../components/SuperiorEval";
 import axios from "axios";
 
+//get current schoolyear
+const currentYear = new Date().getFullYear();
+const initialSchoolYear = `${currentYear % 100}${(currentYear % 100) + 1}`.padStart(4, "20");
+
 export const OASEvaluation = () => {
-  const [selectedSY, setSelectedSY] = useState(2324);
+  const [selectedSY, setSelectedSY] = useState(initialSchoolYear);
   const [selectedSem, setSelectedSem] = useState("First");
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
-  const sy_options = ["2324", "2223", "2122", "2021"];
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
   const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
   const [nasArray, setNasArray] = useState([]);
@@ -55,6 +60,23 @@ export const OASEvaluation = () => {
         return "Invalid semester";
     }
   }
+
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, [api]);
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -190,10 +212,10 @@ export const OASEvaluation = () => {
                   onChange={handleSelectSY}
                   className=" w-full text-base border rounded-md"
                 >
-                  {Array.isArray(sy_options) &&
-                    sy_options.map((sy, index) => (
-                      <option key={index} value={sy}>
-                        {sy}
+                  {Array.isArray(uniqueYears) &&
+                    uniqueYears.map((year, index) => (
+                      <option key={index} value={year}>
+                        {year}
                       </option>
                     ))}
                 </select>
