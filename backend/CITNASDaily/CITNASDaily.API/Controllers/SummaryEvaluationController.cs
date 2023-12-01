@@ -1,7 +1,6 @@
 ﻿using CITNASDaily.Entities.Dtos.SummaryEvaluationDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Services.Contracts;
-using CITNASDaily.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -26,7 +25,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetSummaryEvaluations()
         {
             try
@@ -45,7 +44,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{year}/{semester}/{nasId}", Name = "GetSummaryEvaluationByNASId")]
-        [Authorize]
+        [Authorize(Roles = "OAS, Superior")]
         public async Task<IActionResult> GetSummaryEvaluationByNASIdSemesterYear(int nasId, Semester semester, int year)
         {
             try
@@ -70,7 +69,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(SummaryEvaluation), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateSummaryEvaluation([FromBody] SummaryEvaluationCreateDto summary)
         {
@@ -99,7 +98,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> UpdateSummaryEvaluation([FromBody] SummaryEvaluationUpdateDto summary)
         {
             try
@@ -127,7 +126,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("grades/{nasId}/{year}/{semester}", Name = "GetNASGradePicture")]
-        [Authorize]
+        [Authorize(Roles = "OAS, Superior")]
         public async Task<IActionResult> GetNASGradePicture(int nasId, int year, int semester)
         {
             try

@@ -22,10 +22,21 @@ namespace CITNASDaily.API.Controllers
             _activitiesSummaryService = activitiesSummaryervice;
             _logger = logger;
         }
-
+        /// <summary>
+        /// Creates activities summary
+        /// </summary>
+        /// <param name="activitiesSummaryCreate"></param>
+        /// <returns>Newly created activities summary</returns>
+        /// <response code="201">Successfully created activities summary</response>
+        /// <response code="400">act summary are invalid</response>
+        /// <response code="500">Internal server error</response>
+        /// <response code="403">Forbidden error</response>
         [HttpPost]
         [Authorize]
         [ProducesResponseType(typeof(ActivitiesSummary), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateActivitiesSummary([FromBody] ActivitiesSummaryCreateDto activitiesSummaryCreate)
         {
             try
@@ -53,6 +64,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllActivitiesSummary()
         {
             try

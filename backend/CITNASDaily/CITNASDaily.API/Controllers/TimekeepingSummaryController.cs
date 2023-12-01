@@ -25,7 +25,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(TimekeepingSummary), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateTimekeepingSummary([FromBody] TimekeepingSummaryCreateDto timekeepingSummaryCreate)
         {
@@ -54,6 +54,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet(Name = "GetAllTimekeepingSummary")]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetAllTimekeepingSummary()
         {
             try
@@ -70,7 +71,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{nasId}", Name = "GetAllTimekeepingSummaryByNASId")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetAllTimekeepingSummaryByNASId(int nasId)
         {
             try
@@ -92,7 +93,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{year}/{semester}/{nasId}", Name = "GetTimekeepingSummaryByNASIdSemesterYear")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetTimekeepingSummaryByNASIdSemesterYear(int nasId, Semester semester, int year)
         {
             try
@@ -117,7 +118,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPut("{nasId}/{year}/{semester}", Name = "UpdateTimekeepingSummary")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> UpdateTimekeepingSummary(int nasId, int year, int semester, [FromBody] TimekeepingSummaryUpdateDto tkUpdate)
         {
             try

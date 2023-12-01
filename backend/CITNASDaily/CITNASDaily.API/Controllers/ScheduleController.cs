@@ -25,7 +25,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{nasId}", Name = "GetSchedulesByNASId")]
-        [Authorize]
+        [Authorize(Roles = "OAS, NAS")]
         public async Task<IActionResult> GetSchedulesByNASId(int nasId)
         {
             try
@@ -50,7 +50,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{nasId}/{year}/{semester}", Name = "GetSchedulesByNASIdSYSemester")]
-        [Authorize]
+        [Authorize(Roles = "OAS, NAS")]
         public async Task<IActionResult> GetSchedulesByNASIdSYSemester(int nasId, int year, int semester)
         {
             try
@@ -75,7 +75,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "NAS")]
         [ProducesResponseType(typeof(ScheduleDto), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateNASSchedule([FromBody] ScheduleCreateDto scheduleCreate)
         {
@@ -104,7 +104,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> DeleteScheduleByNASIdAsync(int nasId)
         {
             try

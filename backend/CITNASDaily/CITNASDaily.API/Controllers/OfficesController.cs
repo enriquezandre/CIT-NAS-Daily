@@ -1,8 +1,6 @@
 ﻿using CITNASDaily.Entities.Dtos.OfficeDtos;
-using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -24,7 +22,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(OfficeDto), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateOffice([FromBody] OfficeCreateDto officeCreate)
         {
@@ -53,6 +51,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet(Name = "GetOffices")]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetOffices()
         {
             try
@@ -69,6 +68,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{superiorId}", Name = "GetOfficeBySuperiorId")]
+        [Authorize(Roles = "OAS, Superior")]
         public async Task<IActionResult> GetOfficeBySuperiorId(int superiorId)
         {
             try
@@ -85,6 +85,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{nasId}/NAS", Name = "GetOfficeByNASId")]
+        [Authorize(Roles = "OAS, Superior")]
         public async Task<IActionResult> GetOfficeByNASId(int nasId)
         {
             try

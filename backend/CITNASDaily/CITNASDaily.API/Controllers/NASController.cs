@@ -64,7 +64,7 @@ namespace CITNASDaily.API.Controllers
         #region GetNAS
 
         [HttpGet("{nasId}", Name = "GetNAS")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetNAS(int nasId)
         {
             try
@@ -90,7 +90,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{nasId}/noimg", Name = "GetNASNoImage")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetNASNoImage(int nasId)
         {
             try
@@ -116,7 +116,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet(Name = "GetAllNAS")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetAllNAS()
         {
             try
@@ -138,7 +138,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("noimg", Name = "GetAllNASNoImage")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetAllNASNoImage()
         {
             try
@@ -160,7 +160,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{year}/{semester}/noimg", Name = "GetAllNASBySYSemester")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetAllNASBySYSemester(int year, int semester)
         {
             try
@@ -182,7 +182,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{username}/id", Name = "GetNASId")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetNASIdAsync(string username)
         {
             try
@@ -204,7 +204,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{officeId}/{year}/{semester}", Name = "GetNASByOfficeIdSYSemester")]
-        [Authorize]
+        [Authorize(Roles = "OAS, Superior")]
         public async Task<IActionResult> GetNASByOfficeIdSYSemester(int officeId, int year, int semester)
         {
             try
@@ -226,7 +226,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{nasId}/rating", Name = "GetNASSuperiorEvaluationRating")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetNASSuperiorEvaluationRatingAsync(int nasId, Semester semester, int year)
         {
             try
@@ -248,7 +248,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("sysem", Name = "GetAllSYAndSem")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetAllSYAndSem()
         {
             try
@@ -274,7 +274,7 @@ namespace CITNASDaily.API.Controllers
         #region UpdateUpload
 
         [HttpPut("grades/{nasId}/{year}/{semester}", Name = "UploadGrades")]
-        [Authorize]
+        [Authorize(Roles = "OAS, NAS")]
         public async Task<IActionResult> UploadGrades(int nasId, int year, int semester, [FromForm] IFormFile file)
         {
             try
@@ -302,7 +302,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPut("photo/{nasId}", Name = "UploadPhoto")]
-        [Authorize]
+        [Authorize(Roles = "OAS, NAS")]
         public async Task<IActionResult> UploadPhoto(int nasId, [FromForm] IFormFile file)
         {
             try
@@ -330,7 +330,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPut("{nasId}", Name = "UpdateNAS")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> UpdateNAS(int nasId, [FromBody] NASUpdateDto nasUpdate)
         {
             try
