@@ -24,23 +24,6 @@ export const NASEvaluationResult = () => {
     setSelectedSem(value);
   };
 
-  const getSavedState = () => {
-    const savedFileUploaded = localStorage.getItem("fileUploaded");
-    const savedSubmitted = localStorage.getItem("submitted");
-
-    if (savedFileUploaded) {
-      setFileUploaded(JSON.parse(savedFileUploaded));
-    }
-
-    if (savedSubmitted) {
-      setSubmitted(JSON.parse(savedSubmitted));
-    }
-  };
-
-  useEffect(() => {
-    getSavedState();
-  }, []);
-
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -140,7 +123,7 @@ export const NASEvaluationResult = () => {
 
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
-      <div className="m-3">
+      <div className="m-3 mb-10">
         <div className="m-2">
           <div className="flex items-center justify-center text-xl font-bold">
             Evaluation Result
@@ -191,7 +174,7 @@ export const NASEvaluationResult = () => {
               </div>
               <div className="flex flex-row gap-28 justify-start items-center text-lg mt-2">
                 <div>TIMEKEEPING STATUS:</div>
-                <div className="font-bold text-green">
+                <div className="font-bold">
                   {summaryEvaluation.timekeepingStatus}
                 </div>
               </div>
@@ -237,8 +220,8 @@ export const NASEvaluationResult = () => {
                       )
                     ) : null}
                   </div>
-                ) : summaryEvaluation.allCoursesPassed === null ||
-                  summaryEvaluation.allCoursesPassed === undefined ? (
+                ) : summaryEvaluation.responded === null ||
+                  summaryEvaluation.responded === undefined ? (
                   <span className="text-yellow">PENDING</span>
                 ) : summaryEvaluation.allCoursesPassed ? (
                   <span className="text-green">ALL PASSED</span>
@@ -247,19 +230,6 @@ export const NASEvaluationResult = () => {
                 )}
               </div>
             </div>
-          </div>
-          <div className="mt-7 ">
-            {submitted ? (
-              <div className="p-3 rounded-lg bg-good">
-                Thank you for submitting your grades. Please wait for the
-                response of OAS.
-              </div>
-            ) : (
-              <div className="p-3 rounded-lg bg-warning">
-                Please upload your grades to finalize your evaluation and number
-                of units allowed for you to enroll.
-              </div>
-            )}
           </div>
         </div>
       </div>

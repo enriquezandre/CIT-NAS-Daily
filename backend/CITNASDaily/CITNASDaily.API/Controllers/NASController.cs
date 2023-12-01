@@ -210,15 +210,15 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("{officeId}/offices", Name = "GetNASByOfficeIdAsync")]
+        [HttpGet("{officeId}/{year}/{semester}", Name = "GetNASByOfficeIdSYSemester")]
         [Authorize]
-        public async Task<IActionResult> GetNASByOfficeIdAsync(int officeId)
+        public async Task<IActionResult> GetNASByOfficeIdSYSemester(int officeId, int year, int semester)
         {
             try
             {
-                var nas = await _nasService.GetNASByOfficeIdAsync(officeId);
+                var nas = await _nasService.GetNASByOfficeIdSYSemesterAsync(officeId, year, (Semester)semester);
 
-                if (nas.IsNullOrEmpty())
+                if (nas == null)
                 {
                     return NotFound("No NAS under your office yet.");
                 }
@@ -250,6 +250,28 @@ namespace CITNASDaily.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting superior evaluation");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("sysem", Name = "GetAllSYAndSem")]
+        [Authorize]
+        public async Task<IActionResult> GetAllSYAndSem()
+        {
+            try
+            {
+                var sysem = await _nasService.GetAllSYAndSem();
+
+                if (sysem == null)
+                {
+                    return NotFound("No school year and sem.");
+                }
+
+                return Ok(sysem);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting school year and sem");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }

@@ -2,6 +2,7 @@
 using CITNASDaily.Entities.Dtos.SchoolYearDto;
 using CITNASDaily.Entities.Models;
 using Microsoft.AspNetCore.Http;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Repositories.Contracts
 {
@@ -12,7 +13,7 @@ namespace CITNASDaily.Repositories.Contracts
         Task<IEnumerable<NAS>?> GetAllNASAsync();
         Task<IEnumerable<NAS>?> GetAllNasBySYSemesterAsync(List<int> nasIdList);
         Task<int> GetNASIdByUsernameAsync(string username);
-        Task<IEnumerable<NAS?>> GetNASByOfficeIdAsync(int officeId);
+        Task<IEnumerable<NAS?>> GetNASByOfficeIdSYSemesterAsync(int officeId, int year, Semester semester);
         Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file);
         Task<NAS?> UpdateNASAsync(int nasId, NAS nas);
     }

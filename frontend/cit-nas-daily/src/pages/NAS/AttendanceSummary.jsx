@@ -6,9 +6,24 @@ import { useParams } from "react-router-dom";
 import { ValidationModal } from "../../components/NAS/ValidationModal.jsx";
 import axios from "axios";
 
-const first_sem = ["All", "August", "September", "October", "November", "December"];
+const first_sem = [
+  "All",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
-const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
+const second_sem = [
+  "All",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+];
 
 const summer = ["All", "June", "July", "August"];
 
@@ -29,23 +44,23 @@ export const AttendanceSummary = () => {
     switch (selectedSem) {
       case "First":
         setMonthOptions(first_sem);
-        selectedMonthIndex = first_sem.indexOf(selectedMonth) + 6;
+        selectedMonthIndex = first_sem.indexOf(selectedMonth) + 7;
         if (selectedMonth === "All") {
-          selectedMonthIndex = -1;
+          selectedMonthIndex = 0;
         }
         break;
       case "Second":
         setMonthOptions(second_sem);
-        selectedMonthIndex = second_sem.indexOf(selectedMonth) - 1;
+        selectedMonthIndex = second_sem.indexOf(selectedMonth);
         if (selectedMonth === "All") {
-          selectedMonthIndex = -2;
+          selectedMonthIndex = 0;
         }
         break;
       case "Summer":
         setMonthOptions(summer);
         selectedMonthIndex = summer.indexOf(selectedMonth) + 5;
         if (selectedMonth === "All") {
-          selectedMonthIndex = -3;
+          selectedMonthIndex = 0;
         }
         break;
       default:
@@ -125,7 +140,9 @@ export const AttendanceSummary = () => {
           },
         });
 
-        const timekeepingresponse = await api.get(`/TimekeepingSummary/${nasId}`);
+        const timekeepingresponse = await api.get(
+          `/TimekeepingSummary/${nasId}`
+        );
         let timekeepingdata = timekeepingresponse.data[0];
         console.log(timekeepingdata);
 
@@ -250,7 +267,11 @@ export const AttendanceSummary = () => {
           </div>
         </div>
       </div>
-      <ValidationModal isOpen={isOpen} closeModal={closeModal} handleSubmit={handleSubmit} />
+      <ValidationModal
+        isOpen={isOpen}
+        closeModal={closeModal}
+        handleSubmit={handleSubmit}
+      />
     </div>
   );
 };

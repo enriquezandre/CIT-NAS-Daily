@@ -82,7 +82,8 @@ namespace CITNASDaily.Repositories.Migrations
                     EnrollmentAllowed = table.Column<bool>(type: "bit", nullable: true),
                     UnitsAllowed = table.Column<int>(type: "int", nullable: true),
                     AllCoursesPassed = table.Column<bool>(type: "bit", nullable: true),
-                    NoOfCoursesFailed = table.Column<int>(type: "int", nullable: true)
+                    NoOfCoursesFailed = table.Column<int>(type: "int", nullable: true),
+                    Responded = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

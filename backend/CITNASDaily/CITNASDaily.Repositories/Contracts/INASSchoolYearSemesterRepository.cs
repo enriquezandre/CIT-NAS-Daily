@@ -14,5 +14,6 @@ namespace CITNASDaily.Repositories.Contracts
         Task<List<NASSchoolYearSemester>?> AddSchoolYearSemesterAsync(int nasId, List<NASSchoolYearSemesterCreateDto> data);
         Task<IEnumerable<NASSchoolYearSemester?>> GetSchoolYearSemesterAsync(int nasId);
         Task<List<int>> GetAllNasIdBySYSemesterAsync(int year, Semester semester);
+        Task<List<NASSYSemOnly>> GetAllSYAndSem();
     }
 }

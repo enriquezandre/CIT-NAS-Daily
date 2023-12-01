@@ -61,5 +61,15 @@ namespace CITNASDaily.Repositories.Repositories
 
             return nasIdList;
         }
+
+        public async Task<List<NASSYSemOnly>> GetAllSYAndSem()
+        {
+            return await _context.NASSchoolYears
+                .OrderBy(s => s.Year)
+                .ThenBy(s => s.Semester)
+                .Select(s => new NASSYSemOnly { Year = s.Year, Semester = s.Semester })
+                .Distinct()
+                .ToListAsync();
+        }
     }
 }
