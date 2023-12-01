@@ -60,9 +60,22 @@ namespace CITNASDaily.Repositories.Repositories
             return 0;
         }
 
-        public async Task<IEnumerable<NAS?>> GetNASByOfficeIdAsync(int officeId)
+        public async Task<IEnumerable<NAS?>> GetNASByOfficeIdSYSemesterAsync(int officeId, int year, Semester semester)
         {
-            return await _context.NAS.Where(e => e.OfficeId == officeId).ToListAsync();
+            var nasOffice = await _context.NAS.Where(e => e.OfficeId == officeId).ToListAsync();
+
+            var nasList = new List<NAS?>();
+
+            foreach (var nas in nasOffice)
+            {
+                var findSySem = await _context.NASSchoolYears.FirstOrDefaultAsync(n => n.Semester == semester && n.Year == year && n.NASId == nas.Id);
+                if(findSySem != null)
+                {
+                    nasList.Add(nas);
+                }
+            }
+
+            return nasList;
         }
 
         #endregion

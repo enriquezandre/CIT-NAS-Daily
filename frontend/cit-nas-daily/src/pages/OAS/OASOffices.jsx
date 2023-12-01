@@ -9,6 +9,10 @@ export const OASOffices = () => {
   const [selectedOffice, setSelectedOffice] = useState(1);
   const [showNASList, setShowNASList] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  const [selectedSY, setSelectedSY] = useState(2324);
+  const [selectedSem, setSelectedSem] = useState("First");
+  const sy_options = ["2324", "2223", "2122", "2021"];
+  const sem_options = ["First", "Second", "Summer"];
 
   // Function to filter offices based on search input
   const filteredOffices = offices.filter((office) =>
@@ -18,6 +22,16 @@ export const OASOffices = () => {
   const handleOfficeClick = (office) => {
     setSelectedOffice(office);
     setShowNASList(true);
+  };
+
+  const handleSelectSY = (event) => {
+    const value = event.target.value;
+    setSelectedSY(value);
+  };
+
+  const handleSelectSem = (event) => {
+    const value = event.target.value;
+    setSelectedSem(value);
   };
 
   useEffect(() => {
@@ -105,7 +119,46 @@ export const OASOffices = () => {
           <div>
             {showNASList ? (
               <div>
-                <NASList office={selectedOffice} />
+                <div className="flex flex-row justify-start items-center gap-10 mt-5 mb-8 ml-10">
+                  <div className="flex flex-row gap-2 items-center">
+                    <div className="mr-2">SY:</div>
+                    <select
+                      id="sy"
+                      name="sy"
+                      value={selectedSY}
+                      onChange={handleSelectSY}
+                      className=" w-full text-base border rounded-md"
+                    >
+                      {Array.isArray(sy_options) &&
+                        sy_options.map((sy, index) => (
+                          <option key={index} value={sy}>
+                            {sy}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-row gap-2 items-center">
+                    <div className="mr-2">SEMESTER:</div>
+                    <select
+                      id="sem"
+                      name="sem"
+                      value={selectedSem}
+                      onChange={handleSelectSem}
+                      className=" w-full text-base border rounded-md"
+                    >
+                      {sem_options.map((sem, index) => (
+                        <option key={index} value={sem}>
+                          {sem}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <NASList
+                  office={selectedOffice}
+                  selectedSY={selectedSY}
+                  selectedSem={selectedSem}
+                />
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-4 p-6">
