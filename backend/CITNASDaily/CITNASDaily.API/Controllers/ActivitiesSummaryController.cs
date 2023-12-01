@@ -1,7 +1,6 @@
 ﻿using CITNASDaily.Entities.Dtos.ActivitiesSummaryDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Services.Contracts;
-using CITNASDaily.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -130,7 +129,7 @@ namespace CITNASDaily.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting Superior.");
+                _logger.LogError(ex, "Error getting Activities Summary.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
@@ -171,7 +170,7 @@ namespace CITNASDaily.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting Superior.");
+                _logger.LogError(ex, "Error getting Activities Summary.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
