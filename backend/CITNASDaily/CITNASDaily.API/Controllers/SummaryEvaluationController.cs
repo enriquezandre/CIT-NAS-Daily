@@ -44,7 +44,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{year}/{semester}/{nasId}", Name = "GetSummaryEvaluationByNASId")]
-        [Authorize(Roles = "OAS, Superior")]
+        [Authorize(Roles = "OAS, Superior, NAS")]
         public async Task<IActionResult> GetSummaryEvaluationByNASIdSemesterYear(int nasId, Semester semester, int year)
         {
             try

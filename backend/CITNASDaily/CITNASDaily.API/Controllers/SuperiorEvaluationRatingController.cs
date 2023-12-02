@@ -64,7 +64,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet(Name = "GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYear")]
-        [Authorize(Roles = "OAS, Superior")]
+        [Authorize(Roles = "OAS, Superior,NAS")]
         public async Task<IActionResult> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYear(int nasId, Semester semester, int year)
         {
             try

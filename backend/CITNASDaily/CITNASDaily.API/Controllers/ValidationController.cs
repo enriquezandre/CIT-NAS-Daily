@@ -25,7 +25,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "OAS")]
+        [Authorize(Roles = "OAS, NAS")]
         [ProducesResponseType(typeof(Validation), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateValidation([FromBody] ValidationCreateDto validationCreate)
         {

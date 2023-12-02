@@ -68,7 +68,7 @@ namespace CITNASDaily.API.Controllers
         /// <reponse code="403">Forbidden</reponse>
         /// <reponse code="500">Internal server error</reponse>
         [HttpGet("{userId}", Name = "GetUser")]
-        [Authorize(Roles = "OAS")]
+        [Authorize(Roles = "OAS, Superior")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

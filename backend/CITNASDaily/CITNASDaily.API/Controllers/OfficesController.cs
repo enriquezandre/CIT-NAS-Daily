@@ -85,7 +85,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{nasId}/NAS", Name = "GetOfficeByNASId")]
-        [Authorize(Roles = "OAS, Superior")]
+        [Authorize(Roles = "OAS, Superior, NAS")]
         public async Task<IActionResult> GetOfficeByNASId(int nasId)
         {
             try

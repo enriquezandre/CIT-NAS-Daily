@@ -71,7 +71,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{nasId}", Name = "GetAllTimekeepingSummaryByNASId")]
-        [Authorize(Roles = "OAS")]
+        [Authorize(Roles = "OAS, Superior, NAS")]
         public async Task<IActionResult> GetAllTimekeepingSummaryByNASId(int nasId)
         {
             try
