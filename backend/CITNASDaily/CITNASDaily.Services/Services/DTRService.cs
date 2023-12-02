@@ -3,6 +3,7 @@ using CITNASDaily.Entities.Dtos.DailyTimeRecordDto;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Services.Contracts;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using static CITNASDaily.Entities.Enums.Enums;
 
@@ -28,9 +29,9 @@ namespace CITNASDaily.Services.Services
             return await _dtrRepository.GetDTRByNasNameAsync(firstName, lastName, middleName);
         }
 
-        public async Task SaveDTRs(IEnumerable<DailyTimeRecord> records)
+        public async Task SaveDTRs(IFormFile file, int year, Semester semester)
         {
-            await _dtrRepository.SaveDTRs(records);
+            await _dtrRepository.SaveDTRs(file, year, semester);
         }
 
         public async Task<DailyTimeRecordListDto> GetDTRsBySYSemesterAsync(int year, Semester semester, string firstName, string lastName, string middleName)

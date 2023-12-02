@@ -71,43 +71,17 @@ namespace CITNASDaily.API.Controllers
         [HttpPost("UploadExcel/{year}/{semester}")]
         public async Task<IActionResult> UploadExcel(IFormFile file, int year, int semester)
         {
-            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-            using (var stream = new MemoryStream())
+            try
             {
-                await file.CopyToAsync(stream);
-                using (var package = new ExcelPackage(stream))
-                {
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // assuming you only have one worksheet
-                    List<DailyTimeRecord> records = new List<DailyTimeRecord>();
+                await _dtrService.SaveDTRs(file, year, (Semester)semester);
 
-                    // iterate through the worksheet rows and columns
-                    for (int i = worksheet.Dimension.Start.Row + 1; i <= worksheet.Dimension.End.Row; i++)
-                    {
-                        DailyTimeRecord record = new DailyTimeRecord
-                        {
-                            FirstName = worksheet.Cells[i, 1].Value?.ToString(),
-                            MiddleName = worksheet.Cells[i, 2].Value?.ToString(),
-                            LastName = worksheet.Cells[i, 3].Value?.ToString(),
-                            Date = worksheet.Cells[i, 4].Value?.ToString(),
-                            TimeIn = worksheet.Cells[i, 5].Value?.ToString(),
-                            TimeOut = worksheet.Cells[i, 6].Value?.ToString(),
-                            OvertimeIn = worksheet.Cells[i, 7].Value?.ToString(),
-                            OvertimeOut = worksheet.Cells[i, 8].Value?.ToString(),
-                            WorkTime = worksheet.Cells[i, 9].Value?.ToString(),
-                            TotalWorkTime = worksheet.Cells[i, 10].Value?.ToString(),
-                            SchoolYear = year,
-                            Semester = (Semester) semester
-                        };
-
-                        records.Add(record);
-                    }
-
-                    await _dtrService.SaveDTRs(records);
-                }
+                return Ok();
             }
-
-            return Ok();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error saving DTR.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
         }
 
         [HttpGet("GetByNasName/{firstName}/{lastName}")]
