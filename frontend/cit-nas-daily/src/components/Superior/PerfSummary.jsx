@@ -1,8 +1,7 @@
 "use client";
 import PropTypes from "prop-types";
 import { Table } from "flowbite-react";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { MonthlySummary } from "../MonthlySummary";
 import axios from "axios";
 
@@ -47,12 +46,16 @@ export const PerfSummary = ({
     }
   }
 
-  const api = axios.create({
-    baseURL: "https://localhost:7001/api",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
 
   useEffect(() => {
     const fetchActivitiesSummary = async () => {
@@ -60,6 +63,7 @@ export const PerfSummary = ({
         const response = await api.get(`/ActivitiesSummary/${nasId}`);
         const data = response.data;
         setActivitySummaries(data);
+        setFilteredSummaries(data);
       } catch (error) {
         console.error(error);
         setActivitySummaries([]);
@@ -72,20 +76,12 @@ export const PerfSummary = ({
   useEffect(() => {
     const fetchTimekeepingSummary = async () => {
       try {
-        const response = await api.get(`/TimekeepingSummary/${nasId}`);
-        let data = response.data[0];
-        if (!data) {
-          data = {
-            excused: "NR",
-            failedToPunch: "NR",
-            lateOver10Mins: "NR",
-            lateOver45Mins: "NR",
-            makeUpDutyHours: "NR",
-            schoolYear: "NR",
-            semester: "NR",
-            unexcused: "NR",
-          };
-        }
+        const response = await api.get(
+          `/TimekeepingSummary/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}/${nasId}`
+        );
+        const data = response.data;
         setTimekeepingSummaries(data);
       } catch (error) {
         console.error(error);
@@ -94,7 +90,7 @@ export const PerfSummary = ({
     };
 
     fetchTimekeepingSummary();
-  }, [nasId, api]);
+  }, [nasId, selectedSY, selectedSem, api]);
 
   useEffect(() => {
     const fetchSummaryEvaluation = async () => {
