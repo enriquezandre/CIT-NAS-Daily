@@ -129,6 +129,9 @@ export const AttendanceSummaryTable = ({
 
         const filteredData = latestLogs.filter((item) => {
           const date = new Date(item.date);
+          if (date.getDay() === 0) {
+            return false;
+          }
           const month = date.getMonth();
           const year = date.getFullYear();
           const first = parseInt(
