@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CITNASDaily.Entities.Dtos.NASDtos;
+using CITNASDaily.Entities.Dtos.OASDtos;
 using CITNASDaily.Entities.Dtos.SchoolYearDto;
 using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Entities.Models;
@@ -49,6 +50,9 @@ namespace CITNASDaily.Services.Services
 
             var result = _mapper.Map<NASDto>(createdNAS);
             result.SYSem = sy;
+
+            var office = await _officeRepository.GetOfficeByNASIdAsync(nas.Id);
+            result.OfficeName = office.Name;
 
             return result;
         }
