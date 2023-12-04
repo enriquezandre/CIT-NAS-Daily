@@ -60,11 +60,9 @@ export const PerfSummary = ({
         const response = await api.get(`/ActivitiesSummary/${nasId}`);
         const data = response.data;
         setActivitySummaries(data);
-        setFilteredSummaries(data);
       } catch (error) {
         console.error(error);
         setActivitySummaries([]);
-        setFilteredSummaries([]);
       }
     };
 
@@ -119,6 +117,11 @@ export const PerfSummary = ({
 
   const handleChange = (event) => {
     const newSelectedMonth = event.target.value;
+    if (newSelectedMonth === "") {
+      setFilteredSummaries(activitySummaries);
+      setSelectedMonth(newSelectedMonth);
+      return;
+    }
 
     // Filter activitySummaries based on selected month
     const filtered = activitySummaries.filter((summary) => {
