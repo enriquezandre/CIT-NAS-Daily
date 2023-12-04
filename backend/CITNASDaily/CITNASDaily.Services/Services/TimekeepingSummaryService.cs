@@ -18,11 +18,11 @@ namespace CITNASDaily.Services.Services
             _mapper = mapper;
         }
 
-        public async Task<TimekeepingSummary?> CreateTimekeepingSummaryAsync(TimekeepingSummaryCreateDto timekeepingSummaryDto)
+        public async Task<TimekeepingSummary?> CreateTimekeepingSummaryAsync(TimekeepingSummaryCreateDto timekeepingSummaryDto, int nasId, int year, Semester semester)
         {
             var timekeepingSummary = _mapper.Map<TimekeepingSummary>(timekeepingSummaryDto);
            
-            var createdActSummary = await _timekeepingSummaryRepository.CreateTimekeepingSummaryAsync(timekeepingSummary);
+            var createdActSummary = await _timekeepingSummaryRepository.CreateTimekeepingSummaryAsync(timekeepingSummary, nasId, year, semester);
 
             if (createdActSummary != null)
             {

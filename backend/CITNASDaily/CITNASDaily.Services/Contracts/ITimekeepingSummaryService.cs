@@ -11,7 +11,7 @@ namespace CITNASDaily.Services.Contracts
 {
     public interface ITimekeepingSummaryService
     {
-        Task<TimekeepingSummary?> CreateTimekeepingSummaryAsync(TimekeepingSummaryCreateDto timekeepingSummaryDto);
+        Task<TimekeepingSummary?> CreateTimekeepingSummaryAsync(TimekeepingSummaryCreateDto timekeepingSummaryDto, int nasId, int year, Semester semester);
         Task<IEnumerable<TimekeepingSummary>?> GetAllTimekeepingSummaryAsync();
         Task<List<TimekeepingSummary>?> GetAllTimekeepingSummaryByNASIdAsync(int nasId);
         Task<TimekeepingSummary?> GetTimekeepingSummaryByNASIdSemesterYearAsync(int nasId, Semester semester, int year);
