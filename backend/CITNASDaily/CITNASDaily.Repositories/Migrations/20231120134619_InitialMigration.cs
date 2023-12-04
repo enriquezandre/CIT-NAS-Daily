@@ -19,6 +19,8 @@ namespace CITNASDaily.Repositories.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NASId = table.Column<int>(type: "int", nullable: false),
+                    Semester = table.Column<int>(type: "int", nullable: false),
+                    SchoolYear = table.Column<int>(type: "int", nullable: false),
                     DateOfEntry = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ActivitiesOfTheDay = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SkillsLearned = table.Column<string>(type: "nvarchar(max)", nullable: false),

@@ -5,6 +5,7 @@ using CITNASDaily.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.API.Controllers
 {
@@ -23,10 +24,10 @@ namespace CITNASDaily.API.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
+        [HttpPost("{nasId}/{year}/{semester}")]
         [Authorize]
         [ProducesResponseType(typeof(ActivitiesSummary), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateActivitiesSummary([FromBody] ActivitiesSummaryCreateDto activitiesSummaryCreate)
+        public async Task<IActionResult> CreateActivitiesSummary([FromBody] ActivitiesSummaryCreateDto activitiesSummaryCreate, int nasId, int year, int semester)
         {
             try
             {
@@ -36,7 +37,7 @@ namespace CITNASDaily.API.Controllers
                     return Forbid();
                 }
 
-                var createdActivitiesSummary = await _activitiesSummaryService.CreateActivitiesSummaryAsync(activitiesSummaryCreate);
+                var createdActivitiesSummary = await _activitiesSummaryService.CreateActivitiesSummaryAsync(activitiesSummaryCreate, nasId, year, (Semester)semester);
 
                 if (createdActivitiesSummary == null)
                 {
@@ -90,13 +91,35 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("{nasId}/{year}/{month}", Name = "GetAllActivitiesSummaryByNASIdMonthYear")]
+        [HttpGet("GetByMonth/{nasId}/{year}/{month}", Name = "GetAllActivitiesSummaryByNASIdMonthYear")]
         [Authorize]
-        public async Task<IActionResult> GetAllActivitiesSummary(int nasId, int month, int year)
+        public async Task<IActionResult> GetAllActivitiesSummaryByNASIdMonthYear(int nasId, int month, int year)
         {
             try
             {
                 var actSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryByNASIdMonthYearAsync(nasId, month, year);
+
+                if (actSummaries == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(actSummaries);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting Superior.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("{nasId}/{year}/{semester}", Name = "GetAllActivitiesSummaryByNASIdYearSemester")]
+        [Authorize]
+        public async Task<IActionResult> GetAllActivitiesSummaryByNASIdYearSemester(int nasId, int year, int semester)
+        {
+            try
+            {
+                var actSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryByNASIdYearSemesterAsync(nasId, year, (Semester)semester);
 
                 if (actSummaries == null)
                 {
