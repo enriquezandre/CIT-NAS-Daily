@@ -82,7 +82,6 @@ export const AttendanceSummaryTable = ({
         for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
           dateRange.push(new Date(d));
         }
-
         console.log("DTR", dtrdata);
 
         const groupedData = dtrdata.reduce((acc, curr) => {
