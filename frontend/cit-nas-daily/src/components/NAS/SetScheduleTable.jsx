@@ -20,7 +20,7 @@ export const ScheduleTable = ({
       </div>
       <table className="w-full">
         <thead>
-          <tr style={{ border: "1px solid #000" }}>
+          <tr className=" bg-primary text-white" style={{ border: "1px solid #000" }}>
             <th>Day</th>
             <th>Broken Schedule?</th>
             <th>Start Time</th>
