@@ -2,26 +2,28 @@ import { useState, useEffect, useMemo } from "react";
 import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { SuperiorEval } from "../../components/SuperiorEval";
+import { Dropdown } from "../../components/Dropdown";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import axios from "axios";
 
 //get current schoolyear
-const currentYear = new Date().getFullYear();
-const initialSchoolYear = `${currentYear % 100}${(currentYear % 100) + 1}`.padStart(4, "20");
+const currentSchoolYear = calculateSchoolYear();
+const currentSem = calculateSemester();
 
 export const OASEvaluation = () => {
-  const [selectedSY, setSelectedSY] = useState(initialSchoolYear);
-  const [selectedSem, setSelectedSem] = useState("First");
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
-  const [syOptions, setSyOptions] = useState([]);
-  const [uniqueYears, setUniqueYears] = useState([]);
-  const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [maxNasId, setMaxNasId] = useState(1);
+  const [selectedSY, setSelectedSY] = useState(currentSchoolYear);
+  const [selectedSem, setSelectedSem] = useState(currentSem);
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
+  const sem_options = ["First", "Second", "Summer"];
 
   const api = useMemo(
     () =>
@@ -204,39 +206,20 @@ export const OASEvaluation = () => {
           <div className="px-8 py-4">
             <div className="flex flex-row justify-start items-center gap-10 mt-2 mb-8">
               <div className="flex flex-row gap-2 items-center">
-                <div className="mr-2">SY:</div>
-                <select
-                  id="sy"
-                  name="sy"
-                  value={selectedSY}
-                  onChange={handleSelectSY}
-                  className=" w-full text-base border rounded-md"
-                  style={{ width: "6rem" }}
-                >
-                  {Array.isArray(uniqueYears) &&
-                    uniqueYears.map((year, index) => (
-                      <option key={index} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                </select>
+                <Dropdown
+                  label="SY"
+                  options={uniqueYears}
+                  selectedValue={selectedSY}
+                  onChange={(e) => handleSelectSY(e)}
+                />
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="mr-2">SEMESTER:</div>
-                <select
-                  id="sem"
-                  name="sem"
-                  value={selectedSem}
-                  onChange={handleSelectSem}
-                  className=" w-full text-base border rounded-md"
-                  style={{ width: "6rem" }}
-                >
-                  {sem_options.map((sem, index) => (
-                    <option key={index} value={sem}>
-                      {sem}
-                    </option>
-                  ))}
-                </select>
+                <Dropdown
+                  label="Semester"
+                  options={sem_options}
+                  selectedValue={selectedSem}
+                  onChange={(e) => handleSelectSem(e)}
+                />
               </div>
             </div>
             <hr className="my-5 border-t-2 border-gray-300" />
