@@ -280,26 +280,31 @@ export const NASSchedule = () => {
       <div className="m-3">
         <div className="m-2">
           <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
-            <div className="flex">
-              <div className="w-36 z-10 flex">
-                <div className="mr-2">SY:</div>
-                <select id="sy" name="sy" className=" w-full text-base border rounded-md" disabled>
-                  <option>{currentYear}</option>
-                </select>
-              </div>
-              <div className="w-48 z-10 flex ml-5">
-                <div className="mr-2">SEMESTER:</div>
-                <select
-                  id="sem"
-                  name="sem"
-                  onChange={handleSelectedSem}
-                  className="w-full text-base border rounded-md"
-                >
-                  <option value={0}>First</option>
-                  <option value={1}>Second</option>
-                  <option value={2}>Summer</option>
-                </select>
-              </div>
+            <div className="flex flex-row gap-2 items-center">
+              <div className="mr-2">SY:</div>
+              <select
+                id="sy"
+                name="sy"
+                className=" w-full text-base border rounded-md"
+                style={{ width: "7rem" }}
+                disabled
+              >
+                <option>{currentYear}</option>
+              </select>
+            </div>
+            <div className="flex flex-row gap-2 items-center">
+              <div className="mr-2">SEMESTER:</div>
+              <select
+                id="sem"
+                name="sem"
+                onChange={handleSelectedSem}
+                className="w-full text-base border rounded-md"
+                style={{ width: "7rem" }}
+              >
+                <option value={0}>First</option>
+                <option value={1}>Second</option>
+                <option value={2}>Summer</option>
+              </select>
             </div>
           </div>
           <div className="pt-1">
