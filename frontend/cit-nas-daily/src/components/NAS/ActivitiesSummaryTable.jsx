@@ -1,5 +1,5 @@
 import { Table } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { ActivitiesFormModal } from "./ActivitiesFormModal";
 import PropTypes from "prop-types";
@@ -13,6 +13,21 @@ export const ActivitiesSummaryTable = ({
   const { nasId } = useParams();
   const [activitySummaries, setActivitySummaries] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 3;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   const handleAdd = () => {
     setIsModalOpen(true);
@@ -29,7 +44,11 @@ export const ActivitiesSummaryTable = ({
           },
         });
 
-        const response = await api.get(`/ActivitiesSummary/${nasId}`);
+        const response = await api.get(
+          `/ActivitiesSummary/${nasId}/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}`
+        );
         const data = response.data;
 
         const filteredData = data.filter((item) => {
@@ -37,10 +56,11 @@ export const ActivitiesSummaryTable = ({
           const month = date.getMonth();
           const year = date.getFullYear();
           const first = parseInt(
-            year.toString().substring(0, 2) + selectedSY.substring(0, 2)
+            year.toString().substring(0, 2) +
+              selectedSY.toString().substring(0, 2)
           );
           const second = parseInt(
-            year.toString().substring(0, 2) + selectedSY.substring(2)
+            year.toString().substring(0, 2) + selectedSY.toString().substring(2)
           );
           switch (selectedMonth) {
             case -1:
@@ -67,7 +87,14 @@ export const ActivitiesSummaryTable = ({
     };
 
     fetchNas();
-  }, [nasId, selectedMonth, selectedSem, selectedSY, activitySummaries]);
+  }, [
+    nasId,
+    selectedMonth,
+    selectedSem,
+    selectedSY,
+    activitySummaries,
+    getSemesterValue,
+  ]);
 
   return (
     <div>
@@ -128,6 +155,8 @@ export const ActivitiesSummaryTable = ({
       <ActivitiesFormModal
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
+        selectedSY={selectedSY}
+        selectedSem={selectedSem}
       />
     </div>
   );

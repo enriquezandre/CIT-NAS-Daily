@@ -28,39 +28,39 @@ const second_sem = [
 const summer = ["All", "June", "July", "August"];
 
 export const AttendanceSummary = () => {
-  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSY, setSelectedSY] = useState(2324);
   const [selectedSem, setSelectedSem] = useState("First");
   const [monthOptions, setMonthOptions] = useState(first_sem);
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
-  const sy_options = ["2324", "2223", "2122", "2021"];
-  const sem_options = ["First", "Second", "Summer"];
   const [isOpen, setIsOpen] = useState(false);
   const { nasId } = useParams();
+  const sy_options = [2324, 2223, 2122, 2021]; //TO BE CHANGED
+  const sem_options = ["First", "Second", "Summer"];
 
   useEffect(() => {
     let selectedMonthIndex;
     switch (selectedSem) {
       case "First":
         setMonthOptions(first_sem);
-        selectedMonthIndex = first_sem.indexOf(selectedMonth) + 7;
+        selectedMonthIndex = first_sem.indexOf(selectedMonth) + 6;
         if (selectedMonth === "All") {
-          selectedMonthIndex = 0;
+          selectedMonthIndex = -1;
         }
         break;
       case "Second":
         setMonthOptions(second_sem);
-        selectedMonthIndex = second_sem.indexOf(selectedMonth);
+        selectedMonthIndex = second_sem.indexOf(selectedMonth) - 1;
         if (selectedMonth === "All") {
-          selectedMonthIndex = 0;
+          selectedMonthIndex = -2;
         }
         break;
       case "Summer":
         setMonthOptions(summer);
-        selectedMonthIndex = summer.indexOf(selectedMonth) + 5;
+        selectedMonthIndex = summer.indexOf(selectedMonth) + 4;
         if (selectedMonth === "All") {
-          selectedMonthIndex = 0;
+          selectedMonthIndex = -3;
         }
         break;
       default:

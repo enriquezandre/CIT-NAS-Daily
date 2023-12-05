@@ -2,20 +2,35 @@
 import { useState, useEffect } from "react";
 import { ActivitiesSummaryTable } from "../../components/NAS/ActivitiesSummaryTable.jsx";
 
-const first_sem = ["All", "August", "September", "October", "November", "December"];
+const first_sem = [
+  "All",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
-const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
+const second_sem = [
+  "All",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+];
 
 const summer = ["All", "June", "July", "August"];
 
 export const ActivitiesSummary = () => {
-  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSY, setSelectedSY] = useState(2324);
   const [selectedSem, setSelectedSem] = useState("First");
   const [monthOptions, setMonthOptions] = useState(first_sem);
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
 
-  const sy_options = ["2324", "2223", "2122", "2021"];
+  const sy_options = [2324, 2223, 2122, 2021]; //TO BE CHANGED
   const sem_options = ["First", "Second", "Summer"];
 
   useEffect(() => {
