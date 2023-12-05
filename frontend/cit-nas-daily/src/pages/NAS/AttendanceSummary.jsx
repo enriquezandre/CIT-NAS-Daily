@@ -23,7 +23,6 @@ export const AttendanceSummary = () => {
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
-  const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const [isOpen, setIsOpen] = useState(false);
   const { nasId } = useParams();
