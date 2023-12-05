@@ -1,18 +1,20 @@
 import { useState, useEffect, useMemo } from "react";
 import { EvaluateGrades } from "../../components/OAS/EvaluateGrades";
 import { Button } from "flowbite-react";
+import { Dropdown } from "../../components/Dropdown";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import axios from "axios";
 
-const currentYear = new Date().getFullYear();
-const initialSchoolYear = `${currentYear % 100}${(currentYear % 100) + 1}`.padStart(4, "20");
+const currentYear = calculateSchoolYear();
+const currentSem = calculateSemester();
 
 export const OASStatus = () => {
   const [isViewingEvaluateGrades, setIsViewingEvaluateGrades] = useState(false);
-  const [selectedSY, setSelectedSY] = useState(initialSchoolYear);
+  const [selectedSY, setSelectedSY] = useState(currentYear);
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
-  const [selectedSem, setSelectedSem] = useState("First");
+  const [selectedSem, setSelectedSem] = useState(currentSem);
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
@@ -58,7 +60,7 @@ export const OASStatus = () => {
         case "Second":
           return 1;
         case "Summer":
-          return 3;
+          return 2;
         default:
           return "Invalid semester";
       }
@@ -253,39 +255,20 @@ export const OASStatus = () => {
           <div className="px-8 py-4">
             <div className="flex flex-row justify-start items-center gap-10 mt-2 mb-8">
               <div className="flex flex-row gap-2 items-center">
-                <div className="mr-2">SY:</div>
-                <select
-                  id="sy"
-                  name="sy"
-                  value={selectedSY}
-                  onChange={handleSelectSY}
-                  className=" w-full text-base border rounded-md"
-                  style={{ width: "6rem" }}
-                >
-                  {Array.isArray(uniqueYears) &&
-                    uniqueYears.map((year, index) => (
-                      <option key={index} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                </select>
+                <Dropdown
+                  label="SY"
+                  options={uniqueYears}
+                  selectedValue={selectedSY}
+                  onChange={(e) => handleSelectSY(e)}
+                />
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="mr-2">SEMESTER:</div>
-                <select
-                  id="sem"
-                  name="sem"
-                  value={selectedSem}
-                  onChange={handleSelectSem}
-                  className=" w-full text-base border rounded-md"
-                  style={{ width: "6rem" }}
-                >
-                  {sem_options.map((sem, index) => (
-                    <option key={index} value={sem}>
-                      {sem}
-                    </option>
-                  ))}
-                </select>
+                <Dropdown
+                  label="Semester"
+                  options={sem_options}
+                  selectedValue={selectedSem}
+                  onChange={(e) => handleSelectSem(e)}
+                />
               </div>
             </div>
             <div></div>
