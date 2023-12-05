@@ -7,10 +7,8 @@ import { Dropdown } from "../../components/Dropdown";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import axios from "axios";
 
-//get current schoolyear
 const currentSchoolYear = calculateSchoolYear();
 const currentSemester = calculateSemester();
-// const initialSchoolYear = `${currentYear % 100}${(currentYear % 100) + 1}`.padStart(4, "20");
 const first_sem = ["All", "August", "September", "October", "November", "December"];
 const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
 const summer = ["All", "June", "July", "August"];
