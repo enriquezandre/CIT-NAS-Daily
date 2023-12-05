@@ -279,7 +279,7 @@ export const NASSchedule = () => {
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
         <div className="m-2">
-          <div className="flex">
+          <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
             <div className="flex">
               <div className="w-36 z-10 flex">
                 <div className="mr-2">SY:</div>
@@ -302,7 +302,7 @@ export const NASSchedule = () => {
               </div>
             </div>
           </div>
-          <div className="pt-5">
+          <div className="pt-1">
             {dataExist ? (
               <ViewScheduleTable
                 apiData={apiData}
