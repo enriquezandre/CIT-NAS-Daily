@@ -1,15 +1,35 @@
 "use client";
 import PropTypes from "prop-types";
 import { Modal } from "flowbite-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export const ActivitiesFormModal = ({ isOpen, closeModal }) => {
+export const ActivitiesFormModal = ({
+  isOpen,
+  closeModal,
+  selectedSY,
+  selectedSem,
+}) => {
   const { nasId } = useParams();
   const [activitiesOfTheDay, setActivitiesOfTheDay] = useState("");
   const [skillsLearned, setSkillsLearned] = useState("");
   const [valuesLearned, setValuesLearned] = useState("");
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 3;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -23,9 +43,10 @@ export const ActivitiesFormModal = ({ isOpen, closeModal }) => {
       });
 
       const response = await api.post(
-        "https://localhost:7001/api/ActivitiesSummary",
+        `https://localhost:7001/api/ActivitiesSummary/${nasId}/${selectedSY}/${getSemesterValue(
+          selectedSem
+        )}`,
         {
-          nasId,
           activitiesOfTheDay,
           skillsLearned,
           valuesLearned,
@@ -104,4 +125,6 @@ export const ActivitiesFormModal = ({ isOpen, closeModal }) => {
 ActivitiesFormModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
+  selectedSY: PropTypes.number.isRequired,
+  selectedSem: PropTypes.string.isRequired,
 };
