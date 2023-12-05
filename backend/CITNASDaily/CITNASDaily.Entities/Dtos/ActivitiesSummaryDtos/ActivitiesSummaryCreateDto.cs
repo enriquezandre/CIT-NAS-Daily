@@ -9,7 +9,6 @@ namespace CITNASDaily.Entities.Dtos.ActivitiesSummaryDtos
 {
     public class ActivitiesSummaryCreateDto
     {
-        public int NASId { get; set; }
         public string? ActivitiesOfTheDay { get; set; }
         public string? SkillsLearned { get; set; }
         public string? ValuesLearned { get; set; }

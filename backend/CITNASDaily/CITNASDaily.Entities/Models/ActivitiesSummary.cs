@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Entities.Models
 {
@@ -8,6 +9,10 @@ namespace CITNASDaily.Entities.Models
         public int Id { get; set; }
         [Required]
         public int NASId { get; set; }
+        [Required]
+        public int SchoolYear { get; set; }
+        [Required]
+        public Semester Semester { get; set; }
         [Required]
         public DateTime DateOfEntry { get; set; }
         [Required]

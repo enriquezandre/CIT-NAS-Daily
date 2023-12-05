@@ -23,11 +23,10 @@ namespace CITNASDaily.API.Controllers
             _timekeepingSummaryService = timekeepingSummaryervice;
             _logger = logger;
         }
-
-        [HttpPost]
+        [HttpPost("{nasId}/{year}/{semester}")]
         [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(TimekeepingSummary), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateTimekeepingSummary([FromBody] TimekeepingSummaryCreateDto timekeepingSummaryCreate)
+        public async Task<IActionResult> CreateTimekeepingSummary([FromBody] TimekeepingSummaryCreateDto timekeepingSummaryCreate, int nasId, int year, int semester)
         {
             try
             {
@@ -37,7 +36,7 @@ namespace CITNASDaily.API.Controllers
                     return Forbid();
                 }
 
-                var createdTimekeepingSummary = await _timekeepingSummaryService.CreateTimekeepingSummaryAsync(timekeepingSummaryCreate);
+                var createdTimekeepingSummary = await _timekeepingSummaryService.CreateTimekeepingSummaryAsync(timekeepingSummaryCreate, nasId, year, (Semester)semester);
 
                 if (createdTimekeepingSummary == null)
                 {
@@ -91,17 +90,16 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
-
-        [HttpGet("{year}/{semester}/{nasId}", Name = "GetTimekeepingSummaryByNASIdSemesterYear")]
+        [HttpGet("{nasId}/{year}/{semester}", Name = "GetTimekeepingSummaryByNASIdSemesterYear")]
         [Authorize(Roles = "OAS")]
-        public async Task<IActionResult> GetTimekeepingSummaryByNASIdSemesterYear(int nasId, Semester semester, int year)
+        public async Task<IActionResult> GetTimekeepingSummaryByNASIdSemesterYear(int nasId, int semester, int year)
         {
             try
             {
                 var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
                 if (currentUser == null) return Forbid();
 
-                var summaryEval = await _timekeepingSummaryService.GetTimekeepingSummaryByNASIdSemesterYearAsync(nasId, semester, year);
+                var summaryEval = await _timekeepingSummaryService.GetTimekeepingSummaryByNASIdSemesterYearAsync(nasId, (Semester)semester, year);
 
                 if (summaryEval == null)
                 {
