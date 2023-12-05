@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Card } from "flowbite-react";
 import { Header } from "../../components/Header";
 import { PerfSummary } from "../../components/Superior/PerfSummary.jsx";
@@ -64,6 +63,17 @@ export const SuperiorEvaluation = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [total, setTotal] = useState();
 
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
+
   const openPerfSummary = () => {
     setIsViewingPerfSummary(true);
   };
@@ -94,13 +104,6 @@ export const SuperiorEvaluation = () => {
     const schoolYear = selectedSY;
     const semester = getSemesterValue(selectedSem);
     try {
-      const api = axios.create({
-        baseURL: "https://localhost:7001/api",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
       const superiorEvaluationRating = {
         nasId,
         schoolYear,
@@ -151,14 +154,6 @@ export const SuperiorEvaluation = () => {
   useEffect(() => {
     const fetchNas = async () => {
       try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
         const response = await api.get(`/NAS/${nasId}/noimg`);
         const nasdata = response.data;
 
@@ -169,19 +164,11 @@ export const SuperiorEvaluation = () => {
       }
     };
     fetchNas();
-  }, [nasId, selectedSem, selectedSY]);
+  }, [nasId, selectedSem, selectedSY, api]);
 
   useEffect(() => {
     const fetchEvalData = async () => {
       try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
         const evaluationResponse = await api.get(
           `SuperiorEvaluationRating?nasId=${nasId}&semester=${getSemesterValue(
             selectedSem
@@ -196,7 +183,7 @@ export const SuperiorEvaluation = () => {
       }
     };
     fetchEvalData();
-  }, [nasId, selectedSem, selectedSY, evalData]);
+  }, [nasId, selectedSem, selectedSY, api]);
 
   useEffect(() => {
     const calculateCategorySum = (category) => {

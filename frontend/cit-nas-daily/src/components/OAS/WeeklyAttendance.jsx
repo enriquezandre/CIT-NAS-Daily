@@ -58,17 +58,89 @@ export const WeeklyAttendance = ({
             selectedSem
           )}/${firstName}/${lastName}?middleName=${middleName}`
         );
-        const dtrdata = dtrresponse.data;
+        const dtrdata = dtrresponse.data.dailyTimeRecords;
 
-        const filteredData = dtrdata.dailyTimeRecords.filter((summary) => {
-          if (selectedMonth === 0) {
-            return true;
+        const startDate = new Date("2021-01-01");
+        const endDate = new Date();
+        endDate.setHours(23, 59, 59, 999);
+        const dateRange = [];
+        for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+          dateRange.push(new Date(d));
+        }
+
+        const groupedData = dtrdata.reduce((acc, curr) => {
+          const date = curr.date.split(" ")[0];
+          console.log("DATE", date);
+          if (!acc[date]) {
+            acc[date] = {
+              timeIn: curr.timeIn,
+              timeOut: curr.timeOut,
+              overtimeIn: curr.overtimeIn,
+              overtimeOut: curr.overtimeOut,
+            };
+            console.log("YAWA", acc[date]);
+          }
+          if (curr.inOut && curr.date) {
+            acc[date][curr.inOut].push(curr);
+          }
+          return acc;
+        }, {});
+
+        const latestLogs = dateRange.map((date) => {
+          const dateString = date.toISOString().split("T")[0];
+          const logs = groupedData[dateString];
+          // console.log("LOGS", logs);
+          if (logs) {
+            return {
+              date: dateString,
+              timeIn: logs.timeIn,
+              timeOut: logs.timeOut,
+              overtimeIn: logs.overtimeIn,
+              overtimeOut: logs.overtimeOut,
+            };
           } else {
-            const summaryMonth = parseInt(summary.date.split("-")[1], 10);
-            return summaryMonth === selectedMonth;
+            return {
+              date: dateString,
+              timeIn: null,
+              timeOut: null,
+              overtimeIn: null,
+              overtimeOut: null,
+            };
           }
         });
-        console.log("SELECTED MONTH", selectedMonth);
+
+        const filteredData = latestLogs.filter((item) => {
+          const date = new Date(item.date);
+          if (date.getDay() === 0) {
+            return false;
+          }
+          const month = date.getMonth();
+          const year = date.getFullYear();
+          const first = parseInt(
+            year.toString().substring(0, 2) + selectedSY.substring(0, 2)
+          );
+          const second = parseInt(
+            year.toString().substring(0, 2) + selectedSY.substring(2)
+          );
+          switch (selectedMonth) {
+            case -1:
+              return month >= 7 && month <= 11 && year === first;
+            case -2:
+              return month >= 0 && month <= 5 && year === second;
+            case -3:
+              return month >= 5 && month <= 7 && year === second;
+          }
+
+          switch (selectedSem) {
+            case "First":
+              return month === selectedMonth && year === first;
+            case "Second":
+              return month === selectedMonth && year === second;
+            case "Summer":
+              return month === selectedMonth && year === second;
+          }
+        });
+
         setAttendanceSummaries(filteredData);
       } catch (error) {
         console.error(error);

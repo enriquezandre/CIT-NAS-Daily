@@ -13,8 +13,8 @@ export const EvaluateGrades = ({
   selectedSem,
 }) => {
   const [isViewingShowGrades, setIsViewingShowGrades] = useState(false);
-  const [numCoursesFailed, setNumCoursesFailed] = useState(null);
-  const [allCoursesPassed, setAllCoursesPassed] = useState(null);
+  const [numCoursesFailed, setNumCoursesFailed] = useState(0);
+  const [allCoursesPassed, setAllCoursesPassed] = useState(true);
   const [enrollmentAllowed, setEnrollmentAllowed] = useState(null);
   const [responded, setResponded] = useState("true");
 
@@ -26,7 +26,7 @@ export const EvaluateGrades = ({
         case "Second":
           return 1;
         case "Summer":
-          return 3;
+          return 2;
         default:
           return "Invalid semester";
       }
@@ -46,6 +46,13 @@ export const EvaluateGrades = ({
   const handleAllowEnrollment = (event) => {
     const value = event.target.value;
     setEnrollmentAllowed(value === "yes");
+  };
+
+  const handleGoBack = () => {
+    setAllCoursesPassed(true);
+    setNumCoursesFailed(0);
+    setEnrollmentAllowed(null);
+    close();
   };
 
   const handleSubmit = async () => {
@@ -185,18 +192,20 @@ export const EvaluateGrades = ({
                     </label>
                   </div>
                 </div>
+                {allCoursesPassed ? null : (
+                  <div className="flex flex-row w-full items-center mb-10">
+                    <p className="text-xl text-left w-3/4">
+                      NUMBER OF COURSES FAILED:
+                    </p>
+                    <input
+                      type="number"
+                      name="num-courses-failed"
+                      className="w-1/4 border-2 border-gray-300 rounded-md px-2"
+                      onChange={handleCoursesFailed}
+                    />
+                  </div>
+                )}
 
-                <div className="flex flex-row w-full items-center mb-10">
-                  <p className="text-xl text-left w-3/4">
-                    NUMBER OF COURSES FAILED:
-                  </p>
-                  <input
-                    type="number"
-                    name="num-courses-failed"
-                    className="w-1/4 border-2 border-gray-300 rounded-md px-2"
-                    onChange={handleCoursesFailed}
-                  />
-                </div>
                 <button
                   type="button"
                   className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-xl text-sm px-20 py-2.5"
@@ -207,7 +216,7 @@ export const EvaluateGrades = ({
                 <button
                   type="button"
                   className="text-primary hover:underline font-medium text-sm px-20 py-2.5"
-                  onClick={close}
+                  onClick={handleGoBack}
                 >
                   Go Back
                 </button>

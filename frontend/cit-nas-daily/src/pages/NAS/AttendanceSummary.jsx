@@ -56,23 +56,23 @@ export const AttendanceSummary = () => {
     switch (selectedSem) {
       case "First":
         setMonthOptions(first_sem);
-        selectedMonthIndex = first_sem.indexOf(selectedMonth) + 7;
+        selectedMonthIndex = first_sem.indexOf(selectedMonth) + 6;
         if (selectedMonth === "All") {
-          selectedMonthIndex = 0;
+          selectedMonthIndex = -1;
         }
         break;
       case "Second":
         setMonthOptions(second_sem);
-        selectedMonthIndex = second_sem.indexOf(selectedMonth);
+        selectedMonthIndex = second_sem.indexOf(selectedMonth) - 1;
         if (selectedMonth === "All") {
-          selectedMonthIndex = 0;
+          selectedMonthIndex = -2;
         }
         break;
       case "Summer":
         setMonthOptions(summer);
-        selectedMonthIndex = summer.indexOf(selectedMonth) + 5;
+        selectedMonthIndex = summer.indexOf(selectedMonth) + 4;
         if (selectedMonth === "All") {
-          selectedMonthIndex = 0;
+          selectedMonthIndex = -3;
         }
         break;
       default:
