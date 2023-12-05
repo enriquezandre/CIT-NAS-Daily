@@ -1,5 +1,5 @@
 export const calculateSemester = () => {
-  const currentDate = new Date("2024-07-01"); //Second Semester of 2023-2024
+  const currentDate = new Date(); //Second Semester of 2023-2024
   const currentMonth = currentDate.getMonth() + 1;
   const dayOfMonth = currentDate.getDate();
 
@@ -20,7 +20,7 @@ export const calculateSemester = () => {
 };
 
 export const calculateSchoolYear = () => {
-  const currentDate = new Date("2024-07-01"); // Current date and time
+  const currentDate = new Date(); // Current date and time
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth() + 1;
   const currentDay = currentDate.getDate();
@@ -36,4 +36,11 @@ export const calculateSchoolYear = () => {
   }
 
   return initialSchoolYear;
+};
+
+export const getCurrentMonth = () => {
+  const currentDate = new Date();
+  const currentMonth = currentDate.toLocaleString("en-US", { month: "long" });
+
+  return currentMonth;
 };
