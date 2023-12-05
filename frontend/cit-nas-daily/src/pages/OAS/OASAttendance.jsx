@@ -3,33 +3,37 @@ import { MonthlySummary } from "../../components/MonthlySummary";
 import { WeeklyAttendance } from "../../components/OAS/WeeklyAttendance";
 import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
+import { Dropdown } from "../../components/Dropdown";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import axios from "axios";
 
 //get current schoolyear
-const currentYear = new Date().getFullYear();
-const initialSchoolYear = `${currentYear % 100}${(currentYear % 100) + 1}`.padStart(4, "20");
+const currentSchoolYear = calculateSchoolYear();
+const currentSemester = calculateSemester();
+// const initialSchoolYear = `${currentYear % 100}${(currentYear % 100) + 1}`.padStart(4, "20");
 const first_sem = ["All", "August", "September", "October", "November", "December"];
 const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
 const summer = ["All", "June", "July", "August"];
 
 export const OASAttendance = () => {
-  const [selectedSem, setSelectedSem] = useState("First");
-  const [monthOptions, setMonthOptions] = useState(first_sem);
-  const [selectedMonth, setSelectedMonth] = useState("All");
-  const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
-  const [selectedSY, setSelectedSY] = useState(initialSchoolYear);
-  const [syOptions, setSyOptions] = useState([]);
-  const [uniqueYears, setUniqueYears] = useState([]);
-  const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [maxNasId, setMaxNasId] = useState(1);
+
+  const [selectedSem, setSelectedSem] = useState(currentSemester);
+  const [monthOptions, setMonthOptions] = useState(first_sem);
+  const [selectedMonth, setSelectedMonth] = useState("All");
+  const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
+  const [selectedSY, setSelectedSY] = useState(currentSchoolYear);
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
+  const sem_options = ["First", "Second", "Summer"];
 
   const api = useMemo(
     () =>
@@ -46,6 +50,7 @@ export const OASAttendance = () => {
     setSearchInput(event.target.value);
   };
 
+  //getting school year from the /NAS/sysem
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
@@ -74,7 +79,6 @@ export const OASAttendance = () => {
 
         const timekeepingresponse = await api.get(`/TimekeepingSummary/${nasId}`);
         let timekeepingdata = timekeepingresponse.data[0];
-        console.log(timekeepingdata);
 
         if (timekeepingdata === undefined || !timekeepingdata) {
           // If there's no record
@@ -184,8 +188,6 @@ export const OASAttendance = () => {
     }
   };
 
-  console.log(nasId);
-
   return (
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
@@ -263,57 +265,28 @@ export const OASAttendance = () => {
           <div className="px-8 py-4">
             <div className="flex flex-row justify-start items-center gap-10 mt-2 mb-8">
               <div className="flex flex-row gap-2 items-center">
-                <div className="mr-2">SY:</div>
-                <select
-                  id="sy"
-                  name="sy"
-                  value={selectedSY}
-                  onChange={handleSelectSY}
-                  className=" w-full text-base border rounded-md"
-                  style={{ width: "6rem" }}
-                >
-                  {Array.isArray(uniqueYears) &&
-                    uniqueYears.map((year, index) => (
-                      <option key={index} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                </select>
+                <Dropdown
+                  label="SY"
+                  options={uniqueYears}
+                  selectedValue={selectedSY}
+                  onChange={(e) => handleSelectSY(e)}
+                />
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="mr-2">SEMESTER:</div>
-                <select
-                  id="sem"
-                  name="sem"
-                  value={selectedSem}
-                  onChange={handleSelectSem}
-                  className=" w-full text-base border rounded-md"
-                  style={{ width: "6rem" }}
-                >
-                  {sem_options.map((sem, index) => (
-                    <option key={index} value={sem}>
-                      {sem}
-                    </option>
-                  ))}
-                </select>
+                <Dropdown
+                  label="Semester"
+                  options={sem_options}
+                  selectedValue={selectedSem}
+                  onChange={(e) => handleSelectSem(e)}
+                />
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="mr-2">MONTH:</div>
-                <select
-                  id="month"
-                  name="month"
-                  value={selectedMonth}
-                  onChange={handleSelectedMonth}
-                  className=" w-full text-base border rounded-md"
-                  style={{ width: "6rem" }}
-                >
-                  {Array.isArray(monthOptions) &&
-                    monthOptions.map((month, index) => (
-                      <option key={index} value={month}>
-                        {month}
-                      </option>
-                    ))}
-                </select>
+                <Dropdown
+                  label="Month"
+                  options={monthOptions}
+                  selectedValue={selectedMonth}
+                  onChange={(e) => handleSelectedMonth(e)}
+                />
               </div>
             </div>
             <div className="flex flex-col justify-center items-center gap-4">
