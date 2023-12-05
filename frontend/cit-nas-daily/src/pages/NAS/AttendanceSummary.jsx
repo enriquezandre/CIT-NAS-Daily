@@ -35,7 +35,7 @@ export const AttendanceSummary = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }); // Corrected placement of the comma
+        });
 
         const response = await api.get("/NAS/sysem");
         setSyOptions(response.data);
@@ -181,10 +181,10 @@ export const AttendanceSummary = () => {
 
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
-      <div className="m-3">
+      <div className="m-3 mb-10">
         <div className="m-2">
-          <div className="flex">
-            <div className="w-36 z-10 flex">
+          <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
+            <div className="flex flex-row gap-2 items-center">
               <Dropdown
                 label="SY"
                 options={uniqueYears}
@@ -192,17 +192,17 @@ export const AttendanceSummary = () => {
                 onChange={(e) => handleSelectSY(e)}
               />
             </div>
-            <div className="w-48 z-10 flex ml-5">
+            <div className="flex flex-row gap-2 items-center">
               <Dropdown
-                label="Semester"
+                label="SEMESTER"
                 options={sem_options}
                 selectedValue={selectedSem}
                 onChange={(e) => handleSelectSem(e)}
               />
             </div>
-            <div className="w-48 z-10 flex ml-5">
+            <div className="flex flex-row gap-2 items-center">
               <Dropdown
-                label="Month"
+                label="MONTH"
                 options={monthOptions}
                 selectedValue={selectedMonth}
                 onChange={(e) => handleSelectedMonth(e)}
