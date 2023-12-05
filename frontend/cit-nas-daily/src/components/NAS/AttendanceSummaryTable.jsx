@@ -135,10 +135,11 @@ export const AttendanceSummaryTable = ({
           const month = date.getMonth();
           const year = date.getFullYear();
           const first = parseInt(
-            year.toString().substring(0, 2) + selectedSY.substring(0, 2)
+            year.toString().substring(0, 2) +
+              selectedSY.toString().substring(0, 2)
           );
           const second = parseInt(
-            year.toString().substring(0, 2) + selectedSY.substring(2)
+            year.toString().substring(0, 2) + selectedSY.toString().substring(2)
           );
           switch (selectedMonth) {
             case -1:
@@ -234,6 +235,6 @@ export const AttendanceSummaryTable = ({
 AttendanceSummaryTable.propTypes = {
   selectedMonth: PropTypes.number.isRequired,
   selectedSem: PropTypes.string.isRequired,
-  selectedSY: PropTypes.string.isRequired,
+  selectedSY: PropTypes.number.isRequired,
   openModal: PropTypes.func.isRequired,
 };

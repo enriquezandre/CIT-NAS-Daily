@@ -28,16 +28,16 @@ const second_sem = [
 const summer = ["All", "June", "July", "August"];
 
 export const AttendanceSummary = () => {
-  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSY, setSelectedSY] = useState(2324);
   const [selectedSem, setSelectedSem] = useState("First");
   const [monthOptions, setMonthOptions] = useState(first_sem);
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
-  const sy_options = ["2324", "2223", "2122", "2021"];
-  const sem_options = ["First", "Second", "Summer"];
   const [isOpen, setIsOpen] = useState(false);
   const { nasId } = useParams();
+  const sy_options = [2324, 2223, 2122, 2021]; //TO BE CHANGED
+  const sem_options = ["First", "Second", "Summer"];
 
   useEffect(() => {
     let selectedMonthIndex;
