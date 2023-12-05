@@ -8,7 +8,7 @@ export const Dropdown = ({ label, options, selectedValue, onChange }) => {
         value={selectedValue}
         onChange={onChange}
         className="w-full text-base border rounded-md"
-        style={{ width: "6rem" }}
+        style={{ width: "7rem" }}
       >
         {options.map((option, index) => (
           <option key={index} value={option}>
