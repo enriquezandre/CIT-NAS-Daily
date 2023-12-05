@@ -40,6 +40,12 @@ namespace CITNASDaily.Repositories.Migrations
                     b.Property<int>("NASId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SchoolYear")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Semester")
+                        .HasColumnType("int");
+
                     b.Property<string>("SkillsLearned")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -109,7 +115,13 @@ namespace CITNASDaily.Repositories.Migrations
                     b.Property<string>("Date")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NasName")
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiddleName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OvertimeIn")
@@ -118,11 +130,23 @@ namespace CITNASDaily.Repositories.Migrations
                     b.Property<string>("OvertimeOut")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TimeIn")
+                    b.Property<string>("Punch1")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TimeOut")
+                    b.Property<string>("Punch2")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Punch3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Punch4")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SchoolYear")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Semester")
+                        .HasColumnType("int");
 
                     b.Property<string>("TotalWorkTime")
                         .HasColumnType("nvarchar(max)");
@@ -182,6 +206,9 @@ namespace CITNASDaily.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
+                    b.Property<string>("StudentIDNo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("UnitsAllowed")
                         .IsRequired()
                         .HasColumnType("int");
@@ -205,6 +232,28 @@ namespace CITNASDaily.Repositories.Migrations
                         .IsUnique();
 
                     b.ToTable("NAS");
+                });
+
+            modelBuilder.Entity("CITNASDaily.Entities.Models.NASSchoolYearSemester", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("NASId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Semester")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NASSchoolYearSemester");
                 });
 
             modelBuilder.Entity("CITNASDaily.Entities.Models.OAS", b =>
@@ -282,6 +331,12 @@ namespace CITNASDaily.Repositories.Migrations
                     b.Property<int>("NASId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SchoolYear")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Semester")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
@@ -315,6 +370,9 @@ namespace CITNASDaily.Repositories.Migrations
                     b.Property<int>("NoOfCoursesFailed")
                         .HasColumnType("int");
 
+                    b.Property<string>("Responded")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("SchoolYear")
                         .HasColumnType("int");
 
@@ -328,7 +386,7 @@ namespace CITNASDaily.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UnitsAllowed")
+                    b.Property<int?>("UnitsAllowed")
                         .HasColumnType("int");
 
                     b.Property<int>("nasId")
@@ -445,6 +503,9 @@ namespace CITNASDaily.Repositories.Migrations
 
                     b.Property<int>("Semester")
                         .HasColumnType("int");
+
+                    b.Property<string>("TimekeepingStatus")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Unexcused")
                         .HasColumnType("int");

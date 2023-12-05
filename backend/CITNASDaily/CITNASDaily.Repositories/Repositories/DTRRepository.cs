@@ -4,8 +4,6 @@ using CITNASDaily.Repositories.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Repositories.Repositories
@@ -19,10 +17,10 @@ namespace CITNASDaily.Repositories.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<DailyTimeRecord>> GetDTRByNasNameAsync(string firstName, string lastName, string middleName)
+        public async Task<IEnumerable<DailyTimeRecord>> GetDTRByNasNameAsync(string lastName, string firstName, string middleName)
         {
-            return await _context.DailyTimeRecords.Where(d => d.FirstName == firstName &&
-                d.LastName == lastName && d.MiddleName == middleName).ToListAsync();
+            return await _context.DailyTimeRecords.Where(d => d.LastName == lastName &&
+                d.FirstName == firstName && d.MiddleName == middleName).ToListAsync();
         }
 
         public async Task<IEnumerable<DailyTimeRecord>> GetDTRs()
@@ -30,7 +28,7 @@ namespace CITNASDaily.Repositories.Repositories
             return await _context.DailyTimeRecords.ToListAsync();
         }
 
-        public async Task<IEnumerable<DailyTimeRecord>> GetDTRsBySYSemesterAsync(int year, Semester semester, string firstName, string lastName, string? middleName)
+        public async Task<IEnumerable<DailyTimeRecord>> GetDTRsBySYSemesterAsync(int year, Semester semester, string lastName, string firstName, string? middleName)
         {
             if(middleName == "")
             {
@@ -38,8 +36,8 @@ namespace CITNASDaily.Repositories.Repositories
             }
 
             return await _context.DailyTimeRecords
-                .Where(d => d.SchoolYear == year && d.Semester == semester && d.FirstName == firstName && 
-                d.LastName == lastName && d.MiddleName == middleName)
+                .Where(d => d.SchoolYear == year && d.Semester == semester && d.LastName == lastName && 
+                d.FirstName == firstName && d.MiddleName == middleName)
                 .ToListAsync();
         }
 
@@ -63,12 +61,14 @@ namespace CITNASDaily.Repositories.Repositories
                             MiddleName = worksheet.Cells[i, 2].Value?.ToString(),
                             LastName = worksheet.Cells[i, 3].Value?.ToString(),
                             Date = worksheet.Cells[i, 4].Value?.ToString(),
-                            TimeIn = worksheet.Cells[i, 5].Value?.ToString(),
-                            TimeOut = worksheet.Cells[i, 6].Value?.ToString(),
-                            OvertimeIn = worksheet.Cells[i, 7].Value?.ToString(),
-                            OvertimeOut = worksheet.Cells[i, 8].Value?.ToString(),
-                            WorkTime = worksheet.Cells[i, 9].Value?.ToString(),
-                            TotalWorkTime = worksheet.Cells[i, 10].Value?.ToString(),
+                            Punch1 = worksheet.Cells[i, 5].Value?.ToString(),
+                            Punch2 = worksheet.Cells[i, 6].Value?.ToString(),
+                            Punch3 = worksheet.Cells[i, 7].Value?.ToString(),
+                            Punch4 = worksheet.Cells[i, 8].Value?.ToString(),
+                            OvertimeIn = worksheet.Cells[i, 9].Value?.ToString(),
+                            OvertimeOut = worksheet.Cells[i, 10].Value?.ToString(),
+                            WorkTime = worksheet.Cells[i, 11].Value?.ToString(),
+                            TotalWorkTime = worksheet.Cells[i, 12].Value?.ToString(),
                             SchoolYear = year,
                             Semester = (Semester)semester
                         };
@@ -91,9 +91,9 @@ namespace CITNASDaily.Repositories.Repositories
             foreach (var dtr in records)
             {
                 if (dtr.FirstName == null && dtr.MiddleName == null && dtr.LastName == null &&
-                    dtr.Date == null && dtr.TimeIn == null && dtr.TimeOut == null &&
-                    dtr.OvertimeIn == null && dtr.OvertimeOut == null && dtr.WorkTime == null
-                    && dtr.TotalWorkTime == null)
+                    dtr.Date == null && dtr.Punch1 == null && dtr.Punch2 == null &&
+                    dtr.Punch3 == null && dtr.Punch4 == null && dtr.OvertimeIn == null &&
+                    dtr.OvertimeOut == null && dtr.WorkTime == null && dtr.TotalWorkTime == null)
                 {
                     continue;
                 }
