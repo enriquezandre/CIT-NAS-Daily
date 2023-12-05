@@ -1,22 +1,50 @@
 "use client";
 import { useState, useEffect } from "react";
 import { ActivitiesSummaryTable } from "../../components/NAS/ActivitiesSummaryTable.jsx";
+import { Dropdown } from "../../components/Dropdown.jsx";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils.js";
+import axios from "axios";
 
+const currentYear = calculateSchoolYear();
+const currentSem = calculateSemester();
 const first_sem = ["All", "August", "September", "October", "November", "December"];
-
 const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
-
 const summer = ["All", "June", "July", "August"];
 
 export const ActivitiesSummary = () => {
-  const [selectedSY, setSelectedSY] = useState("2324");
-  const [selectedSem, setSelectedSem] = useState("First");
+  const [selectedSY, setSelectedSY] = useState(currentYear);
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
+  const sem_options = ["First", "Second", "Summer"];
+  const [selectedSem, setSelectedSem] = useState(currentSem);
   const [monthOptions, setMonthOptions] = useState(first_sem);
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
 
-  const sy_options = ["2324", "2223", "2122", "2021"];
-  const sem_options = ["First", "Second", "Summer"];
+  //getting school year from the /NAS/sysem
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }); // Corrected placement of the comma
+
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, []);
 
   useEffect(() => {
     let selectedMonthIndex;
@@ -78,54 +106,28 @@ export const ActivitiesSummary = () => {
         <div className="m-2">
           <div className="flex mt-2">
             <div className="w-36 z-10 flex">
-              <div className="mr-2">SY:</div>
-              <select
-                id="sy"
-                name="sy"
-                value={selectedSY}
-                onChange={handleSelectSY}
-                className=" w-full text-base border rounded-md"
-              >
-                {Array.isArray(sy_options) &&
-                  sy_options.map((sy, index) => (
-                    <option key={index} value={sy}>
-                      {sy}
-                    </option>
-                  ))}
-              </select>
+              <Dropdown
+                label="SY"
+                options={uniqueYears}
+                selectedValue={selectedSY}
+                onChange={(e) => handleSelectSY(e)}
+              />
             </div>
             <div className="w-48 z-10 flex ml-5">
-              <div className="mr-2">SEMESTER:</div>
-              <select
-                id="sem"
-                name="sem"
-                value={selectedSem}
-                onChange={handleSelectSem}
-                className=" w-full text-base border rounded-md"
-              >
-                {sem_options.map((sem, index) => (
-                  <option key={index} value={sem}>
-                    {sem}
-                  </option>
-                ))}
-              </select>
+              <Dropdown
+                label="Semester"
+                options={sem_options}
+                selectedValue={selectedSem}
+                onChange={(e) => handleSelectSem(e)}
+              />
             </div>
             <div className="w-48 z-10 flex ml-5">
-              <div className="mr-2">MONTH:</div>
-              <select
-                id="month"
-                name="month"
-                value={selectedMonth}
-                onChange={handleSelectedMonth}
-                className=" w-full text-base border rounded-md"
-              >
-                {Array.isArray(monthOptions) &&
-                  monthOptions.map((month, index) => (
-                    <option key={index} value={month}>
-                      {month}
-                    </option>
-                  ))}
-              </select>
+              <Dropdown
+                label="Month"
+                options={monthOptions}
+                selectedValue={selectedMonth}
+                onChange={(e) => handleSelectedMonth(e)}
+              />
             </div>
           </div>
           <div></div>
