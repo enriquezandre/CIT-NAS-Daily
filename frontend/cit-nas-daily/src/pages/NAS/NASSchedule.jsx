@@ -1,21 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { ScheduleTable } from "../../components/NAS/SetScheduleTable.jsx";
 import { ScheduleModal } from "../../components/NAS/ConfirmScheduleModal.jsx";
 import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable.jsx";
 import { ConfirmAddScheduleModal } from "../../components/NAS/ConfirmAddScheduleModal.jsx";
+import { getCurrentMonth, calculateSchoolYear } from "../../components/SySemUtils.js";
 import axios from "axios";
-
-const currentDate = new Date();
-
-//get current Month
-const currentMonth = currentDate.toLocaleString("en-US", { month: "long" });
-
-//get school year dynamically
-const year = currentDate.getFullYear();
-const lastTwoDigits = year % 100;
-const schYr =
-  lastTwoDigits.toString().padStart(2, "0") + (lastTwoDigits + 1).toString().padStart(2, "0");
 
 export const NASSchedule = () => {
   const { nasId } = useParams();
@@ -23,6 +13,9 @@ export const NASSchedule = () => {
   const [isSchedModalOpen, setSchedModalOpen] = useState(false);
   const [isAddSchedModalOpen, setAddSchedModalOpen] = useState(false);
   const [apiData, setApiData] = useState(null);
+  const [currentMonth, setCurrentMonth] = useState(null);
+  const [currentYear, setCurrentYear] = useState(null);
+  const [dataExist, setDataExist] = useState(false);
 
   const openSetSchedModal = () => {
     setSchedModalOpen(true);
@@ -45,8 +38,20 @@ export const NASSchedule = () => {
     setSelectedSem(value);
   };
 
-  // functions for SetScheduleTable starts here
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  useEffect(() => {
+    const currentMonthValue = getCurrentMonth();
+    const currentYearValue = calculateSchoolYear();
+
+    // Set the values to state
+    setCurrentMonth(currentMonthValue);
+    setCurrentYear(currentYearValue);
+  }, []);
+
+  // ------------ functions for SetScheduleTable starts here
+  const days = useMemo(
+    () => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    []
+  );
 
   const [schedule, setSchedule] = useState({
     Monday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
@@ -66,23 +71,27 @@ export const NASSchedule = () => {
     Saturday: false,
   });
 
-  const handleStartTimeChange = (day, index, value) => {
-    const updatedSchedule = { ...schedule };
-    updatedSchedule[day].items[index].start = value;
-    setSchedule(updatedSchedule);
+  const handleStartTimeChange = useCallback(
+    (day, index, value) => {
+      const updatedSchedule = { ...schedule };
+      updatedSchedule[day].items[index].start = value;
+      setSchedule(updatedSchedule);
 
-    // console.log(`Start Time for ${day}, Row ${index}: ${value}`);
-    setScheduleChanges({ ...scheduleChanges, [day]: true });
-  };
+      setScheduleChanges((prevChanges) => ({ ...prevChanges, [day]: true }));
+    },
+    [schedule]
+  );
 
-  const handleEndTimeChange = (day, index, value) => {
-    const updatedSchedule = { ...schedule };
-    updatedSchedule[day].items[index].end = value;
-    setSchedule(updatedSchedule);
+  const handleEndTimeChange = useCallback(
+    (day, index, value) => {
+      const updatedSchedule = { ...schedule };
+      updatedSchedule[day].items[index].end = value;
+      setSchedule(updatedSchedule);
 
-    // console.log(`End Time for ${day}, Row ${index}: ${value}`);
-    setScheduleChanges({ ...scheduleChanges, [day]: true });
-  };
+      setScheduleChanges((prevChanges) => ({ ...prevChanges, [day]: true }));
+    },
+    [schedule]
+  );
 
   const handleToggleBrokenSchedule = (day, isBroken) => {
     const updatedSchedule = { ...schedule };
@@ -138,7 +147,7 @@ export const NASSchedule = () => {
         setScheduleChanges({ ...scheduleChanges, [day]: false });
       }
     });
-  }, [schedule, scheduleChanges]);
+  }, [schedule, scheduleChanges, days]);
 
   const calculateOverallTotalHours = () => {
     let totalHours = 0;
@@ -152,14 +161,16 @@ export const NASSchedule = () => {
 
   const overallHours = calculateOverallTotalHours();
 
-  const api = axios.create({
-    baseURL: "https://localhost:7001/api",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  const api = useMemo(() => {
+    return axios.create({
+      baseURL: "https://localhost:7001/api",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+  }, []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     try {
       // Loop through days and send each day's schedule to the backend
       days.forEach(async (day) => {
@@ -173,7 +184,7 @@ export const NASSchedule = () => {
             const brokenSched = true;
             const totalHours = scheduleItem.totalHours;
             const semester = selectedSem;
-            const schoolYear = schYr;
+            const schoolYear = currentYear;
 
             // Send the schedule data for each row
             await api.post("https://localhost:7001/api/Schedule", {
@@ -197,7 +208,7 @@ export const NASSchedule = () => {
           const brokenSched = false;
           const totalHours = scheduleItem.totalHours;
           const semester = selectedSem;
-          const schoolYear = schYr;
+          const schoolYear = currentYear;
 
           // Send the schedule data for the single row
           await api.post("https://localhost:7001/api/Schedule", {
@@ -217,29 +228,32 @@ export const NASSchedule = () => {
     } catch (error) {
       console.error(error);
     }
-  };
-  // functions for SetScheduleTable ends here
+  }, [days, schedule, selectedSem, currentYear, api, nasId]);
+  // -------- functions for SetScheduleTable ends here
 
   //fetch schedule
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
-        const response = await api.get(`/Schedule/${nasId}/${schYr}/${selectedSem}`);
-        setApiData(response.data); // Use response.data here, not nasData
+        const response = await api.get(`/Schedule/${nasId}/${currentYear}/${selectedSem}`);
+        setApiData(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchSchedule();
-  }, [nasId, schYr, selectedSem]);
+  }, [nasId, currentYear, selectedSem, api]);
 
-  //check if there is sched
-  const dataExist =
-    apiData &&
-    apiData.schedules &&
-    Array.isArray(apiData.schedules) &&
-    apiData.schedules.length > 0;
-  console.log(dataExist);
+  //check if there is schedule
+  useEffect(() => {
+    const isDataExist =
+      apiData &&
+      apiData.schedules &&
+      Array.isArray(apiData.schedules) &&
+      apiData.schedules.length > 0;
+
+    setDataExist(isDataExist);
+  }, [apiData]);
 
   //delete schedule
   const deleteSchedule = async (nasId) => {
@@ -265,36 +279,41 @@ export const NASSchedule = () => {
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
         <div className="m-2">
-          <div className="flex">
-            <div className="flex">
-              <div className="w-36 z-10 flex">
-                <div className="mr-2">SY:</div>
-                <select id="sy" name="sy" className=" w-full text-base border rounded-md" disabled>
-                  <option>{schYr}</option>
-                </select>
-              </div>
-              <div className="w-48 z-10 flex ml-5">
-                <div className="mr-2">SEMESTER:</div>
-                <select
-                  id="sem"
-                  name="sem"
-                  onChange={handleSelectedSem}
-                  className="w-full text-base border rounded-md"
-                >
-                  <option value={0}>First</option>
-                  <option value={1}>Second</option>
-                  <option value={2}>Summer</option>
-                </select>
-              </div>
+          <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
+            <div className="flex flex-row gap-2 items-center">
+              <div className="mr-2">SY:</div>
+              <select
+                id="sy"
+                name="sy"
+                className=" w-full text-base border rounded-md"
+                style={{ width: "7rem" }}
+                disabled
+              >
+                <option>{currentYear}</option>
+              </select>
+            </div>
+            <div className="flex flex-row gap-2 items-center">
+              <div className="mr-2">SEMESTER:</div>
+              <select
+                id="sem"
+                name="sem"
+                onChange={handleSelectedSem}
+                className="w-full text-base border rounded-md"
+                style={{ width: "7rem" }}
+              >
+                <option value={0}>First</option>
+                <option value={1}>Second</option>
+                <option value={2}>Summer</option>
+              </select>
             </div>
           </div>
-          <div className="pt-5">
+          <div className="pt-1">
             {dataExist ? (
               <ViewScheduleTable
                 apiData={apiData}
                 openModal={openAddSchedModal}
                 currentMonth={currentMonth}
-                schoolYear={schYr}
+                schoolYear={currentYear}
                 semester={selectedSem}
               />
             ) : (

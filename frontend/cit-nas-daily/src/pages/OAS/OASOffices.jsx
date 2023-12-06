@@ -1,18 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { NASList } from "../../components/NASList";
 import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft } from "react-icons/hi";
+import { Dropdown } from "../../components/Dropdown";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import axios from "axios";
+
+const currentYear = calculateSchoolYear();
+const currentSem = calculateSemester();
 
 export const OASOffices = () => {
   const [offices, setOffices] = useState([]);
   const [selectedOffice, setSelectedOffice] = useState(1);
   const [showNASList, setShowNASList] = useState(false);
   const [searchInput, setSearchInput] = useState("");
-  const [selectedSY, setSelectedSY] = useState(2324);
-  const [selectedSem, setSelectedSem] = useState("First");
-  const sy_options = ["2324", "2223", "2122", "2021"];
+  const [selectedSem, setSelectedSem] = useState(currentSem);
   const sem_options = ["First", "Second", "Summer"];
+  const [selectedSY, setSelectedSY] = useState(currentYear);
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
+
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
 
   // Function to filter offices based on search input
   const filteredOffices = offices.filter((office) =>
@@ -37,14 +54,6 @@ export const OASOffices = () => {
   useEffect(() => {
     const fetchOffices = async () => {
       try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
         const response = await api.get(`/Offices`);
         setOffices(response.data);
       } catch (error) {
@@ -53,20 +62,34 @@ export const OASOffices = () => {
     };
 
     fetchOffices();
-  }, []);
+  }, [api]);
+
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, [api]);
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
             <div className="flex items-center w-auto">
               {showNASList ? (
                 <div>
-                  <Button
-                    className="text-black"
-                    onClick={() => setShowNASList(false)}
-                  >
+                  <Button className="text-black" onClick={() => setShowNASList(false)}>
                     <HiOutlineArrowLeft className="h-6 w-6" />
                   </Button>
                 </div>
@@ -121,21 +144,12 @@ export const OASOffices = () => {
               <div>
                 <div className="flex flex-row justify-start items-center gap-10 mt-5 mb-8 ml-10">
                   <div className="flex flex-row gap-2 items-center">
-                    <div className="mr-2">SY:</div>
-                    <select
-                      id="sy"
-                      name="sy"
-                      value={selectedSY}
-                      onChange={handleSelectSY}
-                      className=" w-full text-base border rounded-md"
-                    >
-                      {Array.isArray(sy_options) &&
-                        sy_options.map((sy, index) => (
-                          <option key={index} value={sy}>
-                            {sy}
-                          </option>
-                        ))}
-                    </select>
+                    <Dropdown
+                      label="SY"
+                      options={uniqueYears}
+                      selectedValue={selectedSY}
+                      onChange={(e) => handleSelectSY(e)}
+                    />
                   </div>
                   <div className="flex flex-row gap-2 items-center">
                     <div className="mr-2">SEMESTER:</div>
