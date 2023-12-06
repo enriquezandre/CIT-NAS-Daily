@@ -15,10 +15,13 @@ export const Login = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post("https://localhost:7001/api/Auth/login", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        "https://localhost:7001/api/Auth/login",
+        {
+          username,
+          password,
+        }
+      );
 
       localStorage.setItem("token", response.data);
 
@@ -32,11 +35,7 @@ export const Login = () => {
 
       // Get the user's details
       const userResponse = await api.get(`/Users/currentUser`);
-      const userId = userResponse.data.id;
-
-      // Get the user's role
-      const roleResponse = await api.get(`/Users/${userId}`);
-      const userRole = roleResponse.data.role;
+      const userRole = userResponse.data.role;
 
       // Navigate to the respective route based on the user's role
       switch (userRole) {
@@ -57,7 +56,10 @@ export const Login = () => {
           navigate("Unknown role");
       }
     } catch (error) {
-      if ((error.response && error.response.status === 400) || error.response.status === 404) {
+      if (
+        (error.response && error.response.status === 400) ||
+        error.response.status === 404
+      ) {
         setError("Invalid username or password");
       } else {
         setError("An error occurred");
@@ -103,7 +105,11 @@ export const Login = () => {
                   }}
                 />
                 <div className="h-5 mb-3 text-white">{error}</div>
-                <input type="submit" className="button-submit hover:cursor-pointer" value="Login" />
+                <input
+                  type="submit"
+                  className="button-submit hover:cursor-pointer"
+                  value="Login"
+                />
               </div>
             </form>
           </div>

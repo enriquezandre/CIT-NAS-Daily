@@ -24,7 +24,7 @@ namespace CITNASDaily.API.Controllers
             _logger = logger;
         }
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(OASDto), StatusCodes.Status201Created)]
         public async Task<IActionResult> OASCreate([FromBody] OASCreateDto oasCreate)
         {
@@ -53,7 +53,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{oasId}", Name = "GetOAS")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetOAS(int oasId)
         {
             try
@@ -79,7 +79,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{username}/id", Name = "GetOASId")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetOASIdAsync(string username)
         {
             try
@@ -102,7 +102,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet(Name = "GetAllOAS")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetAllOAS()
         {
             try

@@ -25,7 +25,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet(Name = "GetAllDTR")]
-        [Authorize]
+        [Authorize(Roles = "OAS, Superior")]
         public async Task<IActionResult> GetAllNAS()
         {
             try
@@ -47,7 +47,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{year}/{semester}/{firstName}/{lastName}", Name = "GetAllDTRBySYSem")]
-        [Authorize]
+        [Authorize(Roles = "OAS, NAS, Superior")]
         public async Task<IActionResult> GetAllDTRBySYSem(int year, int semester, string firstName, string lastName, [FromQuery] string middleName = "")
         {
             try
@@ -69,6 +69,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPost("UploadExcel/{year}/{semester}")]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> UploadExcel(IFormFile file, int year, int semester)
         {
             try
@@ -85,7 +86,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("GetByNasName/{firstName}/{lastName}")]
-        [Authorize]
+        [Authorize(Roles = "OAS, Superior")]
         public async Task<IActionResult> GetByNasName(string firstName, string lastName, [FromQuery] string middleName = "")
         {
             try

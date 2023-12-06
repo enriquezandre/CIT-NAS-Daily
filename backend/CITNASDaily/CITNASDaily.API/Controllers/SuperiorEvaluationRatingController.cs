@@ -28,7 +28,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Superior")]
         [ProducesResponseType(typeof(SuperiorEvaluationRating), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateSuperiorEvaluationRating([FromBody] SuperiorEvaluationRatingCreateDto superiorEvaluationRatingCreate)
         {
@@ -64,7 +64,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet(Name = "GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYear")]
-        [Authorize]
+        [Authorize(Roles = "OAS, Superior,NAS")]
         public async Task<IActionResult> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYear(int nasId, Semester semester, int year)
         {
             try
