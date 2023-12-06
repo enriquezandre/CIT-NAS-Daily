@@ -90,7 +90,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{nasId}/noimg", Name = "GetNASNoImage")]
-        [Authorize(Roles = "OAS")]
+        [Authorize(Roles = "OAS, NAS, Superior")]
         public async Task<IActionResult> GetNASNoImage(int nasId)
         {
             try
@@ -138,7 +138,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("noimg", Name = "GetAllNASNoImage")]
-        [Authorize(Roles = "OAS, NAS, Superior")]
+        [Authorize(Roles = "OAS, Superior")]
         public async Task<IActionResult> GetAllNASNoImage()
         {
             try

@@ -91,7 +91,7 @@ namespace CITNASDaily.API.Controllers
             }
         }
         [HttpGet("{nasId}/{year}/{semester}", Name = "GetTimekeepingSummaryByNASIdSemesterYear")]
-        [Authorize(Roles = "OAS")]
+        [Authorize(Roles = "OAS, NAS, Superior")]
         public async Task<IActionResult> GetTimekeepingSummaryByNASIdSemesterYear(int nasId, int semester, int year)
         {
             try

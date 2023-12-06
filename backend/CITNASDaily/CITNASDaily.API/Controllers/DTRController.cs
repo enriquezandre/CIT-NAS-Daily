@@ -47,7 +47,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{year}/{semester}/{firstName}/{lastName}", Name = "GetAllDTRBySYSem")]
-        [Authorize(Roles = "OAS, Superior")]
+        [Authorize(Roles = "OAS, NAS, Superior")]
         public async Task<IActionResult> GetAllDTRBySYSem(int year, int semester, string firstName, string lastName, [FromQuery] string middleName = "")
         {
             try
