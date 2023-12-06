@@ -60,7 +60,11 @@ export const PerfSummary = ({
   useEffect(() => {
     const fetchActivitiesSummary = async () => {
       try {
-        const response = await api.get(`/ActivitiesSummary/${nasId}`);
+        const response = await api.get(
+          `/ActivitiesSummary/${nasId}/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}`
+        );
         const data = response.data;
         setActivitySummaries(data);
         setFilteredSummaries(data);
@@ -71,7 +75,7 @@ export const PerfSummary = ({
     };
 
     fetchActivitiesSummary();
-  }, [nasId, api]);
+  }, [nasId, selectedSY, selectedSem, api]);
 
   useEffect(() => {
     const fetchTimekeepingSummary = async () => {
