@@ -86,7 +86,6 @@ export const AttendanceSummaryTable = ({
 
         const groupedData = dtrdata.reduce((acc, curr) => {
           const date = curr.date.split(" ")[0];
-          console.log("DATE", date);
           if (!acc[date]) {
             acc[date] = {
               timeIn: curr.timeIn,
@@ -94,7 +93,6 @@ export const AttendanceSummaryTable = ({
               overtimeIn: curr.overtimeIn,
               overtimeOut: curr.overtimeOut,
             };
-            console.log("YAWA", acc[date]);
           }
           if (curr.inOut && curr.date) {
             acc[date][curr.inOut].push(curr);

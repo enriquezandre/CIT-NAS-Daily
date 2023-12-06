@@ -70,7 +70,6 @@ export const WeeklyAttendance = ({
 
         const groupedData = dtrdata.reduce((acc, curr) => {
           const date = curr.date.split(" ")[0];
-          console.log("DATE", date);
           if (!acc[date]) {
             acc[date] = {
               timeIn: curr.timeIn,
@@ -78,7 +77,6 @@ export const WeeklyAttendance = ({
               overtimeIn: curr.overtimeIn,
               overtimeOut: curr.overtimeOut,
             };
-            console.log("YAWA", acc[date]);
           }
           if (curr.inOut && curr.date) {
             acc[date][curr.inOut].push(curr);
@@ -117,10 +115,11 @@ export const WeeklyAttendance = ({
           const month = date.getMonth();
           const year = date.getFullYear();
           const first = parseInt(
-            year.toString().substring(0, 2) + selectedSY.substring(0, 2)
+            year.toString().substring(0, 2) +
+              selectedSY.toString().substring(0, 2)
           );
           const second = parseInt(
-            year.toString().substring(0, 2) + selectedSY.substring(2)
+            year.toString().substring(0, 2) + selectedSY.toString().substring(2)
           );
           switch (selectedMonth) {
             case -1:
@@ -205,5 +204,5 @@ WeeklyAttendance.propTypes = {
   middleName: PropTypes.string.isRequired,
   selectedMonth: PropTypes.number.isRequired,
   selectedSem: PropTypes.string.isRequired,
-  selectedSY: PropTypes.string.isRequired,
+  selectedSY: PropTypes.number.isRequired,
 };

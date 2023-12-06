@@ -276,7 +276,7 @@ export const PerfSummary = ({
 PerfSummary.propTypes = {
   show: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
-  nasId: PropTypes.number.isRequired,
-  selectedSem: PropTypes.number.isRequired,
+  nasId: PropTypes.string.isRequired,
+  selectedSem: PropTypes.string.isRequired,
   selectedSY: PropTypes.number.isRequired,
 };

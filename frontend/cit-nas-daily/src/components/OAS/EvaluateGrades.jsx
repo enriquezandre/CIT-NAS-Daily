@@ -233,7 +233,7 @@ EvaluateGrades.propTypes = {
   show: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
   grade: PropTypes.string.isRequired,
-  nasId: PropTypes.number.isRequired,
+  nasId: PropTypes.string.isRequired,
   selectedSY: PropTypes.number.isRequired,
   selectedSem: PropTypes.number.isRequired,
 };

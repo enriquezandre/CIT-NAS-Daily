@@ -27,7 +27,7 @@ const second_sem = [
 const summer = ["All", "June", "July", "August"];
 
 export const OASAttendance = () => {
-  const [selectedSY, setSelectedSY] = useState("2324");
+  const [selectedSY, setSelectedSY] = useState(2324);
   const [selectedSem, setSelectedSem] = useState("First");
   const [monthOptions, setMonthOptions] = useState(first_sem);
   const [selectedMonth, setSelectedMonth] = useState("All");
@@ -55,6 +55,21 @@ export const OASAttendance = () => {
     []
   );
 
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 3;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
+
   const handleSearchChange = (event) => {
     setSearchInput(event.target.value);
   };
@@ -69,25 +84,11 @@ export const OASAttendance = () => {
         const officeData = officeResponse.data;
 
         const timekeepingresponse = await api.get(
-          `/TimekeepingSummary/${nasId}`
+          `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}`
         );
-        let timekeepingdata = timekeepingresponse.data[0];
-        console.log(timekeepingdata);
-
-        if (timekeepingdata === undefined || !timekeepingdata) {
-          // If there's no record
-          timekeepingdata = {
-            excused: "NR",
-            failedToPunch: "NR",
-            lateOver10Mins: "NR",
-            lateOver45Mins: "NR",
-            makeUpDutyHours: "NR",
-            schoolYear: "NR",
-            semester: "NR",
-            unexcused: "NR",
-          };
-        }
-
+        const timekeepingdata = timekeepingresponse.data;
         setTimekeepingSummaries(timekeepingdata);
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
@@ -95,6 +96,9 @@ export const OASAttendance = () => {
         setOffice(officeData.name);
       } catch (error) {
         console.error(error);
+        if (error.response.status === 404) {
+          setTimekeepingSummaries([]);
+        }
       }
     };
 
@@ -128,7 +132,7 @@ export const OASAttendance = () => {
     }
 
     setSelectedMonthIndex(selectedMonthIndex);
-  }, [selectedSY, selectedSem, selectedMonth, nasId, api]);
+  }, [selectedSY, selectedSem, selectedMonth, nasId, api, getSemesterValue]);
 
   useEffect(() => {
     const fetchNasData = async () => {
@@ -181,8 +185,6 @@ export const OASAttendance = () => {
       setSelectedMonth(value);
     }
   };
-
-  console.log(nasId);
 
   return (
     <>
