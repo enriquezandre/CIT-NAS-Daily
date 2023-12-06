@@ -11,5 +11,6 @@ namespace CITNASDaily.Entities.Dtos.ValidationDtos
     {
         public ValidationStatus ValidationStatus { get; set; }
         public int MakeUpHours { get; set; }
+        public DateTime? AbsenceDate { get; set; }
     }
 }
