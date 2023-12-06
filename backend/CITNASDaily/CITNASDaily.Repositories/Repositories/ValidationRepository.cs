@@ -47,7 +47,6 @@ namespace CITNASDaily.Repositories.Repositories
             {
                 existingValidation.ValidationStatus = validation.ValidationStatus;
                 existingValidation.MakeUpHours = validation.MakeUpHours;
-                existingValidation.AbsenceDate = validation.AbsenceDate;
                 await _context.SaveChangesAsync();
                 return existingValidation;
             }

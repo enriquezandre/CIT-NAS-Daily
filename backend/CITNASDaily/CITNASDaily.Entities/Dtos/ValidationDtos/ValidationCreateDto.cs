@@ -11,5 +11,6 @@ namespace CITNASDaily.Entities.Dtos.ValidationDtos
     {
         public int NasId { get; set; }
         public byte[]? NasLetter { get; set; }
+        public DateTime? AbsenceDate { get; set; }
     }
 }
