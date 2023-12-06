@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar } from "flowbite-react";
 import { useParams } from "react-router-dom";
-import placeholder from "../placeholders/user.png"
+import placeholder from "../placeholders/user.png";
 import axios from "axios";
 
 export const Header = () => {
@@ -31,10 +31,7 @@ export const Header = () => {
         });
 
         const userResponse = await api.get(`/Users/currentUser`);
-        const userId = userResponse.data.id;
-
-        const userDataResponse = await api.get(`/Users/${userId}`);
-        const userRole = userDataResponse.data.role;
+        const userRole = userResponse.data.role;
 
         switch (userRole) {
           case "NAS":
@@ -65,11 +62,15 @@ export const Header = () => {
       <div className="flex mt-5 ml-10 items-center justify-between">
         <div className="flex items-center">
           <div className="mr-4">
-          {user.image ? (
-            <Avatar alt={user.fullName} img={`data:image/png;base64,${user.image}`} rounded />
-          ) : (
-            <Avatar alt={user.fullName} img={placeholder} rounded />
-          )}
+            {user.image ? (
+              <Avatar
+                alt={user.fullName}
+                img={`data:image/png;base64,${user.image}`}
+                rounded
+              />
+            ) : (
+              <Avatar alt={user.fullName} img={placeholder} rounded />
+            )}
           </div>
           <div className="text-base" style={{ textTransform: "capitalize" }}>
             {user.fullName}
