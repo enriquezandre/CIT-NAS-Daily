@@ -1,12 +1,19 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { Dropdown } from "../../components/Dropdown";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import axios from "axios";
 
+const currentYear = calculateSchoolYear();
+const currentSem = calculateSemester();
+
 export const OASManageData = () => {
-  const [selectedSY, setSelectedSY] = useState("2324");
-  const [selectedSem, setSelectedSem] = useState("First");
+  const [selectedSY, setSelectedSY] = useState(currentYear);
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
+  const [selectedSem, setSelectedSem] = useState(currentSem);
   const [fileUploaded, setFileUploaded] = useState(false);
-  const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
+  const [attendanceSummaries, setAttendanceSummaries] = useState([]);
 
   const api = useMemo(
     () =>
@@ -29,6 +36,35 @@ export const OASManageData = () => {
     setSelectedSem(value);
   };
 
+  const formatDtrTime = (timeStr) => {
+    if (timeStr) {
+      const [hours, minutes] = timeStr.split(":");
+      const date = new Date();
+      date.setHours(hours);
+      date.setMinutes(minutes);
+      const options = { hour: "numeric", minute: "numeric", hour12: true };
+      return date.toLocaleTimeString("en-US", options);
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, [api]);
+
   function getSemesterValue(sem) {
     switch (sem) {
       case "First":
@@ -36,11 +72,12 @@ export const OASManageData = () => {
       case "Second":
         return 1;
       case "Summer":
-        return 3;
+        return 2;
       default:
         return "Invalid semester";
     }
   }
+  const selectedSemValue = getSemesterValue(selectedSem);
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -57,6 +94,96 @@ export const OASManageData = () => {
     }
 
     setFileUploaded(file);
+  };
+
+  const updateNasTimekeeping = async () => {
+    try {
+      const nasResponse = await api.get("/NAS");
+      const nasList = nasResponse.data;
+
+      await Promise.all(
+        nasList.map(async (nas) => {
+          const { id, firstName, lastName, middleName } = nas;
+          console.log("NAS Info: ", id, firstName, lastName, middleName);
+          await checkAttendanceAndSchedule(id, firstName, lastName, middleName);
+        })
+      );
+    } catch (error) {
+      console.error("Error fetching NAS data: ", error);
+    }
+  };
+
+  //function for checking attendance and schedule for each NAS
+  const checkAttendanceAndSchedule = async (nasId, firstName, lastName, middleName) => {
+    try {
+      const dtrresponse = await api.get(
+        `DTR/${selectedSY}/${selectedSemValue}/${firstName}/${lastName}?middleName=${middleName}`
+      );
+
+      const dtrdata = dtrresponse.data;
+
+      const scheduleResponse = await api.get(
+        `/Schedule/${nasId}/${selectedSY}/${selectedSemValue}` //${selectedSemValue}
+      );
+      const scheduleData = scheduleResponse.data;
+
+      // Calculate the totals for failedToPunch, lateOver10Mins, and lateOver45Mins
+      let totalFailedToPunch = 0;
+      let totalLateOver10Mins = 0;
+      let totalLateOver45Mins = 0;
+
+      const attendanceSummaries = dtrdata.dailyTimeRecords.map((attendance) => {
+        const attendanceDate = new Date(attendance.date);
+
+        // Adjust dayOfWeek calculation for Monday - Saturday week
+        const dayOfWeek = (attendanceDate.getDay() + 6) % 7;
+        const schedule = scheduleData.schedules.find((sched) => sched.dayOfWeek === dayOfWeek);
+
+        //check if there is FTP in dtr
+        if (attendance.timeIn === "FTP IN" || attendance.timeOut === "FTP OUT") {
+          totalFailedToPunch = totalFailedToPunch + 1; //working
+        }
+
+        //check if there is L10 and L45
+        const timeIn = new Date("2023-08-14 " + formatDtrTime(attendance.timeIn));
+        const schedStartTime = new Date(schedule.startTime);
+
+        // Extract only the hours and minutes from the date objects
+        const hoursDiff = timeIn.getHours() - schedStartTime.getHours();
+        const minutesDiff = timeIn.getMinutes() - schedStartTime.getMinutes();
+
+        // Convert the time difference to minutes
+        const totalMinutesDifference = hoursDiff * 60 + minutesDiff;
+
+        if (totalMinutesDifference > 45) {
+          totalLateOver45Mins = totalLateOver45Mins + 1;
+        } else if (totalMinutesDifference > 10) {
+          totalLateOver10Mins = totalLateOver10Mins + 1;
+        }
+
+        console.log("NAS timeIn/schedule :" + timeIn, schedStartTime);
+
+        return attendance;
+      });
+
+      setAttendanceSummaries(attendanceSummaries);
+
+      // Make the API call to post the summary
+      const postResponse = await api.post("/TimekeepingSummary", {
+        nasId,
+        semester: selectedSemValue,
+        schoolYear: selectedSY,
+        excused: 0,
+        unexcused: 0,
+        failedToPunch: totalFailedToPunch,
+        lateOver10mins: totalLateOver10Mins,
+        lateOver45mins: totalLateOver45Mins,
+        makeUpDutyHours: 0,
+      });
+      console.log(postResponse);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleSubmit = async () => {
@@ -80,6 +207,7 @@ export const OASManageData = () => {
       if (response.status === 200) {
         alert("File uploaded successfully");
         setFileUploaded(false); // Reset the file input after successful upload
+        updateNasTimekeeping();
       } else {
         alert("File upload failed");
       }
@@ -90,44 +218,27 @@ export const OASManageData = () => {
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
             <div className="flex flex-row items-center">
               <div className="flex items-center">
                 <div className="flex flex-row justify-start items-center gap-10 ml-5 mr-4">
                   <div className="flex flex-row gap-2 items-center">
-                    <div className="mr-2">SY:</div>
-                    <select
-                      id="sy"
-                      name="sy"
-                      value={selectedSY}
-                      onChange={handleSelectSY}
-                      className=" w-full text-base border rounded-md"
-                    >
-                      {Array.isArray(sy_options) &&
-                        sy_options.map((sy, index) => (
-                          <option key={index} value={sy}>
-                            {sy}
-                          </option>
-                        ))}
-                    </select>
+                    <Dropdown
+                      label="SY"
+                      options={uniqueYears}
+                      selectedValue={selectedSY}
+                      onChange={(e) => handleSelectSY(e)}
+                    />
                   </div>
                   <div className="flex flex-row gap-2 items-center">
-                    <div className="mr-2">SEMESTER:</div>
-                    <select
-                      id="sem"
-                      name="sem"
-                      value={selectedSem}
-                      onChange={handleSelectSem}
-                      className=" w-full text-base border rounded-md"
-                    >
-                      {sem_options.map((sem, index) => (
-                        <option key={index} value={sem}>
-                          {sem}
-                        </option>
-                      ))}
-                    </select>
+                    <Dropdown
+                      label="Semester"
+                      options={sem_options}
+                      selectedValue={selectedSem}
+                      onChange={(e) => handleSelectSem(e)}
+                    />
                   </div>
                 </div>
               </div>

@@ -15,7 +15,7 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
     Saturday: [],
   });
 
-  const endOfSy = ["May", "June"];
+  const startOfSy = ["January", "June", "August"];
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -124,8 +124,8 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
   };
 
   //check if end of school year
-  const isEndOfSy = (currentMonth) => {
-    if (endOfSy.includes(currentMonth)) {
+  const isStartOfSy = (currentMonth) => {
+    if (startOfSy.includes(currentMonth)) {
       return true;
     } else {
       return false;
@@ -137,9 +137,9 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
       <div className="pb-3" style={{ display: "flex", justifyContent: "center" }}>
         <table className="w-10/12 border-collapse border">
           <thead>
-            <tr>
+            <tr className=" bg-primary text-white">
               <th colSpan="4" className="border p-2 text-center">
-                Schedule Table
+                Schedule of Duty
               </th>
             </tr>
             <tr>
@@ -178,15 +178,15 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
       <div style={{ display: "flex", justifyContent: "center", paddingTop: "1.5em" }}>
         <button
           className={`py-2 px-3 rounded-lg flex justify-center items-center ${
-            isEndOfSy(currentMonth) ? "hover: font-semibold" : ""
+            isStartOfSy(currentMonth) ? "hover: font-semibold" : ""
           }`}
           style={{
-            backgroundColor: isEndOfSy(currentMonth) ? "#88333a" : "#c5c5c5",
+            backgroundColor: isStartOfSy(currentMonth) ? "#88333a" : "#c5c5c5",
             color: "white",
             width: "12em",
           }}
-          onClick={isEndOfSy(currentMonth) ? openModal : undefined}
-          disabled={!isEndOfSy(currentMonth)}
+          onClick={isStartOfSy(currentMonth) ? openModal : undefined}
+          disabled={!isStartOfSy(currentMonth)}
         >
           <svg
             className="w-4 h-4 mr-2"

@@ -2,7 +2,7 @@ import { ValidationList } from "../../components/OAS/ValidationList";
 export const OASValidation = () => {
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex justify-end items-center text-lg font-medium rounded-t-lg bg-grey px-8 py-4">
             <li className="w-1/4">

@@ -43,7 +43,7 @@ export const WeeklyAttendance = ({
         case "Second":
           return 1;
         case "Summer":
-          return 3;
+          return 2;
         default:
           return "Invalid semester";
       }
@@ -173,18 +173,12 @@ export const WeeklyAttendance = ({
         {Array.isArray(attendanceSummaries) &&
           attendanceSummaries.map((summary) => (
             <tr key={summary.id}>
-              <td className="border px-4 py-8 w-1/5 text-center">
-                {summary.date}
+              <td className="border px-4 py-8 w-1/5 text-center">{summary.date}</td>
+              <td className="border px-4 py-2 w-1/5 text-center">
+                {summary.timeIn === "FTP IN" ? "FTP IN" : formatTime(summary.timeIn)}
               </td>
               <td className="border px-4 py-2 w-1/5 text-center">
-                {summary.timeIn === "FTP IN"
-                  ? "FTP IN"
-                  : formatTime(summary.timeIn)}
-              </td>
-              <td className="border px-4 py-2 w-1/5 text-center">
-                {summary.timeOut === "FTP OUT"
-                  ? "FTP OUT"
-                  : formatTime(summary.timeOut)}
+                {summary.timeOut === "FTP OUT" ? "FTP OUT" : formatTime(summary.timeOut)}
               </td>
               <td className="border px-4 py-2 w-1/5 text-center">
                 {formatTime(summary.overtimeIn)}

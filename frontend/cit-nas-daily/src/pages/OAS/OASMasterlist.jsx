@@ -1,13 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+import axios from "axios";
 import { MasterlistTable } from "../../components/OAS/MasterlistTable";
+import { Dropdown } from "../../components/Dropdown";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
+
+const currentYear = calculateSchoolYear();
+const currentSem = calculateSemester();
 
 export const OASMasterlist = () => {
-  const [selectedSY, setSelectedSY] = useState(2324);
-  const [selectedSem, setSelectedSem] = useState("First");
+  const [selectedSY, setSelectedSY] = useState(currentYear);
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
+  const [selectedSem, setSelectedSem] = useState(currentSem);
   const [searchInput, setSearchInput] = useState("");
-
-  const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
+
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
+
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, [api]);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -21,7 +55,7 @@ export const OASMasterlist = () => {
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex justify-end items-center text-lg font-medium rounded-t-lg bg-grey px-8 py-4">
             <li className="w-1/4">
@@ -62,37 +96,20 @@ export const OASMasterlist = () => {
           <div className="px-8 py-4">
             <div className="flex flex-row justify-start items-center gap-10 mt-2 mb-8">
               <div className="flex flex-row gap-2 items-center">
-                <div className="mr-2">SY:</div>
-                <select
-                  id="sy"
-                  name="sy"
-                  value={selectedSY}
-                  onChange={handleSelectSY}
-                  className=" w-full text-base border rounded-md"
-                >
-                  {Array.isArray(sy_options) &&
-                    sy_options.map((sy, index) => (
-                      <option key={index} value={sy}>
-                        {sy}
-                      </option>
-                    ))}
-                </select>
+                <Dropdown
+                  label="SY"
+                  options={uniqueYears}
+                  selectedValue={selectedSY}
+                  onChange={(e) => handleSelectSY(e)}
+                />
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="mr-2">SEMESTER:</div>
-                <select
-                  id="sem"
-                  name="sem"
-                  value={selectedSem}
-                  onChange={handleSelectSem}
-                  className=" w-full text-base border rounded-md"
-                >
-                  {sem_options.map((sem, index) => (
-                    <option key={index} value={sem}>
-                      {sem}
-                    </option>
-                  ))}
-                </select>
+                <Dropdown
+                  label="Semester"
+                  options={sem_options}
+                  selectedValue={selectedSem}
+                  onChange={(e) => handleSelectSem(e)}
+                />
               </div>
             </div>
             <MasterlistTable

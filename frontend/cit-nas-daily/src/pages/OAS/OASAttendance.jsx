@@ -3,46 +3,35 @@ import { MonthlySummary } from "../../components/MonthlySummary";
 import { WeeklyAttendance } from "../../components/OAS/WeeklyAttendance";
 import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
+import { Dropdown } from "../../components/Dropdown";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import axios from "axios";
 
-const first_sem = [
-  "All",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const second_sem = [
-  "All",
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-];
-
+const currentSchoolYear = calculateSchoolYear();
+const currentSemester = calculateSemester();
+const first_sem = ["All", "August", "September", "October", "November", "December"];
+const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
 const summer = ["All", "June", "July", "August"];
 
 export const OASAttendance = () => {
-  const [selectedSY, setSelectedSY] = useState("2324");
-  const [selectedSem, setSelectedSem] = useState("First");
-  const [monthOptions, setMonthOptions] = useState(first_sem);
-  const [selectedMonth, setSelectedMonth] = useState("All");
-  const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
-  const sy_options = ["2324", "2223", "2122", "2021"];
-  const sem_options = ["First", "Second", "Summer"];
   const [nasId, setNasId] = useState(1);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [maxNasId, setMaxNasId] = useState(1);
+
+  const [selectedSem, setSelectedSem] = useState(currentSemester);
+  const [monthOptions, setMonthOptions] = useState(first_sem);
+  const [selectedMonth, setSelectedMonth] = useState("All");
+  const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
+  const [selectedSY, setSelectedSY] = useState(currentSchoolYear);
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
+  const sem_options = ["First", "Second", "Summer"];
 
   const api = useMemo(
     () =>
@@ -59,6 +48,24 @@ export const OASAttendance = () => {
     setSearchInput(event.target.value);
   };
 
+  //getting school year from the /NAS/sysem
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, [api]);
+
   useEffect(() => {
     const fetchNas = async () => {
       try {
@@ -68,11 +75,8 @@ export const OASAttendance = () => {
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
         const officeData = officeResponse.data;
 
-        const timekeepingresponse = await api.get(
-          `/TimekeepingSummary/${nasId}`
-        );
+        const timekeepingresponse = await api.get(`/TimekeepingSummary/${nasId}`);
         let timekeepingdata = timekeepingresponse.data[0];
-        console.log(timekeepingdata);
 
         if (timekeepingdata === undefined || !timekeepingdata) {
           // If there's no record
@@ -182,18 +186,12 @@ export const OASAttendance = () => {
     }
   };
 
-  console.log(nasId);
-
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
-            <div
-              className={`flex items-center w-auto ${
-                nasId === 1 ? "ml-10" : ""
-              }`}
-            >
+            <div className={`flex items-center w-auto ${nasId === 1 ? "ml-10" : ""}`}>
               <div>
                 {nasId > 1 && (
                   <Button
@@ -211,10 +209,7 @@ export const OASAttendance = () => {
               </div>
             </div>
             <li>
-              <p
-                className="font-bold text-center"
-                style={{ textTransform: "uppercase" }}
-              >
+              <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
                 DEPT/OFFICE: {office}
               </p>
             </li>
@@ -268,64 +263,34 @@ export const OASAttendance = () => {
           <div className="px-8 py-4">
             <div className="flex flex-row justify-start items-center gap-10 mt-2 mb-8">
               <div className="flex flex-row gap-2 items-center">
-                <div className="mr-2">SY:</div>
-                <select
-                  id="sy"
-                  name="sy"
-                  value={selectedSY}
-                  onChange={handleSelectSY}
-                  className=" w-full text-base border rounded-md"
-                >
-                  {Array.isArray(sy_options) &&
-                    sy_options.map((sy, index) => (
-                      <option key={index} value={sy}>
-                        {sy}
-                      </option>
-                    ))}
-                </select>
+                <Dropdown
+                  label="SY"
+                  options={uniqueYears}
+                  selectedValue={selectedSY}
+                  onChange={(e) => handleSelectSY(e)}
+                />
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="mr-2">SEMESTER:</div>
-                <select
-                  id="sem"
-                  name="sem"
-                  value={selectedSem}
-                  onChange={handleSelectSem}
-                  className=" w-full text-base border rounded-md"
-                >
-                  {sem_options.map((sem, index) => (
-                    <option key={index} value={sem}>
-                      {sem}
-                    </option>
-                  ))}
-                </select>
+                <Dropdown
+                  label="Semester"
+                  options={sem_options}
+                  selectedValue={selectedSem}
+                  onChange={(e) => handleSelectSem(e)}
+                />
               </div>
               <div className="flex flex-row gap-2 items-center">
-                <div className="mr-2">MONTH:</div>
-                <select
-                  id="month"
-                  name="month"
-                  value={selectedMonth}
-                  onChange={handleSelectedMonth}
-                  className=" w-full text-base border rounded-md"
-                >
-                  {Array.isArray(monthOptions) &&
-                    monthOptions.map((month, index) => (
-                      <option key={index} value={month}>
-                        {month}
-                      </option>
-                    ))}
-                </select>
+                <Dropdown
+                  label="Month"
+                  options={monthOptions}
+                  selectedValue={selectedMonth}
+                  onChange={(e) => handleSelectedMonth(e)}
+                />
               </div>
             </div>
             <div className="flex flex-col justify-center items-center gap-4">
-              <p className="text-xl font-bold text-primary">
-                MONTHLY SUMMARY OF ABSENCES/LATE
-              </p>
+              <p className="text-xl font-bold text-primary">MONTHLY SUMMARY OF ABSENCES/LATE</p>
               <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
-              <p className="text-xl font-bold text-primary">
-                WEEKLY ATTENDANCE
-              </p>
+              <p className="text-xl font-bold text-primary">WEEKLY ATTENDANCE</p>
               <WeeklyAttendance
                 firstName={firstName}
                 lastName={lastName}
@@ -333,6 +298,7 @@ export const OASAttendance = () => {
                 selectedMonth={selectedMonthIndex}
                 selectedSem={selectedSem}
                 selectedSY={selectedSY}
+                nasId={nasId}
               />
             </div>
           </div>
