@@ -13,6 +13,7 @@ namespace CITNASDaily.Entities.Dtos.ValidationDtos
         public int NasId { get; set; }
         public byte[]? NasLetter { get; set; }
         public DateTime? DateSubmitted { get; set; }
+        public DateTime? AbsenceDate { get; set; }
         public ValidationStatus ValidationStatus { get; set; }
         public int MakeUpHours { get; set; }
     }
