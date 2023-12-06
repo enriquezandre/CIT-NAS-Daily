@@ -45,7 +45,7 @@ namespace CITNASDaily.API.Controllers
         /// <response code="403">Forbidden</response>
         /// <response code="500">Internal Server Error</response>
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<BiometricLogDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -83,7 +83,7 @@ namespace CITNASDaily.API.Controllers
         /// <response code="403">Forbidden</response>
         /// <response code="500">Internal Server Error</response>
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         [Consumes("application/json")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(BiometricLogDto), StatusCodes.Status201Created)]

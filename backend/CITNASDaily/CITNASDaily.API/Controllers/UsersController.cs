@@ -30,8 +30,7 @@ namespace CITNASDaily.API.Controllers
         /// <reponse code="204">No users found</reponse>
         /// <reponse code="500">Internal server error</reponse>
         [HttpGet]
-        [AllowAnonymous]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -40,6 +39,12 @@ namespace CITNASDaily.API.Controllers
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
                 var users = await _userService.GetUsersAsync();
                 if (users.IsNullOrEmpty()) return NoContent();
 
@@ -63,7 +68,7 @@ namespace CITNASDaily.API.Controllers
         /// <reponse code="403">Forbidden</reponse>
         /// <reponse code="500">Internal server error</reponse>
         [HttpGet("{userId}", Name = "GetUser")]
-        [Authorize]
+        [Authorize(Roles = "OAS, Superior")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

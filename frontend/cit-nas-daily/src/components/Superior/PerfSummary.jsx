@@ -77,9 +77,9 @@ export const PerfSummary = ({
     const fetchTimekeepingSummary = async () => {
       try {
         const response = await api.get(
-          `/TimekeepingSummary/${selectedSY}/${getSemesterValue(
+          `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(
             selectedSem
-          )}/${nasId}`
+          )}`
         );
         const data = response.data;
         setTimekeepingSummaries(data);

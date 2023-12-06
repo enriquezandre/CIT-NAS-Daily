@@ -23,9 +23,8 @@ namespace CITNASDaily.API.Controllers
             _timekeepingSummaryService = timekeepingSummaryervice;
             _logger = logger;
         }
-
         [HttpPost("{nasId}/{year}/{semester}")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(TimekeepingSummary), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateTimekeepingSummary([FromBody] TimekeepingSummaryCreateDto timekeepingSummaryCreate, int nasId, int year, int semester)
         {
@@ -54,6 +53,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet(Name = "GetAllTimekeepingSummary")]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetAllTimekeepingSummary()
         {
             try
@@ -70,7 +70,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{nasId}", Name = "GetAllTimekeepingSummaryByNASId")]
-        [Authorize]
+        [Authorize(Roles = "OAS, Superior, NAS")]
         public async Task<IActionResult> GetAllTimekeepingSummaryByNASId(int nasId)
         {
             try
@@ -90,9 +90,8 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
-
         [HttpGet("{nasId}/{year}/{semester}", Name = "GetTimekeepingSummaryByNASIdSemesterYear")]
-        [Authorize]
+        [Authorize(Roles = "OAS, NAS, Superior")]
         public async Task<IActionResult> GetTimekeepingSummaryByNASIdSemesterYear(int nasId, int semester, int year)
         {
             try
@@ -117,7 +116,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPut("{nasId}/{year}/{semester}", Name = "UpdateTimekeepingSummary")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> UpdateTimekeepingSummary(int nasId, int year, int semester, [FromBody] TimekeepingSummaryUpdateDto tkUpdate)
         {
             try

@@ -25,7 +25,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "OAS, NAS")]
         [ProducesResponseType(typeof(Validation), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateValidation([FromBody] ValidationCreateDto validationCreate)
         {
@@ -54,7 +54,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet(Name = "GetAllValidations")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetAllValidations()
         {
             try
@@ -82,7 +82,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{validationId}", Name = "GetValidationById")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetValidationById(int validationId)
         {
             try
@@ -110,7 +110,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPut(Name = "UpdateValidation")]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> UpdateValidation(ValidationUpdateDto validationUpdate, int validationId)
         {
             try

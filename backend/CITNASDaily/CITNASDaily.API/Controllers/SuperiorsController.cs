@@ -23,7 +23,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{superiorId}", Name = "GetSuperior")]
-        [Authorize]
+        [Authorize(Roles = "OAS, Superior")]
         public async Task<IActionResult> GetSuperior(int superiorId)
         {
             try
@@ -53,7 +53,7 @@ namespace CITNASDaily.API.Controllers
 
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(SuperiorDto), StatusCodes.Status201Created)]
         public async Task<IActionResult> CreateSuperior([FromBody] SuperiorCreateDto superiorCreate)
         {
@@ -82,7 +82,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetSuperiors()
         {
             try
@@ -101,7 +101,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{officeId}/office", Name = "GetSuperiorByOfficeId")]
-        [Authorize]
+        [Authorize(Roles = "OAS, Superior")]
         public async Task<IActionResult> GetSuperiorByOfficeId(int officeId)
         {
             try
@@ -130,7 +130,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{username}/id", Name = "GetSuperiorIdByUsername")]
-        [Authorize]
+        [Authorize(Roles = "OAS, Superior")]
         public async Task<IActionResult> GetSuperiorIdByUsername(string username)
         {
             try
