@@ -197,7 +197,7 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
                 {summary.timeOut === "FTP OUT" ? (
                   "FTP OUT"
                 ) : summary.timeOut !== null ? (
-                  formatTime(summary.timeIn)
+                  formatTime(summary.timeOut)
                 ) : (
                   <p className="font-bold text-red">NO RECORD</p>
                 )}
