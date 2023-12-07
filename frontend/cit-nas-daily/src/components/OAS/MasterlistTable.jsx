@@ -68,37 +68,16 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
             try {
               const [officeResponse, timekeepingresponse] = await Promise.all([
                 api.get(`Offices/${nasId}/NAS`),
-                api.get(`/TimekeepingSummary/${nasId}`),
+                api.get(
+                  `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
+                ),
               ]);
               nas.office = officeResponse.data;
-
-              let timekeepingData = timekeepingresponse.data[0];
-              if (!timekeepingData) {
-                timekeepingData = {
-                  excused: "NR",
-                  failedToPunch: "NR",
-                  lateOver10Mins: "NR",
-                  lateOver45Mins: "NR",
-                  makeUpDutyHours: "NR",
-                  schoolYear: "NR",
-                  semester: "NR",
-                  unexcused: "NR",
-                };
-              }
-              nas.timekeeping = timekeepingData;
+              nas.timekeeping = timekeepingresponse.data;
             } catch (error) {
               console.error("Error fetching data for NAS:", error);
               nas.office = { name: "N/A" };
-              nas.timekeeping = {
-                excused: "NR",
-                failedToPunch: "NR",
-                lateOver10Mins: "NR",
-                lateOver45Mins: "NR",
-                makeUpDutyHours: "NR",
-                schoolYear: "NR",
-                semester: "NR",
-                unexcused: "NR",
-              };
+              nas.timekeeping = [];
             }
             return nas;
           })
@@ -144,12 +123,8 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
         <tbody>
           {filteredNASData.map((nas, index) => (
             <tr key={index}>
-              <td className="border-2 border-black text-center px-4 py-2">
-                {nas.id}
-              </td>
-              <td className="border-2 border-black text-center px-4 py-2">
-                {nas.studentIDNo}
-              </td>
+              <td className="border-2 border-black text-center px-4 py-2">{nas.id}</td>
+              <td className="border-2 border-black text-center px-4 py-2">{nas.studentIDNo}</td>
               <td
                 className="border-2 border-black text-center px-4 py-2"
                 style={{ textTransform: "capitalize" }}
@@ -183,12 +158,8 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
               >
                 {nas.course}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
-                {nas.yearLevel}
-              </td>
-              <td className="border-2 border-black text-center px-4 py-2">
-                {nas.unitsAllowed}
-              </td>
+              <td className="border-2 border-black text-center px-4 py-2">{nas.yearLevel}</td>
+              <td className="border-2 border-black text-center px-4 py-2">{nas.unitsAllowed}</td>
               <td className="border-2 border-black text-center px-4 py-2">
                 {new Date(nas.dateStarted).toLocaleDateString()}
               </td>
@@ -229,6 +200,6 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
 
 MasterlistTable.propTypes = {
   searchInput: PropTypes.string.isRequired,
-  selectedSY: PropTypes.number.isRequired,
-  selectedSem: PropTypes.number.isRequired,
+  selectedSY: PropTypes.string.isRequired,
+  selectedSem: PropTypes.string.isRequired,
 };

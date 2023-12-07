@@ -115,8 +115,7 @@ export const WeeklyAttendance = ({
           const month = date.getMonth();
           const year = date.getFullYear();
           const first = parseInt(
-            year.toString().substring(0, 2) +
-              selectedSY.toString().substring(0, 2)
+            year.toString().substring(0, 2) + selectedSY.toString().substring(0, 2)
           );
           const second = parseInt(
             year.toString().substring(0, 2) + selectedSY.toString().substring(2)
@@ -171,7 +170,7 @@ export const WeeklyAttendance = ({
       <tbody>
         {Array.isArray(attendanceSummaries) &&
           attendanceSummaries.map((summary) => (
-            <tr key={summary.id}>
+            <tr key={summary.date}>
               <td className="border px-4 py-8 w-1/5 text-center">{summary.date}</td>
               <td className="border px-4 py-2 w-1/5 text-center">
                 {summary.timeIn === "FTP IN" ? "FTP IN" : formatTime(summary.timeIn)}
@@ -198,5 +197,5 @@ WeeklyAttendance.propTypes = {
   middleName: PropTypes.string.isRequired,
   selectedMonth: PropTypes.number.isRequired,
   selectedSem: PropTypes.string.isRequired,
-  selectedSY: PropTypes.number.isRequired,
+  selectedSY: PropTypes.string.isRequired,
 };
