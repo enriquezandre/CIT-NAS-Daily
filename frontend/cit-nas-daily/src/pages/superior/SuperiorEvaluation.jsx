@@ -388,7 +388,7 @@ export const SuperiorEvaluation = () => {
                     </strong>
                     <button
                       type="submit"
-                      className="text-white bg-primary hover:bg-gray hover:text-white font-medium rounded-lg text-sm px-10 py-2.5"
+                      className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-lg text-sm px-10 py-2.5"
                       disabled={isSubmitted}
                     >
                       SUBMIT

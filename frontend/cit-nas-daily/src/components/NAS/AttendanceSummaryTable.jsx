@@ -5,12 +5,7 @@ import { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const AttendanceSummaryTable = ({
-  selectedMonth,
-  selectedSem,
-  selectedSY,
-  openModal,
-}) => {
+export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY, openModal }) => {
   const { nasId } = useParams();
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
   const [firstName, setFirstName] = useState("");
@@ -63,7 +58,6 @@ export const AttendanceSummaryTable = ({
         setFirstName(nasData.firstName);
         setLastName(nasData.lastName);
         setMiddleName(nasData.middleName);
-        console.log(firstName);
         if (nasData.middleName === null) {
           setMiddleName(null);
         }
@@ -82,11 +76,9 @@ export const AttendanceSummaryTable = ({
         for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
           dateRange.push(new Date(d));
         }
-        console.log("DTR", dtrdata);
 
         const groupedData = dtrdata.reduce((acc, curr) => {
           const date = curr.date.split(" ")[0];
-          console.log("DATE", date);
           if (!acc[date]) {
             acc[date] = {
               timeIn: curr.timeIn,
@@ -94,15 +86,12 @@ export const AttendanceSummaryTable = ({
               overtimeIn: curr.overtimeIn,
               overtimeOut: curr.overtimeOut,
             };
-            console.log("YAWA", acc[date]);
           }
           if (curr.inOut && curr.date) {
             acc[date][curr.inOut].push(curr);
           }
           return acc;
         }, {});
-
-        console.log("GROUPED", groupedData);
 
         const latestLogs = dateRange.map((date) => {
           const dateString = date.toISOString().split("T")[0];
@@ -135,8 +124,7 @@ export const AttendanceSummaryTable = ({
           const month = date.getMonth();
           const year = date.getFullYear();
           const first = parseInt(
-            year.toString().substring(0, 2) +
-              selectedSY.toString().substring(0, 2)
+            year.toString().substring(0, 2) + selectedSY.toString().substring(0, 2)
           );
           const second = parseInt(
             year.toString().substring(0, 2) + selectedSY.toString().substring(2)
@@ -195,7 +183,7 @@ export const AttendanceSummaryTable = ({
       <Table.Body className="divide-y text-center">
         {Array.isArray(attendanceSummaries) &&
           attendanceSummaries.map((summary) => (
-            <Table.Row key={summary.id}>
+            <Table.Row key={summary.date}>
               <Table.Cell>{summary.date}</Table.Cell>
               <Table.Cell>
                 {summary.timeIn === "FTP IN"
@@ -209,7 +197,7 @@ export const AttendanceSummaryTable = ({
                 {summary.timeOut === "FTP OUT" ? (
                   "FTP OUT"
                 ) : summary.timeOut !== null ? (
-                  formatTime(summary.timeIn)
+                  formatTime(summary.timeOut)
                 ) : (
                   <p className="font-bold text-red">NO RECORD</p>
                 )}

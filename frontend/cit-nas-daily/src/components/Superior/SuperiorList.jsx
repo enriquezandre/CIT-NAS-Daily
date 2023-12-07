@@ -3,7 +3,6 @@ import { Card, Avatar } from "flowbite-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import PropTypes from "prop-types";
 import axios from "axios";
 
 export const SuperiorList = () => {
@@ -132,10 +131,4 @@ export const SuperiorList = () => {
   );
 };
 
-SuperiorList.propTypes = {
-  office: PropTypes.shape({
-    id: PropTypes.number,
-    name: PropTypes.string,
-  }).isRequired,
-};
 export default SuperiorList;

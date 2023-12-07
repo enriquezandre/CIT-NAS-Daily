@@ -4,14 +4,7 @@ import { useState, useMemo } from "react";
 import { ShowGrades } from "./ShowGrades";
 import axios from "axios";
 
-export const EvaluateGrades = ({
-  show,
-  close,
-  grade,
-  nasId,
-  selectedSY,
-  selectedSem,
-}) => {
+export const EvaluateGrades = ({ show, close, grade, nasId, selectedSY, selectedSem }) => {
   const [isViewingShowGrades, setIsViewingShowGrades] = useState(false);
   const [numCoursesFailed, setNumCoursesFailed] = useState(0);
   const [allCoursesPassed, setAllCoursesPassed] = useState(true);
@@ -116,11 +109,7 @@ export const EvaluateGrades = ({
                 >
                   EVALUATE GRADES
                 </button>
-                <ShowGrades
-                  show={isViewingShowGrades}
-                  close={closeShowGrades}
-                  grade={grade}
-                />
+                <ShowGrades show={isViewingShowGrades} close={closeShowGrades} grade={grade} />
                 <div className="flex flex-row w-full items-center gap-6 mb-10">
                   <p className="text-xl text-left w-2/4">ALL COURSES PASSED:</p>
                   <div className="flex flex-row gap-2 justify-center items-center w-1/4">
@@ -148,10 +137,7 @@ export const EvaluateGrades = ({
                       className="h-5 w-5"
                       onChange={handleCoursePassedChange}
                     />
-                    <label
-                      htmlFor="default-radio-2"
-                      className="ml-2 text-xl font-medium text-red"
-                    >
+                    <label htmlFor="default-radio-2" className="ml-2 text-xl font-medium text-red">
                       NO
                     </label>
                   </div>
@@ -184,19 +170,14 @@ export const EvaluateGrades = ({
                       className="h-5 w-5"
                       onChange={handleAllowEnrollment}
                     />
-                    <label
-                      htmlFor="default-radio-2"
-                      className="ml-2 text-xl font-medium text-red"
-                    >
+                    <label htmlFor="default-radio-2" className="ml-2 text-xl font-medium text-red">
                       NO
                     </label>
                   </div>
                 </div>
                 {allCoursesPassed ? null : (
                   <div className="flex flex-row w-full items-center mb-10">
-                    <p className="text-xl text-left w-3/4">
-                      NUMBER OF COURSES FAILED:
-                    </p>
+                    <p className="text-xl text-left w-3/4">NUMBER OF COURSES FAILED:</p>
                     <input
                       type="number"
                       name="num-courses-failed"
@@ -234,6 +215,6 @@ EvaluateGrades.propTypes = {
   close: PropTypes.func.isRequired,
   grade: PropTypes.string.isRequired,
   nasId: PropTypes.number.isRequired,
-  selectedSY: PropTypes.number.isRequired,
-  selectedSem: PropTypes.number.isRequired,
+  selectedSY: PropTypes.string.isRequired,
+  selectedSem: PropTypes.string.isRequired,
 };

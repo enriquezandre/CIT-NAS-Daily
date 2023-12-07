@@ -21,6 +21,7 @@ export const OASEvaluation = () => {
   const [maxNasId, setMaxNasId] = useState(1);
   const [selectedSY, setSelectedSY] = useState(currentSchoolYear);
   const [selectedSem, setSelectedSem] = useState(currentSem);
+  // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const sem_options = ["First", "Second", "Summer"];

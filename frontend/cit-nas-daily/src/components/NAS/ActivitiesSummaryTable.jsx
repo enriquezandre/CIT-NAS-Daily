@@ -5,11 +5,7 @@ import { ActivitiesFormModal } from "./ActivitiesFormModal";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const ActivitiesSummaryTable = ({
-  selectedMonth,
-  selectedSem,
-  selectedSY,
-}) => {
+export const ActivitiesSummaryTable = ({ selectedMonth, selectedSem, selectedSY }) => {
   const { nasId } = useParams();
   const [activitySummaries, setActivitySummaries] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,9 +41,7 @@ export const ActivitiesSummaryTable = ({
         });
 
         const response = await api.get(
-          `/ActivitiesSummary/${nasId}/${selectedSY}/${getSemesterValue(
-            selectedSem
-          )}`
+          `/ActivitiesSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
         );
         const data = response.data;
 
@@ -56,8 +50,7 @@ export const ActivitiesSummaryTable = ({
           const month = date.getMonth();
           const year = date.getFullYear();
           const first = parseInt(
-            year.toString().substring(0, 2) +
-              selectedSY.toString().substring(0, 2)
+            year.toString().substring(0, 2) + selectedSY.toString().substring(0, 2)
           );
           const second = parseInt(
             year.toString().substring(0, 2) + selectedSY.toString().substring(2)
@@ -87,29 +80,16 @@ export const ActivitiesSummaryTable = ({
     };
 
     fetchNas();
-  }, [
-    nasId,
-    selectedMonth,
-    selectedSem,
-    selectedSY,
-    activitySummaries,
-    getSemesterValue,
-  ]);
+  }, [nasId, selectedMonth, selectedSem, selectedSY, activitySummaries, getSemesterValue]);
 
   return (
     <div>
       <Table hoverable className="border">
         <Table.Head className="border">
           <Table.HeadCell className="text-center border">DATE</Table.HeadCell>
-          <Table.HeadCell className="text-center border">
-            Activities of the Day
-          </Table.HeadCell>
-          <Table.HeadCell className="text-center border">
-            Skills Learned
-          </Table.HeadCell>
-          <Table.HeadCell className="text-center border">
-            Values Learned
-          </Table.HeadCell>
+          <Table.HeadCell className="text-center border">Activities of the Day</Table.HeadCell>
+          <Table.HeadCell className="text-center border">Skills Learned</Table.HeadCell>
+          <Table.HeadCell className="text-center border">Values Learned</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
           {activitySummaries.map((summary) => (

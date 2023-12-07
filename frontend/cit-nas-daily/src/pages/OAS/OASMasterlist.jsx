@@ -9,6 +9,7 @@ const currentSem = calculateSemester();
 
 export const OASMasterlist = () => {
   const [selectedSY, setSelectedSY] = useState(currentYear);
+  // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const [selectedSem, setSelectedSem] = useState(currentSem);

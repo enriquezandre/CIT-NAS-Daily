@@ -23,12 +23,12 @@ export const OASAttendance = () => {
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [maxNasId, setMaxNasId] = useState(1);
-
   const [selectedSem, setSelectedSem] = useState(currentSemester);
   const [monthOptions, setMonthOptions] = useState(first_sem);
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
   const [selectedSY, setSelectedSY] = useState(currentSchoolYear);
+  // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const sem_options = ["First", "Second", "Summer"];
@@ -43,6 +43,21 @@ export const OASAttendance = () => {
       }),
     []
   );
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 3;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   const handleSearchChange = (event) => {
     setSearchInput(event.target.value);
@@ -75,24 +90,6 @@ export const OASAttendance = () => {
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
         const officeData = officeResponse.data;
 
-        const timekeepingresponse = await api.get(`/TimekeepingSummary/${nasId}`);
-        let timekeepingdata = timekeepingresponse.data[0];
-
-        if (timekeepingdata === undefined || !timekeepingdata) {
-          // If there's no record
-          timekeepingdata = {
-            excused: "NR",
-            failedToPunch: "NR",
-            lateOver10Mins: "NR",
-            lateOver45Mins: "NR",
-            makeUpDutyHours: "NR",
-            schoolYear: "NR",
-            semester: "NR",
-            unexcused: "NR",
-          };
-        }
-
-        setTimekeepingSummaries(timekeepingdata);
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
@@ -133,6 +130,25 @@ export const OASAttendance = () => {
 
     setSelectedMonthIndex(selectedMonthIndex);
   }, [selectedSY, selectedSem, selectedMonth, nasId, api]);
+
+  useEffect(() => {
+    const fetchTimekeepingSummary = async () => {
+      try {
+        const timekeepingresponse = await api.get(
+          `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
+        );
+        const timekeepingdata = timekeepingresponse.data;
+        setTimekeepingSummaries(timekeepingdata);
+      } catch (error) {
+        console.error(error);
+        if (error.response.status === 404) {
+          setTimekeepingSummaries([]);
+        }
+      }
+    };
+
+    fetchTimekeepingSummary();
+  }, [api, nasId, selectedSY, selectedSem, getSemesterValue]);
 
   useEffect(() => {
     const fetchNasData = async () => {

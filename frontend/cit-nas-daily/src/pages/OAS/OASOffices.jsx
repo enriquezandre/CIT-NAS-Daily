@@ -17,6 +17,7 @@ export const OASOffices = () => {
   const [selectedSem, setSelectedSem] = useState(currentSem);
   const sem_options = ["First", "Second", "Summer"];
   const [selectedSY, setSelectedSY] = useState(currentYear);
+  // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
 

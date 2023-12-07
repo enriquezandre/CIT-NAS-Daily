@@ -13,6 +13,7 @@ const summer = ["All", "June", "July", "August"];
 
 export const ActivitiesSummary = () => {
   const [selectedSY, setSelectedSY] = useState(currentYear);
+  // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const sem_options = ["First", "Second", "Summer"];

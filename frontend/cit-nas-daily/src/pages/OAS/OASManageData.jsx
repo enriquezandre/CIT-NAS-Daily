@@ -8,11 +8,13 @@ const currentSem = calculateSemester();
 
 export const OASManageData = () => {
   const [selectedSY, setSelectedSY] = useState(currentYear);
+  // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const [selectedSem, setSelectedSem] = useState(currentSem);
   const [fileUploaded, setFileUploaded] = useState(false);
   const sem_options = ["First", "Second", "Summer"];
+  // eslint-disable-next-line no-unused-vars
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
 
   const api = useMemo(
@@ -25,6 +27,21 @@ export const OASManageData = () => {
       }),
     []
   );
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 3;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -65,18 +82,6 @@ export const OASManageData = () => {
     fetchSchoolYearSemesterOptions();
   }, [api]);
 
-  function getSemesterValue(sem) {
-    switch (sem) {
-      case "First":
-        return 0;
-      case "Second":
-        return 1;
-      case "Summer":
-        return 2;
-      default:
-        return "Invalid semester";
-    }
-  }
   const selectedSemValue = getSemesterValue(selectedSem);
 
   const handleFileUpload = async (e) => {
@@ -169,17 +174,17 @@ export const OASManageData = () => {
       setAttendanceSummaries(attendanceSummaries);
 
       // Make the API call to post the summary
-      const postResponse = await api.post("/TimekeepingSummary", {
-        nasId,
-        semester: selectedSemValue,
-        schoolYear: selectedSY,
-        excused: 0,
-        unexcused: 0,
-        failedToPunch: totalFailedToPunch,
-        lateOver10mins: totalLateOver10Mins,
-        lateOver45mins: totalLateOver45Mins,
-        makeUpDutyHours: 0,
-      });
+      const postResponse = await api.post(
+        `/TimekeepingSummary/${nasId}/${selectedSY}/${selectedSemValue}`,
+        {
+          excused: 0,
+          unexcused: 0,
+          failedToPunch: totalFailedToPunch,
+          lateOver10mins: totalLateOver10Mins,
+          lateOver45mins: totalLateOver45Mins,
+          makeUpDutyHours: 0,
+        }
+      );
       console.log(postResponse);
     } catch (error) {
       console.error(error);
