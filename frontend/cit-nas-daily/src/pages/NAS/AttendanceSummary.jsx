@@ -4,18 +4,37 @@ import { DataDisplayBox } from "../../components/DataDisplayBox.jsx";
 import { AttendanceSummaryTable } from "../../components/NAS/AttendanceSummaryTable.jsx";
 import { useParams } from "react-router-dom";
 import { Dropdown } from "../../components/Dropdown.jsx";
-import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils.js";
+import {
+  calculateSchoolYear,
+  calculateSemester,
+} from "../../components/SySemUtils.js";
 import { ValidationModal } from "../../components/NAS/ValidationModal.jsx";
 import axios from "axios";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
-const first_sem = ["All", "August", "September", "October", "November", "December"];
-const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
+const first_sem = [
+  "All",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const second_sem = [
+  "All",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+];
 const summer = ["All", "June", "July", "August"];
 
 export const AttendanceSummary = () => {
   const [selectedSY, setSelectedSY] = useState(currentYear);
+  // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const [selectedSem, setSelectedSem] = useState(currentSem);
@@ -152,7 +171,9 @@ export const AttendanceSummary = () => {
           },
         });
 
-        const timekeepingresponse = await api.get(`/TimekeepingSummary/${nasId}`);
+        const timekeepingresponse = await api.get(
+          `/TimekeepingSummary/${nasId}`
+        );
         let timekeepingdata = timekeepingresponse.data[0];
         console.log(timekeepingdata);
 
@@ -251,7 +272,11 @@ export const AttendanceSummary = () => {
           </div>
         </div>
       </div>
-      <ValidationModal isOpen={isOpen} closeModal={closeModal} handleSubmit={handleSubmit} />
+      <ValidationModal
+        isOpen={isOpen}
+        closeModal={closeModal}
+        handleSubmit={handleSubmit}
+      />
     </div>
   );
 };

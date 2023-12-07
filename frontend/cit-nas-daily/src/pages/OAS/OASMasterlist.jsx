@@ -2,13 +2,17 @@ import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { MasterlistTable } from "../../components/OAS/MasterlistTable";
 import { Dropdown } from "../../components/Dropdown";
-import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
+import {
+  calculateSchoolYear,
+  calculateSemester,
+} from "../../components/SySemUtils";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
 
 export const OASMasterlist = () => {
   const [selectedSY, setSelectedSY] = useState(currentYear);
+  // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const [selectedSem, setSelectedSem] = useState(currentSem);

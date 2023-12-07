@@ -3,7 +3,10 @@ import { NASList } from "../../components/NASList";
 import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft } from "react-icons/hi";
 import { Dropdown } from "../../components/Dropdown";
-import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
+import {
+  calculateSchoolYear,
+  calculateSemester,
+} from "../../components/SySemUtils";
 import axios from "axios";
 
 const currentYear = calculateSchoolYear();
@@ -17,6 +20,7 @@ export const OASOffices = () => {
   const [selectedSem, setSelectedSem] = useState(currentSem);
   const sem_options = ["First", "Second", "Summer"];
   const [selectedSY, setSelectedSY] = useState(currentYear);
+  // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
 
@@ -89,7 +93,10 @@ export const OASOffices = () => {
             <div className="flex items-center w-auto">
               {showNASList ? (
                 <div>
-                  <Button className="text-black" onClick={() => setShowNASList(false)}>
+                  <Button
+                    className="text-black"
+                    onClick={() => setShowNASList(false)}
+                  >
                     <HiOutlineArrowLeft className="h-6 w-6" />
                   </Button>
                 </div>

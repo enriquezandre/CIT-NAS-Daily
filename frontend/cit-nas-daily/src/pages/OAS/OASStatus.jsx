@@ -2,7 +2,10 @@ import { useState, useEffect, useMemo } from "react";
 import { EvaluateGrades } from "../../components/OAS/EvaluateGrades";
 import { Button } from "flowbite-react";
 import { Dropdown } from "../../components/Dropdown";
-import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
+import {
+  calculateSchoolYear,
+  calculateSemester,
+} from "../../components/SySemUtils";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import axios from "axios";
 
@@ -12,6 +15,7 @@ const currentSem = calculateSemester();
 export const OASStatus = () => {
   const [isViewingEvaluateGrades, setIsViewingEvaluateGrades] = useState(false);
   const [selectedSY, setSelectedSY] = useState(currentYear);
+  // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const [selectedSem, setSelectedSem] = useState(currentSem);
@@ -110,7 +114,9 @@ export const OASStatus = () => {
       if (!nasId || !selectedSem || !selectedSY) return;
       try {
         const response = await api.get(
-          `SummaryEvaluation/${selectedSY}/${getSemesterValue(selectedSem)}/${nasId}`
+          `SummaryEvaluation/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}/${nasId}`
         );
         setSummaryEvaluation(response.data);
         setResponded(response.data.responded);
@@ -129,7 +135,9 @@ export const OASStatus = () => {
       if (!nasId || !selectedSem || !selectedSY) return;
       try {
         const response = await api.get(
-          `SummaryEvaluation/grades/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
+          `SummaryEvaluation/grades/${nasId}/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}`
         );
         setGrades(response.data);
       } catch (error) {
@@ -188,10 +196,17 @@ export const OASStatus = () => {
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
-            <div className={`flex items-center w-auto ${nasId === 1 ? "ml-10" : ""}`}>
+            <div
+              className={`flex items-center w-auto ${
+                nasId === 1 ? "ml-10" : ""
+              }`}
+            >
               <div>
                 {nasId > 1 && (
-                  <Button className="text-black" onClick={() => setNasId(nasId - 1)}>
+                  <Button
+                    className="text-black"
+                    onClick={() => setNasId(nasId - 1)}
+                  >
                     <HiOutlineArrowLeft className="h-6 w-6" />
                   </Button>
                 )}
@@ -201,7 +216,10 @@ export const OASStatus = () => {
               </div>
             </div>
             <li>
-              <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
+              <p
+                className="font-bold text-center"
+                style={{ textTransform: "uppercase" }}
+              >
                 DEPT/OFFICE: {office}
               </p>
             </li>
@@ -274,9 +292,13 @@ export const OASStatus = () => {
             <div></div>
             <hr className="my-5 border-t-2 border-gray-300" />
             <div className="flex flex-col">
-              <p className="text-bold text-center text-xl font-bold mb-8">PERFORMANCE EVALUATION</p>
+              <p className="text-bold text-center text-xl font-bold mb-8">
+                PERFORMANCE EVALUATION
+              </p>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-bold text-xl">SUPERIOR&#39;S EVALUATION OVERALL RATING:</p>
+                <p className="text-bold text-xl">
+                  SUPERIOR&#39;S EVALUATION OVERALL RATING:
+                </p>
                 <p className="text-bold text-xl font-bold">
                   {summaryEvaluation.superiorOverallRating}
                 </p>
@@ -287,9 +309,13 @@ export const OASStatus = () => {
                   <div className="text-xl font-bold">NOT YET UPLOADED</div>
                 ) : responded ? (
                   allCoursesPassed ? (
-                    <div className="font-bold text-xl text-green">ALL COURSES PASSED</div>
+                    <div className="font-bold text-xl text-green">
+                      ALL COURSES PASSED
+                    </div>
                   ) : (
-                    <div className="font-bold text-xl text-red">FAILED COURSE/S</div>
+                    <div className="font-bold text-xl text-red">
+                      FAILED COURSE/S
+                    </div>
                   )
                 ) : (
                   <div>
@@ -313,13 +339,17 @@ export const OASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">TIMEKEEPING STATUS:</p>
-                <p className="text-bold text-xl font-bold">{summaryEvaluation.timekeepingStatus}</p>
+                <p className="text-bold text-xl font-bold">
+                  {summaryEvaluation.timekeepingStatus}
+                </p>
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">ALLOWED FOR ENROLLMENT:</p>
                 <div
                   className={`font-bold text-xl ${
-                    summaryEvaluation.enrollmentAllowed ? "text-green" : "text-red"
+                    summaryEvaluation.enrollmentAllowed
+                      ? "text-green"
+                      : "text-red"
                   }`}
                 >
                   {summaryEvaluation.enrollmentAllowed ? "YES" : "NO"}
@@ -327,7 +357,9 @@ export const OASStatus = () => {
               </div>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">NUMBER OF UNITS ALLOWED:</p>
-                <p className="text-bold text-xl font-bold">{summaryEvaluation.unitsAllowed}</p>
+                <p className="text-bold text-xl font-bold">
+                  {summaryEvaluation.unitsAllowed}
+                </p>
               </div>
             </div>
           </div>

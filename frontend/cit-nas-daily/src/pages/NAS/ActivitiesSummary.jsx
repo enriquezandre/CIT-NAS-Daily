@@ -2,17 +2,36 @@
 import { useState, useEffect } from "react";
 import { ActivitiesSummaryTable } from "../../components/NAS/ActivitiesSummaryTable.jsx";
 import { Dropdown } from "../../components/Dropdown.jsx";
-import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils.js";
+import {
+  calculateSchoolYear,
+  calculateSemester,
+} from "../../components/SySemUtils.js";
 import axios from "axios";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
-const first_sem = ["All", "August", "September", "October", "November", "December"];
-const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
+const first_sem = [
+  "All",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const second_sem = [
+  "All",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+];
 const summer = ["All", "June", "July", "August"];
 
 export const ActivitiesSummary = () => {
   const [selectedSY, setSelectedSY] = useState(currentYear);
+  // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const sem_options = ["First", "Second", "Summer"];

@@ -41,7 +41,6 @@ export const OASAttendance = () => {
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [maxNasId, setMaxNasId] = useState(1);
-
   const [selectedSem, setSelectedSem] = useState(currentSemester);
   const [monthOptions, setMonthOptions] = useState(first_sem);
   const [selectedMonth, setSelectedMonth] = useState("All");
@@ -109,22 +108,12 @@ export const OASAttendance = () => {
         const officeResponse = await api.get(`Offices/${nasId}/NAS`);
         const officeData = officeResponse.data;
 
-        const timekeepingresponse = await api.get(
-          `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(
-            selectedSem
-          )}`
-        );
-        const timekeepingdata = timekeepingresponse.data;
-        setTimekeepingSummaries(timekeepingdata);
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
         setOffice(officeData.name);
       } catch (error) {
         console.error(error);
-        if (error.response.status === 404) {
-          setTimekeepingSummaries([]);
-        }
       }
     };
 
@@ -158,7 +147,28 @@ export const OASAttendance = () => {
     }
 
     setSelectedMonthIndex(selectedMonthIndex);
-  }, [selectedSY, selectedSem, selectedMonth, nasId, api, getSemesterValue]);
+  }, [selectedSY, selectedSem, selectedMonth, nasId, api]);
+
+  useEffect(() => {
+    const fetchTimekeepingSummary = async () => {
+      try {
+        const timekeepingresponse = await api.get(
+          `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}`
+        );
+        const timekeepingdata = timekeepingresponse.data;
+        setTimekeepingSummaries(timekeepingdata);
+      } catch (error) {
+        console.error(error);
+        if (error.response.status === 404) {
+          setTimekeepingSummaries([]);
+        }
+      }
+    };
+
+    fetchTimekeepingSummary();
+  }, [api, nasId, selectedSY, selectedSem, getSemesterValue]);
 
   useEffect(() => {
     const fetchNasData = async () => {
