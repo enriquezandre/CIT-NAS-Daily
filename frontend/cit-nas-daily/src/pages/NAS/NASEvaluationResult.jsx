@@ -99,6 +99,7 @@ export const NASEvaluationResult = () => {
           setFileUploaded(responseData.grade);
           setSubmitted(true);
           alert("Grade uploaded successfully");
+          window.location.reload();
         } else {
           console.error("Grade upload failed");
         }

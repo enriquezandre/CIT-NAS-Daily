@@ -183,7 +183,7 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
       <Table.Body className="divide-y text-center">
         {Array.isArray(attendanceSummaries) &&
           attendanceSummaries.map((summary) => (
-            <Table.Row key={summary.id}>
+            <Table.Row key={summary.date}>
               <Table.Cell>{summary.date}</Table.Cell>
               <Table.Cell>
                 {summary.timeIn === "FTP IN"
