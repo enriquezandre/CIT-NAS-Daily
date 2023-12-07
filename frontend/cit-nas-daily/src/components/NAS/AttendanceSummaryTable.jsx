@@ -5,12 +5,7 @@ import { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const AttendanceSummaryTable = ({
-  selectedMonth,
-  selectedSem,
-  selectedSY,
-  openModal,
-}) => {
+export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY, openModal }) => {
   const { nasId } = useParams();
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
   const [firstName, setFirstName] = useState("");
@@ -63,7 +58,6 @@ export const AttendanceSummaryTable = ({
         setFirstName(nasData.firstName);
         setLastName(nasData.lastName);
         setMiddleName(nasData.middleName);
-        console.log(firstName);
         if (nasData.middleName === null) {
           setMiddleName(null);
         }
@@ -82,7 +76,6 @@ export const AttendanceSummaryTable = ({
         for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
           dateRange.push(new Date(d));
         }
-        console.log("DTR", dtrdata);
 
         const groupedData = dtrdata.reduce((acc, curr) => {
           const date = curr.date.split(" ")[0];
@@ -99,8 +92,6 @@ export const AttendanceSummaryTable = ({
           }
           return acc;
         }, {});
-
-        console.log("GROUPED", groupedData);
 
         const latestLogs = dateRange.map((date) => {
           const dateString = date.toISOString().split("T")[0];
@@ -133,8 +124,7 @@ export const AttendanceSummaryTable = ({
           const month = date.getMonth();
           const year = date.getFullYear();
           const first = parseInt(
-            year.toString().substring(0, 2) +
-              selectedSY.toString().substring(0, 2)
+            year.toString().substring(0, 2) + selectedSY.toString().substring(0, 2)
           );
           const second = parseInt(
             year.toString().substring(0, 2) + selectedSY.toString().substring(2)

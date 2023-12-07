@@ -5,12 +5,7 @@ import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export const ActivitiesFormModal = ({
-  isOpen,
-  closeModal,
-  selectedSY,
-  selectedSem,
-}) => {
+export const ActivitiesFormModal = ({ isOpen, closeModal, selectedSY, selectedSem }) => {
   const { nasId } = useParams();
   const [activitiesOfTheDay, setActivitiesOfTheDay] = useState("");
   const [skillsLearned, setSkillsLearned] = useState("");
@@ -125,6 +120,6 @@ export const ActivitiesFormModal = ({
 ActivitiesFormModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
-  selectedSY: PropTypes.number.isRequired,
+  selectedSY: PropTypes.string.isRequired,
   selectedSem: PropTypes.string.isRequired,
 };

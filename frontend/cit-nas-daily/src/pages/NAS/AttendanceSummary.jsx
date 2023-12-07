@@ -1,36 +1,19 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DataDisplayBox } from "../../components/DataDisplayBox.jsx";
 import { AttendanceSummaryTable } from "../../components/NAS/AttendanceSummaryTable.jsx";
 import { useParams } from "react-router-dom";
 import { Dropdown } from "../../components/Dropdown.jsx";
-import {
-  calculateSchoolYear,
-  calculateSemester,
-} from "../../components/SySemUtils.js";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils.js";
 import { ValidationModal } from "../../components/NAS/ValidationModal.jsx";
 import axios from "axios";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
-const first_sem = [
-  "All",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-const second_sem = [
-  "All",
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-];
+const first_sem = ["All", "August", "September", "October", "November", "December"];
+const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
 const summer = ["All", "June", "July", "August"];
+const sem_options = ["First", "Second", "Summer"];
 
 export const AttendanceSummary = () => {
   const [selectedSY, setSelectedSY] = useState(currentYear);
@@ -42,9 +25,36 @@ export const AttendanceSummary = () => {
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
-  const sem_options = ["First", "Second", "Summer"];
   const [isOpen, setIsOpen] = useState(false);
   const { nasId } = useParams();
+
+  console.log(currentYear, currentSem);
+
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 3;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
@@ -99,9 +109,6 @@ export const AttendanceSummary = () => {
     }
 
     setSelectedMonthIndex(selectedMonthIndex);
-    console.log("Selected Sem:", selectedSem);
-    console.log("Selected Month Index:", selectedMonthIndex);
-    console.log("Selected SY:", selectedSY);
   }, [selectedSY, selectedSem, selectedMonth]);
 
   const handleSelectSY = (event) => {
@@ -161,44 +168,23 @@ export const AttendanceSummary = () => {
   };
 
   useEffect(() => {
-    const fetchNas = async () => {
+    const fetchTimekeepingSummary = async () => {
       try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
         const timekeepingresponse = await api.get(
-          `/TimekeepingSummary/${nasId}`
+          `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
         );
-        let timekeepingdata = timekeepingresponse.data[0];
-        console.log(timekeepingdata);
-
-        if (!timekeepingdata) {
-          // If there's no record
-          timekeepingdata = {
-            excused: 0,
-            failedToPunch: 0,
-            lateOver10Mins: 0,
-            lateOver45Mins: 0,
-            makeUpDutyHours: 0,
-            schoolYear: 0,
-            semester: 0,
-            unexcused: 0,
-          };
-        }
-        console.log(timekeepingdata);
-
+        const timekeepingdata = timekeepingresponse.data;
         setTimekeepingSummaries(timekeepingdata);
       } catch (error) {
         console.error(error);
+        if (error.response.status === 404) {
+          setTimekeepingSummaries([]);
+        }
       }
     };
-    fetchNas();
-  }, [selectedSY, selectedSem, selectedMonth, nasId]);
+
+    fetchTimekeepingSummary();
+  }, [api, nasId, selectedSY, selectedSem, getSemesterValue]);
 
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
@@ -272,11 +258,7 @@ export const AttendanceSummary = () => {
           </div>
         </div>
       </div>
-      <ValidationModal
-        isOpen={isOpen}
-        closeModal={closeModal}
-        handleSubmit={handleSubmit}
-      />
+      <ValidationModal isOpen={isOpen} closeModal={closeModal} handleSubmit={handleSubmit} />
     </div>
   );
 };
