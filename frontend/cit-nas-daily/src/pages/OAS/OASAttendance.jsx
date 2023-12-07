@@ -4,31 +4,13 @@ import { WeeklyAttendance } from "../../components/OAS/WeeklyAttendance";
 import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { Dropdown } from "../../components/Dropdown";
-import {
-  calculateSchoolYear,
-  calculateSemester,
-} from "../../components/SySemUtils";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import axios from "axios";
 
 const currentSchoolYear = calculateSchoolYear();
 const currentSemester = calculateSemester();
-const first_sem = [
-  "All",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-const second_sem = [
-  "All",
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-];
+const first_sem = ["All", "August", "September", "October", "November", "December"];
+const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
 const summer = ["All", "June", "July", "August"];
 
 export const OASAttendance = () => {
@@ -153,9 +135,7 @@ export const OASAttendance = () => {
     const fetchTimekeepingSummary = async () => {
       try {
         const timekeepingresponse = await api.get(
-          `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(
-            selectedSem
-          )}`
+          `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
         );
         const timekeepingdata = timekeepingresponse.data;
         setTimekeepingSummaries(timekeepingdata);
@@ -227,11 +207,7 @@ export const OASAttendance = () => {
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
-            <div
-              className={`flex items-center w-auto ${
-                nasId === 1 ? "ml-10" : ""
-              }`}
-            >
+            <div className={`flex items-center w-auto ${nasId === 1 ? "ml-10" : ""}`}>
               <div>
                 {nasId > 1 && (
                   <Button
@@ -249,10 +225,7 @@ export const OASAttendance = () => {
               </div>
             </div>
             <li>
-              <p
-                className="font-bold text-center"
-                style={{ textTransform: "uppercase" }}
-              >
+              <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
                 DEPT/OFFICE: {office}
               </p>
             </li>
@@ -331,13 +304,9 @@ export const OASAttendance = () => {
               </div>
             </div>
             <div className="flex flex-col justify-center items-center gap-4">
-              <p className="text-xl font-bold text-primary">
-                MONTHLY SUMMARY OF ABSENCES/LATE
-              </p>
+              <p className="text-xl font-bold text-primary">MONTHLY SUMMARY OF ABSENCES/LATE</p>
               <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
-              <p className="text-xl font-bold text-primary">
-                WEEKLY ATTENDANCE
-              </p>
+              <p className="text-xl font-bold text-primary">WEEKLY ATTENDANCE</p>
               <WeeklyAttendance
                 firstName={firstName}
                 lastName={lastName}

@@ -1,9 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Dropdown } from "../../components/Dropdown";
-import {
-  calculateSchoolYear,
-  calculateSemester,
-} from "../../components/SySemUtils";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import axios from "axios";
 
 const currentYear = calculateSchoolYear();
@@ -119,12 +116,7 @@ export const OASManageData = () => {
   };
 
   //function for checking attendance and schedule for each NAS
-  const checkAttendanceAndSchedule = async (
-    nasId,
-    firstName,
-    lastName,
-    middleName
-  ) => {
+  const checkAttendanceAndSchedule = async (nasId, firstName, lastName, middleName) => {
     try {
       const dtrresponse = await api.get(
         `DTR/${selectedSY}/${selectedSemValue}/${firstName}/${lastName}?middleName=${middleName}`
@@ -147,22 +139,15 @@ export const OASManageData = () => {
 
         // Adjust dayOfWeek calculation for Monday - Saturday week
         const dayOfWeek = (attendanceDate.getDay() + 6) % 7;
-        const schedule = scheduleData.schedules.find(
-          (sched) => sched.dayOfWeek === dayOfWeek
-        );
+        const schedule = scheduleData.schedules.find((sched) => sched.dayOfWeek === dayOfWeek);
 
         //check if there is FTP in dtr
-        if (
-          attendance.timeIn === "FTP IN" ||
-          attendance.timeOut === "FTP OUT"
-        ) {
+        if (attendance.timeIn === "FTP IN" || attendance.timeOut === "FTP OUT") {
           totalFailedToPunch = totalFailedToPunch + 1; //working
         }
 
         //check if there is L10 and L45
-        const timeIn = new Date(
-          "2023-08-14 " + formatDtrTime(attendance.timeIn)
-        );
+        const timeIn = new Date("2023-08-14 " + formatDtrTime(attendance.timeIn));
         const schedStartTime = new Date(schedule.startTime);
 
         // Extract only the hours and minutes from the date objects

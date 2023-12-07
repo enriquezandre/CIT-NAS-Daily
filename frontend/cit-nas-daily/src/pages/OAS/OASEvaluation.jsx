@@ -3,10 +3,7 @@ import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { SuperiorEval } from "../../components/SuperiorEval";
 import { Dropdown } from "../../components/Dropdown";
-import {
-  calculateSchoolYear,
-  calculateSemester,
-} from "../../components/SySemUtils";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import axios from "axios";
 
 //get current schoolyear
@@ -143,17 +140,10 @@ export const OASEvaluation = () => {
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
-            <div
-              className={`flex items-center w-auto ${
-                nasId === 1 ? "ml-10" : ""
-              }`}
-            >
+            <div className={`flex items-center w-auto ${nasId === 1 ? "ml-10" : ""}`}>
               <div>
                 {nasId > 1 && (
-                  <Button
-                    className="text-black"
-                    onClick={() => setNasId(nasId - 1)}
-                  >
+                  <Button className="text-black" onClick={() => setNasId(nasId - 1)}>
                     <HiOutlineArrowLeft className="h-6 w-6" />
                   </Button>
                 )}
@@ -163,10 +153,7 @@ export const OASEvaluation = () => {
               </div>
             </div>
             <li>
-              <p
-                className="font-bold text-center"
-                style={{ textTransform: "uppercase" }}
-              >
+              <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
                 DEPT/OFFICE: {office}
               </p>
             </li>

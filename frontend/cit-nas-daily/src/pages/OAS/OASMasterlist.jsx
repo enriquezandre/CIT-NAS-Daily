@@ -2,10 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { MasterlistTable } from "../../components/OAS/MasterlistTable";
 import { Dropdown } from "../../components/Dropdown";
-import {
-  calculateSchoolYear,
-  calculateSemester,
-} from "../../components/SySemUtils";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();

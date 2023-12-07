@@ -2,10 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { Dropdown } from "../../components/Dropdown.jsx";
-import {
-  calculateSchoolYear,
-  calculateSemester,
-} from "../../components/SySemUtils.js";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils.js";
 import axios from "axios";
 
 const currentYear = calculateSchoolYear();
@@ -129,9 +126,7 @@ export const NASEvaluationResult = () => {
     const fetchEvalResult = async () => {
       try {
         const summaryEvaluationResponse = await api.get(
-          `SummaryEvaluation/${selectedSY}/${getSemesterValue(
-            selectedSem
-          )}/${nasId}`
+          `SummaryEvaluation/${selectedSY}/${getSemesterValue(selectedSem)}/${nasId}`
         );
         const summaryEvaluationData = summaryEvaluationResponse.data;
         setSummaryEvaluation(summaryEvaluationData);
@@ -174,23 +169,17 @@ export const NASEvaluationResult = () => {
             <div className="flex flex-col mt-2">
               <div className="flex flex-row gap-28 justify-start items-center text-lg">
                 <div>SUPERIOR EVALUATION:</div>
-                <div className="font-bold">
-                  {summaryEvaluation.superiorOverallRating}
-                </div>
+                <div className="font-bold">{summaryEvaluation.superiorOverallRating}</div>
               </div>
               <div className="flex flex-row gap-28 justify-start items-center text-lg mt-2">
                 <div>TIMEKEEPING STATUS:</div>
-                <div className="font-bold">
-                  {summaryEvaluation.timekeepingStatus}
-                </div>
+                <div className="font-bold">{summaryEvaluation.timekeepingStatus}</div>
               </div>
               <div className="flex flex-row gap-16 justify-start items-center text-lg mt-2">
                 <div>ALLOWED FOR ENROLLMENT:</div>
                 <div
                   className={`font-bold ${
-                    summaryEvaluation.enrollmentAllowed
-                      ? "text-green"
-                      : "text-red"
+                    summaryEvaluation.enrollmentAllowed ? "text-green" : "text-red"
                   }`}
                 >
                   {summaryEvaluation.enrollmentAllowed ? "YES" : "NO"}
@@ -200,9 +189,7 @@ export const NASEvaluationResult = () => {
             <div className="flex flex-col mt-2">
               <div className="flex flex-row gap-16 justify-start items-center text-lg">
                 <div>NUMBER OF UNITS ALLOWED:</div>
-                <div className="font-bold">
-                  {summaryEvaluation.unitsAllowed}
-                </div>
+                <div className="font-bold">{summaryEvaluation.unitsAllowed}</div>
               </div>
               <div className="flex flex-row gap-36 justify-start items-center text-lg mt-2">
                 <div>GRADE STATUS:</div>
