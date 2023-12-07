@@ -88,7 +88,7 @@ export const NASEvaluationResult = () => {
         const formData = new FormData();
         formData.append("file", fileUploaded);
 
-        const response = await api.put("", formData, {
+        const response = await api.put(`/NAS/grades/${nasId}/${selectedSY}/${semNum}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -98,6 +98,7 @@ export const NASEvaluationResult = () => {
           const responseData = response.data;
           setFileUploaded(responseData.grade);
           setSubmitted(true);
+          alert("Grade uploaded successfully");
         } else {
           console.error("Grade upload failed");
         }
