@@ -37,9 +37,6 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
     setMudHours(e.target.value);
   };
 
-  console.log(validationStatus);
-  console.log(mudHours);
-
   return (
     <div>
       {isOpen && (
