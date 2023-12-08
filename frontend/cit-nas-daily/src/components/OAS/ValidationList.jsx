@@ -1,9 +1,10 @@
 import { Avatar } from "flowbite-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import PropTypes from "prop-types";
 import { ValidationStatusModal } from "./ValidationStatusModal"; // Import the modal
 
-export const ValidationList = () => {
+export const ValidationList = ({ searchQuery }) => {
   const [validation, setValidation] = useState([]);
   const [isStatusModalOpen, setStatusModalOpen] = useState(false);
   const [selectedValidationItem, setSelectedValidationItem] = useState(null);
@@ -113,10 +114,14 @@ export const ValidationList = () => {
     }
   };
 
+  const filteredValidation = validation.filter((item) =>
+    item.nasName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <div className="grid gap-3">
-        {validation.map((item) => (
+        {filteredValidation.map((item) => (
           <div
             key={item.id}
             className="border border-solid rounded-md p-3 flex items-center justify-between"
@@ -157,4 +162,8 @@ export const ValidationList = () => {
       />
     </>
   );
+};
+
+ValidationList.propTypes = {
+  searchQuery: PropTypes.string,
 };

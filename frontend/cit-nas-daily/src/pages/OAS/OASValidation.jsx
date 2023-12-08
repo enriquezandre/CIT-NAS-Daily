@@ -1,5 +1,7 @@
 import { ValidationList } from "../../components/OAS/ValidationList";
 export const OASValidation = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
@@ -12,6 +14,7 @@ export const OASValidation = () => {
                     type="search"
                     className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
                     placeholder="Search NAS..."
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     required
                   />
                   <button
@@ -39,7 +42,7 @@ export const OASValidation = () => {
             </li>
           </ul>
           <div className="px-8 py-4">
-            <ValidationList />
+            <ValidationList searchQuery={searchQuery} />
           </div>
         </div>
       </div>
