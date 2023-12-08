@@ -39,33 +39,37 @@ export const ValidationList = () => {
     setStatusModalOpen(false);
   };
 
+  const fetchValidation = async () => {
+    try {
+      const api = axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const response = await api.get("/Validation");
+
+      // Filter the data to only include items with validationStatus === 0
+      const filteredData = response.data.filter((item) => item.validationStatus === 0);
+
+      const validationData = await Promise.all(
+        filteredData.map(async (item) => {
+          const nasResponse = await api.get(`/NAS/${item.nasId}`);
+          return {
+            ...item,
+            nasName: nasResponse.data.fullName,
+          };
+        })
+      );
+
+      setValidation(validationData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchValidation = async () => {
-      try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const response = await api.get("/Validation");
-        const validationData = await Promise.all(
-          response.data.map(async (item) => {
-            const nasResponse = await api.get(`/NAS/${item.nasId}`);
-            return {
-              ...item,
-              nasName: nasResponse.data.fullName,
-            };
-          })
-        );
-
-        setValidation(validationData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     fetchValidation();
   }, []);
 
@@ -91,9 +95,14 @@ export const ValidationList = () => {
       };
 
       const response = await api.put(`/Validation?validationId=${validationId}`, requestData);
-
       if (response.status === 200 || response.status === 201) {
         console.log("Submitted successfully");
+      } else {
+        console.error("Submission failed");
+      }
+
+      if (response.status === 200 || response.status === 201) {
+        fetchValidation();
       } else {
         console.error("Submission failed");
       }
