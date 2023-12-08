@@ -206,7 +206,7 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
               <Table.Cell>{formatTime(summary.overtimeOut)}</Table.Cell>
               <Table.Cell>
                 {summary.timeIn === null || summary.timeOut === null ? (
-                  <button className="hover:underline" onClick={openModal}>
+                  <button className="hover:underline" onClick={() => openModal(summary.date)}>
                     YES
                   </button>
                 ) : (
