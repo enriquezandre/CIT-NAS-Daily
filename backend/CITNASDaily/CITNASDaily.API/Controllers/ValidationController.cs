@@ -110,7 +110,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpPut(Name = "UpdateValidation")]
-        [Authorize(Roles = "OAS")]
+        [Authorize(Roles = "OAS, NAS")]
         public async Task<IActionResult> UpdateValidation(ValidationUpdateDto validationUpdate, int validationId)
         {
             try
