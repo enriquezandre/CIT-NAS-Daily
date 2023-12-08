@@ -12,6 +12,7 @@ namespace CITNASDaily.Repositories.Contracts
         Task<Validation?> CreateValidationAsync(Validation validation);
         Task<IEnumerable<Validation>?> GetAllValidationsAsync();
         Task<Validation?> GetValidationByIdAsync(int validationId);
+        Task<IEnumerable<Validation>?> GetValidationByNasIdAsync(int nasId);
         Task<Validation?> UpdateValidationAsync(Validation validation, int validationId);
     }
 }
