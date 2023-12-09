@@ -39,6 +39,11 @@ namespace CITNASDaily.Repositories.Repositories
             return await _context.Validations.FirstOrDefaultAsync(v => v.Id == validationId);
         }
 
+        public async Task<IEnumerable<Validation>?> GetValidationByNasIdAsync(int nasId)
+        {
+            return await _context.Validations.Where(v => v.NasId == nasId).ToListAsync();
+        }
+
         public async Task<Validation?> UpdateValidationAsync(Validation validation, int validationId)
         {
             var existingValidation = await _context.Validations.FindAsync(validationId);
