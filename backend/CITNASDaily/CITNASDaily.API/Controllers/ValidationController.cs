@@ -109,6 +109,34 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        [HttpGet("nas/{nasId}", Name = "GetValidationByNasId")]
+        [Authorize(Roles = "OAS")]
+        public async Task<IActionResult> GetValidationByNasId(int nasId)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var validation = await _validationService.GetValidationByNasIdAsync(nasId);
+
+                if (validation.IsNullOrEmpty())
+                {
+                    return NotFound($"There is no validation by NAS ID {nasId} yet.");
+                }
+
+                return Ok(validation);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting list of Validations.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
         [HttpPut(Name = "UpdateValidation")]
         [Authorize(Roles = "OAS, NAS")]
         public async Task<IActionResult> UpdateValidation(ValidationUpdateDto validationUpdate, int validationId)
