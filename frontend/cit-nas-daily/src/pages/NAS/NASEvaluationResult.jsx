@@ -141,6 +141,8 @@ export const NASEvaluationResult = () => {
     fetchEvalResult();
   }, [selectedSY, selectedSem, nasId, api]);
 
+  console.log("SUMMARY EVAL", summaryEvaluation);
+
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3 mb-10">
@@ -195,8 +197,9 @@ export const NASEvaluationResult = () => {
               </div>
               <div className="flex flex-row gap-36 justify-start items-center text-lg mt-2">
                 <div>GRADE STATUS:</div>
-                {summaryEvaluation.academicPerformance === null ||
-                summaryEvaluation.academicPerformance === undefined ? (
+                {Object.keys(summaryEvaluation).length ===
+                0 ? null : summaryEvaluation.academicPerformance === null ||
+                  summaryEvaluation.academicPerformance === undefined ? (
                   <div className="text-sm">
                     <input
                       type="file"
