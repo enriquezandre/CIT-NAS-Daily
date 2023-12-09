@@ -275,7 +275,7 @@ export const SuperiorEvaluation = () => {
         <div className="flex items-center justify-center">
           <button
             type="button"
-            className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-lg text-sm px-5 py-2.5"
+            className="text-black bg-secondary hover:bg-primary hover:text-white font-medium rounded-lg text-sm px-5 py-2.5"
             onClick={openPerfSummary}
           >
             VIEW PERFORMANCE SUMMARY
@@ -373,7 +373,7 @@ export const SuperiorEvaluation = () => {
                     <strong className="font-bold text-gray-900">OVERALL RATING: {total}</strong>
                     <button
                       type="submit"
-                      className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-lg text-sm px-10 py-2.5"
+                      className="text-black bg-secondary hover:bg-primary hover:text-white font-medium rounded-lg text-sm px-10 py-2.5"
                       disabled={isSubmitted}
                     >
                       SUBMIT
