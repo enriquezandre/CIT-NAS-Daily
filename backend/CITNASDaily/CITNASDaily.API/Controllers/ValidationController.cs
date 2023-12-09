@@ -82,7 +82,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("{validationId}", Name = "GetValidationById")]
-        [Authorize(Roles = "OAS")]
+        [Authorize(Roles = "OAS, NAS")]
         public async Task<IActionResult> GetValidationById(int validationId)
         {
             try
@@ -110,7 +110,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         [HttpGet("nas/{nasId}", Name = "GetValidationByNasId")]
-        [Authorize(Roles = "OAS")]
+        [Authorize(Roles = "OAS, NAS")]
         public async Task<IActionResult> GetValidationByNasId(int nasId)
         {
             try
