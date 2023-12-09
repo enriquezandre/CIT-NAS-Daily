@@ -55,6 +55,9 @@ export const ActivitiesFormModal = ({ isOpen, closeModal, currentYear, currentSe
 
   return (
     <div>
+      {isOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-999 bg-black bg-opacity-50"></div>
+      )}
       <Modal show={isOpen} onClose={closeModal}>
         <Modal.Body>
           <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
