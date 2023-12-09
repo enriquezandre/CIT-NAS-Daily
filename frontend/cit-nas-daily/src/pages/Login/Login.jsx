@@ -15,13 +15,10 @@ export const Login = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post(
-        "https://localhost:7001/api/Auth/login",
-        {
-          username,
-          password,
-        }
-      );
+      const response = await axios.post("https://localhost:7001/api/Auth/login", {
+        username,
+        password,
+      });
 
       localStorage.setItem("token", response.data);
 
@@ -56,10 +53,7 @@ export const Login = () => {
           navigate("Unknown role");
       }
     } catch (error) {
-      if (
-        (error.response && error.response.status === 400) ||
-        error.response.status === 404
-      ) {
+      if ((error.response && error.response.status === 400) || error.response.status === 404) {
         setError("Invalid username or password");
       } else {
         setError("An error occurred");
@@ -97,7 +91,7 @@ export const Login = () => {
                 <input
                   type="password"
                   id="password"
-                  className="h-9 mb-2 text-black p-2" // Add mb-2 to reduce margin-bottom
+                  className="text-input mb-2 text-black p-2" // Add mb-2 to reduce margin-bottom
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
@@ -105,11 +99,7 @@ export const Login = () => {
                   }}
                 />
                 <div className="h-5 mb-3 text-white">{error}</div>
-                <input
-                  type="submit"
-                  className="button-submit hover:cursor-pointer"
-                  value="Login"
-                />
+                <input type="submit" className="button-submit hover:cursor-pointer" value="Login" />
               </div>
             </form>
           </div>
