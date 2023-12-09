@@ -5,7 +5,13 @@ import { ActivitiesFormModal } from "./ActivitiesFormModal";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const ActivitiesSummaryTable = ({ selectedMonth, selectedSem, selectedSY }) => {
+export const ActivitiesSummaryTable = ({
+  selectedMonth,
+  selectedSem,
+  selectedSY,
+  currentYear,
+  currentSem,
+}) => {
   const { nasId } = useParams();
   const [activitySummaries, setActivitySummaries] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -135,8 +141,8 @@ export const ActivitiesSummaryTable = ({ selectedMonth, selectedSem, selectedSY 
       <ActivitiesFormModal
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
-        selectedSY={selectedSY}
-        selectedSem={selectedSem}
+        currentYear={currentYear}
+        currentSem={currentSem}
       />
     </div>
   );
@@ -146,4 +152,6 @@ ActivitiesSummaryTable.propTypes = {
   selectedMonth: PropTypes.number.isRequired,
   selectedSem: PropTypes.string.isRequired,
   selectedSY: PropTypes.string.isRequired,
+  currentYear: PropTypes.number.isRequired,
+  currentSem: PropTypes.string.isRequired,
 };

@@ -76,8 +76,6 @@ export const ActivitiesSummary = () => {
     }
 
     setSelectedMonthIndex(selectedMonthIndex);
-    console.log("Selected Sem:", selectedSem);
-    console.log("Selected Month Index:", selectedMonthIndex);
   }, [selectedSY, selectedSem, selectedMonth]);
 
   const handleSelectSY = (event) => {
@@ -98,7 +96,6 @@ export const ActivitiesSummary = () => {
     } else {
       setSelectedMonth(value);
     }
-    console.log("Selected Month:", value);
   };
 
   return (
@@ -137,6 +134,8 @@ export const ActivitiesSummary = () => {
               selectedMonth={selectedMonthIndex}
               selectedSem={selectedSem}
               selectedSY={selectedSY}
+              currentYear={currentYear}
+              currentSem={currentSem}
             />
           </div>
         </div>
