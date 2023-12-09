@@ -23,10 +23,7 @@ const categories = [
   },
   {
     title: "QUANTITY OF WORK - OUTPUT",
-    rows: [
-      "Accomplishes more work on the given time",
-      "Timeliness in accomplishing tasks/duties",
-    ],
+    rows: ["Accomplishes more work on the given time", "Timeliness in accomplishing tasks/duties"],
     index: 2,
   },
   {
@@ -226,12 +223,9 @@ export const SuperiorEvaluation = () => {
     <>
       <Header />
       <Card className="w-9/10 mx-8 mb-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 text-lg">
           <p className="mb-3">
-            <strong
-              className="font-bold"
-              style={{ textTransform: "uppercase" }}
-            >
+            <strong className="font-bold" style={{ textTransform: "uppercase" }}>
               NAS NAME: {nas.lastName}, {nas.firstName} {nas.middleName}
             </strong>
           </p>
@@ -302,16 +296,14 @@ export const SuperiorEvaluation = () => {
           />
         ) : (
           <div>
-            {Object.keys(evalData).length === 0 &&
-            evalData.constructor === Object ? (
+            {Object.keys(evalData).length === 0 && evalData.constructor === Object ? (
               <div>
                 <hr className="my-2 border-t-2 border-gray-300 ml-7 mr-7" />
                 <p className="my-2 text-justify">
                   <strong className="font-bold">OBJECTIVE: </strong>
-                  To encourage, promote and develop professionalism among the
-                  Non-Academic Scholars through a fair and objective assessment
-                  of their performance and their adherence to the policies and
-                  guidelines of their scholarship.
+                  To encourage, promote and develop professionalism among the Non-Academic Scholars
+                  through a fair and objective assessment of their performance and their adherence
+                  to the policies and guidelines of their scholarship.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-6 my-2">
                   <p>
@@ -329,9 +321,7 @@ export const SuperiorEvaluation = () => {
                     <thead>
                       <tr>
                         <th className="text-left pl-0">
-                          <strong className="font-bold text-gray-900">
-                            A. OVERALL RATING{" "}
-                          </strong>{" "}
+                          <strong className="font-bold text-gray-900">A. OVERALL RATING </strong>{" "}
                         </th>
                         <th className="font-semibold text-gray-900 px-8">5</th>
                         <th className="font-semibold text-gray-900 px-8">4</th>
@@ -345,9 +335,7 @@ export const SuperiorEvaluation = () => {
                         <React.Fragment key={index}>
                           <tr>
                             <td className="pl-0 text-left">
-                              <strong className="font-bold text-gray-900">
-                                {category.title}
-                              </strong>
+                              <strong className="font-bold text-gray-900">{category.title}</strong>
                             </td>
                           </tr>
                           {category.rows.map((row, rowIndex) => (
@@ -361,9 +349,8 @@ export const SuperiorEvaluation = () => {
                                     name={`row${index}-${rowIndex}`}
                                     value={`Option ${value}`}
                                     checked={
-                                      selectedOptions[
-                                        `row${index}-${rowIndex}`
-                                      ] === `Option ${value}`
+                                      selectedOptions[`row${index}-${rowIndex}`] ===
+                                      `Option ${value}`
                                     }
                                     onChange={() =>
                                       handleOptionChange(
@@ -383,9 +370,7 @@ export const SuperiorEvaluation = () => {
                     </tbody>
                   </table>
                   <div className="flex justify-end gap-10 items-center mt-5">
-                    <strong className="font-bold text-gray-900">
-                      OVERALL RATING: {total}
-                    </strong>
+                    <strong className="font-bold text-gray-900">OVERALL RATING: {total}</strong>
                     <button
                       type="submit"
                       className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-lg text-sm px-10 py-2.5"
