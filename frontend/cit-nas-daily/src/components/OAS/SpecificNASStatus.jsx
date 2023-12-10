@@ -15,6 +15,7 @@ export const SpecificNASStatus = () => {
   const [grade, setGrades] = useState(null);
   const [responded, setResponded] = useState(null);
   const [allCoursesPassed, setAllCoursesPassed] = useState(null);
+  const [evaluationSubmitted, setEvaluationSubmitted] = useState(false);
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
   const nasId = useParams().nasId;
@@ -29,6 +30,14 @@ export const SpecificNASStatus = () => {
       }),
     []
   );
+
+  const handleEvaluationSubmitted = () => {
+    setEvaluationSubmitted(true);
+
+    setTimeout(() => {
+      setEvaluationSubmitted(false);
+    }, 3000);
+  };
 
   const openEvaluateGrades = () => {
     setIsViewingEvaluateGrades(true);
@@ -91,7 +100,7 @@ export const SpecificNASStatus = () => {
     };
 
     fetchSummaryEvaluation();
-  }, [nasId, selectedSem, selectedSY, api, getSemesterValue]);
+  }, [nasId, selectedSem, selectedSY, api, getSemesterValue, evaluationSubmitted]);
 
   useEffect(() => {
     const fetchSummaryEvaluationGrades = async () => {
@@ -206,6 +215,7 @@ export const SpecificNASStatus = () => {
                       nasId={nasId}
                       selectedSY={selectedSY}
                       selectedSem={selectedSem}
+                      onEvaluationSubmit={handleEvaluationSubmitted}
                     />
                   </div>
                 )}
