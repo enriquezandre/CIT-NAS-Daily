@@ -272,10 +272,10 @@ export const OASStatus = () => {
               <p className="text-bold text-center text-xl font-bold mb-8 text-primary">
                 PERFORMANCE EVALUATION
               </p>
-              <table className="text-xl justify-center w-4/5 items-center">
+              <table className="text-xl justify-center w-4/6 items-center">
                 <tbody>
                   <tr>
-                    <td className="w-2/5 py-2">SUPERIOR&#39;S EVALUATION OVERALL RATING:</td>
+                    <td className="w-1/2 py-2">SUPERIOR&#39;S EVALUATION OVERALL RATING:</td>
                     <td className="py-2 text-center font-bold">
                       {summaryEvaluation.superiorOverallRating}
                     </td>

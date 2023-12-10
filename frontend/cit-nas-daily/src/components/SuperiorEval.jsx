@@ -56,40 +56,40 @@ export const SuperiorEval = ({ nasId, selectedSem, selectedSY }) => {
             <p className="text-center text-xl font-bold mb-8 text-primary">
               SUPERIOR EVALUATION SUMMARY
             </p>
-            <table className="text-xl justify-center w-4/5 items-center">
+            <table className="text-xl justify-center w-4/6 items-center">
               <tbody>
                 <tr>
-                  <td className="w-2/5 py-2">Attendance and Punctuality</td>
+                  <td className="w-1/2 py-2">ATTENDANCE AND PUNCTUALITY:</td>
                   <td className="py-2 text-center">
                     {(evaluationData.attendanceAndPunctuality / 2).toFixed(1)}
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-2">Quality of Work - Output:</td>
+                  <td className="py-2">QUALITY OF WORK - OUTPUT:</td>
                   <td className="py-2 text-center">
                     {(evaluationData.qualOfWorkOutput / 3).toFixed(1)}
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-2">Quantity of Work - Output</td>
+                  <td className="py-2">QUANTITY OF WORK - OUTPUT:</td>
                   <td className="py-2 text-center">
                     {(evaluationData.quanOfWorkOutput / 2).toFixed(1)}
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-2">Attitude and Work Behaviour:</td>
+                  <td className="py-2">ATTITUDE AND WORK BEHAVIOUR:</td>
                   <td className="py-2 text-center">
                     {(evaluationData.attitudeAndWorkBehaviour / 5).toFixed(1)}
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-2">Overall Assessment of NAS Performance:</td>
+                  <td className="py-2">OVERALL ASSESSMENT OF NAS PERFORMANCE:</td>
                   <td className="py-2 text-center">
                     {(evaluationData.overallAssessment / 1).toFixed(1)}
                   </td>
                 </tr>
                 <tr>
-                  <td className="py-2 font-bold">Superior&#39;s Evaluation Overall Rating:</td>
+                  <td className="py-2 font-bold">SUPERIOR&#39;S EVALUATION OVERALL RATING:</td>
                   <td className="py-2 text-center font-bold">
                     {(evaluationData.overallRating / 1).toFixed(1)}
                   </td>
