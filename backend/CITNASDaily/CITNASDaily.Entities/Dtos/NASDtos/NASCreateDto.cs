@@ -7,7 +7,7 @@ namespace CITNASDaily.Entities.Dtos.NASDtos
     public class NASCreateDto
     {
         [Required]
-        [RegularExpression(@"^\d{1,2}-\d{1,4}-\d{1,3}$", ErrorMessage = "Student ID input must follow 00-0000-000")]
+        [RegularExpression(@"^(?:\d{2}-\d{4}-\d{3}|\d{4}-\d{5})$", ErrorMessage = "Student ID input must follow 00-0000-000 or 0000-00000 format.")]
         public string? StudentIDNo { get; set; }
         [Required]
         public string? Username { get; set; }
