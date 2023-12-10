@@ -58,7 +58,7 @@ export const OASEvaluation = () => {
       case "Second":
         return 1;
       case "Summer":
-        return 3;
+        return 2;
       default:
         return "Invalid semester";
     }

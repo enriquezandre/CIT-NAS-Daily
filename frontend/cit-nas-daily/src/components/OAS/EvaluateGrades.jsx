@@ -4,7 +4,15 @@ import { useState, useMemo } from "react";
 import { ShowGrades } from "./ShowGrades";
 import axios from "axios";
 
-export const EvaluateGrades = ({ show, close, grade, nasId, selectedSY, selectedSem }) => {
+export const EvaluateGrades = ({
+  show,
+  close,
+  grade,
+  nasId,
+  selectedSY,
+  selectedSem,
+  onEvaluationSubmit,
+}) => {
   const [isViewingShowGrades, setIsViewingShowGrades] = useState(false);
   const [numCoursesFailed, setNumCoursesFailed] = useState(0);
   const [allCoursesPassed, setAllCoursesPassed] = useState(true);
@@ -75,6 +83,7 @@ export const EvaluateGrades = ({ show, close, grade, nasId, selectedSY, selected
 
       if (response.status === 200 || response.status === 201) {
         alert("Submitted successfully");
+        onEvaluationSubmit();
       } else {
         alert("Submission failed");
       }
@@ -217,4 +226,5 @@ EvaluateGrades.propTypes = {
   nasId: PropTypes.number.isRequired,
   selectedSY: PropTypes.string.isRequired,
   selectedSem: PropTypes.string.isRequired,
+  onEvaluationSubmit: PropTypes.func.isRequired,
 };

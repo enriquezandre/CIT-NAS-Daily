@@ -5,13 +5,7 @@ import { useState, useEffect, useMemo } from "react";
 import { MonthlySummary } from "../MonthlySummary";
 import axios from "axios";
 
-export const PerfSummary = ({
-  show,
-  close,
-  nasId,
-  selectedSem,
-  selectedSY,
-}) => {
+export const PerfSummary = ({ show, close, nasId, selectedSem, selectedSY }) => {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [activitySummaries, setActivitySummaries] = useState([]);
   const [filteredSummaries, setFilteredSummaries] = useState([]);
@@ -40,7 +34,7 @@ export const PerfSummary = ({
       case "Second":
         return 1;
       case "Summer":
-        return 3;
+        return 2;
       default:
         return "Invalid semester";
     }
@@ -61,9 +55,7 @@ export const PerfSummary = ({
     const fetchActivitiesSummary = async () => {
       try {
         const response = await api.get(
-          `/ActivitiesSummary/${nasId}/${selectedSY}/${getSemesterValue(
-            selectedSem
-          )}`
+          `/ActivitiesSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
         );
         const data = response.data;
         setActivitySummaries(data);
@@ -81,9 +73,7 @@ export const PerfSummary = ({
     const fetchTimekeepingSummary = async () => {
       try {
         const response = await api.get(
-          `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(
-            selectedSem
-          )}`
+          `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
         );
         const data = response.data;
         setTimekeepingSummaries(data);
@@ -100,9 +90,7 @@ export const PerfSummary = ({
     const fetchSummaryEvaluation = async () => {
       try {
         const response = await api.get(
-          `SummaryEvaluation/${selectedSY}/${getSemesterValue(
-            selectedSem
-          )}/${nasId}`
+          `SummaryEvaluation/${selectedSY}/${getSemesterValue(selectedSem)}/${nasId}`
         );
         const data = response.data;
         setTimekeepingStatus(data.timekeepingStatus);
@@ -202,18 +190,12 @@ export const PerfSummary = ({
                 <div className="table-wrapper overflow-auto max-h-40">
                   <Table hoverable className="border">
                     <Table.Head className="border">
-                      <Table.HeadCell className="text-center border">
-                        DATE
-                      </Table.HeadCell>
+                      <Table.HeadCell className="text-center border">DATE</Table.HeadCell>
                       <Table.HeadCell className="text-center border">
                         Activities of the Day
                       </Table.HeadCell>
-                      <Table.HeadCell className="text-center border">
-                        Skills Learned
-                      </Table.HeadCell>
-                      <Table.HeadCell className="text-center border">
-                        Values Learned
-                      </Table.HeadCell>
+                      <Table.HeadCell className="text-center border">Skills Learned</Table.HeadCell>
+                      <Table.HeadCell className="text-center border">Values Learned</Table.HeadCell>
                     </Table.Head>
                     <Table.Body className="divide-y">
                       {filteredSummaries.map((summary) => (
@@ -264,7 +246,7 @@ export const PerfSummary = ({
             <div className="flex justify-center items-center p-6 space-x-2 border-gray-200 rounded-b dark:border-gray-600">
               <button
                 type="button"
-                className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-lg text-sm px-10 py-2.5 text-center"
+                className="text-black bg-secondary hover:bg-primary hover:text-white font-medium rounded-lg text-sm px-10 py-2.5 text-center"
                 onClick={close}
               >
                 CLOSE

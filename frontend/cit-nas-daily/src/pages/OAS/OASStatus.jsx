@@ -28,6 +28,7 @@ export const OASStatus = () => {
   const [maxNasId, setMaxNasId] = useState(1);
   const [responded, setResponded] = useState(null);
   const [allCoursesPassed, setAllCoursesPassed] = useState(null);
+  const [evaluationSubmitted, setEvaluationSubmitted] = useState(false);
   const sem_options = ["First", "Second", "Summer"];
 
   const api = useMemo(
@@ -40,6 +41,14 @@ export const OASStatus = () => {
       }),
     []
   );
+
+  const handleEvaluationSubmitted = () => {
+    setEvaluationSubmitted(true);
+
+    setTimeout(() => {
+      setEvaluationSubmitted(false);
+    }, 3000);
+  };
 
   const handleSearchChange = (event) => {
     setSearchInput(event.target.value);
@@ -123,7 +132,7 @@ export const OASStatus = () => {
     };
 
     fetchSummaryEvaluation();
-  }, [nasId, selectedSem, selectedSY, api, getSemesterValue]);
+  }, [nasId, selectedSem, selectedSY, api, getSemesterValue, evaluationSubmitted]);
 
   useEffect(() => {
     const fetchSummaryEvaluationGrades = async () => {
@@ -308,6 +317,7 @@ export const OASStatus = () => {
                       nasId={nasId}
                       selectedSY={selectedSY}
                       selectedSem={selectedSem}
+                      onEvaluationSubmit={handleEvaluationSubmitted}
                     />
                   </div>
                 )}
