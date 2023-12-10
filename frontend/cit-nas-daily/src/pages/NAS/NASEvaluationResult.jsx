@@ -99,7 +99,6 @@ export const NASEvaluationResult = () => {
           setFileUploaded(responseData.grade);
           setSubmitted(true);
           alert("Grade uploaded successfully");
-          window.location.reload();
         } else {
           console.error("Grade upload failed");
         }
@@ -197,8 +196,17 @@ export const NASEvaluationResult = () => {
               </div>
               <div className="flex flex-row gap-36 justify-start items-center text-lg mt-2">
                 <div>GRADE STATUS:</div>
-                {Object.keys(summaryEvaluation).length ===
-                0 ? null : summaryEvaluation.academicPerformance === null ||
+                {submitted ? (
+                  summaryEvaluation.responded === null ||
+                  summaryEvaluation.responded === undefined ? (
+                    <span className="text-yellow">PENDING</span>
+                  ) : summaryEvaluation.allCoursesPassed ? (
+                    <span className="font-bold text-green">ALL PASSED</span>
+                  ) : (
+                    <span className="font-bold text-red">FAILED A COURSE</span>
+                  )
+                ) : Object.keys(summaryEvaluation).length ===
+                  0 ? null : summaryEvaluation.academicPerformance === null ||
                   summaryEvaluation.academicPerformance === undefined ? (
                   <div className="text-sm">
                     <input
@@ -220,7 +228,7 @@ export const NASEvaluationResult = () => {
                   </div>
                 ) : summaryEvaluation.responded === null ||
                   summaryEvaluation.responded === undefined ? (
-                  <span className="text-yellow">PENDING</span>
+                  <span className="font-bold text-secondary">PENDING</span>
                 ) : summaryEvaluation.allCoursesPassed ? (
                   <span className="font-bold text-green">ALL PASSED</span>
                 ) : (
