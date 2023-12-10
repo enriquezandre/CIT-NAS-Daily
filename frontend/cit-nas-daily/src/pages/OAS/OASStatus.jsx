@@ -272,61 +272,71 @@ export const OASStatus = () => {
               <p className="text-bold text-center text-xl font-bold mb-8 text-primary">
                 PERFORMANCE EVALUATION
               </p>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-bold text-xl">SUPERIOR&#39;S EVALUATION OVERALL RATING:</p>
-                <p className="text-bold text-xl font-bold">
-                  {summaryEvaluation.superiorOverallRating}
-                </p>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-bold text-xl">ACADEMIC PERFORMANCE:</p>
-                {grade === null ? (
-                  <div className="text-xl font-bold">NOT YET UPLOADED</div>
-                ) : responded ? (
-                  allCoursesPassed ? (
-                    <div className="font-bold text-xl text-green">ALL COURSES PASSED</div>
-                  ) : (
-                    <div className="font-bold text-xl text-red">FAILED COURSE/S</div>
-                  )
-                ) : (
-                  <div>
-                    <button
-                      type="button"
-                      className="text-primary bg-secondary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5"
-                      onClick={openEvaluateGrades}
-                    >
-                      EVALUATE GRADES
-                    </button>
-                    <EvaluateGrades
-                      show={isViewingEvaluateGrades}
-                      close={closeEvaluateGrades}
-                      grade={grade}
-                      nasId={nasId}
-                      selectedSY={selectedSY}
-                      selectedSem={selectedSem}
-                      onEvaluationSubmit={handleEvaluationSubmitted}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-bold text-xl">TIMEKEEPING STATUS:</p>
-                <p className="text-bold text-xl font-bold">{summaryEvaluation.timekeepingStatus}</p>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-bold text-xl">ALLOWED FOR ENROLLMENT:</p>
-                <div
-                  className={`font-bold text-xl ${
-                    summaryEvaluation.enrollmentAllowed ? "text-green" : "text-red"
-                  }`}
-                >
-                  {summaryEvaluation.enrollmentAllowed ? "YES" : "NO"}
-                </div>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-bold text-xl">NUMBER OF UNITS ALLOWED:</p>
-                <p className="text-bold text-xl font-bold">{summaryEvaluation.unitsAllowed}</p>
-              </div>
+              <table className="text-xl justify-center w-4/5 items-center">
+                <tbody>
+                  <tr>
+                    <td className="w-2/5 py-2">SUPERIOR&#39;S EVALUATION OVERALL RATING:</td>
+                    <td className="py-2 text-center font-bold">
+                      {summaryEvaluation.superiorOverallRating}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-2">ACADEMIC PERFORMANCE:</td>
+                    <td className="py-2 text-center">
+                      {grade === null ? (
+                        <div className="text-xl font-bold">NOT YET UPLOADED</div>
+                      ) : responded ? (
+                        allCoursesPassed ? (
+                          <div className="font-bold text-xl text-green">ALL COURSES PASSED</div>
+                        ) : (
+                          <div className="font-bold text-xl text-red">FAILED COURSE/S</div>
+                        )
+                      ) : (
+                        <div>
+                          <button
+                            type="button"
+                            className="text-primary bg-secondary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5"
+                            onClick={openEvaluateGrades}
+                          >
+                            EVALUATE GRADES
+                          </button>
+                          <EvaluateGrades
+                            show={isViewingEvaluateGrades}
+                            close={closeEvaluateGrades}
+                            grade={grade}
+                            nasId={nasId}
+                            selectedSY={selectedSY}
+                            selectedSem={selectedSem}
+                            onEvaluationSubmit={handleEvaluationSubmitted}
+                          />
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-2">TIMEKEEPING STATUS:</td>
+                    <td className="py-2 text-center font-bold">
+                      {summaryEvaluation.timekeepingStatus}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-2">ALLOWED FOR ENROLLMENT:</td>
+                    <td className="py-2 text-center">
+                      <div
+                        className={`font-bold text-xl ${
+                          summaryEvaluation.enrollmentAllowed ? "text-green" : "text-red"
+                        }`}
+                      >
+                        {summaryEvaluation.enrollmentAllowed ? "YES" : "NO"}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-2">NUMBER OF UNITS ALLOWED:</td>
+                    <td className="py-2 text-center font-bold">{summaryEvaluation.unitsAllowed}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
