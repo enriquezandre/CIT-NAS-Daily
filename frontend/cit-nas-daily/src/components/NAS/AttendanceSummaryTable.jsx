@@ -68,25 +68,25 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
     () => (validationStatus) => {
       switch (validationStatus) {
         case 0:
-          return "Pending";
+          return "PENDING";
         case 1:
-          return "Excused";
+          return "EXCUSED";
         case 2:
-          return "Unexcused";
+          return "UNEXCUSED";
         case 3:
-          return "For Make-up Duty";
+          return "FOR MAKEUP DUTY";
         case 4:
-          return "Approved";
+          return "APPROVED";
         case 5:
-          return "Disapproved";
+          return "DISAPPORVED";
         case 6:
-          return "Warning";
+          return "WARNING";
         case 7:
-          return "Last Warning";
+          return "LAST WARNING";
         case 8:
-          return "Report to office";
+          return "REPORT TO OFFICE";
         default:
-          return "Invalid validation status";
+          return "INVALID STATUS";
       }
     },
     []
