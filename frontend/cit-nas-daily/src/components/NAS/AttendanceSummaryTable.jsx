@@ -39,17 +39,58 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
     };
   }, []);
 
-  const formatTime = (timeStr) => {
-    if (timeStr) {
-      const [hours, minutes] = timeStr.split(":");
-      const date = new Date();
-      date.setHours(hours);
-      date.setMinutes(minutes);
-      const options = { hour: "numeric", minute: "numeric", hour12: true };
-      return date.toLocaleTimeString("en-US", options);
-    }
-    return null;
-  };
+  const formatTime = useMemo(
+    () => (timeStr) => {
+      if (timeStr) {
+        const [hours, minutes] = timeStr.split(":");
+        const date = new Date();
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        const options = { hour: "numeric", minute: "numeric", hour12: true };
+        return date.toLocaleTimeString("en-US", options);
+      }
+      return null;
+    },
+    []
+  );
+
+  const formatDate = useMemo(
+    () => (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    },
+    []
+  );
+
+  const getValidationStatus = useMemo(
+    () => (validationStatus) => {
+      switch (validationStatus) {
+        case 0:
+          return "Pending";
+        case 1:
+          return "Excused";
+        case 2:
+          return "Unexcused";
+        case 3:
+          return "For Make-up Duty";
+        case 4:
+          return "Approved";
+        case 5:
+          return "Disapproved";
+        case 6:
+          return "Warning";
+        case 7:
+          return "Last Warning";
+        case 8:
+          return "Report to office";
+        default:
+          return "Invalid validation status";
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     const fetchDataByNames = async () => {
@@ -183,9 +224,13 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
 
         // Create an array of objects with absenceDate and validationStatus
         const validationArray = validationData.map((validation) => ({
-          absenceDate: new Date(validation.absenceDate).toISOString().split("T")[0],
+          absenceDate: formatDate(new Date(validation.absenceDate)),
           validationStatus: validation.validationStatus,
+          makeUpHours: validation.makeUpHours, // Use the correct property name
         }));
+
+        // Log the contents of validationArray to the console
+        console.log("Validation Array:", validationArray);
 
         setValidationData(validationArray);
       } catch (error) {
@@ -194,7 +239,7 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
     };
 
     fetchValidation();
-  }, [nasId]);
+  }, [nasId, formatDate]);
 
   return (
     <Table hoverable>
@@ -233,7 +278,12 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
                     formatTime(summary.timeOut)
                   ) : validationEntry ? (
                     // Display validation status if a corresponding validation entry exists
-                    validationEntry.validationStatus
+                    // makeup duty hours is still undefined
+                    <p>
+                      {getValidationStatus(validationEntry.validationStatus) +
+                        ": " +
+                        validationEntry.makeUphours}
+                    </p>
                   ) : (
                     // If no validation entry, display "NO RECORD"
                     <p className="font-bold text-red">NO RECORD</p>
