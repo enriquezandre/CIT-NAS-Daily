@@ -213,6 +213,7 @@ export const OASEvaluation = () => {
                 </p>
               </div>
             </div>
+            <hr className="my-5 border-t-2 border-gray-300" />
             <div>
               {" "}
               <SuperiorEval
