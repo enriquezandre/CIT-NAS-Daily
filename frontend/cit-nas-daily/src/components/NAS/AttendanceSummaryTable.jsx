@@ -179,7 +179,15 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
         });
 
         const response = await api.get(`/Validation/nas/${nasId}`);
-        setValidationData(response.data);
+        const validationData = response.data;
+
+        // Create an array of objects with absenceDate and validationStatus
+        const validationArray = validationData.map((validation) => ({
+          absenceDate: new Date(validation.absenceDate).toISOString().split("T")[0],
+          validationStatus: validation.validationStatus,
+        }));
+
+        setValidationData(validationArray);
       } catch (error) {
         console.error(error);
       }
@@ -206,11 +214,8 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
           attendanceSummaries.map((summary) => {
             // Find the corresponding validation entry for the current summary date
             const validationEntry = validationData.find(
-              (validation) =>
-                new Date(validation.absenceDate).toISOString().split("T")[0] ===
-                new Date(summary.date).toISOString().split("T")[0]
+              (validation) => validation.absenceDate === summary.date
             );
-
             return (
               <Table.Row key={summary.date}>
                 <Table.Cell>{summary.date}</Table.Cell>
