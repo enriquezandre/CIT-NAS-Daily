@@ -178,9 +178,8 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
           },
         });
 
-        const response = await api.get("/Validation");
-        const filteredData = response.data.filter((item) => item.nasId === nasId);
-        setValidationData(filteredData);
+        const response = await api.get(`/Validation/nas/${nasId}`);
+        setValidationData(response.data);
       } catch (error) {
         console.error(error);
       }
