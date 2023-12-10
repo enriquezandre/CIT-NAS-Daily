@@ -269,6 +269,28 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        [HttpGet("{nasId}/{year}/{semester}/noimg", Name = "GetNASByNASIdSYSemesterNoImg")]
+        [Authorize(Roles = "OAS, NAS, Superior")]
+        public async Task<IActionResult> GetNASByNASIdSYSemesterNoImg(int nasId, int year, int semester)
+        {
+            try
+            {
+                var nas = await _nasService.GetNASByNASIdSYSemesterNoImgAsync(nasId, year, (Semester)semester);
+
+                if(nas == null)
+                {
+                    return NotFound($"NAS #{nasId} is not enrolled for the specified semester of the school year {year}");
+                }
+
+                return Ok(nas);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting NAS");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
         #endregion
 
         #region UpdateUpload
