@@ -90,28 +90,22 @@ export const OASStatus = () => {
         console.error(error);
       }
     };
-
     fetchSchoolYearSemesterOptions();
   }, [api]);
 
   useEffect(() => {
     const fetchNasAndOffice = async () => {
       try {
-        const [nasResponse, officeResponse] = await Promise.all([
-          api.get(`/NAS/${nasId}/noimg`),
-          api.get(`Offices/${nasId}/NAS`),
-        ]);
+        const nasResponse = await api.get(`/NAS/${nasId}/noimg`); //TO CHANGE WITH PARAMS SY AND SEM
         const nasData = nasResponse.data;
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
-        const officeData = officeResponse.data;
-        setOffice(officeData.name);
+        setOffice(nasData.officeName);
       } catch (error) {
         console.error(error);
       }
     };
-
     fetchNasAndOffice();
   }, [nasId, api]);
 
@@ -130,7 +124,6 @@ export const OASStatus = () => {
         setSummaryEvaluation({});
       }
     };
-
     fetchSummaryEvaluation();
   }, [nasId, selectedSem, selectedSY, api, getSemesterValue, evaluationSubmitted]);
 
@@ -147,21 +140,13 @@ export const OASStatus = () => {
         setGrades(null);
       }
     };
-
     fetchSummaryEvaluationGrades();
   }, [nasId, selectedSem, selectedSY, api, getSemesterValue]);
 
   useEffect(() => {
     const fetchNasData = async () => {
       try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const response = await api.get(`/NAS/noimg`);
+        const response = await api.get(`/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`);
         setNasArray(response.data);
 
         const maxId = Math.max(...response.data.map((nas) => nas.id), 1);
@@ -170,9 +155,8 @@ export const OASStatus = () => {
         console.error(error);
       }
     };
-
     fetchNasData();
-  }, []);
+  }, [api, selectedSY, selectedSem, getSemesterValue]);
 
   useEffect(() => {
     const results = nasArray.filter((data) =>
@@ -197,7 +181,7 @@ export const OASStatus = () => {
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
+          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
             <div className={`flex items-center w-auto ${nasId === 1 ? "ml-10" : ""}`}>
               <div>
                 {nasId > 1 && (
@@ -206,15 +190,25 @@ export const OASStatus = () => {
                   </Button>
                 )}
               </div>
-              <div className="font-bold" style={{ textTransform: "uppercase" }}>
-                NAS NAME: {lastName}, {firstName} {middleName}
+              <div className="flex flex-row justify-start items-center gap-10">
+                <div className="flex flex-row gap-2 items-center">
+                  <Dropdown
+                    label="SY"
+                    options={uniqueYears}
+                    selectedValue={selectedSY}
+                    onChange={(e) => handleSelectSY(e)}
+                  />
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <Dropdown
+                    label="Semester"
+                    options={sem_options}
+                    selectedValue={selectedSem}
+                    onChange={(e) => handleSelectSem(e)}
+                  />
+                </div>
               </div>
             </div>
-            <li>
-              <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
-                DEPT/OFFICE: {office}
-              </p>
-            </li>
             <li className="flex justify-end">
               <div className="flex ">
                 <div className="relative w-auto">
@@ -262,29 +256,22 @@ export const OASStatus = () => {
               )}
             </li>
           </ul>
-          <div className="px-8 py-4">
-            <div className="flex flex-row justify-start items-center gap-10 mt-2 mb-8">
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="SY"
-                  options={uniqueYears}
-                  selectedValue={selectedSY}
-                  onChange={(e) => handleSelectSY(e)}
-                />
+          <div className="px-9 py-4">
+            <div className="flex gap-10 mb-7 text-lg">
+              <div className="font-bold" style={{ textTransform: "uppercase" }}>
+                NAS NAME: {lastName}, {firstName} {middleName}
               </div>
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="Semester"
-                  options={sem_options}
-                  selectedValue={selectedSem}
-                  onChange={(e) => handleSelectSem(e)}
-                />
+              <div>
+                <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
+                  DEPT/OFFICE: {office}
+                </p>
               </div>
             </div>
-            <div></div>
             <hr className="my-5 border-t-2 border-gray-300" />
             <div className="flex flex-col">
-              <p className="text-bold text-center text-xl font-bold mb-8">PERFORMANCE EVALUATION</p>
+              <p className="text-bold text-center text-xl font-bold mb-8 text-primary">
+                PERFORMANCE EVALUATION
+              </p>
               <div className="flex flex-row gap-6 justify-start items-center mb-4">
                 <p className="text-bold text-xl">SUPERIOR&#39;S EVALUATION OVERALL RATING:</p>
                 <p className="text-bold text-xl font-bold">
