@@ -50,36 +50,52 @@ export const SuperiorEval = ({ nasId, selectedSem, selectedSY }) => {
 
   return (
     <>
-      <div className="flex flex-col">
+      <div className="flex flex-col ">
         <div className="flex h-full flex-col justify-center">
           <div className="flex flex-col">
             <p className="text-center text-xl font-bold mb-8 text-primary">
               SUPERIOR EVALUATION SUMMARY
             </p>
-            <div className="flex flex-row gap-6 justify-start items-center mb-4">
-              <p className="text-xl">Attendance and Punctuality:</p>
-              <p className="text-xl">{(evaluationData.attendanceAndPunctuality / 2).toFixed(1)}</p>
-            </div>
-            <div className="flex flex-row gap-6 justify-start items-center mb-4">
-              <p className="text-xl">Quality of Work - Output:</p>
-              <p className="text-xl">{(evaluationData.qualOfWorkOutput / 3).toFixed(1)}</p>
-            </div>
-            <div className="flex flex-row gap-6 justify-start items-center mb-4">
-              <p className="text-xl">Quantity of Work - Output:</p>
-              <p className="text-xl">{(evaluationData.quanOfWorkOutput / 2).toFixed(1)}</p>
-            </div>
-            <div className="flex flex-row gap-6 justify-start items-center mb-4">
-              <p className="text-xl">Attitude and Work Behaviour:</p>
-              <p className="text-xl">{(evaluationData.attitudeAndWorkBehaviour / 5).toFixed(1)}</p>
-            </div>
-            <div className="flex flex-row gap-6 justify-start items-center mb-4">
-              <p className="text-xl">Overall Assessment of NAS Performance:</p>
-              <p className="text-xl">{(evaluationData.overallAssessment / 1).toFixed(1)}</p>
-            </div>
-            <div className="flex flex-row gap-6 justify-start items-center mb-4">
-              <p className="text-xl font-bold">Superior&#39;s Evaluation Overall Rating:</p>
-              <p className="text-xl font-bold">{(evaluationData.overallRating / 1).toFixed(1)}</p>
-            </div>
+            <table className="text-xl justify-center w-4/5 items-center">
+              <tbody>
+                <tr>
+                  <td className="w-2/5 py-2">Attendance and Punctuality</td>
+                  <td className="py-2 text-center">
+                    {(evaluationData.attendanceAndPunctuality / 2).toFixed(1)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2">Quality of Work - Output:</td>
+                  <td className="py-2 text-center">
+                    {(evaluationData.qualOfWorkOutput / 3).toFixed(1)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2">Quantity of Work - Output</td>
+                  <td className="py-2 text-center">
+                    {(evaluationData.quanOfWorkOutput / 2).toFixed(1)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2">Attitude and Work Behaviour:</td>
+                  <td className="py-2 text-center">
+                    {(evaluationData.attitudeAndWorkBehaviour / 5).toFixed(1)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2">Overall Assessment of NAS Performance:</td>
+                  <td className="py-2 text-center">
+                    {(evaluationData.overallAssessment / 1).toFixed(1)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 font-bold">Superior&#39;s Evaluation Overall Rating:</td>
+                  <td className="py-2 text-center font-bold">
+                    {(evaluationData.overallRating / 1).toFixed(1)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
