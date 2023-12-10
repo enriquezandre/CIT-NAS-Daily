@@ -31,7 +31,7 @@ export const SpecificNASEvaluation = () => {
       case "Second":
         return 1;
       case "Summer":
-        return 3;
+        return 2;
       default:
         return "Invalid semester";
     }
@@ -75,17 +75,11 @@ export const SpecificNASEvaluation = () => {
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
-            <div
-              className="font-bold ml-10"
-              style={{ textTransform: "uppercase" }}
-            >
+            <div className="font-bold ml-10" style={{ textTransform: "uppercase" }}>
               NAS NAME: {lastName}, {firstName} {middleName}
             </div>
             <li>
-              <p
-                className="font-bold text-center"
-                style={{ textTransform: "uppercase" }}
-              >
+              <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
                 DEPT/OFFICE: {office}
               </p>
             </li>

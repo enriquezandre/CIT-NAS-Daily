@@ -123,7 +123,7 @@ export const OASStatus = () => {
     };
 
     fetchSummaryEvaluation();
-  }, [nasId, selectedSem, selectedSY, api, getSemesterValue]);
+  }, [nasId, selectedSem, selectedSY, api, getSemesterValue, grade, responded, allCoursesPassed]);
 
   useEffect(() => {
     const fetchSummaryEvaluationGrades = async () => {
@@ -140,7 +140,7 @@ export const OASStatus = () => {
     };
 
     fetchSummaryEvaluationGrades();
-  }, [nasId, selectedSem, selectedSY, api, getSemesterValue]);
+  }, [nasId, selectedSem, selectedSY, api, getSemesterValue, grade, responded, allCoursesPassed]);
 
   useEffect(() => {
     const fetchNasData = async () => {
