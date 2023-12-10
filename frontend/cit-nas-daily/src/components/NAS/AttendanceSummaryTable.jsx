@@ -11,6 +11,7 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [validationData, setValidationData] = useState([]);
 
   const api = useMemo(
     () =>
@@ -167,6 +168,27 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
     getSemesterValue,
   ]);
 
+  useEffect(() => {
+    const fetchValidation = async () => {
+      try {
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get("/Validation");
+        const filteredData = response.data.filter((item) => item.nasId === nasId);
+        setValidationData(filteredData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchValidation();
+  }, [nasId]);
+
   return (
     <Table hoverable>
       <Table.Head className="text-center">
@@ -182,39 +204,51 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
       </Table.Head>
       <Table.Body className="divide-y text-center">
         {Array.isArray(attendanceSummaries) &&
-          attendanceSummaries.map((summary) => (
-            <Table.Row key={summary.date}>
-              <Table.Cell>{summary.date}</Table.Cell>
-              <Table.Cell>
-                {summary.timeIn === "FTP IN"
-                  ? "FTP IN"
-                  : summary.timeIn !== null
-                  ? formatTime(summary.timeIn)
-                  : "-"}
-              </Table.Cell>
+          attendanceSummaries.map((summary) => {
+            // Find the corresponding validation entry for the current summary date
+            const validationEntry = validationData.find(
+              (validation) =>
+                new Date(validation.absenceDate).toISOString().split("T")[0] ===
+                new Date(summary.date).toISOString().split("T")[0]
+            );
 
-              <Table.Cell>
-                {summary.timeOut === "FTP OUT" ? (
-                  "FTP OUT"
-                ) : summary.timeOut !== null ? (
-                  formatTime(summary.timeOut)
-                ) : (
-                  <p className="font-bold text-red">NO RECORD</p>
-                )}
-              </Table.Cell>
-              <Table.Cell>{formatTime(summary.overtimeIn)}</Table.Cell>
-              <Table.Cell>{formatTime(summary.overtimeOut)}</Table.Cell>
-              <Table.Cell>
-                {summary.timeIn === null || summary.timeOut === null ? (
-                  <button className="hover:underline" onClick={() => openModal(summary.date)}>
-                    YES
-                  </button>
-                ) : (
-                  "" // Record exists, leave the cell blank
-                )}
-              </Table.Cell>
-            </Table.Row>
-          ))}
+            return (
+              <Table.Row key={summary.date}>
+                <Table.Cell>{summary.date}</Table.Cell>
+                <Table.Cell>
+                  {summary.timeIn === "FTP IN"
+                    ? "FTP IN"
+                    : summary.timeIn !== null
+                    ? formatTime(summary.timeIn)
+                    : "-"}
+                </Table.Cell>
+                <Table.Cell>
+                  {summary.timeOut === "FTP OUT" ? (
+                    "FTP OUT"
+                  ) : summary.timeOut !== null ? (
+                    formatTime(summary.timeOut)
+                  ) : validationEntry ? (
+                    // Display validation status if a corresponding validation entry exists
+                    validationEntry.validationStatus
+                  ) : (
+                    // If no validation entry, display "NO RECORD"
+                    <p className="font-bold text-red">NO RECORD</p>
+                  )}
+                </Table.Cell>
+                <Table.Cell>{formatTime(summary.overtimeIn)}</Table.Cell>
+                <Table.Cell>{formatTime(summary.overtimeOut)}</Table.Cell>
+                <Table.Cell>
+                  {summary.timeIn === null || summary.timeOut === null ? (
+                    <button className="hover:underline" onClick={() => openModal(summary.date)}>
+                      YES
+                    </button>
+                  ) : (
+                    "" // Record exists, leave the cell blank
+                  )}
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
       </Table.Body>
     </Table>
   );
