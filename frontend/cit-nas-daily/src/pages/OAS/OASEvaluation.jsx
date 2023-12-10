@@ -51,18 +51,20 @@ export const OASEvaluation = () => {
     setSelectedSem(value);
   };
 
-  function getSemesterValue(sem) {
-    switch (sem) {
-      case "First":
-        return 0;
-      case "Second":
-        return 1;
-      case "Summer":
-        return 2;
-      default:
-        return "Invalid semester";
-    }
-  }
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 2;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
@@ -77,43 +79,30 @@ export const OASEvaluation = () => {
         console.error(error);
       }
     };
-
     fetchSchoolYearSemesterOptions();
   }, [api]);
 
   useEffect(() => {
     const fetchNas = async () => {
       try {
-        const nasResponse = await api.get(`/NAS/${nasId}/noimg`);
-        console.log(nasResponse);
+        const nasResponse = await api.get(`/NAS/${nasId}/noimg`); //TO CHANGE WITH PARAMS SY AND SEM
         const nasData = nasResponse.data;
-
-        const officeResponse = await api.get(`Offices/${nasId}/NAS`);
-        const officeData = officeResponse.data;
 
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
-        setOffice(officeData.name);
+        setOffice(nasData.officeName);
       } catch (error) {
         console.error(error);
       }
     };
-
     fetchNas();
   }, [selectedSY, selectedSem, nasId, api]);
 
   useEffect(() => {
     const fetchNasData = async () => {
       try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const response = await api.get(`/NAS/noimg`);
+        const response = await api.get(`/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`);
         setNasArray(response.data);
 
         const maxId = Math.max(...response.data.map((nas) => nas.id), 1);
@@ -122,9 +111,8 @@ export const OASEvaluation = () => {
         console.error(error);
       }
     };
-
     fetchNasData();
-  }, []);
+  }, [api, selectedSY, selectedSem, getSemesterValue]);
 
   useEffect(() => {
     const results = nasArray.filter((data) =>
@@ -139,7 +127,7 @@ export const OASEvaluation = () => {
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
+          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
             <div className={`flex items-center w-auto ${nasId === 1 ? "ml-10" : ""}`}>
               <div>
                 {nasId > 1 && (
@@ -148,15 +136,25 @@ export const OASEvaluation = () => {
                   </Button>
                 )}
               </div>
-              <div className="font-bold" style={{ textTransform: "uppercase" }}>
-                NAS NAME: {lastName}, {firstName} {middleName}
+              <div className="flex flex-row justify-start items-center gap-10">
+                <div className="flex flex-row gap-2 items-center">
+                  <Dropdown
+                    label="SY"
+                    options={uniqueYears}
+                    selectedValue={selectedSY}
+                    onChange={(e) => handleSelectSY(e)}
+                  />
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <Dropdown
+                    label="Semester"
+                    options={sem_options}
+                    selectedValue={selectedSem}
+                    onChange={(e) => handleSelectSem(e)}
+                  />
+                </div>
               </div>
             </div>
-            <li>
-              <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
-                DEPT/OFFICE: {office}
-              </p>
-            </li>
             <li className="flex justify-end">
               <div className="flex ">
                 <div className="relative w-auto">
@@ -204,26 +202,17 @@ export const OASEvaluation = () => {
               )}
             </li>
           </ul>
-          <div className="px-8 py-4">
-            <div className="flex flex-row justify-start items-center gap-10 mt-2 mb-8">
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="SY"
-                  options={uniqueYears}
-                  selectedValue={selectedSY}
-                  onChange={(e) => handleSelectSY(e)}
-                />
+          <div className="px-9 py-4">
+            <div className="flex gap-10 mb-7 text-lg">
+              <div className="font-bold" style={{ textTransform: "uppercase" }}>
+                NAS NAME: {lastName}, {firstName} {middleName}
               </div>
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="Semester"
-                  options={sem_options}
-                  selectedValue={selectedSem}
-                  onChange={(e) => handleSelectSem(e)}
-                />
+              <div>
+                <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
+                  DEPT/OFFICE: {office}
+                </p>
               </div>
             </div>
-            <hr className="my-5 border-t-2 border-gray-300" />
             <div>
               {" "}
               <SuperiorEval

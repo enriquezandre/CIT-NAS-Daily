@@ -85,7 +85,6 @@ export const OASAttendance = () => {
       try {
         const nasresponse = await api.get(`/NAS/${nasId}/noimg`); //TO CHANGE WITH PARAMS SY AND SEM
         const nasData = nasresponse.data;
-        console.log("NAS DATA", nasData);
 
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
