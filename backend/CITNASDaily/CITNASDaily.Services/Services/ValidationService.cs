@@ -46,6 +46,11 @@ namespace CITNASDaily.Services.Services
             return _mapper.Map<ValidationDto>(validation);
         }
 
+        public async Task<IEnumerable<Validation>?> GetValidationByNasIdAsync(int nasId)
+        {
+            return await _validationRepository.GetValidationByNasIdAsync(nasId);
+        }
+
         public async Task<Validation?> UpdateValidationAsync(ValidationUpdateDto validationUpdateDto, int validationId)
         {
             var validation = _mapper.Map<Validation>(validationUpdateDto);

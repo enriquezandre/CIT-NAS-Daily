@@ -99,7 +99,6 @@ export const NASEvaluationResult = () => {
           setFileUploaded(responseData.grade);
           setSubmitted(true);
           alert("Grade uploaded successfully");
-          window.location.reload();
         } else {
           console.error("Grade upload failed");
         }
@@ -118,7 +117,7 @@ export const NASEvaluationResult = () => {
       case "Second":
         return 1;
       case "Summer":
-        return 3;
+        return 2;
       default:
         return "Invalid semester";
     }
@@ -140,6 +139,8 @@ export const NASEvaluationResult = () => {
     };
     fetchEvalResult();
   }, [selectedSY, selectedSem, nasId, api]);
+
+  console.log("SUMMARY EVAL", summaryEvaluation);
 
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
@@ -195,8 +196,18 @@ export const NASEvaluationResult = () => {
               </div>
               <div className="flex flex-row gap-36 justify-start items-center text-lg mt-2">
                 <div>GRADE STATUS:</div>
-                {summaryEvaluation.academicPerformance === null ||
-                summaryEvaluation.academicPerformance === undefined ? (
+                {submitted ? (
+                  summaryEvaluation.responded === null ||
+                  summaryEvaluation.responded === undefined ? (
+                    <span className="font-bold text-secondary">PENDING</span>
+                  ) : summaryEvaluation.allCoursesPassed ? (
+                    <span className="font-bold text-green">ALL PASSED</span>
+                  ) : (
+                    <span className="font-bold text-red">FAILED A COURSE</span>
+                  )
+                ) : Object.keys(summaryEvaluation).length ===
+                  0 ? null : summaryEvaluation.academicPerformance === null ||
+                  summaryEvaluation.academicPerformance === undefined ? (
                   <div className="text-sm">
                     <input
                       type="file"
@@ -217,7 +228,7 @@ export const NASEvaluationResult = () => {
                   </div>
                 ) : summaryEvaluation.responded === null ||
                   summaryEvaluation.responded === undefined ? (
-                  <span className="text-yellow">PENDING</span>
+                  <span className="font-bold text-secondary">PENDING</span>
                 ) : summaryEvaluation.allCoursesPassed ? (
                   <span className="font-bold text-green">ALL PASSED</span>
                 ) : (

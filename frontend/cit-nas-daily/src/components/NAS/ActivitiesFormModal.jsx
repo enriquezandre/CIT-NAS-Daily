@@ -5,7 +5,7 @@ import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export const ActivitiesFormModal = ({ isOpen, closeModal, selectedSY, selectedSem }) => {
+export const ActivitiesFormModal = ({ isOpen, closeModal, currentYear, currentSem }) => {
   const { nasId } = useParams();
   const [activitiesOfTheDay, setActivitiesOfTheDay] = useState("");
   const [skillsLearned, setSkillsLearned] = useState("");
@@ -19,7 +19,7 @@ export const ActivitiesFormModal = ({ isOpen, closeModal, selectedSY, selectedSe
         case "Second":
           return 1;
         case "Summer":
-          return 3;
+          return 2;
         default:
           return "Invalid semester";
       }
@@ -38,8 +38,8 @@ export const ActivitiesFormModal = ({ isOpen, closeModal, selectedSY, selectedSe
       });
 
       const response = await api.post(
-        `https://localhost:7001/api/ActivitiesSummary/${nasId}/${selectedSY}/${getSemesterValue(
-          selectedSem
+        `https://localhost:7001/api/ActivitiesSummary/${nasId}/${currentYear}/${getSemesterValue(
+          currentSem
         )}`,
         {
           activitiesOfTheDay,
@@ -55,8 +55,37 @@ export const ActivitiesFormModal = ({ isOpen, closeModal, selectedSY, selectedSe
 
   return (
     <div>
+      {isOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-999 bg-black bg-opacity-50"></div>
+      )}
       <Modal show={isOpen} onClose={closeModal}>
         <Modal.Body>
+          <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
+            <div className="flex flex-row gap-2 items-center">
+              <div className="mr-2">SY:</div>
+              <select
+                id="sy"
+                name="sy"
+                className=" w-full text-base border rounded-md"
+                style={{ width: "7rem" }}
+                disabled
+              >
+                <option>{currentYear}</option>
+              </select>
+            </div>
+            <div className="flex flex-row gap-2 items-center">
+              <div className="mr-2">SEMESTER:</div>
+              <select
+                id="sem"
+                name="sem"
+                className="w-full text-base border rounded-md"
+                style={{ width: "7rem" }}
+                disabled
+              >
+                <option>{currentSem}</option>
+              </select>
+            </div>
+          </div>
           <div className="space-y-6 bg-[url('/src/assets/CIT.png')] bg-cover bg-center">
             <div>
               <div className="font-bold text-lg">Activities of the Day</div>
@@ -120,6 +149,6 @@ export const ActivitiesFormModal = ({ isOpen, closeModal, selectedSY, selectedSe
 ActivitiesFormModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
-  selectedSY: PropTypes.string.isRequired,
-  selectedSem: PropTypes.string.isRequired,
+  currentYear: PropTypes.number.isRequired,
+  currentSem: PropTypes.string.isRequired,
 };
