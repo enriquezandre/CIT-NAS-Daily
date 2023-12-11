@@ -1,9 +1,7 @@
-﻿using CITNASDaily.Entities.Models;
-using CITNASDaily.Services.Contracts;
+﻿using CITNASDaily.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using OfficeOpenXml;
 using System.Security.Claims;
 using static CITNASDaily.Entities.Enums.Enums;
 
@@ -26,7 +24,7 @@ namespace CITNASDaily.API.Controllers
 
         [HttpGet(Name = "GetAllDTR")]
         [Authorize]
-        public async Task<IActionResult> GetAllNAS()
+        public async Task<IActionResult> GetAllDTR()
         {
             try
             {
@@ -46,13 +44,13 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("{year}/{semester}/{firstName}/{lastName}", Name = "GetAllDTRBySYSem")]
+        [HttpGet("{year}/{semester}/{lastName}/{firstName}", Name = "GetAllDTRBySYSem")]
         [Authorize]
-        public async Task<IActionResult> GetAllDTRBySYSem(int year, int semester, string firstName, string lastName, [FromQuery] string middleName = "")
+        public async Task<IActionResult> GetAllDTRBySYSem(int year, int semester, string lastName, string firstName, [FromQuery] string middleName = "")
         {
             try
             {
-                var dtr = await _dtrService.GetDTRsBySYSemesterAsync(year, (Semester)semester, firstName, lastName, middleName);
+                var dtr = await _dtrService.GetDTRsBySYSemesterAsync(year, (Semester)semester, lastName, firstName, middleName);
 
                 if (dtr == null)
                 {
@@ -84,9 +82,9 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("GetByNasName/{firstName}/{lastName}")]
+        [HttpGet("GetByNasName/{lastName}/{firstName}")]
         [Authorize]
-        public async Task<IActionResult> GetByNasName(string firstName, string lastName, [FromQuery] string middleName = "")
+        public async Task<IActionResult> GetByNasName(string lastName, string firstName, [FromQuery] string middleName = "")
         {
             try
             {
@@ -95,8 +93,8 @@ namespace CITNASDaily.API.Controllers
                 {
                     return Forbid();
                 }
-                var fullName = string.IsNullOrEmpty(middleName) ? $"{firstName} {lastName}" : $"{firstName} {middleName} {lastName}";
-                var dtr = await _dtrService.GetDTRByNasNameAsync(firstName, lastName, middleName);
+                var fullName = string.IsNullOrEmpty(middleName) ? $"{lastName} {firstName}" : $"{lastName} {middleName} {firstName}";
+                var dtr = await _dtrService.GetDTRByNasNameAsync(lastName, firstName, middleName);
 
                 if (dtr == null || !dtr.Any())
                 {
