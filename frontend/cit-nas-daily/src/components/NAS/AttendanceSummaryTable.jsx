@@ -250,7 +250,6 @@ export const AttendanceSummaryTable = ({
         }));
 
         setValidationData(validationArray);
-        console.log("before: " + submissionStatus);
       } catch (error) {
         console.error(error);
       }
@@ -261,9 +260,7 @@ export const AttendanceSummaryTable = ({
     if (submissionStatus) {
       fetchValidation();
     }
-
-    console.log("after: " + submissionStatus);
-  }, [nasId, formatDate, submissionStatus, api]);
+  }, [nasId, formatDate, submissionStatus]);
 
   return (
     <Table hoverable>
