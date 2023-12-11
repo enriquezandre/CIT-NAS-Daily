@@ -83,7 +83,9 @@ export const OASAttendance = () => {
   useEffect(() => {
     const fetchNas = async () => {
       try {
-        const nasresponse = await api.get(`/NAS/${nasId}/noimg`); //TO CHANGE WITH PARAMS SY AND SEM
+        const nasresponse = await api.get(
+          `/NAS/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}/noimg` //to change nasid to other id
+        );
         const nasData = nasresponse.data;
 
         setFirstname(nasData.firstName);
@@ -92,6 +94,12 @@ export const OASAttendance = () => {
         setOffice(nasData.officeName);
       } catch (error) {
         console.error(error);
+        if (error.response.status === 404) {
+          setFirstname(null);
+          setMiddlename(null);
+          setLastname(null);
+          setOffice(null);
+        }
       }
     };
 
@@ -125,7 +133,7 @@ export const OASAttendance = () => {
     }
 
     setSelectedMonthIndex(selectedMonthIndex);
-  }, [selectedSY, selectedSem, selectedMonth, nasId, api]);
+  }, [selectedSY, selectedSem, selectedMonth, nasId, api, getSemesterValue]);
 
   useEffect(() => {
     const fetchTimekeepingSummary = async () => {
@@ -156,6 +164,10 @@ export const OASAttendance = () => {
         setMaxNasId(maxId);
       } catch (error) {
         console.error(error);
+        if (error.response.status === 404) {
+          setNasArray([]);
+          setMaxNasId(0);
+        }
       }
     };
 
