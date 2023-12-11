@@ -9,12 +9,17 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
-    console.log("Selected file:", selectedFile);
     setSelectedFileName(selectedFile ? selectedFile.name : null);
   };
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handleCloseUploadModal = () => {
+    setSelectedFileName(null);
+    setError("");
+    closeModal();
   };
 
   const handleConfirm = async () => {
@@ -31,7 +36,8 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
           // Pass the Base64-encoded string to the handleSubmit function
           handleSubmit(base64String);
           if (Response.status === 200 || Response.status === 201) {
-            //asdasd
+            setSelectedFileName(null);
+            setError("");
           }
           closeModal();
         } else {
@@ -122,7 +128,7 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
             <div className="flex m-2">
               <button
                 className="bg-primary text-white py-2 px-6 rounded-full  hover:bg-secondary hover:text-primary"
-                onClick={closeModal}
+                onClick={handleCloseUploadModal}
               >
                 Cancel
               </button>
