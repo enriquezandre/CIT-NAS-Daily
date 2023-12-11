@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "flowbite-react";
 
-export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit, resetInputs }) => {
+export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) => {
   const fileInputRef = useRef(null);
   const [selectedFileName, setSelectedFileName] = useState(null);
   const [error, setError] = useState("");
@@ -146,5 +146,4 @@ UploadExcuseLetterModal.propTypes = {
   isOpen: PropTypes.bool,
   closeModal: PropTypes.func,
   handleSubmit: PropTypes.func,
-  resetInputs: PropTypes.func,
 };
