@@ -183,12 +183,34 @@ namespace CITNASDaily.Services.Services
             return await _schoolYearSemRepository.GetAllSYAndSem();
         }
 
+        public async Task<NASDtoNoImage> GetNASByNASIdSYSemesterNoImgAsync(int nasId, int year, Semester semester)
+        {
+            var nasData = await _nasRepository.GetNASByNASIdSYSemesterAsync(nasId, year, semester);
+
+            if(nasData == null)
+            {
+                return null;
+            }
+
+            var nasDto = _mapper.Map<NASDtoNoImage>(nasData);
+            var office = await _officeRepository.GetOfficeByNASIdAsync(nasData.Id);
+
+            nasDto.OfficeName = office.Name;
+
+            var getSY = await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nasData.Id);
+            nasDto.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(getSY);
+
+            return nasDto;
+        }
+
         #endregion
 
         public async Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file)
         {
             return await _nasRepository.UploadPhotoAsync(nasId, file);
         }
+
+        #region UpdateNAS
 
         public async Task<NASDto?> UpdateNASAsync(int nasId, NASUpdateDto nasUpdate)
         {
@@ -207,5 +229,7 @@ namespace CITNASDaily.Services.Services
 
             return result;
         }
+
+        #endregion
     }
 }

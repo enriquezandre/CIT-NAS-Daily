@@ -78,6 +78,25 @@ namespace CITNASDaily.Repositories.Repositories
             return nasList;
         }
 
+        public async Task<NAS?> GetNASByNASIdSYSemesterAsync(int nasId, int year, Semester semester)
+        {
+            var nas = await _context.NAS.FindAsync(nasId);
+
+            if(nas == null)
+            {
+                return null;
+            }
+
+            var sysem = await _context.NASSchoolYears.Where(n => n.NASId == nasId && n.Year == year && n.Semester == semester).FirstOrDefaultAsync();
+
+            if(sysem != null)
+            {
+                return nas;
+            }
+
+            return null;
+        }
+
         #endregion
 
         public async Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file)
