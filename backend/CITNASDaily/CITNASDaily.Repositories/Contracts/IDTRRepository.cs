@@ -8,7 +8,7 @@ namespace CITNASDaily.Repositories.Contracts
     {
         Task<IEnumerable<DailyTimeRecord>> GetDTRs();
         Task SaveDTRs(IFormFile file, int year, Semester semester);
-        Task<IEnumerable<DailyTimeRecord>> GetDTRByNasNameAsync(string firstName, string lastName, string middleName);
-        Task<IEnumerable<DailyTimeRecord>> GetDTRsBySYSemesterAsync(int year, Semester semester, string firstName, string lastName, string middleName);
+        Task<IEnumerable<DailyTimeRecord>> GetDTRByNasNameAsync(string lastName, string firstName, string middleName);
+        Task<IEnumerable<DailyTimeRecord>> GetDTRsBySYSemesterAsync(int year, Semester semester, string lastName, string firstName, string? middleName);
     }
 }
