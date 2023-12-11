@@ -255,12 +255,12 @@ export const AttendanceSummaryTable = ({
       }
     };
 
-    // Call fetchValidation only when submissionStatus changes
+    // fix rendering after 2nd submission
     fetchValidation();
     if (submissionStatus) {
       fetchValidation();
     }
-  }, [nasId, formatDate, submissionStatus]);
+  }, [nasId, formatDate, submissionStatus, api]);
 
   return (
     <Table hoverable>
