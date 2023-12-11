@@ -92,6 +92,27 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
     []
   );
 
+  const getStatusColor = useMemo(
+    () => (validationStatus) => {
+      switch (validationStatus) {
+        case 0:
+          return "#e0d90d";
+        case 1:
+        case 3:
+        case 4:
+          return "#10c919";
+        case 2:
+        case 5:
+        case 8:
+          return "red";
+        case 6:
+        case 7:
+          return "#fca903";
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     const fetchDataByNames = async () => {
       try {
@@ -226,11 +247,8 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
         const validationArray = validationData.map((validation) => ({
           absenceDate: formatDate(new Date(validation.absenceDate)),
           validationStatus: validation.validationStatus,
-          makeUpHours: validation.makeUpHours, // Use the correct property name
+          makeUpHours: validation.makeUpHours,
         }));
-
-        // Log the contents of validationArray to the console
-        console.log("Validation Array:", validationArray);
 
         setValidationData(validationArray);
       } catch (error) {
@@ -277,16 +295,28 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
                   ) : summary.timeOut !== null ? (
                     formatTime(summary.timeOut)
                   ) : validationEntry ? (
-                    // Display validation status if a corresponding validation entry exists
-                    // makeup duty hours is still undefined
-                    <p>
-                      {getValidationStatus(validationEntry.validationStatus) +
-                        ": " +
-                        validationEntry.makeUphours}
-                    </p>
+                    // Display validation status and make-up hours if a corresponding validation entry exists
+                    validationEntry.validationStatus === 3 ? (
+                      <p
+                        style={{ color: getStatusColor(validationEntry.validationStatus) }}
+                        className="font-semibold"
+                      >
+                        {getValidationStatus(validationEntry.validationStatus) +
+                          ": " +
+                          validationEntry.makeUpHours}{" "}
+                        hours
+                      </p>
+                    ) : (
+                      <p
+                        style={{ color: getStatusColor(validationEntry.validationStatus) }} // Use getStatusColor here
+                        className="font-semibold"
+                      >
+                        {getValidationStatus(validationEntry.validationStatus)}
+                      </p>
+                    )
                   ) : (
                     // If no validation entry, display "NO RECORD"
-                    <p className="font-bold text-red">NO RECORD</p>
+                    <p className="font-bold text-gray">NO RECORD</p>
                   )}
                 </Table.Cell>
                 <Table.Cell>{formatTime(summary.overtimeIn)}</Table.Cell>
