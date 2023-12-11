@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using static CITNASDaily.Entities.Enums.Enums;
 
 #nullable disable
 
@@ -19,8 +18,8 @@ namespace CITNASDaily.Repositories.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NASId = table.Column<int>(type: "int", nullable: false),
-                    Semester = table.Column<int>(type: "int", nullable: false),
                     SchoolYear = table.Column<int>(type: "int", nullable: false),
+                    Semester = table.Column<int>(type: "int", nullable: false),
                     DateOfEntry = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ActivitiesOfTheDay = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SkillsLearned = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -37,22 +36,39 @@ namespace CITNASDaily.Repositories.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    MiddleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TimeIn = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TimeOut = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Punch1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Punch2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Punch3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Punch4 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OvertimeIn = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OvertimeOut = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TotalWorkTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Semester = table.Column<int>(type: "int", nullable: true),
-                    SchoolYear = table.Column<int>(type: "int", nullable: true)
+                    Semester = table.Column<int>(type: "int", nullable: false),
+                    SchoolYear = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DailyTimeRecord", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NASSchoolYearSemester",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NASId = table.Column<int>(type: "int", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    Semester = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NASSchoolYearSemester", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,13 +94,13 @@ namespace CITNASDaily.Repositories.Migrations
                     nasId = table.Column<int>(type: "int", nullable: false),
                     Semester = table.Column<int>(type: "int", nullable: false),
                     SchoolYear = table.Column<int>(type: "int", nullable: false),
-                    SuperiorOverallRating = table.Column<float>(type: "real", nullable: true),
+                    SuperiorOverallRating = table.Column<float>(type: "real", nullable: false),
                     AcademicPerformance = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    TimekeepingStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EnrollmentAllowed = table.Column<bool>(type: "bit", nullable: true),
+                    TimekeepingStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EnrollmentAllowed = table.Column<bool>(type: "bit", nullable: false),
                     UnitsAllowed = table.Column<int>(type: "int", nullable: true),
-                    AllCoursesPassed = table.Column<bool>(type: "bit", nullable: true),
-                    NoOfCoursesFailed = table.Column<int>(type: "int", nullable: true),
+                    AllCoursesPassed = table.Column<bool>(type: "bit", nullable: false),
+                    NoOfCoursesFailed = table.Column<int>(type: "int", nullable: false),
                     Responded = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -155,7 +171,7 @@ namespace CITNASDaily.Repositories.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OfficeId = table.Column<int>(type: "int", nullable: false),
-                    StudentIdNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StudentIDNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EnNo = table.Column<int>(type: "int", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     MiddleName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -225,26 +241,6 @@ namespace CITNASDaily.Repositories.Migrations
                         name: "FK_Superior_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "NASSchoolYearSemester",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NASId = table.Column<int>(type: "int", nullable: false),
-                    Year = table.Column<int>(type: "int", nullable: false),
-                    Semester = table.Column<int>(type: "int", nullable: false),
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_NASSchoolYear", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_NASSchoolYearSemester_NAS_NASId",
-                        column: x => x.NASId,
-                        principalTable: "NAS",
                         principalColumn: "Id");
                 });
 
@@ -375,9 +371,6 @@ namespace CITNASDaily.Repositories.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "NASSchoolYearSemester");
-
-            migrationBuilder.DropTable(
                 name: "ActivitiesSummary");
 
             migrationBuilder.DropTable(
@@ -385,6 +378,9 @@ namespace CITNASDaily.Repositories.Migrations
 
             migrationBuilder.DropTable(
                 name: "DailyTimeRecord");
+
+            migrationBuilder.DropTable(
+                name: "NASSchoolYearSemester");
 
             migrationBuilder.DropTable(
                 name: "OAS");
