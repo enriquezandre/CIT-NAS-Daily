@@ -84,7 +84,7 @@ export const AttendanceSummaryTable = ({
         case 4:
           return "APPROVED";
         case 5:
-          return "DISAPPORVED";
+          return "DISAPPROVED";
         case 6:
           return "WARNING";
         case 7:
@@ -239,13 +239,6 @@ export const AttendanceSummaryTable = ({
   useEffect(() => {
     const fetchValidation = async () => {
       try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
         const response = await api.get(`/Validation/nas/${nasId}`);
         const validationData = response.data;
 
@@ -257,16 +250,20 @@ export const AttendanceSummaryTable = ({
         }));
 
         setValidationData(validationArray);
+        console.log("before: " + submissionStatus);
       } catch (error) {
         console.error(error);
       }
     };
 
+    // Call fetchValidation only when submissionStatus changes
     fetchValidation();
     if (submissionStatus) {
       fetchValidation();
     }
-  }, [nasId, formatDate, submissionStatus]);
+
+    console.log("after: " + submissionStatus);
+  }, [nasId, formatDate, submissionStatus, api]);
 
   return (
     <Table hoverable>
