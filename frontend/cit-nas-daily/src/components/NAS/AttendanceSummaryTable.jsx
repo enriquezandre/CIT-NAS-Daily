@@ -5,7 +5,13 @@ import { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY, openModal }) => {
+export const AttendanceSummaryTable = ({
+  selectedMonth,
+  selectedSem,
+  selectedSY,
+  openModal,
+  submissionStatus,
+}) => {
   const { nasId } = useParams();
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
   const [firstName, setFirstName] = useState("");
@@ -257,7 +263,10 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
     };
 
     fetchValidation();
-  }, [nasId, formatDate]);
+    if (submissionStatus) {
+      fetchValidation();
+    }
+  }, [nasId, formatDate, submissionStatus]);
 
   return (
     <Table hoverable>
@@ -343,4 +352,5 @@ AttendanceSummaryTable.propTypes = {
   selectedSem: PropTypes.string.isRequired,
   selectedSY: PropTypes.number.isRequired,
   openModal: PropTypes.func.isRequired,
+  submissionStatus: PropTypes.bool.isRequired,
 };
