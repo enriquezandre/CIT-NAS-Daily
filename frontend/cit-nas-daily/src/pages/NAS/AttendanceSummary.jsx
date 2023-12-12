@@ -30,7 +30,7 @@ export const AttendanceSummary = () => {
   const [submissionStatus, setSubmissionStatus] = useState(false);
   const { nasId } = useParams();
 
-  console.log(currentYear, currentSem);
+  // console.log(currentYear, currentSem);
 
   const api = useMemo(
     () =>
