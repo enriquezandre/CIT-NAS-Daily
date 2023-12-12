@@ -253,8 +253,6 @@ export const AttendanceSummaryTable = ({
       } catch (error) {
         console.error(error);
       }
-
-      fetchValidation();
     };
 
     fetchValidation();
