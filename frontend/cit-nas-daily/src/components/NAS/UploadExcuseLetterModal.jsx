@@ -31,14 +31,11 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
         if (selectedFile.type === "application/pdf") {
           // Convert the selected file to Base64
           const base64String = await fileToBase64(selectedFile);
-          console.log("Base64-encoded string:", base64String);
 
           // Pass the Base64-encoded string to the handleSubmit function
           handleSubmit(base64String);
-          if (Response.status === 200 || Response.status === 201) {
-            setSelectedFileName(null);
-            setError("");
-          }
+          setSelectedFileName(null);
+          setError("");
           closeModal();
         } else {
           setError("Invalid file type. Please select a PDF file.");
