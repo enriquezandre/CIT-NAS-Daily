@@ -254,8 +254,10 @@ export const AttendanceSummaryTable = ({
         console.error(error);
       }
     };
-
     fetchValidation();
+    if (submissionStatus) {
+      fetchValidation();
+    }
   }, [nasId, formatDate, submissionStatus, api]);
 
   return (

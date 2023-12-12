@@ -27,7 +27,6 @@ export const AttendanceSummary = () => {
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedAbsentDate, setSelectedAbsentDate] = useState(null);
-  const [submissionStatus, setSubmissionStatus] = useState(false);
   const { nasId } = useParams();
 
   // console.log(currentYear, currentSem);
@@ -166,7 +165,6 @@ export const AttendanceSummary = () => {
 
       if (response.status === 200 || response.status === 201) {
         console.log("Submitted successfully");
-        setSubmissionStatus(true);
       } else {
         console.error("Submission failed");
       }
@@ -262,7 +260,6 @@ export const AttendanceSummary = () => {
               selectedSem={selectedSem}
               selectedSY={selectedSY}
               openModal={openModal}
-              submissionStatus={submissionStatus}
             />
           </div>
         </div>
