@@ -110,7 +110,7 @@ export const OASAttendance = () => {
     }
 
     setSelectedMonthIndex(selectedMonthIndex);
-  }, [selectedSY, selectedSem, selectedMonth, nasId, api, getSemesterValue]);
+  }, [selectedSY, selectedSem, selectedMonth]);
 
   useEffect(() => {
     const fetchTimekeepingSummary = async () => {
