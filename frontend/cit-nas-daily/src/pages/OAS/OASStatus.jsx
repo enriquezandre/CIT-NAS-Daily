@@ -10,6 +10,7 @@ const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
 
 export const OASStatus = () => {
+  const [nasArray, setNasArray] = useState([]);
   const [isViewingEvaluateGrades, setIsViewingEvaluateGrades] = useState(false);
   const [selectedSY, setSelectedSY] = useState(currentYear);
   // eslint-disable-next-line no-unused-vars
@@ -20,10 +21,9 @@ export const OASStatus = () => {
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
-  const [nasId, setNasId] = useState(1);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [summaryEvaluation, setSummaryEvaluation] = useState({});
   const [grade, setGrades] = useState(null);
-  const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [maxNasId, setMaxNasId] = useState(1);
   const [responded, setResponded] = useState(null);
@@ -94,27 +94,36 @@ export const OASStatus = () => {
   }, [api]);
 
   useEffect(() => {
-    const fetchNasAndOffice = async () => {
+    const fetchNas = async () => {
       try {
-        const nasResponse = await api.get(`/NAS/${nasId}/noimg`); //TO CHANGE WITH PARAMS SY AND SEM
-        const nasData = nasResponse.data;
-        setFirstname(nasData.firstName);
-        setMiddlename(nasData.middleName);
-        setLastname(nasData.lastName);
-        setOffice(nasData.officeName);
+        const response = await api.get(`/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`);
+        setNasArray(response.data);
+        setFirstname(response.data[currentIndex].firstName);
+        setMiddlename(response.data[currentIndex].middleName);
+        setLastname(response.data[currentIndex].lastName);
+        setOffice(response.data[currentIndex].officeName);
+        setMaxNasId(response.data.length - 1);
       } catch (error) {
         console.error(error);
+        setNasArray([]);
+        setMaxNasId(0);
+        setFirstname(null);
+        setMiddlename(null);
+        setLastname(null);
+        setOffice(null);
       }
     };
-    fetchNasAndOffice();
-  }, [nasId, api]);
+    fetchNas();
+  }, [api, currentIndex, getSemesterValue, selectedSY, selectedSem]);
 
   useEffect(() => {
     const fetchSummaryEvaluation = async () => {
-      if (!nasId || !selectedSem || !selectedSY) return;
+      if (!nasArray[currentIndex].id || !selectedSem || !selectedSY) return;
       try {
         const response = await api.get(
-          `SummaryEvaluation/${selectedSY}/${getSemesterValue(selectedSem)}/${nasId}`
+          `SummaryEvaluation/${selectedSY}/${getSemesterValue(selectedSem)}/${
+            nasArray[currentIndex].id
+          }`
         );
         setSummaryEvaluation(response.data);
         setResponded(response.data.responded);
@@ -125,14 +134,16 @@ export const OASStatus = () => {
       }
     };
     fetchSummaryEvaluation();
-  }, [nasId, selectedSem, selectedSY, api, getSemesterValue, evaluationSubmitted]);
+  }, [selectedSem, selectedSY, api, getSemesterValue, evaluationSubmitted, currentIndex, nasArray]);
 
   useEffect(() => {
     const fetchSummaryEvaluationGrades = async () => {
-      if (!nasId || !selectedSem || !selectedSY) return;
+      if (!nasArray[currentIndex].id || !selectedSem || !selectedSY) return;
       try {
         const response = await api.get(
-          `SummaryEvaluation/grades/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
+          `SummaryEvaluation/grades/${nasArray[currentIndex].id}/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}`
         );
         setGrades(response.data);
       } catch (error) {
@@ -141,40 +152,29 @@ export const OASStatus = () => {
       }
     };
     fetchSummaryEvaluationGrades();
-  }, [nasId, selectedSem, selectedSY, api, getSemesterValue]);
+  }, [selectedSem, selectedSY, api, getSemesterValue, currentIndex, nasArray]);
 
-  useEffect(() => {
-    const fetchNasData = async () => {
-      try {
-        const response = await api.get(`/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`);
-        setNasArray(response.data);
-
-        const maxId = Math.max(...response.data.map((nas) => nas.id), 1);
-        setMaxNasId(maxId);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchNasData();
-  }, [api, selectedSY, selectedSem, getSemesterValue]);
-
-  useEffect(() => {
-    const results = nasArray.filter((data) =>
-      data.fullName.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    if (results[0]) {
-      setNasId(results[0].id);
-    }
-  }, [searchInput, nasArray]);
+  // useEffect(() => {
+  //   const results = nasArray.filter((data) =>
+  //     data.fullName.toLowerCase().includes(searchInput.toLowerCase())
+  //   );
+  //   if (results[0]) {
+  //     setNasId(results[0].id);
+  //   }
+  // }, [searchInput, nasArray]);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
     setSelectedSY(value);
+    setCurrentIndex(0);
+    setMaxNasId(0);
   };
 
   const handleSelectSem = (event) => {
     const value = event.target.value;
     setSelectedSem(value);
+    setCurrentIndex(0);
+    setMaxNasId(0);
   };
 
   return (
@@ -182,12 +182,19 @@ export const OASStatus = () => {
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
-            <div className={`flex items-center w-auto ${nasId === 1 ? "ml-9" : ""}`}>
+            <div className={`flex items-center w-auto ${currentIndex === 0 ? "ml-9" : ""}`}>
               <div>
-                {nasId > 1 && (
-                  <Button className="text-black" onClick={() => setNasId(nasId - 1)}>
+                {currentIndex != 0 ? (
+                  <Button
+                    className="text-black"
+                    onClick={() => {
+                      setCurrentIndex((currentIndex - 1) % nasArray.length);
+                    }}
+                  >
                     <HiOutlineArrowLeft className="h-6 w-6" />
                   </Button>
+                ) : (
+                  ""
                 )}
               </div>
               <div className="flex flex-row justify-start items-center gap-10">
@@ -242,11 +249,11 @@ export const OASStatus = () => {
                   </button>
                 </div>
               </div>
-              {nasId < maxNasId ? (
+              {currentIndex != maxNasId ? (
                 <Button
                   className="text-black"
                   onClick={() => {
-                    setNasId(nasId + 1);
+                    setCurrentIndex((currentIndex + 1) % nasArray.length);
                   }}
                 >
                   <HiOutlineArrowRight className="h-6 w-6" />
@@ -304,7 +311,11 @@ export const OASStatus = () => {
                             show={isViewingEvaluateGrades}
                             close={closeEvaluateGrades}
                             grade={grade}
-                            nasId={nasId}
+                            nasId={
+                              nasArray && nasArray.length > currentIndex
+                                ? nasArray[currentIndex].id
+                                : null
+                            }
                             selectedSY={selectedSY}
                             selectedSem={selectedSem}
                             onEvaluationSubmit={handleEvaluationSubmitted}
