@@ -1,5 +1,6 @@
 import { Modal } from "flowbite-react";
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
   const [validationStatus, setvalidationStatus] = useState(0);
@@ -36,9 +37,6 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
     setMudHours(e.target.value);
   };
 
-  console.log(validationStatus);
-  console.log(mudHours);
-
   return (
     <div>
       {isOpen && (
@@ -57,7 +55,7 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
       )}
       <Modal
         show={isOpen}
-        className="rounded-2xl"
+        className="rounded-1xl"
         style={{
           padding: "0",
           zIndex: 1000,
@@ -125,4 +123,10 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
       </Modal>
     </div>
   );
+};
+
+ValidationStatusModal.propTypes = {
+  isOpen: PropTypes.bool,
+  closeModal: PropTypes.func,
+  handleSubmit: PropTypes.func,
 };

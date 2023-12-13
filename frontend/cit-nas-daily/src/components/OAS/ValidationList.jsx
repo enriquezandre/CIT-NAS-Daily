@@ -1,9 +1,10 @@
 import { Avatar } from "flowbite-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import PropTypes from "prop-types";
 import { ValidationStatusModal } from "./ValidationStatusModal"; // Import the modal
 
-export const ValidationList = () => {
+export const ValidationList = ({ searchQuery }) => {
   const [validation, setValidation] = useState([]);
   const [isStatusModalOpen, setStatusModalOpen] = useState(false);
   const [selectedValidationItem, setSelectedValidationItem] = useState(null);
@@ -39,33 +40,37 @@ export const ValidationList = () => {
     setStatusModalOpen(false);
   };
 
+  const fetchValidation = async () => {
+    try {
+      const api = axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const response = await api.get("/Validation");
+
+      // Filter the data to only include items with validationStatus === 0
+      const filteredData = response.data.filter((item) => item.validationStatus === 0);
+
+      const validationData = await Promise.all(
+        filteredData.map(async (item) => {
+          const nasResponse = await api.get(`/NAS/${item.nasId}`);
+          return {
+            ...item,
+            nasName: nasResponse.data.fullName,
+          };
+        })
+      );
+
+      setValidation(validationData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchValidation = async () => {
-      try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const response = await api.get("/Validation");
-        const validationData = await Promise.all(
-          response.data.map(async (item) => {
-            const nasResponse = await api.get(`/NAS/${item.nasId}`);
-            return {
-              ...item,
-              nasName: nasResponse.data.fullName,
-            };
-          })
-        );
-
-        setValidation(validationData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     fetchValidation();
   }, []);
 
@@ -91,9 +96,14 @@ export const ValidationList = () => {
       };
 
       const response = await api.put(`/Validation?validationId=${validationId}`, requestData);
-
       if (response.status === 200 || response.status === 201) {
         console.log("Submitted successfully");
+      } else {
+        console.error("Submission failed");
+      }
+
+      if (response.status === 200 || response.status === 201) {
+        fetchValidation();
       } else {
         console.error("Submission failed");
       }
@@ -104,10 +114,14 @@ export const ValidationList = () => {
     }
   };
 
+  const filteredValidation = validation.filter((item) =>
+    item.nasName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <div className="grid gap-3">
-        {validation.map((item) => (
+        {filteredValidation.map((item) => (
           <div
             key={item.id}
             className="border border-solid rounded-md p-3 flex items-center justify-between"
@@ -148,4 +162,8 @@ export const ValidationList = () => {
       />
     </>
   );
+};
+
+ValidationList.propTypes = {
+  searchQuery: PropTypes.string,
 };

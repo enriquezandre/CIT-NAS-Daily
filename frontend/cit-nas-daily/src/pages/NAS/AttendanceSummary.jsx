@@ -26,9 +26,10 @@ export const AttendanceSummary = () => {
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedAbsentDate, setSelectedAbsentDate] = useState(null);
   const { nasId } = useParams();
 
-  console.log(currentYear, currentSem);
+  // console.log(currentYear, currentSem);
 
   const api = useMemo(
     () =>
@@ -132,8 +133,12 @@ export const AttendanceSummary = () => {
     console.log("Selected Month:", value);
   };
 
-  const openModal = () => {
+  const openModal = (date) => {
     setIsOpen(true);
+    setSelectedAbsentDate(date);
+
+    // console.log("Selected date:", date);
+    // console.log("Selected absent date:", selectedAbsentDate);
   };
 
   const closeModal = () => {
@@ -152,6 +157,7 @@ export const AttendanceSummary = () => {
     try {
       const requestData = {
         nasId: nasId,
+        absenceDate: selectedAbsentDate,
         nasLetter: base64String,
       };
 

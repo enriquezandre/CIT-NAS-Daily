@@ -5,15 +5,21 @@ import { Modal } from "flowbite-react";
 export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) => {
   const fileInputRef = useRef(null);
   const [selectedFileName, setSelectedFileName] = useState(null);
+  const [error, setError] = useState("");
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
-    console.log("Selected file:", selectedFile);
     setSelectedFileName(selectedFile ? selectedFile.name : null);
   };
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handleCloseUploadModal = () => {
+    setSelectedFileName(null);
+    setError("");
+    closeModal();
   };
 
   const handleConfirm = async () => {
@@ -25,17 +31,17 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
         if (selectedFile.type === "application/pdf") {
           // Convert the selected file to Base64
           const base64String = await fileToBase64(selectedFile);
-          console.log("Base64-encoded string:", base64String);
 
           // Pass the Base64-encoded string to the handleSubmit function
           handleSubmit(base64String);
-
+          setSelectedFileName(null);
+          setError("");
           closeModal();
         } else {
-          console.error("Invalid file type. Please select a PDF file.");
+          setError("Invalid file type. Please select a PDF file.");
         }
       } else {
-        console.error("No file selected");
+        setError("No file selected");
       }
     } catch (error) {
       console.error("Error during file processing:", error);
@@ -102,6 +108,9 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
               </button>
               <span className="ml-3">{selectedFileName || "No file selected"}</span>
             </div>
+            <div className="pt-2 text-red">
+              <p>{error}</p>
+            </div>
           </div>
         </Modal.Body>
         <Modal.Footer
@@ -116,7 +125,7 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
             <div className="flex m-2">
               <button
                 className="bg-primary text-white py-2 px-6 rounded-full  hover:bg-secondary hover:text-primary"
-                onClick={closeModal}
+                onClick={handleCloseUploadModal}
               >
                 Cancel
               </button>
