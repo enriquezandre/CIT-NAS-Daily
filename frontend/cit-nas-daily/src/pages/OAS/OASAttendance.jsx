@@ -22,6 +22,7 @@ export const OASAttendance = () => {
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [maxNasId, setMaxNasId] = useState(1);
   const [selectedSem, setSelectedSem] = useState(currentSemester);
   const [monthOptions, setMonthOptions] = useState(first_sem);
@@ -81,30 +82,6 @@ export const OASAttendance = () => {
   }, [api]);
 
   useEffect(() => {
-    const fetchNas = async () => {
-      try {
-        const nasresponse = await api.get(
-          `/NAS/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}/noimg` //to change nasid to other id
-        );
-        const nasData = nasresponse.data;
-
-        setFirstname(nasData.firstName);
-        setMiddlename(nasData.middleName);
-        setLastname(nasData.lastName);
-        setOffice(nasData.officeName);
-      } catch (error) {
-        console.error(error);
-        if (error.response.status === 404) {
-          setFirstname(null);
-          setMiddlename(null);
-          setLastname(null);
-          setOffice(null);
-        }
-      }
-    };
-
-    fetchNas();
-
     let selectedMonthIndex;
     switch (selectedSem) {
       case "First":
@@ -160,19 +137,26 @@ export const OASAttendance = () => {
         const response = await api.get(`/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`);
         setNasArray(response.data);
 
-        const maxId = Math.max(...response.data.map((nas) => nas.id), 1);
-        setMaxNasId(maxId);
+        setFirstname(response.data[currentIndex].firstName);
+        setMiddlename(response.data[currentIndex].middleName);
+        setLastname(response.data[currentIndex].lastName);
+        setOffice(response.data[currentIndex].officeName);
+        setMaxNasId(response.data.length - 1);
       } catch (error) {
         console.error(error);
         if (error.response.status === 404) {
           setNasArray([]);
           setMaxNasId(0);
+          setFirstname(null);
+          setMiddlename(null);
+          setLastname(null);
+          setOffice(null);
         }
       }
     };
 
     fetchNasData();
-  }, [api, selectedSY, selectedSem, getSemesterValue]);
+  }, [api, selectedSY, selectedSem, currentIndex, getSemesterValue]);
 
   useEffect(() => {
     const results = nasArray.filter((data) =>
@@ -186,11 +170,15 @@ export const OASAttendance = () => {
   const handleSelectSY = (event) => {
     const value = event.target.value;
     setSelectedSY(value);
+    setCurrentIndex(0);
+    setMaxNasId(0);
   };
 
   const handleSelectSem = (event) => {
     const value = event.target.value;
     setSelectedSem(value);
+    setCurrentIndex(0);
+    setMaxNasId(0);
     setSelectedMonth("All");
   };
 
@@ -208,17 +196,19 @@ export const OASAttendance = () => {
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
-            <div className={`flex items-center w-auto ${nasId === 1 ? "ml-9" : ""}`}>
+            <div className={`flex items-center w-auto ${nasId === 1 ? "ml-5" : ""}`}>
               <div>
-                {nasId > 1 && (
+                {currentIndex != 0 ? (
                   <Button
                     className="text-black"
                     onClick={() => {
-                      setNasId(nasId - 1);
+                      setCurrentIndex((currentIndex - 1) % nasArray.length);
                     }}
                   >
                     <HiOutlineArrowLeft className="h-6 w-6" />
                   </Button>
+                ) : (
+                  ""
                 )}
               </div>
               <div className="flex flex-row justify-start items-center gap-10">
@@ -281,11 +271,11 @@ export const OASAttendance = () => {
                   </button>
                 </div>
               </div>
-              {nasId < maxNasId ? (
+              {currentIndex != maxNasId ? (
                 <Button
                   className="text-black"
                   onClick={() => {
-                    setNasId(nasId + 1);
+                    setCurrentIndex((currentIndex + 1) % nasArray.length);
                   }}
                 >
                   <HiOutlineArrowRight className="h-6 w-6" />
@@ -317,7 +307,6 @@ export const OASAttendance = () => {
                 selectedMonth={selectedMonthIndex}
                 selectedSem={selectedSem}
                 selectedSY={selectedSY}
-                nasId={nasId}
               />
             </div>
           </div>
