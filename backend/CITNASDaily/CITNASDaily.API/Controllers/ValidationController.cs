@@ -24,9 +24,19 @@ namespace CITNASDaily.API.Controllers
             _logger = logger;
         }
 
+        #region CreateValidation
+
+        /// <summary>
+        /// Creates a new validation entry.
+        /// </summary>
+        /// <param name="validationCreate">The information to create a validation entry.</param>
+        /// <returns>Newly created validation entry.</returns>
         [HttpPost]
         [Authorize(Roles = "OAS, NAS")]
         [ProducesResponseType(typeof(Validation), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateValidation([FromBody] ValidationCreateDto validationCreate)
         {
             try
@@ -41,7 +51,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (createdValidation == null)
                 {
-                    return NotFound();
+                    return BadRequest("Validation creation failed.");
                 }
 
                 return CreatedAtRoute("GetValidationById", new { validationId = createdValidation.Id }, createdValidation);
@@ -53,8 +63,20 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        #endregion
+
+        #region GetValidation
+
+        /// <summary>
+        /// Retrieves all validation entries.
+        /// </summary>
+        /// <returns>List of all validation entries.</returns>
         [HttpGet(Name = "GetAllValidations")]
         [Authorize(Roles = "OAS")]
+        [ProducesResponseType(typeof(IEnumerable<Validation>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllValidations()
         {
             try
@@ -81,8 +103,17 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves validation entry by id.
+        /// </summary>
+        /// <param name="validationId">Unique identifier of the validation entry.</param>
+        /// <returns>Requested validation entry.</returns>
         [HttpGet("{validationId}", Name = "GetValidationById")]
         [Authorize(Roles = "OAS, NAS")]
+        [ProducesResponseType(typeof(ValidationDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetValidationById(int validationId)
         {
             try
@@ -97,7 +128,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (validation == null)
                 {
-                    return NotFound($"There is no validation {validationId} yet.");
+                    return NotFound($"Validation #{validationId} does not exist.");
                 }
 
                 return Ok(validation);
@@ -109,8 +140,17 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves a list of validation entries by NAS id.
+        /// </summary>
+        /// <param name="nasId">NAS unique identifier.</param>
+        /// <returns>List of all validation entries by NAS id.</returns>
         [HttpGet("nas/{nasId}", Name = "GetValidationByNasId")]
         [Authorize(Roles = "OAS, NAS")]
+        [ProducesResponseType(typeof(IEnumerable<Validation>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetValidationByNasId(int nasId)
         {
             try
@@ -125,7 +165,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (validation.IsNullOrEmpty())
                 {
-                    return NotFound($"There is no validation by NAS ID {nasId} yet.");
+                    return NotFound($"There is no validation entry by NAS ID #{nasId} yet.");
                 }
 
                 return Ok(validation);
@@ -137,8 +177,22 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        #endregion
+
+        #region UpdateValidation
+
+        /// <summary>
+        /// Updates validation entry based on the specified id. 
+        /// </summary>
+        /// <param name="validationUpdate">New Validation information.</param>
+        /// <param name="validationId">Unique identifier of the validation.</param>
+        /// <returns>Newly updated validation entry.</returns>
         [HttpPut(Name = "UpdateValidation")]
         [Authorize(Roles = "OAS, NAS")]
+        [ProducesResponseType(typeof(Validation), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateValidation(ValidationUpdateDto validationUpdate, int validationId)
         {
             try
@@ -153,7 +207,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (validation == null)
                 {
-                    return NotFound($"There is no validation {validationId} yet.");
+                    return NotFound($"Validation #{validationId} does not exist.");
                 }
 
                 return Ok(validation);
@@ -164,5 +218,7 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
+        #endregion
     }
 }
