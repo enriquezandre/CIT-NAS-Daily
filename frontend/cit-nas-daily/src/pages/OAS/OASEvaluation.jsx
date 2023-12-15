@@ -110,14 +110,14 @@ export const OASEvaluation = () => {
     fetchNas();
   }, [selectedSY, selectedSem, api, currentIndex, getSemesterValue]);
 
-  // useEffect(() => {
-  //   const results = nasArray.filter((data) =>
-  //     data.fullName.toLowerCase().includes(searchInput.toLowerCase())
-  //   );
-  //   if (results[0]) {
-  //     setNasId(results[0].id);
-  //   }
-  // }, [searchInput, nasArray]);
+  useEffect(() => {
+    const results = nasArray.filter((data) =>
+      data.fullName.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    if (results[0]) {
+      setCurrentIndex(nasArray.indexOf(results[0]));
+    }
+  }, [searchInput, nasArray]);
 
   return (
     <>
