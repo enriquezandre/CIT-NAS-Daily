@@ -1,8 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
 import { Dropdown } from "../../components/Dropdown";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
-import { AddNASForm } from "../../components/NAS/AddNASForm";
+import { AddNASForm } from "../../components/OAS/AddNASForm";
 import axios from "axios";
+import { AddSuperiorForm } from "../../components/OAS/AddSuperiorForm";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
@@ -271,10 +272,14 @@ export const OASManageData = () => {
               </div>
             </div>
             <hr className="my-5 border-t-2 border-gray-300" />
+            <div>
+              <AddNASForm />
+              <hr className="my-5 border-t-2 border-gray-300" />
+            </div>
+            <div>
+              <AddSuperiorForm />
+            </div>
           </div>
-        </div>
-        <div>
-          <AddNASForm />
         </div>
       </div>
     </>
