@@ -1,7 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
 import { Dropdown } from "../../components/Dropdown";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
+import { AddNASForm } from "../../components/OAS/AddNASForm";
 import axios from "axios";
+import { AddSuperiorForm } from "../../components/OAS/AddSuperiorForm";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
@@ -251,7 +253,7 @@ export const OASManageData = () => {
           </ul>
           <div className="px-8 py-4">
             <div className="flex mt-2 mb-8">
-              <p className="mr-5 font-bold">Upload DTR:</p>
+              <p className="mr-5 font-bold text-xl">Upload DTR:</p>
               <div>
                 <input
                   type="file"
@@ -268,6 +270,14 @@ export const OASManageData = () => {
                   </button>
                 ) : null}
               </div>
+            </div>
+            <hr className="my-5 border-t-2 border-gray-300" />
+            <div>
+              <AddNASForm />
+              <hr className="my-5 border-t-2 border-gray-300" />
+            </div>
+            <div>
+              <AddSuperiorForm />
             </div>
           </div>
         </div>
