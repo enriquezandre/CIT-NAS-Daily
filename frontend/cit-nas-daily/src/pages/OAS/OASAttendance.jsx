@@ -18,7 +18,6 @@ export const OASAttendance = () => {
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
-  const [nasId, setNasId] = useState(1);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
@@ -116,7 +115,9 @@ export const OASAttendance = () => {
     const fetchTimekeepingSummary = async () => {
       try {
         const timekeepingresponse = await api.get(
-          `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
+          `/TimekeepingSummary/${nasArray[currentIndex].id}/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}`
         );
         const timekeepingdata = timekeepingresponse.data;
         setTimekeepingSummaries(timekeepingdata);
@@ -129,7 +130,7 @@ export const OASAttendance = () => {
     };
 
     fetchTimekeepingSummary();
-  }, [api, nasId, selectedSY, selectedSem, getSemesterValue]);
+  }, [api, nasArray, currentIndex, selectedSY, selectedSem, getSemesterValue]);
 
   useEffect(() => {
     const fetchNasData = async () => {
@@ -158,14 +159,14 @@ export const OASAttendance = () => {
     fetchNasData();
   }, [api, selectedSY, selectedSem, currentIndex, getSemesterValue]);
 
-  useEffect(() => {
-    const results = nasArray.filter((data) =>
-      data.fullName.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    if (results[0]) {
-      setNasId(results[0].id);
-    }
-  }, [searchInput, nasArray]);
+  // useEffect(() => {
+  //   const results = nasArray.filter((data) =>
+  //     data.fullName.toLowerCase().includes(searchInput.toLowerCase())
+  //   );
+  //   if (results[0]) {
+  //     setNasId(results[0].id);
+  //   }
+  // }, [searchInput, nasArray]);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -196,7 +197,7 @@ export const OASAttendance = () => {
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
-            <div className={`flex items-center w-auto ${nasId === 1 ? "ml-5" : ""}`}>
+            <div className={`flex items-center w-auto ${currentIndex === 0 ? "ml-9" : ""}`}>
               <div>
                 {currentIndex != 0 ? (
                   <Button

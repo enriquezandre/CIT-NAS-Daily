@@ -253,7 +253,7 @@ export const OASManageData = () => {
           </ul>
           <div className="px-8 py-4">
             <div className="flex mt-2 mb-8">
-              <p className="mr-5 font-bold">Upload DTR:</p>
+              <p className="mr-5 font-bold text-xl">Upload DTR:</p>
               <div>
                 <input
                   type="file"
