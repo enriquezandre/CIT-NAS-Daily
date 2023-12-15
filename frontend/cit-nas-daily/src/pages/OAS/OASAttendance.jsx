@@ -63,6 +63,33 @@ export const OASAttendance = () => {
     setSearchInput(event.target.value);
   };
 
+  useEffect(() => {
+    const fetchNasData = async () => {
+      try {
+        const response = await api.get(`/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`);
+        setNasArray(response.data);
+
+        setFirstname(response.data[currentIndex].firstName);
+        setMiddlename(response.data[currentIndex].middleName);
+        setLastname(response.data[currentIndex].lastName);
+        setOffice(response.data[currentIndex].officeName);
+        setMaxNasId(response.data.length - 1);
+      } catch (error) {
+        console.error(error);
+        if (error.response.status === 404) {
+          setNasArray([]);
+          setMaxNasId(0);
+          setFirstname(null);
+          setMiddlename(null);
+          setLastname(null);
+          setOffice(null);
+        }
+      }
+    };
+
+    fetchNasData();
+  }, [api, selectedSY, selectedSem, currentIndex, getSemesterValue]);
+
   //getting school year from the /NAS/sysem
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
@@ -131,33 +158,6 @@ export const OASAttendance = () => {
 
     fetchTimekeepingSummary();
   }, [api, nasArray, currentIndex, selectedSY, selectedSem, getSemesterValue]);
-
-  useEffect(() => {
-    const fetchNasData = async () => {
-      try {
-        const response = await api.get(`/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`);
-        setNasArray(response.data);
-
-        setFirstname(response.data[currentIndex].firstName);
-        setMiddlename(response.data[currentIndex].middleName);
-        setLastname(response.data[currentIndex].lastName);
-        setOffice(response.data[currentIndex].officeName);
-        setMaxNasId(response.data.length - 1);
-      } catch (error) {
-        console.error(error);
-        if (error.response.status === 404) {
-          setNasArray([]);
-          setMaxNasId(0);
-          setFirstname(null);
-          setMiddlename(null);
-          setLastname(null);
-          setOffice(null);
-        }
-      }
-    };
-
-    fetchNasData();
-  }, [api, selectedSY, selectedSem, currentIndex, getSemesterValue]);
 
   useEffect(() => {
     if (searchInput.trim() !== "") {
