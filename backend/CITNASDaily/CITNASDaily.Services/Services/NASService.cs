@@ -52,7 +52,7 @@ namespace CITNASDaily.Services.Services
             result.SYSem = sy;
 
             var office = await _officeRepository.GetOfficeByNASIdAsync(nas.Id);
-            result.OfficeName = office.Name;
+            result.OfficeName = office.OfficeName;
 
             return result;
         }
@@ -85,7 +85,7 @@ namespace CITNASDaily.Services.Services
             var nasDto = _mapper.Map<NASDto>(nas);
             var office = await _officeRepository.GetOfficeByNASIdAsync(nas.Id);
 
-            nasDto.OfficeName = office.Name;
+            nasDto.OfficeName = office.OfficeName;
 
             var getSY = await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nas.Id);
             nasDto.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(getSY);
@@ -105,7 +105,7 @@ namespace CITNASDaily.Services.Services
             var nasDto = _mapper.Map<NASDtoNoImage>(nas);
             var office = await _officeRepository.GetOfficeByNASIdAsync(nas.Id);
 
-            nasDto.OfficeName = office.Name;
+            nasDto.OfficeName = office.OfficeName;
 
             var getSY = await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nas.Id);
             nasDto.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(getSY);
@@ -195,7 +195,7 @@ namespace CITNASDaily.Services.Services
             var nasDto = _mapper.Map<NASDtoNoImage>(nasData);
             var office = await _officeRepository.GetOfficeByNASIdAsync(nasData.Id);
 
-            nasDto.OfficeName = office.Name;
+            nasDto.OfficeName = office.OfficeName;
 
             var getSY = await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nasData.Id);
             nasDto.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(getSY);

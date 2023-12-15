@@ -42,5 +42,18 @@ namespace CITNASDaily.Services.Services
         {
             return await _officeRepository.GetOfficesAsync();
         }
+
+        public async Task<OfficeDto?> UpdateOfficeAsync(OfficeUpdateDto office)
+        {
+            var of = _mapper.Map<Office>(office);
+            var updatedOffice = await _officeRepository.UpdateOfficeAsync(of);
+
+            if (updatedOffice == null)
+            {
+                return null;
+            }
+            
+            return _mapper.Map<OfficeDto>(updatedOffice);
+        }
     }
 }
