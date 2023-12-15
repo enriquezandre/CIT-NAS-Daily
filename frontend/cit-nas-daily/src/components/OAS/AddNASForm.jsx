@@ -31,12 +31,12 @@ export const AddNASForm = () => {
   return (
     <div>
       <section>
-        <div className="mx-9 max-w-full mb-10">
+        <div className="max-w-full mb-10">
           <h2 className="mb-4 text-xl font-bold text-black">Add a NAS</h2>
           <form action="#">
-            <div className="grid gap-4 sm:grid-cols-3 sm:gap-6">
+            <div className="grid grid-cols-3 gap-6">
               <div className="w-full">
-                <label htmlFor="brand" className="block mb-2 text-sm font-medium text-gray-900">
+                <label htmlFor="lastname" className="block mb-2 text-sm font-medium text-gray-900">
                   Last Name
                 </label>
                 <input
@@ -44,12 +44,12 @@ export const AddNASForm = () => {
                   name="lastname"
                   id="lastname"
                   className="bg-gray-50 border border-gray text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
-                  placeholder="Product brand"
+                  placeholder="Last name"
                   required=""
                 />
               </div>
               <div className="w-full">
-                <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900">
+                <label htmlFor="firstname" className="block mb-2 text-sm font-medium text-gray-900">
                   First Name
                 </label>
                 <input
@@ -57,12 +57,15 @@ export const AddNASForm = () => {
                   name="firstname"
                   id="firstname"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  placeholder="$2999"
+                  placeholder="First name"
                   required=""
                 />
               </div>
               <div className="w-full">
-                <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900">
+                <label
+                  htmlFor="middlename"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
                   Middle Name
                 </label>
                 <input
@@ -70,19 +73,19 @@ export const AddNASForm = () => {
                   name="middlename"
                   id="middlename"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  placeholder="$2999"
+                  placeholder="Middle name"
                   required=""
                 />
               </div>
               <div>
-                <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900">
+                <label htmlFor="office" className="block mb-2 text-sm font-medium text-gray-900">
                   Assigned Office
                 </label>
                 <select
                   id="category"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                 >
-                  <option selected="">Select category</option>
+                  <option selected="">Select office</option>
                   <option value="TV">TV/Monitors</option>
                   <option value="PC">PC</option>
                   <option value="GA">Gaming/Console</option>
@@ -90,10 +93,7 @@ export const AddNASForm = () => {
                 </select>
               </div>
               <div>
-                <label
-                  htmlFor="item-weight"
-                  className="block mb-2 text-sm font-medium text-gray-900"
-                >
+                <label htmlFor="idNumber" className="block mb-2 text-sm font-medium text-gray-900">
                   ID Number
                 </label>
                 <input
@@ -101,12 +101,12 @@ export const AddNASForm = () => {
                   name="item-weight"
                   id="item-weight"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  placeholder="12"
+                  placeholder="XX-XXXX-XX or XXXX-XXXXX"
                   required=""
                 />
               </div>
               <div className="w-full">
-                <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900">
+                <label htmlFor="program" className="block mb-2 text-sm font-medium text-gray-900">
                   Program
                 </label>
                 <input
@@ -114,19 +114,21 @@ export const AddNASForm = () => {
                   name="program"
                   id="program"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  placeholder="$2999"
+                  placeholder="Program"
                   required=""
                 />
               </div>
+            </div>
+            <div className="grid grid-cols-4 gap-6 mt-5">
               <div>
-                <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900">
+                <label htmlFor="gender" className="block mb-2 text-sm font-medium text-gray-900">
                   Gender
                 </label>
                 <select
                   id="category"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                 >
-                  <option selected="">Select category</option>
+                  <option selected="">Select gender</option>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                 </select>
@@ -158,15 +160,15 @@ export const AddNASForm = () => {
                 />
               </div>
               <div className="w-full">
-                <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900">
+                <label htmlFor="yearLevel" className="block mb-2 text-sm font-medium text-gray-900">
                   Year Level
                 </label>
                 <input
                   type="number"
-                  name="middlename"
-                  id="middlename"
+                  name="yearLevel"
+                  id="yearLevel"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  placeholder="$2999"
+                  placeholder="Year Level"
                   required=""
                 />
               </div>
@@ -175,7 +177,7 @@ export const AddNASForm = () => {
               type="submit"
               className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-black bg-secondary rounded-lg focus:ring-4 focus:ring-primary-200 hover:bg-primary hover:text-white"
             >
-              Add product
+              Add
             </button>
           </form>
         </div>
