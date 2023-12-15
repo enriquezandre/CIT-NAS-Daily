@@ -24,49 +24,7 @@ namespace CITNASDaily.API.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        [Authorize(Roles = "OAS")]
-        public async Task<IActionResult> GetSummaryEvaluations()
-        {
-            try
-            {
-                var summaryEval = await _summaryEvaluationService.GetSummaryEvaluationsAsync();
-                if (summaryEval.IsNullOrEmpty()) return NoContent();
-
-                return Ok(summaryEval);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting summary evaluations.");
-
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-            }
-        }
-
-        [HttpGet("{year}/{semester}/{nasId}", Name = "GetSummaryEvaluationByNASId")]
-        [Authorize(Roles = "OAS, Superior, NAS")]
-        public async Task<IActionResult> GetSummaryEvaluationByNASIdSemesterYear(int nasId, Semester semester, int year)
-        {
-            try
-            {
-                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
-                if (currentUser == null) return Forbid();
-
-                var summaryEval = await _summaryEvaluationService.GetSummaryEvaluationByNASIdSemesterYearAsync(nasId, semester, year);
-
-                if (summaryEval == null)
-                {
-                    return NotFound("No summary evaluation yet.");
-                }
-
-                return Ok(summaryEval);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting summary evaluation.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-            }
-        }
+        #region CreateSummaryEvaluation
 
         [HttpPost]
         [Authorize(Roles = "OAS")]
@@ -85,17 +43,112 @@ namespace CITNASDaily.API.Controllers
 
                 if (summaryEval == null)
                 {
-                    return BadRequest("Creation Failed.");
+                    return BadRequest("Summary Evaluation creation failed.");
                 }
 
                 return CreatedAtRoute("GetSummaryEvaluationByNASId", new { nasId = summaryEval.nasId }, summaryEval);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating summary evaluation.");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
+        #endregion
+
+        #region GetSummaryEvaluation
+
+        [HttpGet]
+        [Authorize(Roles = "OAS")]
+        public async Task<IActionResult> GetSummaryEvaluations()
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var summaryEval = await _summaryEvaluationService.GetSummaryEvaluationsAsync();
+                if (summaryEval.IsNullOrEmpty())
+                {
+                    return NotFound("No Summary Evaluations Found");
+                }
+
+                return Ok(summaryEval);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to retrieve summary evaluations.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("{year}/{semester}/{nasId}", Name = "GetSummaryEvaluationByNASId")]
+        [Authorize(Roles = "OAS, Superior, NAS")]
+        public async Task<IActionResult> GetSummaryEvaluationByNASIdSemesterYear(int nasId, Semester semester, int year)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var summaryEval = await _summaryEvaluationService.GetSummaryEvaluationByNASIdSemesterYearAsync(nasId, semester, year);
+
+                if (summaryEval == null)
+                {
+                    return NotFound($"No Summary Evaluation found for NAS ID #{nasId} with the specified semester and year.");
+                }
+
+                return Ok(summaryEval);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to retrieve summary evaluation.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpGet("grades/{nasId}/{year}/{semester}", Name = "GetNASGradePicture")]
+        [Authorize(Roles = "OAS, Superior")]
+        public async Task<IActionResult> GetNASGradePicture(int nasId, int year, int semester)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                if (!(Enum.IsDefined(typeof(Semester), semester)))
+                {
+                    return UnprocessableEntity("Invalid semester input.");
+                }
+
+                var nasGrades = await _summaryEvaluationService.GetNASGradePicture(nasId, year, (Semester)semester);
+                if (nasGrades == null)
+                {
+                    return NotFound($"No grades found for NAS ID #{nasId} with the specified semester and year");
+                }
+
+                return Ok(nasGrades);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retreiving grades.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        #endregion
+
+        #region PutSummaryEvaluation
 
         [HttpPut]
         [Authorize(Roles = "OAS")]
@@ -113,44 +166,18 @@ namespace CITNASDaily.API.Controllers
 
                 if (summaryEval == null)
                 {
-                    return BadRequest("Update Failed.");
+                    return BadRequest("Summary Evaluation Update Failed.");
                 }
 
                 return Ok(summaryEval);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating summary evaluation.");
+                _logger.LogError(ex, "Error updating summary evaluation.");
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        [HttpGet("grades/{nasId}/{year}/{semester}", Name = "GetNASGradePicture")]
-        [Authorize(Roles = "OAS, Superior")]
-        public async Task<IActionResult> GetNASGradePicture(int nasId, int year, int semester)
-        {
-            try
-            {
-                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
-                if (currentUser == null)
-                {
-                    return Forbid();
-                }
-
-                var nasGrades = await _summaryEvaluationService.GetNASGradePicture(nasId, year, (Semester)semester);
-
-                if (nasGrades == null)
-                {
-                    return BadRequest("NAS hasn't uploaded grades yet.");
-                }
-
-                return Ok(nasGrades);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error retreiving grades.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-            }
-        }
+        #endregion
     }
 }

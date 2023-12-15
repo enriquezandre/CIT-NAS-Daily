@@ -46,7 +46,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (createdNas == null)
                 {
-                    return NotFound();
+                    return BadRequest("NAS creation failed");
                 }
 
                 return CreatedAtRoute("GetNAS", new { nasId = createdNas.Id }, createdNas);

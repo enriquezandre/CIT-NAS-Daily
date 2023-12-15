@@ -1,4 +1,5 @@
 ﻿using CITNASDaily.Entities.Dtos.OfficeDtos;
+using CITNASDaily.Entities.Models;
 using CITNASDaily.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +22,19 @@ namespace CITNASDaily.API.Controllers
             _logger = logger;
         }
 
+        #region CreateOffice
+
+        /// <summary>
+        /// Creates Office entry.
+        /// </summary>
+        /// <param name="officeCreate">Information of new Office</param>
+        /// <returns>Newly created Office</returns>
         [HttpPost]
         [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(OfficeDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateOffice([FromBody] OfficeCreateDto officeCreate)
         {
             try
@@ -38,7 +49,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (createdOffice == null)
                 {
-                    return NotFound();
+                    return BadRequest("Office creation failed.");
                 }
 
                 return CreatedAtRoute("GetOffices", new { officeId = createdOffice.Id }, createdOffice);
@@ -50,55 +61,117 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        #endregion
+
+        #region GetOffice
+        
+        /// <summary>
+        /// Retrieves a list of Offices.
+        /// </summary>
+        /// <returns>List of offices</returns>
         [HttpGet(Name = "GetOffices")]
         [Authorize(Roles = "OAS")]
+        [ProducesResponseType(typeof(Office), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetOffices()
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
                 var offices = await _officeService.GetOfficesAsync();
-                if (offices == null) return NoContent();
+                if (offices == null)
+                {
+                    return NotFound("No offices found.");
+                }
+
                 return Ok(offices);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error encountered when retrieving all Offices.");
+                _logger.LogError(ex, "Failed to retrieve Offices.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
 
+        /// <summary>
+        /// Retrieves Office by Superior id.
+        /// </summary>
+        /// <param name="superiorId">Superior unique identifier</param>
+        /// <returns>Requested Office entry</returns>
         [HttpGet("{superiorId}", Name = "GetOfficeBySuperiorId")]
         [Authorize(Roles = "OAS, Superior")]
+        [ProducesResponseType(typeof(Office), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetOfficeBySuperiorId(int superiorId)
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
                 var offices = await _officeService.GetOfficeBySuperiorIdAsync(superiorId);
-                if (offices == null) return NoContent();
+                if (offices == null)
+                {
+                    return NotFound($"No Office found for Superior id #{superiorId}");
+                }
+
                 return Ok(offices);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error encountered when retrieving the office.");
+                _logger.LogError(ex, "Failed to retrieve Office.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
 
+        /// <summary>
+        /// Retrieves Office by NAS id
+        /// </summary>
+        /// <param name="nasId">NAS unique identifier</param>
+        /// <returns>Requested Office entry</returns>
         [HttpGet("{nasId}/NAS", Name = "GetOfficeByNASId")]
         [Authorize(Roles = "OAS, Superior, NAS")]
+        [ProducesResponseType(typeof(Office), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetOfficeByNASId(int nasId)
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
                 var offices = await _officeService.GetOfficeByNASIdAsync(nasId);
-                if (offices == null) return NoContent();
+                if (offices == null)
+                {
+                    return NotFound($"No Office found for NAS id #{nasId}");
+                }
+
                 return Ok(offices);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error encountered when retrieving the office.");
+                _logger.LogError(ex, "Failed to retrieve Office.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
+        #endregion
     }
 }
