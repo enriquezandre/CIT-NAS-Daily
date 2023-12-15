@@ -1,32 +1,96 @@
-// import { useMemo } from "react";
-// import axios from "axios";
+import { useMemo, useRef, useEffect, useState } from "react";
+import axios from "axios";
 
 export const AddNASForm = () => {
-  //   const api = useMemo(
-  //     () =>
-  //       axios.create({
-  //         baseURL: "https://localhost:7001/api",
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }),
-  //     []
-  //   );
+  const [offices, setOffices] = useState([]);
+  const lastnameRef = useRef();
+  const firstnameRef = useRef();
+  const middlenameRef = useRef();
+  const officeRef = useRef();
+  const idnumberRef = useRef();
+  const programRef = useRef();
+  const genderRef = useRef();
+  const birthdateRef = useRef();
+  const datestartedRef = useRef();
+  const yearlevelRef = useRef();
 
-  //   const handleSubmit = async (event) => {
-  //     event.preventDefault();
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
 
-  //     try {
-  //       const registeruser = await api.post(`/Auth/register/`, {
-  //         username: 0,
-  //         password: 0,
-  //         role: totalFailedToPunch,
-  //       });
-  //       console.log(registeruser);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchOffices = async () => {
+      try {
+        const response = await api.get(`/Offices`);
+        setOffices(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchOffices();
+  }, [api]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const lastname = lastnameRef.current.value;
+    const firstname = firstnameRef.current.value;
+    const officeId = officeRef.current.value;
+    const birthDate = birthdateRef.current.value;
+
+    const username = `${firstname}${lastname}`.toLowerCase();
+    console.log(username);
+    console.log(officeId);
+    console.log(birthDate);
+
+    // REGISTER AS USER
+    //   try {
+    //     const registeruser = await api.post(`/Auth/register/`, {
+    //       username: username,
+    //       password: username,
+    //       role: "NAS",
+    //     });
+    //     console.log(registeruser);
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+
+    //   REGISTER AS NAS
+    // try {
+    //   const registernas = await api.post(`/NAS`, {
+    //     studentIDNo: idnumberRef,
+    //     username: username,
+    //     firstName: firstname,
+    //     middleName: middlenameRef,
+    //     lastName: lastname,
+    //     gender: "string",
+    //     birthDate: birthdateRef,
+    //     course: "string",
+    //     yearLevel: yearlevelRef,
+    //     sySem: [
+    //       {
+    //         year: 0,
+    //         semester: 0,
+    //       },
+    //     ],
+    //     unitsAllowed: 0,
+    //     officeId: 0,
+    //     enNo: 0,
+    //     dateStarted: datestartedRef,
+    //   });
+    //   console.log(registernas);
+    // } catch (error) {
+    //   console.error(error);
+    // }
+  };
 
   return (
     <div>
@@ -40,6 +104,7 @@ export const AddNASForm = () => {
                   Last Name
                 </label>
                 <input
+                  ref={lastnameRef}
                   type="text"
                   name="lastname"
                   id="lastname"
@@ -53,6 +118,7 @@ export const AddNASForm = () => {
                   First Name
                 </label>
                 <input
+                  ref={firstnameRef}
                   type="text"
                   name="firstname"
                   id="firstname"
@@ -69,6 +135,7 @@ export const AddNASForm = () => {
                   Middle Name
                 </label>
                 <input
+                  ref={middlenameRef}
                   type="text"
                   name="middlename"
                   id="middlename"
@@ -82,14 +149,16 @@ export const AddNASForm = () => {
                   Assigned Office
                 </label>
                 <select
+                  ref={officeRef}
                   id="category"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                 >
                   <option selected="">Select office</option>
-                  <option value="TV">TV/Monitors</option>
-                  <option value="PC">PC</option>
-                  <option value="GA">Gaming/Console</option>
-                  <option value="PH">Phones</option>
+                  {offices.map((office) => (
+                    <option key={office.id} value={office.id}>
+                      {office.name}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -97,6 +166,7 @@ export const AddNASForm = () => {
                   ID Number
                 </label>
                 <input
+                  ref={idnumberRef}
                   type="number"
                   name="item-weight"
                   id="item-weight"
@@ -110,6 +180,7 @@ export const AddNASForm = () => {
                   Program
                 </label>
                 <input
+                  ref={programRef}
                   type="text"
                   name="program"
                   id="program"
@@ -125,6 +196,7 @@ export const AddNASForm = () => {
                   Gender
                 </label>
                 <select
+                  ref={genderRef}
                   id="category"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                 >
@@ -138,6 +210,7 @@ export const AddNASForm = () => {
                   Birthdate
                 </label>
                 <input
+                  ref={birthdateRef}
                   type="date"
                   name="middlename"
                   id="middlename"
@@ -151,6 +224,7 @@ export const AddNASForm = () => {
                   Date Started
                 </label>
                 <input
+                  ref={datestartedRef}
                   type="date"
                   name="middlename"
                   id="middlename"
@@ -164,6 +238,7 @@ export const AddNASForm = () => {
                   Year Level
                 </label>
                 <input
+                  ref={yearlevelRef}
                   type="number"
                   name="yearLevel"
                   id="yearLevel"
@@ -176,6 +251,7 @@ export const AddNASForm = () => {
             <button
               type="submit"
               className="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-black bg-secondary rounded-lg focus:ring-4 focus:ring-primary-200 hover:bg-primary hover:text-white"
+              onClick={handleSubmit}
             >
               Add
             </button>
