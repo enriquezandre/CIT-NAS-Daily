@@ -51,7 +51,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (createdValidation == null)
                 {
-                    return BadRequest("Validation creation failed.");
+                    return BadRequest($"Validation creation of NAS id #{validationCreate.NasId} failed.");
                 }
 
                 return CreatedAtRoute("GetValidationById", new { validationId = createdValidation.Id }, createdValidation);
@@ -91,14 +91,14 @@ namespace CITNASDaily.API.Controllers
 
                 if (validations.IsNullOrEmpty())
                 {
-                    return NotFound("There are no validations yet.");
+                    return NotFound("No validations found.");
                 }
 
                 return Ok(validations);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting list of Validations.");
+                _logger.LogError(ex, "Failed to retrieve validations.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
@@ -135,7 +135,7 @@ namespace CITNASDaily.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting list of Validations.");
+                _logger.LogError(ex, "Failed to retrieve validation.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
@@ -165,14 +165,14 @@ namespace CITNASDaily.API.Controllers
 
                 if (validation.IsNullOrEmpty())
                 {
-                    return NotFound($"There is no validation entry by NAS ID #{nasId} yet.");
+                    return NotFound($"No validation found for NAS id #{nasId}");
                 }
 
                 return Ok(validation);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting list of Validations.");
+                _logger.LogError(ex, "Failed to retrieve list of validations.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
@@ -214,7 +214,7 @@ namespace CITNASDaily.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting list of Validations.");
+                _logger.LogError(ex, "Failed to update validation.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }

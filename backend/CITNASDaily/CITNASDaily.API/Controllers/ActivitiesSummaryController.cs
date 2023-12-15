@@ -22,20 +22,25 @@ namespace CITNASDaily.API.Controllers
             _activitiesSummaryService = activitiesSummaryervice;
             _logger = logger;
         }
+
+        #region CreateActivitiesSummary
+
         /// <summary>
         /// Creates activities summary
         /// </summary>
-        /// <param name="activitiesSummaryCreate"></param>
+        /// <param name="activitiesSummaryCreate">Information of Activities Summary</param>
         /// <returns>Newly created activities summary</returns>
         /// <response code="201">Successfully created activities summary</response>
-        /// <response code="400">act summary details are invalid</response>
-        /// <response code="500">Internal server error</response>
+        /// <response code="400">Invalid activity summary</response>
         /// <response code="403">Forbidden error</response>
+        /// <response code="422">Invalid semester input</response>
+        /// <response code="500">Internal server error</response>
         [HttpPost("{nasId}/{year}/{semester}")]
         [Authorize]
         [ProducesResponseType(typeof(ActivitiesSummary), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateActivitiesSummary([FromBody] ActivitiesSummaryCreateDto activitiesSummaryCreate, int nasId, int year, int semester)
         {
@@ -47,34 +52,44 @@ namespace CITNASDaily.API.Controllers
                     return Forbid();
                 }
 
+                if (!(Enum.IsDefined(typeof(Semester), semester)))
+                {
+                    return UnprocessableEntity("Invalid semester input.");
+                }
+
                 var createdActivitiesSummary = await _activitiesSummaryService.CreateActivitiesSummaryAsync(activitiesSummaryCreate, nasId, year, (Semester)semester);
 
                 if (createdActivitiesSummary == null)
                 {
-                    return BadRequest("Creatiion Failed.");
+                    return BadRequest("Activity Summary creation failed.");
                 }
 
-                return Ok(createdActivitiesSummary);
+                return CreatedAtRoute("GetAllActivitiesSummaryByNASIdYearSemester", new { nasId = createdActivitiesSummary.NASId, year = createdActivitiesSummary.SchoolYear, semester = createdActivitiesSummary.Semester }, createdActivitiesSummary);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating ActivitiesSummary.");
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
+        #endregion
+
+        #region GetActivitiesSummary
+
         /// <summary>
-        /// Gets all activities summary
+        /// Retrieves all activities summary
         /// </summary>
-        /// <returns>All activities summary</returns>
+        /// <returns>List of activities summary</returns>
         /// <response code="200">Successfully retrieved created activities summary</response>
-        /// <response code="400">act summary details are invalid</response>
-        /// <response code="500">Internal server error</response>
         /// <response code="403">Forbidden error</response>
+        /// <response code="404">No Activity Summaries found</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet]
         [Authorize]
-        [ProducesResponseType(typeof(ActivitiesSummary), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<ActivitiesSummary>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllActivitiesSummary()
         {
@@ -86,27 +101,32 @@ namespace CITNASDaily.API.Controllers
                     return Forbid();
                 }
                 var activitiesSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryAsync();
-                if (activitiesSummaries == null) return BadRequest();
+                if (activitiesSummaries == null)
+                {
+                    return NotFound("No Activity Summaries found");
+                }
+
                 return Ok(activitiesSummaries);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error encountered when retrieving all Activities Summaries.");
+                _logger.LogError(ex, "Failed to retrieve Activity Summaries");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
         /// <summary>
-        /// Gets an activities summary by nasId
+        /// Retrieves all activity summarys by NAS id 
         /// </summary>
-        /// <param name="nasId"></param>
-        /// <returns>an activities summary</returns>
-        /// <response code="200">Successfully retrieved created activities summary</response>
-        /// <response code="404">act summary not found</response>
-        /// <response code="500">Internal server error</response>
+        /// <param name="nasId">NAS unique identifier</param>
+        /// <returns>List of Activities Summary under NAS id</returns>
+        /// <response code="200">Successfully retrieved created Activities Summary</response>
         /// <response code="403">Forbidden error</response>
+        /// <response code="404">No Activities Summary found</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet("{nasId}", Name = "GetAllActivitiesSummary")]
         [Authorize]
-        [ProducesResponseType(typeof(ActivitiesSummary), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<ActivitiesSummary>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -123,31 +143,32 @@ namespace CITNASDaily.API.Controllers
 
                 if (actSummaries == null)
                 {
-                    return NotFound();
+                    return NotFound($"No Activities Summary found for NAS ID #{nasId}");
                 }
 
                 return Ok(actSummaries);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting Activities Summary.");
+                _logger.LogError(ex, "Failed to retrieve Activities Summary.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
         /// <summary>
-        /// Gets an activities summary by nasId, month, and year
+        /// Retrieves a list of activities summary by nasId, month, and year
         /// </summary>
         /// <param name="nasId"></param>
         /// <param name="month"></param>
         /// <param name="year"></param>
-        /// <returns>an activities summary</returns>
+        /// <returns>Requested activities summary</returns>
         /// <response code="200">Successfully retrieved created activities summary</response>
         /// <response code="404">act summary not found</response>
         /// <response code="500">Internal server error</response>
         /// <response code="403">Forbidden error</response>
         [HttpGet("GetByMonth/{nasId}/{year}/{month}", Name = "GetAllActivitiesSummaryByNASIdMonthYear")]
         [Authorize]
-        [ProducesResponseType(typeof(ActivitiesSummary), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<ActivitiesSummary>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -164,38 +185,62 @@ namespace CITNASDaily.API.Controllers
 
                 if (actSummaries == null)
                 {
-                    return NotFound();
+                    return NotFound($"No Activities Summaries found for NAS id #{nasId} with the specified month and year");
                 }
 
                 return Ok(actSummaries);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting Activities Summary.");
+                _logger.LogError(ex, "Failed to retrieve Activities Summary.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
 
+        /// <summary>
+        /// Retrieves Activities Summary by NAS id, year, and semester
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <param name="year"></param>
+        /// <param name="semester"></param>
+        /// <returns>Requested Activities Summary</returns>
         [HttpGet("{nasId}/{year}/{semester}", Name = "GetAllActivitiesSummaryByNASIdYearSemester")]
         [Authorize]
+        [ProducesResponseType(typeof(IEnumerable<ActivitiesSummary>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllActivitiesSummaryByNASIdYearSemester(int nasId, int year, int semester)
         {
             try
             {
-                var actSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryByNASIdYearSemesterAsync(nasId, year, (Semester)semester);
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
 
+                if (!(Enum.IsDefined(typeof(Semester), semester)))
+                {
+                    return UnprocessableEntity("Invalid semester input.");
+                }
+
+                var actSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryByNASIdYearSemesterAsync(nasId, year, (Semester)semester);
                 if (actSummaries == null)
                 {
-                    return NotFound();
+                    return NotFound($"No Activities Summaries found for NAS id #{nasId} with the specified semester and year");
                 }
 
                 return Ok(actSummaries);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting Superior.");
+                _logger.LogError(ex, "Failed to retrieve Activities Summary.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
+        #endregion
     }
 }
