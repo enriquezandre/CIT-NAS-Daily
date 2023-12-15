@@ -173,5 +173,37 @@ namespace CITNASDaily.API.Controllers
         }
 
         #endregion
+
+        #region UpdateOffice
+
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> UpdateOffice([FromBody] OfficeUpdateDto office)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var updatedOffice = await _officeService.UpdateOfficeAsync(office);
+
+                if (updatedOffice == null)
+                {
+                    return BadRequest("Office update failed.");
+                }
+
+                return Ok(updatedOffice);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating Office.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        #endregion
     }
 }

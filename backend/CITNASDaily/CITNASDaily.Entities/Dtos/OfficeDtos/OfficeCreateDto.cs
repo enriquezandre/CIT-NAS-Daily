@@ -2,7 +2,6 @@
 {
     public class OfficeCreateDto
     {
-        public int SuperiorId { get; set; }
-        public string? Name { get; set; }
+        public string? OfficeName { get; set; }
     }
 }
