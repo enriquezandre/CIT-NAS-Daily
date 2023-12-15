@@ -160,11 +160,13 @@ export const OASAttendance = () => {
   }, [api, selectedSY, selectedSem, currentIndex, getSemesterValue]);
 
   useEffect(() => {
-    const results = nasArray.filter((data) =>
-      data.fullName.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    if (results[0]) {
-      setCurrentIndex(nasArray.indexOf(results[0]));
+    if (searchInput.trim() !== "") {
+      const results = nasArray.filter((data) =>
+        data.fullName.toLowerCase().includes(searchInput.toLowerCase())
+      );
+      if (results[0]) {
+        setCurrentIndex(nasArray.indexOf(results[0]));
+      }
     }
   }, [searchInput, nasArray]);
 
