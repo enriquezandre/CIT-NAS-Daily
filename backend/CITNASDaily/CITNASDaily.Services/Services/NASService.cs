@@ -203,6 +203,11 @@ namespace CITNASDaily.Services.Services
             return nasDto;
         }
 
+        public async Task<IEnumerable<NASSYSemOnly?>> GetSYSemByNASIdAsync(int nasId)
+        {
+            return await _nasRepository.GetSYSemByNASIdAsync(nasId);
+        }
+
         #endregion
 
         public async Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file)

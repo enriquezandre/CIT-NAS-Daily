@@ -291,6 +291,33 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        [HttpGet("sysem/{nasId}", Name = "GetSYSemByNASId")]
+        [Authorize(Roles = "OAS, NAS, Superior")]
+        public async Task<IActionResult> GetSYSemByNASId(int nasId)
+        {
+            try
+            {
+                var check = await _nasService.GetNASAsync(nasId);
+                if(check == null)
+                {
+                    return BadRequest($"NAS #{nasId} does not exist.");
+                }
+
+                var nas = await _nasService.GetSYSemByNASIdAsync(nasId);
+                if (nas.IsNullOrEmpty())
+                {
+                    return NotFound($"NAS #{nasId} is not enrolled.");
+                }
+
+                return Ok(nas);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting NAS");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
         #endregion
 
         #region UpdateUpload
