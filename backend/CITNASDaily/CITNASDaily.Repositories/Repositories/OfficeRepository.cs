@@ -29,6 +29,11 @@ namespace CITNASDaily.Repositories.Repositories
             return office;
         }
 
+        public async Task<Office?> GetOfficeByIdAsync(int id)
+        {
+            return await _context.Offices.SingleOrDefaultAsync(o => o.Id == id);
+        }
+
         public async Task<Office?> GetOfficeByNASIdAsync(int nasId)
         {
             var nas = await _context.NAS.FirstOrDefaultAsync(n => n.Id == nasId);
@@ -51,14 +56,6 @@ namespace CITNASDaily.Repositories.Repositories
             var office = await _context.Offices.Include(o => o.NAS).FirstOrDefaultAsync(o => o.SuperiorFirstName == existingSuperior.FirstName && o.SuperiorLastName == existingSuperior.LastName);
 
             return office;
-
-            //return await _context.Offices.FirstOrDefaultAsync(o => o.SuperiorId == superiorId);
-            /*var office = await _context.Offices.Include(o => o.NAS).FirstOrDefaultAsync(o => o.SuperiorId == superiorId);
-            if (office == null)
-            {
-                return await _context.Offices.FirstOrDefaultAsync(o => o.SuperiorId == superiorId);
-            }
-            return office;*/
         }
 
         public async Task<IEnumerable<Office?>> GetOfficesAsync()
@@ -88,9 +85,9 @@ namespace CITNASDaily.Repositories.Repositories
             office.SuperiorFirstName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(office.SuperiorFirstName);
             office.SuperiorLastName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(office.SuperiorLastName);
 
-            var existingOffice = await _context.Offices.SingleOrDefaultAsync(o => o.Id == office.Id);
-
-            if(existingOffice == null)
+            var existingOffice = await _context.Offices.Include(o => o.NAS).SingleOrDefaultAsync(o => o.Id == office.Id);
+            
+            if (existingOffice == null)
             {
                 return null;
             }
@@ -100,6 +97,13 @@ namespace CITNASDaily.Repositories.Repositories
             if(existingSuperior == null)
             {
                 return null; 
+            }
+
+            //make the office name of previous superior null
+            var previousSuperior = await _context.Superiors.SingleOrDefaultAsync(s => s.FirstName == existingOffice.SuperiorFirstName && s.LastName == existingOffice.SuperiorLastName);
+            if (previousSuperior != null)
+            {
+                previousSuperior.OfficeName = null;
             }
 
             existingOffice.SuperiorFirstName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(office.SuperiorFirstName);

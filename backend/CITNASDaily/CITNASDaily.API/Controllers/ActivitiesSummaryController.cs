@@ -26,12 +26,12 @@ namespace CITNASDaily.API.Controllers
         #region CreateActivitiesSummary
 
         /// <summary>
-        /// Creates activities summary
+        /// Creates Activities Summary
         /// </summary>
         /// <param name="activitiesSummaryCreate">Information of Activities Summary</param>
         /// <returns>Newly created activities summary</returns>
         /// <response code="201">Successfully created activities summary</response>
-        /// <response code="400">Invalid activity summary</response>
+        /// <response code="400">Invalid Activities Summary</response>
         /// <response code="403">Forbidden error</response>
         /// <response code="422">Invalid semester input</response>
         /// <response code="500">Internal server error</response>
@@ -61,14 +61,14 @@ namespace CITNASDaily.API.Controllers
 
                 if (createdActivitiesSummary == null)
                 {
-                    return BadRequest("Activity Summary creation failed.");
+                    return BadRequest("Activities Summary creation failed.");
                 }
 
                 return CreatedAtRoute("GetAllActivitiesSummaryByNASIdYearSemester", new { nasId = createdActivitiesSummary.NASId, year = createdActivitiesSummary.SchoolYear, semester = createdActivitiesSummary.Semester }, createdActivitiesSummary);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating ActivitiesSummary.");
+                _logger.LogError(ex, "Error creating Activities Summary.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
@@ -78,10 +78,10 @@ namespace CITNASDaily.API.Controllers
         #region GetActivitiesSummary
 
         /// <summary>
-        /// Retrieves all activities summary
+        /// Retrieves all Activities Summary
         /// </summary>
-        /// <returns>List of activities summary</returns>
-        /// <response code="200">Successfully retrieved created activities summary</response>
+        /// <returns>List of Activities Summary</returns>
+        /// <response code="200">Successfully retrieved created Activities Summary</response>
         /// <response code="403">Forbidden error</response>
         /// <response code="404">No Activity Summaries found</response>
         /// <response code="500">Internal server error</response>
@@ -103,20 +103,20 @@ namespace CITNASDaily.API.Controllers
                 var activitiesSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryAsync();
                 if (activitiesSummaries == null)
                 {
-                    return NotFound("No Activity Summaries found");
+                    return NotFound("No Activities Summary found");
                 }
 
                 return Ok(activitiesSummaries);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to retrieve Activity Summaries");
+                _logger.LogError(ex, "Failed to retrieve Activities Summary");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
 
         /// <summary>
-        /// Retrieves all activity summarys by NAS id 
+        /// Retrieves all Activities Summary by NAS id 
         /// </summary>
         /// <param name="nasId">NAS unique identifier</param>
         /// <returns>List of Activities Summary under NAS id</returns>
@@ -156,7 +156,7 @@ namespace CITNASDaily.API.Controllers
         }
 
         /// <summary>
-        /// Retrieves a list of activities summary by nasId, month, and year
+        /// Retrieves a list of Activities Summary by nasId, month, and year
         /// </summary>
         /// <param name="nasId"></param>
         /// <param name="month"></param>
@@ -185,7 +185,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (actSummaries == null)
                 {
-                    return NotFound($"No Activities Summaries found for NAS id #{nasId} with the specified month and year");
+                    return NotFound($"No Activities Summary found for NAS id #{nasId} with the specified month and year");
                 }
 
                 return Ok(actSummaries);
@@ -229,7 +229,7 @@ namespace CITNASDaily.API.Controllers
                 var actSummaries = await _activitiesSummaryService.GetAllActivitiesSummaryByNASIdYearSemesterAsync(nasId, year, (Semester)semester);
                 if (actSummaries == null)
                 {
-                    return NotFound($"No Activities Summaries found for NAS id #{nasId} with the specified semester and year");
+                    return NotFound($"No Activities Summary found for NAS id #{nasId} with the specified semester and year");
                 }
 
                 return Ok(actSummaries);

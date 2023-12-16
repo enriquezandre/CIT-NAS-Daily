@@ -101,11 +101,43 @@ namespace CITNASDaily.API.Controllers
         }
 
         /// <summary>
+        /// Retrieve Office by id
+        /// </summary>
+        /// <param name="id">Office unique identifier</param>
+        /// <returns>Requested office entry</returns>
+        [HttpGet("{id}", Name = "GetOfficeById")]
+        [Authorize(Roles = "OAS, Superior")]
+        public async Task<IActionResult> GetOfficeById(int id)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var office = await _officeService.GetOfficeByIdAsync(id);
+                if (office == null)
+                {
+                    return NotFound($"Office #{id} does not exist.");
+                }
+
+                return Ok(office);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to retrieve Office.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        /// <summary>
         /// Retrieves Office by Superior id.
         /// </summary>
         /// <param name="superiorId">Superior unique identifier</param>
         /// <returns>Requested Office entry</returns>
-        [HttpGet("{superiorId}", Name = "GetOfficeBySuperiorId")]
+        [HttpGet("superior/{superiorId}", Name = "GetOfficeBySuperiorId")]
         [Authorize(Roles = "OAS, Superior")]
         [ProducesResponseType(typeof(Office), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -141,7 +173,7 @@ namespace CITNASDaily.API.Controllers
         /// </summary>
         /// <param name="nasId">NAS unique identifier</param>
         /// <returns>Requested Office entry</returns>
-        [HttpGet("{nasId}/NAS", Name = "GetOfficeByNASId")]
+        [HttpGet("NAS/{nasId}", Name = "GetOfficeByNASId")]
         [Authorize(Roles = "OAS, Superior, NAS")]
         [ProducesResponseType(typeof(Office), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -176,8 +208,18 @@ namespace CITNASDaily.API.Controllers
 
         #region UpdateOffice
 
+        /// <summary>
+        /// Updates Office entry
+        /// </summary>
+        /// <param name="office">New information of Office</param>
+        /// <returns>Newly updated office</returns>
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = "OAS")]
+        [ProducesResponseType(typeof(Office), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateOffice([FromBody] OfficeUpdateDto office)
         {
             try
@@ -186,6 +228,13 @@ namespace CITNASDaily.API.Controllers
                 if (currentUser == null)
                 {
                     return Forbid();
+                }
+
+                var existingOffice = await _officeService.GetOfficeByIdAsync(office.Id);
+
+                if(existingOffice == null)
+                {
+                    return NotFound($"Office #{office.Id} does not exist.");
                 }
 
                 var updatedOffice = await _officeService.UpdateOfficeAsync(office);

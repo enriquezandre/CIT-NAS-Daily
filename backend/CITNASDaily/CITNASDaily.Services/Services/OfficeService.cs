@@ -28,6 +28,11 @@ namespace CITNASDaily.Services.Services
             return null;
         }
 
+        public async Task<Office?> GetOfficeByIdAsync(int id)
+        {
+            return await _officeRepository.GetOfficeByIdAsync(id);
+        }
+
         public async Task<Office?> GetOfficeByNASIdAsync(int nasId)
         {
             return await _officeRepository.GetOfficeByNASIdAsync(nasId);
