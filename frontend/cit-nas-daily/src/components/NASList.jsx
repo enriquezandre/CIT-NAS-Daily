@@ -81,7 +81,7 @@ NASList.propTypes = {
     id: PropTypes.number,
     name: PropTypes.string,
   }).isRequired,
-  selectedSY: PropTypes.number,
-  selectedSem: PropTypes.number,
+  selectedSY: PropTypes.string,
+  selectedSem: PropTypes.string,
 };
 export default NASList;
