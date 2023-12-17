@@ -167,8 +167,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
                 className="border-2 border-black text-center px-4 py-2"
                 style={{ textTransform: "uppercase" }}
               >
-                {nas.office ? nas.office.name : "N/A"}{" "}
-                {/* Display the office name or "N/A" if not available */}
+                {nas.office ? nas.officeName : "N/A"}{" "}
               </td>
               <td className="border-2 border-black text-center px-4 py-2">
                 {nas.timekeeping ? nas.timekeeping.excused : "NR"}
