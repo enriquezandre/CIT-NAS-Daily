@@ -153,7 +153,7 @@ export const ValidationList = ({ searchQuery }) => {
           </div>
         ))}
       </div>
-      {/* Status Modal */}
+      {/*Update Status Modal */}
       <ValidationStatusModal
         isOpen={isStatusModalOpen}
         closeModal={closeStatusModal}
