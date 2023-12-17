@@ -17,25 +17,6 @@ export const AddNASForm = () => {
   const syRef = useRef();
   const semRef = useRef();
 
-  const lastname = lastnameRef.current.value;
-  const firstname = firstnameRef.current.value;
-  const middlename = middlenameRef.current.value;
-  const username = `${firstname}${lastname}`.toLowerCase();
-  const officeId = officeRef.current.value;
-  const idnumber = idnumberRef.current.value;
-  const program = programRef.current.value;
-  const gender = genderRef.current.value;
-  const sy = syRef.current.value;
-  const sem = semRef.current.value;
-  const yearlevel = yearlevelRef.current.value;
-  const unitsAllowed = unitsAllowedRef.current.value;
-  let birthDate = birthdateRef.current.value;
-  let birth = new Date(birthDate);
-  let birthDateISOString = birth.toISOString();
-  let datestarted = datestartedRef.current.value;
-  let start = new Date(datestarted);
-  let datestartedISOString = start.toISOString();
-
   const api = useMemo(
     () =>
       axios.create({
@@ -77,6 +58,25 @@ export const AddNASForm = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const lastname = lastnameRef.current.value;
+    const firstname = firstnameRef.current.value;
+    const middlename = middlenameRef.current.value;
+    const username = `${firstname}${lastname}`.toLowerCase();
+    const officeId = officeRef.current.value;
+    const idnumber = idnumberRef.current.value;
+    const program = programRef.current.value;
+    const gender = genderRef.current.value;
+    const sy = syRef.current.value;
+    const sem = semRef.current.value;
+    const yearlevel = yearlevelRef.current.value;
+    const unitsAllowed = unitsAllowedRef.current.value;
+    let birthDate = birthdateRef.current.value;
+    let birth = new Date(birthDate);
+    let birthDateISOString = birth.toISOString();
+    let datestarted = datestartedRef.current.value;
+    let start = new Date(datestarted);
+    let datestartedISOString = start.toISOString();
 
     //REGISTER AS USER
     try {
