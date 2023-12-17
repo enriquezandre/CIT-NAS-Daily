@@ -13,6 +13,28 @@ export const AddNASForm = () => {
   const birthdateRef = useRef();
   const datestartedRef = useRef();
   const yearlevelRef = useRef();
+  const unitsAllowedRef = useRef();
+  const syRef = useRef();
+  const semRef = useRef();
+
+  const lastname = lastnameRef.current.value;
+  const firstname = firstnameRef.current.value;
+  const middlename = middlenameRef.current.value;
+  const username = `${firstname}${lastname}`.toLowerCase();
+  const officeId = officeRef.current.value;
+  const idnumber = idnumberRef.current.value;
+  const program = programRef.current.value;
+  const gender = genderRef.current.value;
+  const sy = syRef.current.value;
+  const sem = semRef.current.value;
+  const yearlevel = yearlevelRef.current.value;
+  const unitsAllowed = unitsAllowedRef.current.value;
+  let birthDate = birthdateRef.current.value;
+  let birth = new Date(birthDate);
+  let birthDateISOString = birth.toISOString();
+  let datestarted = datestartedRef.current.value;
+  let start = new Date(datestarted);
+  let datestartedISOString = start.toISOString();
 
   const api = useMemo(
     () =>
@@ -24,6 +46,21 @@ export const AddNASForm = () => {
       }),
     []
   );
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 2;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const fetchOffices = async () => {
@@ -41,55 +78,65 @@ export const AddNASForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const lastname = lastnameRef.current.value;
-    const firstname = firstnameRef.current.value;
-    const officeId = officeRef.current.value;
-    const birthDate = birthdateRef.current.value;
+    //REGISTER AS USER
+    try {
+      const registeruser = await api.post(`/Auth/register/`, {
+        username: username,
+        password: username,
+        role: "NAS",
+      });
+      console.log(registeruser);
+    } catch (error) {
+      console.error(error);
+    }
 
-    const username = `${firstname}${lastname}`.toLowerCase();
-    console.log(username);
-    console.log(officeId);
-    console.log(birthDate);
+    //REGISTER AS NAS
+    try {
+      const nasData = {
+        studentIDNo: idnumber,
+        username: username,
+        firstName: firstname,
+        middleName: middlename,
+        lastName: lastname,
+        gender: gender,
+        birthDate: birthDateISOString,
+        course: program,
+        yearLevel: yearlevel,
+        sySem: [
+          {
+            year: sy,
+            semester: getSemesterValue(sem),
+          },
+        ],
+        unitsAllowed: unitsAllowed,
+        officeId: officeId,
+        enNo: null,
+        dateStarted: datestartedISOString,
+      };
 
-    // REGISTER AS USER
-    //   try {
-    //     const registeruser = await api.post(`/Auth/register/`, {
-    //       username: username,
-    //       password: username,
-    //       role: "NAS",
-    //     });
-    //     console.log(registeruser);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
+      const registernas = await api.post(`/NAS`, nasData);
 
-    //   REGISTER AS NAS
-    // try {
-    //   const registernas = await api.post(`/NAS`, {
-    //     studentIDNo: idnumberRef,
-    //     username: username,
-    //     firstName: firstname,
-    //     middleName: middlenameRef,
-    //     lastName: lastname,
-    //     gender: "string",
-    //     birthDate: birthdateRef,
-    //     course: "string",
-    //     yearLevel: yearlevelRef,
-    //     sySem: [
-    //       {
-    //         year: 0,
-    //         semester: 0,
-    //       },
-    //     ],
-    //     unitsAllowed: 0,
-    //     officeId: 0,
-    //     enNo: 0,
-    //     dateStarted: datestartedRef,
-    //   });
-    //   console.log(registernas);
-    // } catch (error) {
-    //   console.error(error);
-    // }
+      if (registernas.status === 200 || registernas.status === 201) {
+        alert("Submitted successfully");
+        firstnameRef.current.value = "";
+        lastnameRef.current.value = "";
+        middlenameRef.current.value = "";
+        officeRef.current.value = "Select office";
+        idnumberRef.current.value = "";
+        programRef.current.value = "";
+        genderRef.current.value = "Select gender";
+        syRef.current.value = "";
+        semRef.current.value = "Select semester";
+        birthdateRef.current.value = "";
+        datestartedRef.current.value = "";
+        yearlevelRef.current.value = "";
+        unitsAllowedRef.current.value = "";
+      } else {
+        alert("Submission failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -140,7 +187,7 @@ export const AddNASForm = () => {
                   name="middlename"
                   id="middlename"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  placeholder="Middle name"
+                  placeholder="Middle name (Optional)"
                   required=""
                 />
               </div>
@@ -167,7 +214,7 @@ export const AddNASForm = () => {
                 </label>
                 <input
                   ref={idnumberRef}
-                  type="number"
+                  type="text"
                   name="item-weight"
                   id="item-weight"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
@@ -189,8 +236,6 @@ export const AddNASForm = () => {
                   required=""
                 />
               </div>
-            </div>
-            <div className="grid grid-cols-4 gap-6 mt-5">
               <div>
                 <label htmlFor="gender" className="block mb-2 text-sm font-medium text-gray-900">
                   Gender
@@ -201,10 +246,41 @@ export const AddNASForm = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                 >
                   <option selected="">Select gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
                 </select>
               </div>
+              <div className="w-full">
+                <label htmlFor="sy" className="block mb-2 text-sm font-medium text-gray-900">
+                  School Year
+                </label>
+                <input
+                  ref={syRef}
+                  type="number"
+                  name="sy"
+                  id="sy"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  placeholder="Format: 2324"
+                  required=""
+                />
+              </div>
+              <div className="w-full">
+                <label htmlFor="sem" className="block mb-2 text-sm font-medium text-gray-900">
+                  Semester
+                </label>
+                <select
+                  ref={semRef}
+                  id="category"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
+                >
+                  <option selected="">Select semester</option>
+                  <option value="First">First</option>
+                  <option value="Second">Second</option>
+                  <option value="Summer">Summer</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 gap-6 mt-5">
               <div className="w-full">
                 <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900">
                   Birthdate
@@ -243,7 +319,25 @@ export const AddNASForm = () => {
                   name="yearLevel"
                   id="yearLevel"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  placeholder="Year Level"
+                  placeholder="1, 2, 3, 4, etc."
+                  required=""
+                />
+              </div>
+
+              <div className="w-full">
+                <label
+                  htmlFor="unitsAllowed"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Units Allowed
+                </label>
+                <input
+                  ref={unitsAllowedRef}
+                  type="number"
+                  name="unitsAllowed"
+                  id="unitsAllowed"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  placeholder="18"
                   required=""
                 />
               </div>
