@@ -21,8 +21,8 @@ export const SpecificNASStatus = () => {
   const [allCoursesPassed, setAllCoursesPassed] = useState(null);
   const [evaluationSubmitted, setEvaluationSubmitted] = useState(false);
   // eslint-disable-next-line no-unused-vars
-  const [uniqueYears, setUniqueYears] = useState([]);
   const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
   const sem_options = ["First", "Second", "Summer"];
   const nasId = useParams().nasId;
 
