@@ -212,6 +212,7 @@ export const SpecificNASAttendance = () => {
               <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
               <p className="text-xl font-bold text-primary">WEEKLY ATTENDANCE</p>
               <WeeklyAttendance
+                nasId={nasId}
                 firstName={firstName}
                 lastName={lastName}
                 middleName={middleName}
