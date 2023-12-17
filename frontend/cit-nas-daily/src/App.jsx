@@ -19,7 +19,7 @@ function App() {
         <Route path="/superior/:superiorId" element={<SuperiorNASList />} />
         {/* OAS */}
         <Route path="/oas/:oasId" element={<OASPage />} />
-        <Route path="/oas/:nasId" element={<OASSpecificNAS />} />
+        <Route path="/oas/:oasId/:nasId" element={<OASSpecificNAS />} />
         {/* NAS */}
         <Route path="/nas/:nasId" element={<NASPage />} />
       </Routes>

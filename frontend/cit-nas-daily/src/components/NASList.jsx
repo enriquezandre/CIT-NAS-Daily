@@ -1,16 +1,18 @@
 "use client";
 import { Card, Avatar } from "flowbite-react";
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import axios from "axios";
 
 export const NASList = ({ office, selectedSY, selectedSem }) => {
   const [nasList, setNasList] = useState([]);
+  const oasId = useParams().oasId;
+  console.log("OASID:", oasId);
   const navigate = useNavigate();
 
   const handleNASClick = (nasId) => {
-    navigate(`/oas/${nasId}`);
+    navigate(`/oas/${oasId}/${nasId}`);
   };
 
   const getSemesterValue = useMemo(() => {

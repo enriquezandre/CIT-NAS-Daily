@@ -22,6 +22,7 @@ export const SpecificNASAttendance = () => {
   const [office, setOffice] = useState("");
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const nasId = useParams().nasId;
+  console.log("NASID:", nasId);
   const sy_options = ["2324", "2223", "2122", "2021"];
   const sem_options = ["First", "Second", "Summer"];
 
@@ -77,12 +78,12 @@ export const SpecificNASAttendance = () => {
         const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
         const nasData = nasresponse.data;
 
-        const officeResponse = await api.get(`Offices/${nasId}/NAS`);
+        const officeResponse = await api.get(`Offices/NAS/${nasId}`);
         const officeData = officeResponse.data;
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
-        setOffice(officeData.name);
+        setOffice(officeData.officeName);
       } catch (error) {
         console.error(error);
       }
