@@ -6,6 +6,7 @@ export const AddSuperiorForm = () => {
   const lastnameRef = useRef();
   const firstnameRef = useRef();
   const officeRef = useRef();
+  const [submitted, setSubmitted] = useState(false);
 
   const api = useMemo(
     () =>
@@ -22,14 +23,17 @@ export const AddSuperiorForm = () => {
     const fetchOffices = async () => {
       try {
         const response = await api.get(`/Offices`);
-        setOffices(response.data);
-        console.log(response.data);
+        const filteredData = response.data.filter(
+          (office) => !office.superiorFirstName && !office.superiorLastName
+        );
+        setOffices(filteredData);
+        console.log("OFFICES", filteredData);
       } catch (error) {
         console.error(error);
       }
     };
     fetchOffices();
-  }, [api]);
+  }, [api, submitted]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -42,29 +46,47 @@ export const AddSuperiorForm = () => {
     console.log(username);
     console.log(officeId);
 
-    // REGISTER AS USER
-    //   try {
-    //     const registeruser = await api.post(`/Auth/register/`, {
-    //       username: username,
-    //       password: username,
-    //       role: "Superior",
-    //     });
-    //     console.log(registeruser);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
+    //REGISTER AS USER
+    try {
+      const registeruser = await api.post(`/Auth/register/`, {
+        username: username,
+        password: username,
+        role: "Superior",
+      });
+      console.log(registeruser);
+    } catch (error) {
+      console.error(error);
+    }
 
-    //   REGISTER AS SUPERIOR
-    // try {
-    //   const registersuperior = await api.post(`/Superiors`, {
-    //     firstName: firstname,
-    //     lastName: lastname,
-    //     username: username,
-    //   });
-    //   console.log(registersuperior);
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    //REGISTER AS SUPERIOR
+    try {
+      const registersuperior = await api.post(`/Superiors`, {
+        firstName: firstname,
+        lastName: lastname,
+        username: username,
+      });
+      console.log(registersuperior);
+    } catch (error) {
+      console.error(error);
+    }
+
+    //ASSIGN SUPERIOR TO OFFICE
+    const officeData = {
+      id: officeId,
+      superiorFirstName: firstname,
+      superiorLastName: lastname,
+    };
+
+    const officeresponse = await api.put(`/Offices`, officeData);
+    if (officeresponse.status === 200 || officeresponse.status === 201) {
+      alert("Submitted successfully");
+      firstnameRef.current.value = "";
+      lastnameRef.current.value = "";
+      officeRef.current.value = "Select office";
+      setSubmitted(true);
+    } else {
+      alert("Submission failed");
+    }
   };
 
   return (
@@ -114,7 +136,7 @@ export const AddSuperiorForm = () => {
                   <option selected="">Select office</option>
                   {offices.map((office) => (
                     <option key={office.id} value={office.id}>
-                      {office.name}
+                      {office.officeName}
                     </option>
                   ))}
                 </select>
