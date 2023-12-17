@@ -23,6 +23,9 @@ namespace CITNASDaily.API.Controllers
             _oasService = oasService;
             _logger = logger;
         }
+
+        #region CreateOAS
+
         [HttpPost]
         [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(OASDto), StatusCodes.Status201Created)]
@@ -40,7 +43,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (createdOAS == null)
                 {
-                    return NotFound();
+                    return BadRequest("OAS creation failed.");
                 }
 
                 return CreatedAtRoute("GetOAS", new { oasId = createdOAS.Id }, createdOAS);
@@ -52,6 +55,10 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        #endregion
+
+        #region GetOAS
+
         [HttpGet("{oasId}", Name = "GetOAS")]
         [Authorize(Roles = "OAS")]
         public async Task<IActionResult> GetOAS(int oasId)
@@ -59,14 +66,15 @@ namespace CITNASDaily.API.Controllers
             try
             {
                 var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
-                if (currentUser == null) return Forbid();
-
-                // Pass the username from the API request
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+    
                 var oas = await _oasService.GetOASAsync(oasId);
-
                 if (oas == null)
                 {
-                    return NotFound();
+                    return NotFound($"OAS #{oasId} does not exist.");
                 }
 
                 return Ok(oas);
@@ -84,11 +92,17 @@ namespace CITNASDaily.API.Controllers
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
                 var oasId = await _oasService.GetOASIdByUsernameAsync(username);
 
                 if (oasId == 0)
                 {
-                    return NotFound("OAS does not exist.");
+                    return NotFound($"OAS with username {username} does not exist.");
                 }
 
                 return Ok(oasId);
@@ -107,11 +121,17 @@ namespace CITNASDaily.API.Controllers
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
                 var oas = await _oasService.GetAllOASAsync();
 
                 if (oas == null)
                 {
-                    return NotFound("There is no registered OAS.");
+                    return NotFound("No registered OAS found.");
                 }
 
                 return Ok(oas);
@@ -122,5 +142,7 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
+        #endregion
     }
 }

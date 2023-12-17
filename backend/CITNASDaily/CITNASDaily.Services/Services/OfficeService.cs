@@ -28,6 +28,11 @@ namespace CITNASDaily.Services.Services
             return null;
         }
 
+        public async Task<Office?> GetOfficeByIdAsync(int id)
+        {
+            return await _officeRepository.GetOfficeByIdAsync(id);
+        }
+
         public async Task<Office?> GetOfficeByNASIdAsync(int nasId)
         {
             return await _officeRepository.GetOfficeByNASIdAsync(nasId);
@@ -41,6 +46,19 @@ namespace CITNASDaily.Services.Services
         public async Task<IEnumerable<Office?>> GetOfficesAsync()
         {
             return await _officeRepository.GetOfficesAsync();
+        }
+
+        public async Task<OfficeDto?> UpdateOfficeAsync(OfficeUpdateDto office)
+        {
+            var of = _mapper.Map<Office>(office);
+            var updatedOffice = await _officeRepository.UpdateOfficeAsync(of);
+
+            if (updatedOffice == null)
+            {
+                return null;
+            }
+            
+            return _mapper.Map<OfficeDto>(updatedOffice);
         }
     }
 }

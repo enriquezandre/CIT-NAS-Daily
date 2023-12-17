@@ -97,6 +97,19 @@ namespace CITNASDaily.Repositories.Repositories
             return null;
         }
 
+        public async Task<IEnumerable<NASSYSemOnly?>> GetSYSemByNASIdAsync(int nasId)
+        {
+            var sySemList = await _context.NASSchoolYears.Where(s => s.NASId == nasId).ToListAsync();
+
+            var nasSySemList = sySemList.Select(sysem => new NASSYSemOnly
+            {
+                Year = sysem.Year,
+                Semester = sysem.Semester
+            }).ToList();
+
+            return nasSySemList;
+        }
+
         #endregion
 
         public async Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file)
@@ -139,6 +152,28 @@ namespace CITNASDaily.Repositories.Repositories
                 return existingNAS;
             }
             return null;
+        }
+
+        public async Task<bool> ChangePasswordAsync(int nasId, string newPassword)
+        {
+            var nas = await _context.NAS.FindAsync(nasId);
+
+            if(nas == null)
+            {
+                return false;
+            }
+
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == nas.Username);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            user.PasswordHash = newPassword;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

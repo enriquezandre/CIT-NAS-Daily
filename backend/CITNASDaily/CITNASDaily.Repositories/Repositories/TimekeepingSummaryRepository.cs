@@ -21,11 +21,15 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<TimekeepingSummary?> CreateTimekeepingSummaryAsync(TimekeepingSummary timekeepingSummary, int nasId, int year, Semester semester)
         {
-            //checks for existing nas
-            var existingNAS = await _context.NAS.FirstOrDefaultAsync(e => e.Id == nasId);
-            if (existingNAS == null)
+            var existingNAS = await _context.NAS
+                                .SingleOrDefaultAsync(e => e.Id == nasId);
+
+            var existingSYSem = await _context.NASSchoolYears
+                                .SingleOrDefaultAsync(e => e.NASId == nasId && e.Year == year && e.Semester == semester);
+
+            if (existingNAS == null || existingSYSem == null)
             {
-                return null; //nas dont exist 
+                return null;
             }
 
             //timekeeping status

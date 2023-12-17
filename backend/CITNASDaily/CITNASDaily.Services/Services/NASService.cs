@@ -7,6 +7,7 @@ using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Repositories.Repositories;
 using CITNASDaily.Services.Contracts;
+using CITNASDaily.Utils;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using static CITNASDaily.Entities.Enums.Enums;
@@ -52,7 +53,7 @@ namespace CITNASDaily.Services.Services
             result.SYSem = sy;
 
             var office = await _officeRepository.GetOfficeByNASIdAsync(nas.Id);
-            result.OfficeName = office.Name;
+            result.OfficeName = office.OfficeName;
 
             return result;
         }
@@ -85,7 +86,7 @@ namespace CITNASDaily.Services.Services
             var nasDto = _mapper.Map<NASDto>(nas);
             var office = await _officeRepository.GetOfficeByNASIdAsync(nas.Id);
 
-            nasDto.OfficeName = office.Name;
+            nasDto.OfficeName = office.OfficeName;
 
             var getSY = await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nas.Id);
             nasDto.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(getSY);
@@ -105,7 +106,7 @@ namespace CITNASDaily.Services.Services
             var nasDto = _mapper.Map<NASDtoNoImage>(nas);
             var office = await _officeRepository.GetOfficeByNASIdAsync(nas.Id);
 
-            nasDto.OfficeName = office.Name;
+            nasDto.OfficeName = office.OfficeName;
 
             var getSY = await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nas.Id);
             nasDto.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(getSY);
@@ -195,12 +196,17 @@ namespace CITNASDaily.Services.Services
             var nasDto = _mapper.Map<NASDtoNoImage>(nasData);
             var office = await _officeRepository.GetOfficeByNASIdAsync(nasData.Id);
 
-            nasDto.OfficeName = office.Name;
+            nasDto.OfficeName = office.OfficeName;
 
             var getSY = await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nasData.Id);
             nasDto.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(getSY);
 
             return nasDto;
+        }
+
+        public async Task<IEnumerable<NASSYSemOnly?>> GetSYSemByNASIdAsync(int nasId)
+        {
+            return await _nasRepository.GetSYSemByNASIdAsync(nasId);
         }
 
         #endregion
@@ -228,6 +234,29 @@ namespace CITNASDaily.Services.Services
             result.OfficeName = await _officeRepository.GetOfficeNameAsync(result.OfficeId);
 
             return result;
+        }
+
+        public async Task<bool> ChangePasswordAsync(int nasId, string currentPassword, string newPassword)
+        {
+            var nas = await _nasRepository.GetNASAsync(nasId);
+
+            //nas does not exist
+            if(nas == null)
+            {
+                return false;
+            }
+
+            var user = await _userRepository.GetUserByUsernameAsync(nas.Username);
+
+            bool check = PasswordManager.VerifyPassword(currentPassword, user.PasswordHash);
+
+            //password do not match
+            if(check == false)
+            {
+                return false;
+            }
+
+            return await _nasRepository.ChangePasswordAsync(nasId, PasswordManager.HashPassword(newPassword));
         }
 
         #endregion
