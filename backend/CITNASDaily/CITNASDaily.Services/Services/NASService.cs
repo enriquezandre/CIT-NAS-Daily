@@ -7,6 +7,7 @@ using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Repositories.Repositories;
 using CITNASDaily.Services.Contracts;
+using CITNASDaily.Utils;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using static CITNASDaily.Entities.Enums.Enums;
@@ -233,6 +234,29 @@ namespace CITNASDaily.Services.Services
             result.OfficeName = await _officeRepository.GetOfficeNameAsync(result.OfficeId);
 
             return result;
+        }
+
+        public async Task<bool> ChangePasswordAsync(int nasId, string currentPassword, string newPassword)
+        {
+            var nas = await _nasRepository.GetNASAsync(nasId);
+
+            //nas does not exist
+            if(nas == null)
+            {
+                return false;
+            }
+
+            var user = await _userRepository.GetUserByUsernameAsync(nas.Username);
+
+            bool check = PasswordManager.VerifyPassword(currentPassword, user.PasswordHash);
+
+            //password do not match
+            if(check == false)
+            {
+                return false;
+            }
+
+            return await _nasRepository.ChangePasswordAsync(nasId, PasswordManager.HashPassword(newPassword));
         }
 
         #endregion

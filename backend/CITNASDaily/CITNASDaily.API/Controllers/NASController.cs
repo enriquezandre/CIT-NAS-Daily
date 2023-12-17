@@ -404,6 +404,32 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        [HttpPut("changepassword/{nasId}", Name = "ChangePassword")]
+        [Authorize(Roles = "NAS")]
+        public async Task<IActionResult> ChangePassword(int nasId, string currentPassword, string newPassword)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+                var change = await _nasService.ChangePasswordAsync(nasId, currentPassword, newPassword);
+                if (change == false)
+                {
+                    return BadRequest("Failed to Change Password.");
+                }
+                return Ok(true);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating nas.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
         #endregion
     }
 }
