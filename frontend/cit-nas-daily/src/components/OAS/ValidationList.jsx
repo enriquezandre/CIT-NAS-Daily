@@ -1,5 +1,5 @@
 import { Avatar } from "flowbite-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { ValidationStatusModal } from "./ValidationStatusModal"; // Import the modal
@@ -8,6 +8,21 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
   const [validation, setValidation] = useState([]);
   const [isStatusModalOpen, setStatusModalOpen] = useState(false);
   const [selectedValidationItem, setSelectedValidationItem] = useState(null);
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 2;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   const formatDateString = (dateString) => {
     const options = {
@@ -51,8 +66,13 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
 
       const response = await api.get("/Validation");
 
-      // Filter the data to only include items with validationStatus === 0
-      const filteredData = response.data.filter((item) => item.validationStatus === 0);
+      // Filter the data based on selected semester and school year
+      const filteredData = response.data.filter(
+        (item) =>
+          item.validationStatus === 0 &&
+          (selectedSem === null || item.semester === getSemesterValue(selectedSem)) &&
+          (selectedSy === null || item.schoolYear === parseInt(selectedSy))
+      );
 
       const validationData = await Promise.all(
         filteredData.map(async (item) => {
@@ -72,7 +92,7 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
 
   useEffect(() => {
     fetchValidation();
-  }, []);
+  }, [selectedSem, selectedSy]);
 
   const handleSubmit = async (validationStatus, mudHours) => {
     try {
@@ -99,6 +119,7 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
       if (response.status === 200 || response.status === 201) {
         console.log("Submitted successfully");
       } else {
+        X;
         console.error("Submission failed");
       }
 
