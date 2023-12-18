@@ -27,8 +27,8 @@ namespace CITNASDaily.API.Initializer
 
                         context.Users.Add(new User
                         {
-                            Username = "meriantelamo",
-                            PasswordHash = PasswordManager.HashPassword("meriantelamo"),
+                            Username = "telamomerian",
+                            PasswordHash = PasswordManager.HashPassword("telamomerian"),
                             Role = "Superior"
                         });
 
@@ -128,14 +128,14 @@ namespace CITNASDaily.API.Initializer
                         {
                             FirstName = "Merian",
                             LastName = "Telamo",
-                            Username = "meriantelamo",
-                            User = context.Users.Where(u => u.Username == "meriantelamo").FirstOrDefault()
+                            Username = "telamomerian",
+                            User = context.Users.Where(u => u.Username == "telamomerian").FirstOrDefault()
                         });
                         context.SaveChanges();
                     }
 
                     var existingOASOffice = context.Offices.FirstOrDefault(o => o.OfficeName == "OAS");
-                    var oasSuperior = context.Superiors.FirstOrDefault(s => s.Username == "meriantelamo");
+                    var oasSuperior = context.Superiors.FirstOrDefault(s => s.Username == "telamomerian");
                     if (existingOASOffice != null && oasSuperior != null && existingOASOffice.SuperiorFirstName == null && existingOASOffice.SuperiorLastName == null)
                     {
                         existingOASOffice.SuperiorFirstName = oasSuperior.FirstName;
