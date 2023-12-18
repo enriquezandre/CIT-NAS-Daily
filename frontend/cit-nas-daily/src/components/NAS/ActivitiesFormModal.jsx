@@ -149,6 +149,6 @@ export const ActivitiesFormModal = ({ isOpen, closeModal, currentYear, currentSe
 ActivitiesFormModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
-  currentYear: PropTypes.number.isRequired,
+  currentYear: PropTypes.string.isRequired,
   currentSem: PropTypes.string.isRequired,
 };
