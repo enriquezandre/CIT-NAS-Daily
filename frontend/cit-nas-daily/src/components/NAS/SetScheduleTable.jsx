@@ -15,9 +15,6 @@ export const ScheduleTable = ({
 }) => {
   return (
     <div>
-      <div className="text-red pb-2">
-        <p>Note: Do not forget to select current semester</p>
-      </div>
       <table className="w-full">
         <thead>
           <tr className=" bg-primary text-white" style={{ border: "1px solid #000" }}>
@@ -108,7 +105,7 @@ export const ScheduleTable = ({
               </button>
             </th>
             <th colSpan="1" className="pt-3 text-center font-weight-bold">
-              Total Hours: {overallHours} hours
+              Total Hours: {overallHours.toFixed(2)} hours
             </th>
           </tr>
         </tbody>
