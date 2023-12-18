@@ -1,7 +1,7 @@
 import { ValidationList } from "../../components/OAS/ValidationList";
 import { Dropdown } from "../../components/Dropdown";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 export const OASValidation = () => {
@@ -50,21 +50,6 @@ export const OASValidation = () => {
     setSelectedSem(value);
     console.log(value);
   };
-
-  const getSemesterValue = useMemo(() => {
-    return (sem) => {
-      switch (sem) {
-        case "First":
-          return 0;
-        case "Second":
-          return 1;
-        case "Summer":
-          return 2;
-        default:
-          return "Invalid semester";
-      }
-    };
-  }, []);
 
   return (
     <>
@@ -133,5 +118,3 @@ export const OASValidation = () => {
     </>
   );
 };
-
-//
