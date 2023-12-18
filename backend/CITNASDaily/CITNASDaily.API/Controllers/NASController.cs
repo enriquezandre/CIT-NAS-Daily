@@ -425,7 +425,7 @@ namespace CITNASDaily.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating nas.");
+                _logger.LogError(ex, "Error changing password.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }

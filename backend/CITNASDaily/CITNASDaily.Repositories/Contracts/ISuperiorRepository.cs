@@ -11,5 +11,6 @@ namespace CITNASDaily.Repositories.Contracts
         public Task<Superior?> GetSuperiorByUsernameAsync(string username);
         Task<Superior?> GetSuperiorByOfficeId(int officeId);
         Task<int> GetSuperiorIdByUsernameAsync(string username);
+        Task<bool> ChangePasswordAsync(int superiorId, string newPassword);
     }
 }
