@@ -31,7 +31,7 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<Office?> GetOfficeByIdAsync(int id)
         {
-            return await _context.Offices.SingleOrDefaultAsync(o => o.Id == id);
+            return await _context.Offices.Include(o => o.NAS).FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public async Task<Office?> GetOfficeByNASIdAsync(int nasId)
