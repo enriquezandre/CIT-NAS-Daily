@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OfficeOpenXml;
 using Swashbuckle.AspNetCore.Filters;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -68,6 +69,10 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1",
         Title = "CITU-NAS Daily API"
     });
+
+    //xml documentation
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 builder.Services.AddDbContext<NASContext>(options =>

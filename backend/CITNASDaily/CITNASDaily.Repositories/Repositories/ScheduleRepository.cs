@@ -22,6 +22,17 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<Schedule?> CreateScheduleAsync(Schedule schedule)
         {
+            var existingNAS = await _context.NAS
+                                .SingleOrDefaultAsync(e => e.Id == schedule.NASId);
+
+            var existingSYSem = await _context.NASSchoolYears
+                                .SingleOrDefaultAsync(e => e.NASId == schedule.NASId && e.Year == schedule.SchoolYear && e.Semester == schedule.Semester);
+
+            if (existingNAS == null || existingSYSem == null)
+            {
+                return null;
+            }
+
             await _context.Schedules.AddAsync(schedule);
             await _context.SaveChangesAsync();
             return schedule;

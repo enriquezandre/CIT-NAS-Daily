@@ -13,8 +13,9 @@ namespace CITNASDaily.Utils.Mappings
 
             CreateMap<Office, OfficeCreateDto>()
                 .ReverseMap()
-                .ForMember(o => o.SuperiorId, op => op.MapFrom(dto => dto.SuperiorId))
-                .ForMember(o => o.Name, op => op.MapFrom(dto => dto.Name));
+                .ForMember(o => o.OfficeName, op => op.MapFrom(dto => dto.OfficeName));
+
+            CreateMap<Office, OfficeUpdateDto>().ReverseMap();
         }
     }
 }

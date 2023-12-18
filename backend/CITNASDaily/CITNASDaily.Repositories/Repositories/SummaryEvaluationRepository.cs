@@ -23,17 +23,27 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<SummaryEvaluation?> CreateSummaryEvaluationAsync(SummaryEvaluation summaryEvaluation)
         {
-            if (Enum.IsDefined(typeof(Semester), summaryEvaluation.Semester))
+            var existingNAS = await _context.NAS
+                                .SingleOrDefaultAsync(e => e.Id == summaryEvaluation.nasId);
+
+            var existingSYSem = await _context.NASSchoolYears
+                                .SingleOrDefaultAsync(e => e.NASId == summaryEvaluation.nasId && e.Year == summaryEvaluation.SchoolYear && e.Semester == summaryEvaluation.Semester);
+
+            var existingSummary = await _context.SummaryEvaluations
+                                .SingleOrDefaultAsync(s => s.nasId == summaryEvaluation.nasId && s.Semester == summaryEvaluation.Semester && s.SchoolYear == summaryEvaluation.SchoolYear);
+
+            if (existingNAS == null || existingSYSem == null || existingSummary != null)
             {
-                var existingSummary = await _context.SummaryEvaluations.FirstOrDefaultAsync(s => s.nasId == summaryEvaluation.nasId && s.Semester == summaryEvaluation.Semester && s.SchoolYear == summaryEvaluation.SchoolYear);
-                if (existingSummary == null)
-                {
-                    await _context.SummaryEvaluations.AddAsync(summaryEvaluation);
-                    await _context.SaveChangesAsync();
-                    return summaryEvaluation;
-                }
                 return null;
             }
+
+            if (Enum.IsDefined(typeof(Semester), summaryEvaluation.Semester))
+            {
+                await _context.SummaryEvaluations.AddAsync(summaryEvaluation);
+                await _context.SaveChangesAsync();
+                return summaryEvaluation;
+            }
+
             return null;
         }
 
