@@ -4,7 +4,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { ValidationStatusModal } from "./ValidationStatusModal"; // Import the modal
 
-export const ValidationList = ({ searchQuery }) => {
+export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
   const [validation, setValidation] = useState([]);
   const [isStatusModalOpen, setStatusModalOpen] = useState(false);
   const [selectedValidationItem, setSelectedValidationItem] = useState(null);
@@ -166,4 +166,6 @@ export const ValidationList = ({ searchQuery }) => {
 
 ValidationList.propTypes = {
   searchQuery: PropTypes.string,
+  selectedSem: PropTypes.string,
+  selectedSy: PropTypes.string,
 };
