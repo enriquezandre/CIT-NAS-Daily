@@ -4,6 +4,7 @@ using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Services.Contracts;
+using CITNASDaily.Utils;
 
 namespace CITNASDaily.Services.Services
 {
@@ -41,19 +42,18 @@ namespace CITNASDaily.Services.Services
         public async Task<SuperiorDto?> GetSuperiorAsync(int superiorId)
         {
             var superior = await _superiorRepository.GetSuperiorAsync(superiorId);
-
             return _mapper.Map<SuperiorDto>(superior);
         }
 
-        public async Task<Superior?> GetSuperiorByOfficeId(int officeId)
+        public async Task<SuperiorDto?> GetSuperiorByOfficeId(int officeId)
         {
-            return await _superiorRepository.GetSuperiorByOfficeId(officeId);
+            var superior = await _superiorRepository.GetSuperiorByOfficeId(officeId);
+            return _mapper.Map<SuperiorDto>(superior);
         }
 
         public async Task<IEnumerable<SuperiorDto>> GetSuperiorsAsync()
         {
             var superior = await _superiorRepository.GetSuperiorsAsync();
-
             return _mapper.Map<IEnumerable<SuperiorDto>>(superior);
         }
 
@@ -72,6 +72,29 @@ namespace CITNASDaily.Services.Services
         public async Task<int> GetSuperiorIdByUsernameAsync(string username)
         {
             return await _superiorRepository.GetSuperiorIdByUsernameAsync(username);
+        }
+
+        public async Task<bool> ChangePasswordAsync(int superiorId, string currentPassword, string newPassword)
+        {
+            var superior = await _superiorRepository.GetSuperiorAsync(superiorId);
+
+            //nas does not exist
+            if (superior == null)
+            {
+                return false;
+            }
+
+            var user = await _userRepository.GetUserByUsernameAsync(superior.Username);
+
+            bool check = PasswordManager.VerifyPassword(currentPassword, user.PasswordHash);
+
+            //password do not match
+            if (check == false)
+            {
+                return false;
+            }
+
+            return await _superiorRepository.ChangePasswordAsync(superiorId, PasswordManager.HashPassword(newPassword));
         }
     }
 }

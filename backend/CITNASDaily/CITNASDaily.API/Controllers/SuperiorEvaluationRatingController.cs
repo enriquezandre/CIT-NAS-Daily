@@ -27,9 +27,19 @@ namespace CITNASDaily.API.Controllers
             _logger = logger;
         }
 
+        #region CreateSuperiorEvaluationRating
+
+        /// <summary>
+        /// Creates Superior Evaluation Rating
+        /// </summary>
+        /// <param name="superiorEvaluationRatingCreate">Information of Superior Evaluation Rating</param>
+        /// <returns>Newly created Superior Evaluation Rating</returns>
         [HttpPost]
         [Authorize(Roles = "Superior")]
         [ProducesResponseType(typeof(SuperiorEvaluationRating), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateSuperiorEvaluationRating([FromBody] SuperiorEvaluationRatingCreateDto superiorEvaluationRatingCreate)
         {
             try
@@ -44,7 +54,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (rating == null)
                 {
-                    return BadRequest("Creation Failed.");
+                    return BadRequest("Superior Evaluation Rating creation failed.");
                 }
 
                 var summary = await _summaryEvaluationService.UpdateSuperiorRatingAsync(rating.NASId, rating.SchoolYear, rating.Semester, rating.OverallRating);
@@ -63,8 +73,23 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        #endregion
+
+        #region GetSuperiorEvaluationRating
+
+        /// <summary>
+        /// Retrieves Superior Evaluation Rating by NAS id, semester, and year
+        /// </summary>
+        /// <param name="nasId">nAS unique identifier</param>
+        /// <param name="semester">Semester of NAS</param>
+        /// <param name="year">Year of NAS</param>
+        /// <returns>Requested Superior Evaluation Rating</returns>
         [HttpGet(Name = "GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYear")]
         [Authorize(Roles = "OAS, Superior,NAS")]
+        [ProducesResponseType(typeof(SuperiorEvaluationRating), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYear(int nasId, Semester semester, int year)
         {
             try
@@ -76,19 +101,20 @@ namespace CITNASDaily.API.Controllers
                 }
 
                 var superiorEvaluationRating = await _superiorEvaluationRatingService.GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(nasId, semester, year);
-
                 if (superiorEvaluationRating == null)
                 {
-                    return BadRequest("No Rating Yet.");
+                    return NotFound($"No Superior Evaluation Rating found for NAS ID #{nasId}");
                 }
 
                 return Ok(superiorEvaluationRating);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting Superior Evaluation Rating.");
+                _logger.LogError(ex, "Failed to retrieve Superior Evaluation Rating.");
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        #endregion
     }
 }

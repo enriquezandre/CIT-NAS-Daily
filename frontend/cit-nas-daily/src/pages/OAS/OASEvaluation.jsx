@@ -15,9 +15,9 @@ export const OASEvaluation = () => {
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
-  const [nasId, setNasId] = useState(1);
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [maxNasId, setMaxNasId] = useState(1);
   const [selectedSY, setSelectedSY] = useState(currentSchoolYear);
   const [selectedSem, setSelectedSem] = useState(currentSem);
@@ -44,25 +44,31 @@ export const OASEvaluation = () => {
   const handleSelectSY = (event) => {
     const value = event.target.value;
     setSelectedSY(value);
+    setCurrentIndex(0);
+    setMaxNasId(0);
   };
 
   const handleSelectSem = (event) => {
     const value = event.target.value;
     setSelectedSem(value);
+    setCurrentIndex(0);
+    setMaxNasId(0);
   };
 
-  function getSemesterValue(sem) {
-    switch (sem) {
-      case "First":
-        return 0;
-      case "Second":
-        return 1;
-      case "Summer":
-        return 2;
-      default:
-        return "Invalid semester";
-    }
-  }
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 2;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
@@ -77,61 +83,41 @@ export const OASEvaluation = () => {
         console.error(error);
       }
     };
-
     fetchSchoolYearSemesterOptions();
   }, [api]);
 
   useEffect(() => {
     const fetchNas = async () => {
       try {
-        const nasResponse = await api.get(`/NAS/${nasId}/noimg`);
-        console.log(nasResponse);
-        const nasData = nasResponse.data;
+        const response = await api.get(`/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`);
 
-        const officeResponse = await api.get(`Offices/${nasId}/NAS`);
-        const officeData = officeResponse.data;
-
-        setFirstname(nasData.firstName);
-        setMiddlename(nasData.middleName);
-        setLastname(nasData.lastName);
-        setOffice(officeData.name);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchNas();
-  }, [selectedSY, selectedSem, nasId, api]);
-
-  useEffect(() => {
-    const fetchNasData = async () => {
-      try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const response = await api.get(`/NAS/noimg`);
         setNasArray(response.data);
-
-        const maxId = Math.max(...response.data.map((nas) => nas.id), 1);
-        setMaxNasId(maxId);
+        setFirstname(response.data[currentIndex].firstName);
+        setMiddlename(response.data[currentIndex].middleName);
+        setLastname(response.data[currentIndex].lastName);
+        setOffice(response.data[currentIndex].officeName);
+        setMaxNasId(response.data.length - 1);
       } catch (error) {
         console.error(error);
+        setNasArray([]);
+        setMaxNasId(0);
+        setFirstname(null);
+        setMiddlename(null);
+        setLastname(null);
+        setOffice(null);
       }
     };
-
-    fetchNasData();
-  }, []);
+    fetchNas();
+  }, [selectedSY, selectedSem, api, currentIndex, getSemesterValue]);
 
   useEffect(() => {
-    const results = nasArray.filter((data) =>
-      data.fullName.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    if (results[0]) {
-      setNasId(results[0].id);
+    if (searchInput.trim() !== "") {
+      const results = nasArray.filter((data) =>
+        data.fullName.toLowerCase().includes(searchInput.toLowerCase())
+      );
+      if (results[0]) {
+        setCurrentIndex(nasArray.indexOf(results[0]));
+      }
     }
   }, [searchInput, nasArray]);
 
@@ -139,24 +125,41 @@ export const OASEvaluation = () => {
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
-            <div className={`flex items-center w-auto ${nasId === 1 ? "ml-10" : ""}`}>
+          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
+            <div className={`flex items-center w-auto ${currentIndex === 0 ? "ml-9" : ""}`}>
               <div>
-                {nasId > 1 && (
-                  <Button className="text-black" onClick={() => setNasId(nasId - 1)}>
+                {currentIndex != 0 ? (
+                  <Button
+                    className="text-black"
+                    onClick={() => {
+                      setCurrentIndex((currentIndex - 1) % nasArray.length);
+                    }}
+                  >
                     <HiOutlineArrowLeft className="h-6 w-6" />
                   </Button>
+                ) : (
+                  ""
                 )}
               </div>
-              <div className="font-bold" style={{ textTransform: "uppercase" }}>
-                NAS NAME: {lastName}, {firstName} {middleName}
+              <div className="flex flex-row justify-start items-center gap-10">
+                <div className="flex flex-row gap-2 items-center">
+                  <Dropdown
+                    label="SY"
+                    options={uniqueYears}
+                    selectedValue={selectedSY}
+                    onChange={(e) => handleSelectSY(e)}
+                  />
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <Dropdown
+                    label="Semester"
+                    options={sem_options}
+                    selectedValue={selectedSem}
+                    onChange={(e) => handleSelectSem(e)}
+                  />
+                </div>
               </div>
             </div>
-            <li>
-              <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
-                DEPT/OFFICE: {office}
-              </p>
-            </li>
             <li className="flex justify-end">
               <div className="flex ">
                 <div className="relative w-auto">
@@ -190,11 +193,11 @@ export const OASEvaluation = () => {
                   </button>
                 </div>
               </div>
-              {nasId < maxNasId ? (
+              {currentIndex != maxNasId ? (
                 <Button
                   className="text-black"
                   onClick={() => {
-                    setNasId(nasId + 1);
+                    setCurrentIndex((currentIndex + 1) % nasArray.length);
                   }}
                 >
                   <HiOutlineArrowRight className="h-6 w-6" />
@@ -204,30 +207,24 @@ export const OASEvaluation = () => {
               )}
             </li>
           </ul>
-          <div className="px-8 py-4">
-            <div className="flex flex-row justify-start items-center gap-10 mt-2 mb-8">
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="SY"
-                  options={uniqueYears}
-                  selectedValue={selectedSY}
-                  onChange={(e) => handleSelectSY(e)}
-                />
+          <div className="px-9 py-4">
+            <div className="flex gap-10 mb-7 text-lg">
+              <div className="font-bold" style={{ textTransform: "uppercase" }}>
+                NAS NAME: {lastName}, {firstName} {middleName}
               </div>
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="Semester"
-                  options={sem_options}
-                  selectedValue={selectedSem}
-                  onChange={(e) => handleSelectSem(e)}
-                />
+              <div>
+                <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
+                  DEPT/OFFICE: {office}
+                </p>
               </div>
             </div>
             <hr className="my-5 border-t-2 border-gray-300" />
             <div>
               {" "}
               <SuperiorEval
-                nasId={nasId}
+                nasId={
+                  nasArray && nasArray.length > currentIndex ? nasArray[currentIndex].id : null
+                }
                 selectedSem={getSemesterValue(selectedSem)}
                 selectedSY={selectedSY}
               />

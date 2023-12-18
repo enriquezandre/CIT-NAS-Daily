@@ -18,10 +18,10 @@ export const OASAttendance = () => {
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
-  const [nasId, setNasId] = useState(1);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [maxNasId, setMaxNasId] = useState(1);
   const [selectedSem, setSelectedSem] = useState(currentSemester);
   const [monthOptions, setMonthOptions] = useState(first_sem);
@@ -63,6 +63,33 @@ export const OASAttendance = () => {
     setSearchInput(event.target.value);
   };
 
+  useEffect(() => {
+    const fetchNasData = async () => {
+      try {
+        const response = await api.get(`/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`);
+        setNasArray(response.data);
+
+        setFirstname(response.data[currentIndex].firstName);
+        setMiddlename(response.data[currentIndex].middleName);
+        setLastname(response.data[currentIndex].lastName);
+        setOffice(response.data[currentIndex].officeName);
+        setMaxNasId(response.data.length - 1);
+      } catch (error) {
+        console.error(error);
+        if (error.response.status === 404) {
+          setNasArray([]);
+          setMaxNasId(0);
+          setFirstname(null);
+          setMiddlename(null);
+          setLastname(null);
+          setOffice(null);
+        }
+      }
+    };
+
+    fetchNasData();
+  }, [api, selectedSY, selectedSem, currentIndex, getSemesterValue]);
+
   //getting school year from the /NAS/sysem
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
@@ -77,30 +104,10 @@ export const OASAttendance = () => {
         console.error(error);
       }
     };
-
     fetchSchoolYearSemesterOptions();
   }, [api]);
 
   useEffect(() => {
-    const fetchNas = async () => {
-      try {
-        const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
-        const nasData = nasresponse.data;
-
-        const officeResponse = await api.get(`Offices/${nasId}/NAS`);
-        const officeData = officeResponse.data;
-
-        setFirstname(nasData.firstName);
-        setMiddlename(nasData.middleName);
-        setLastname(nasData.lastName);
-        setOffice(officeData.name);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchNas();
-
     let selectedMonthIndex;
     switch (selectedSem) {
       case "First":
@@ -129,13 +136,15 @@ export const OASAttendance = () => {
     }
 
     setSelectedMonthIndex(selectedMonthIndex);
-  }, [selectedSY, selectedSem, selectedMonth, nasId, api]);
+  }, [selectedSY, selectedSem, selectedMonth]);
 
   useEffect(() => {
     const fetchTimekeepingSummary = async () => {
       try {
         const timekeepingresponse = await api.get(
-          `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
+          `/TimekeepingSummary/${nasArray[currentIndex].id}/${selectedSY}/${getSemesterValue(
+            selectedSem
+          )}`
         );
         const timekeepingdata = timekeepingresponse.data;
         setTimekeepingSummaries(timekeepingdata);
@@ -148,48 +157,31 @@ export const OASAttendance = () => {
     };
 
     fetchTimekeepingSummary();
-  }, [api, nasId, selectedSY, selectedSem, getSemesterValue]);
+  }, [api, nasArray, currentIndex, selectedSY, selectedSem, getSemesterValue]);
 
   useEffect(() => {
-    const fetchNasData = async () => {
-      try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const response = await api.get(`/NAS/noimg`);
-        setNasArray(response.data);
-
-        const maxId = Math.max(...response.data.map((nas) => nas.id), 1);
-        setMaxNasId(maxId);
-      } catch (error) {
-        console.error(error);
+    if (searchInput.trim() !== "") {
+      const results = nasArray.filter((data) =>
+        data.fullName.toLowerCase().includes(searchInput.toLowerCase())
+      );
+      if (results[0]) {
+        setCurrentIndex(nasArray.indexOf(results[0]));
       }
-    };
-
-    fetchNasData();
-  }, []);
-
-  useEffect(() => {
-    const results = nasArray.filter((data) =>
-      data.fullName.toLowerCase().includes(searchInput.toLowerCase())
-    );
-    if (results[0]) {
-      setNasId(results[0].id);
     }
   }, [searchInput, nasArray]);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
     setSelectedSY(value);
+    setCurrentIndex(0);
+    setMaxNasId(0);
   };
 
   const handleSelectSem = (event) => {
     const value = event.target.value;
     setSelectedSem(value);
+    setCurrentIndex(0);
+    setMaxNasId(0);
     setSelectedMonth("All");
   };
 
@@ -206,29 +198,49 @@ export const OASAttendance = () => {
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
-            <div className={`flex items-center w-auto ${nasId === 1 ? "ml-10" : ""}`}>
+          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
+            <div className={`flex items-center w-auto ${currentIndex === 0 ? "ml-9" : ""}`}>
               <div>
-                {nasId > 1 && (
+                {currentIndex != 0 ? (
                   <Button
                     className="text-black"
                     onClick={() => {
-                      setNasId(nasId - 1);
+                      setCurrentIndex((currentIndex - 1) % nasArray.length);
                     }}
                   >
                     <HiOutlineArrowLeft className="h-6 w-6" />
                   </Button>
+                ) : (
+                  ""
                 )}
               </div>
-              <div className="font-bold" style={{ textTransform: "uppercase" }}>
-                NAS NAME: {lastName}, {firstName} {middleName}
+              <div className="flex flex-row justify-start items-center gap-10">
+                <div className="flex flex-row gap-2 items-center">
+                  <Dropdown
+                    label="SY"
+                    options={uniqueYears}
+                    selectedValue={selectedSY}
+                    onChange={(e) => handleSelectSY(e)}
+                  />
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <Dropdown
+                    label="Semester"
+                    options={sem_options}
+                    selectedValue={selectedSem}
+                    onChange={(e) => handleSelectSem(e)}
+                  />
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  <Dropdown
+                    label="Month"
+                    options={monthOptions}
+                    selectedValue={selectedMonth}
+                    onChange={(e) => handleSelectedMonth(e)}
+                  />
+                </div>
               </div>
             </div>
-            <li>
-              <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
-                DEPT/OFFICE: {office}
-              </p>
-            </li>
             <li className="flex justify-end">
               <div className="flex ">
                 <div className="relative w-auto">
@@ -262,11 +274,11 @@ export const OASAttendance = () => {
                   </button>
                 </div>
               </div>
-              {nasId < maxNasId ? (
+              {currentIndex != maxNasId ? (
                 <Button
                   className="text-black"
                   onClick={() => {
-                    setNasId(nasId + 1);
+                    setCurrentIndex((currentIndex + 1) % nasArray.length);
                   }}
                 >
                   <HiOutlineArrowRight className="h-6 w-6" />
@@ -276,31 +288,15 @@ export const OASAttendance = () => {
               )}
             </li>
           </ul>
-          <div className="px-8 py-4">
-            <div className="flex flex-row justify-start items-center gap-10 mt-2 mb-8">
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="SY"
-                  options={uniqueYears}
-                  selectedValue={selectedSY}
-                  onChange={(e) => handleSelectSY(e)}
-                />
+          <div className="px-9 py-4">
+            <div className="flex gap-10 mb-7 text-lg">
+              <div className="font-bold" style={{ textTransform: "uppercase" }}>
+                NAS NAME: {lastName}, {firstName} {middleName}
               </div>
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="Semester"
-                  options={sem_options}
-                  selectedValue={selectedSem}
-                  onChange={(e) => handleSelectSem(e)}
-                />
-              </div>
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="Month"
-                  options={monthOptions}
-                  selectedValue={selectedMonth}
-                  onChange={(e) => handleSelectedMonth(e)}
-                />
+              <div>
+                <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
+                  DEPT/OFFICE: {office}
+                </p>
               </div>
             </div>
             <div className="flex flex-col justify-center items-center gap-4">
@@ -314,7 +310,6 @@ export const OASAttendance = () => {
                 selectedMonth={selectedMonthIndex}
                 selectedSem={selectedSem}
                 selectedSY={selectedSY}
-                nasId={nasId}
               />
             </div>
           </div>

@@ -50,40 +50,52 @@ export const SuperiorEval = ({ nasId, selectedSem, selectedSY }) => {
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mx-8 mb-10">
+      <div className="flex flex-col ">
         <div className="flex h-full flex-col justify-center">
-          <div className="px-8 py-4">
-            <div className="flex flex-col">
-              <p className="text-center text-xl font-bold mb-8">SUPERIOR EVALUATION SUMMARY</p>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-xl">Attendance and Punctuality:</p>
-                <p className="text-xl">
-                  {(evaluationData.attendanceAndPunctuality / 2).toFixed(1)}
-                </p>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-xl">Quality of Work - Output:</p>
-                <p className="text-xl">{(evaluationData.qualOfWorkOutput / 3).toFixed(1)}</p>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-xl">Quantity of Work - Output:</p>
-                <p className="text-xl">{(evaluationData.quanOfWorkOutput / 2).toFixed(1)}</p>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-xl">Attitude and Work Behaviour:</p>
-                <p className="text-xl">
-                  {(evaluationData.attitudeAndWorkBehaviour / 5).toFixed(1)}
-                </p>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-xl">Overall Assessment of NAS Performance:</p>
-                <p className="text-xl">{(evaluationData.overallAssessment / 1).toFixed(1)}</p>
-              </div>
-              <div className="flex flex-row gap-6 justify-start items-center mb-4">
-                <p className="text-xl font-bold">Superior&#39;s Evaluation Overall Rating:</p>
-                <p className="text-xl font-bold">{(evaluationData.overallRating / 1).toFixed(1)}</p>
-              </div>
-            </div>
+          <div className="flex flex-col">
+            <p className="text-center text-xl font-bold mb-8 text-primary">
+              SUPERIOR EVALUATION SUMMARY
+            </p>
+            <table className="text-xl justify-center w-4/6 items-center">
+              <tbody>
+                <tr>
+                  <td className="w-1/2 py-2">ATTENDANCE AND PUNCTUALITY:</td>
+                  <td className="py-2 text-center">
+                    {(evaluationData.attendanceAndPunctuality / 2).toFixed(1)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2">QUALITY OF WORK - OUTPUT:</td>
+                  <td className="py-2 text-center">
+                    {(evaluationData.qualOfWorkOutput / 3).toFixed(1)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2">QUANTITY OF WORK - OUTPUT:</td>
+                  <td className="py-2 text-center">
+                    {(evaluationData.quanOfWorkOutput / 2).toFixed(1)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2">ATTITUDE AND WORK BEHAVIOUR:</td>
+                  <td className="py-2 text-center">
+                    {(evaluationData.attitudeAndWorkBehaviour / 5).toFixed(1)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2">OVERALL ASSESSMENT OF NAS PERFORMANCE:</td>
+                  <td className="py-2 text-center">
+                    {(evaluationData.overallAssessment / 1).toFixed(1)}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 font-bold">SUPERIOR&#39;S EVALUATION OVERALL RATING:</td>
+                  <td className="py-2 text-center font-bold">
+                    {(evaluationData.overallRating / 1).toFixed(1)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

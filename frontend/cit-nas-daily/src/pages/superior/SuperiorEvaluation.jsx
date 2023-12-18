@@ -88,11 +88,13 @@ export const SuperiorEvaluation = () => {
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
+    setIsSubmitted(false);
     setSelectedSY(value);
   };
 
   const handleSelectSem = (event) => {
     const value = event.target.value;
+    setIsSubmitted(false);
     setSelectedSem(value);
   };
 

@@ -60,7 +60,10 @@ namespace CITNASDaily.API.Controllers
                 if (currentUser == null) return Forbid();
 
                 var logs = await _logService.GetNASLogsAsync(nasId);
-                if (logs.IsNullOrEmpty()) return NoContent();
+                if (logs.IsNullOrEmpty())
+                {
+                    return NotFound();
+                }
 
                 return Ok(logs);
             }

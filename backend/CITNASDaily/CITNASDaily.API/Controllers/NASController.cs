@@ -46,7 +46,7 @@ namespace CITNASDaily.API.Controllers
 
                 if (createdNas == null)
                 {
-                    return NotFound();
+                    return BadRequest("NAS creation failed");
                 }
 
                 return CreatedAtRoute("GetNAS", new { nasId = createdNas.Id }, createdNas);
@@ -291,6 +291,33 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        [HttpGet("sysem/{nasId}", Name = "GetSYSemByNASId")]
+        [Authorize(Roles = "OAS, NAS, Superior")]
+        public async Task<IActionResult> GetSYSemByNASId(int nasId)
+        {
+            try
+            {
+                var check = await _nasService.GetNASAsync(nasId);
+                if(check == null)
+                {
+                    return BadRequest($"NAS #{nasId} does not exist.");
+                }
+
+                var nas = await _nasService.GetSYSemByNASIdAsync(nasId);
+                if (nas.IsNullOrEmpty())
+                {
+                    return NotFound($"NAS #{nasId} is not enrolled.");
+                }
+
+                return Ok(nas);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting NAS");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
         #endregion
 
         #region UpdateUpload
@@ -373,6 +400,32 @@ namespace CITNASDaily.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating nas.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        [HttpPut("changepassword/{nasId}", Name = "ChangePassword")]
+        [Authorize(Roles = "NAS")]
+        public async Task<IActionResult> ChangePassword(int nasId, string currentPassword, string newPassword)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+                var change = await _nasService.ChangePasswordAsync(nasId, currentPassword, newPassword);
+                if (change == false)
+                {
+                    return BadRequest("Failed to Change Password.");
+                }
+                return Ok(true);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error changing password.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
