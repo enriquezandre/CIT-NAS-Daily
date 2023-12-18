@@ -229,29 +229,47 @@ export const AttendanceSummary = () => {
               <div className="flex">
                 <DataDisplayBox
                   label="Make-up Duty Hours"
-                  data={timekeepingSummaries.makeUpDutyHours}
+                  data={
+                    timekeepingSummaries.makeUpDutyHours !== null
+                      ? timekeepingSummaries.makeUpDutyHours
+                      : 0
+                  }
                 />
                 <DataDisplayBox
                   label="Number of Excused Absences"
-                  data={timekeepingSummaries.excused}
+                  data={timekeepingSummaries.excused !== null ? timekeepingSummaries.excused : 0}
                 />
                 <DataDisplayBox
                   label="Late > 45 Minutes"
-                  data={timekeepingSummaries.lateOver45Mins}
+                  data={
+                    timekeepingSummaries.lateOver45Mins !== null
+                      ? timekeepingSummaries.lateOver45Mins
+                      : 0
+                  }
                 />
               </div>
               <div className="flex">
                 <DataDisplayBox
                   label="Number of Unexcused Absences"
-                  data={timekeepingSummaries.unexcused}
+                  data={
+                    timekeepingSummaries.unexcused !== null ? timekeepingSummaries.unexcused : 0
+                  }
                 />
                 <DataDisplayBox
                   label="Late > 10 Minutes"
-                  data={timekeepingSummaries.lateOver10Mins}
+                  data={
+                    timekeepingSummaries.lateOver10Mins !== null
+                      ? timekeepingSummaries.lateOver10Mins
+                      : 0
+                  }
                 />
                 <DataDisplayBox
                   label="FTP - Failure to Punch IN/OUT"
-                  data={timekeepingSummaries.failedToPunch}
+                  data={
+                    timekeepingSummaries.failedToPunch !== null
+                      ? timekeepingSummaries.failedToPunch
+                      : 0
+                  }
                 />
               </div>
             </div>
