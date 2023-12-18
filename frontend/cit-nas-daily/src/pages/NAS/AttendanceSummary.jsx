@@ -159,6 +159,8 @@ export const AttendanceSummary = () => {
         nasId: nasId,
         absenceDate: selectedAbsentDate,
         nasLetter: base64String,
+        semester: getSemesterValue(selectedSem),
+        schoolYear: selectedSY,
       };
 
       const response = await api.post("/Validation", requestData);
