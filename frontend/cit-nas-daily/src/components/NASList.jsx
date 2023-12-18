@@ -57,7 +57,7 @@ export const NASList = ({ office, selectedSY, selectedSem }) => {
     <div className="flex justify-center items-center">
       <Card className="w-3/5 m-5">
         <h5 className="text-2xl font-bold tracking-tight">
-          <p>{office.name}</p>
+          <p>{office.officeName}</p>
         </h5>
         <div className="grid gap-3">
           {nasList.map((nas) => (
@@ -81,7 +81,7 @@ export const NASList = ({ office, selectedSY, selectedSem }) => {
 NASList.propTypes = {
   office: PropTypes.shape({
     id: PropTypes.number,
-    name: PropTypes.string,
+    officeName: PropTypes.string,
   }).isRequired,
   selectedSY: PropTypes.string,
   selectedSem: PropTypes.string,
