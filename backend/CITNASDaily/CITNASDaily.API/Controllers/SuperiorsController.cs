@@ -211,5 +211,35 @@ namespace CITNASDaily.API.Controllers
         }
 
         #endregion
+
+        #region UpdateSuperior
+
+        [HttpPut("changepassword/{superiorId}", Name = "ChangeSuperiorPassword")]
+        [Authorize(Roles = "Superior")]
+        public async Task<IActionResult> ChangePassword(int superiorId, string currentPassword, string newPassword)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+                var change = await _superiorService.ChangePasswordAsync(superiorId, currentPassword, newPassword);
+                if (change == false)
+                {
+                    return BadRequest("Failed to Change Password.");
+                }
+                return Ok(true);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error changing password.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        #endregion
     }
 }

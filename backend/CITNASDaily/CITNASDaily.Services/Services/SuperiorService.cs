@@ -4,6 +4,7 @@ using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Services.Contracts;
+using CITNASDaily.Utils;
 
 namespace CITNASDaily.Services.Services
 {
@@ -71,6 +72,29 @@ namespace CITNASDaily.Services.Services
         public async Task<int> GetSuperiorIdByUsernameAsync(string username)
         {
             return await _superiorRepository.GetSuperiorIdByUsernameAsync(username);
+        }
+
+        public async Task<bool> ChangePasswordAsync(int superiorId, string currentPassword, string newPassword)
+        {
+            var superior = await _superiorRepository.GetSuperiorAsync(superiorId);
+
+            //nas does not exist
+            if (superior == null)
+            {
+                return false;
+            }
+
+            var user = await _userRepository.GetUserByUsernameAsync(superior.Username);
+
+            bool check = PasswordManager.VerifyPassword(currentPassword, user.PasswordHash);
+
+            //password do not match
+            if (check == false)
+            {
+                return false;
+            }
+
+            return await _superiorRepository.ChangePasswordAsync(superiorId, PasswordManager.HashPassword(newPassword));
         }
     }
 }
