@@ -139,6 +139,8 @@ namespace CITNASDaily.Repositories.Migrations
                     NasLetter = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     DateSubmitted = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AbsenceDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Semester = table.Column<int>(type: "int", nullable: false),
+                    SchoolYear = table.Column<int>(type: "int", nullable: false),
                     ValidationStatus = table.Column<int>(type: "int", nullable: false),
                     MakeUpHours = table.Column<int>(type: "int", nullable: false)
                 },

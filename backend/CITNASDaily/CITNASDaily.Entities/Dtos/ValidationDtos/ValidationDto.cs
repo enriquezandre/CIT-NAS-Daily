@@ -14,6 +14,8 @@ namespace CITNASDaily.Entities.Dtos.ValidationDtos
         public byte[]? NasLetter { get; set; }
         public DateTime? DateSubmitted { get; set; }
         public DateTime? AbsenceDate { get; set; }
+        public Semester Semester { get; set; }
+        public int SchoolYear { get; set; }
         public ValidationStatus ValidationStatus { get; set; }
         public int MakeUpHours { get; set; }
     }
