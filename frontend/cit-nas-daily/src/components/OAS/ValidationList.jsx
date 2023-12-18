@@ -119,7 +119,6 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
       if (response.status === 200 || response.status === 201) {
         console.log("Submitted successfully");
       } else {
-        X;
         console.error("Submission failed");
       }
 
