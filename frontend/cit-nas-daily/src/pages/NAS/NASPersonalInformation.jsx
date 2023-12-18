@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { Avatar } from "../../components/NAS/Avatar";
 import { PersonalInformation as Field } from "../../components/NAS/PersonalInformation";
@@ -18,23 +18,22 @@ export const NASPersonalInformation = () => {
   const [dateStarted, setDateStarted] = useState("");
   const [avatar, setAvatar] = useState(null);
 
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
+
   useEffect(() => {
     const fetchNas = async () => {
       try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
         const response = await api.get(`/NAS/${nasId}`);
         const nasData = response.data;
-
-        const officeresponse = await api.get(`Offices/${nasId}/NAS`);
-        const officeName = officeresponse.data.name;
-
         setStudentId(nasData.studentIDNo);
         setFirstName(nasData.firstName);
         setMiddleName(nasData.middleName);
@@ -43,7 +42,7 @@ export const NASPersonalInformation = () => {
         setBday(new Date(nasData.birthDate).toLocaleDateString());
         setCourse(nasData.course);
         setYearLevel(nasData.yearLevel.toString());
-        setOffice(officeName);
+        setOffice(nasData.officeName);
         setDateStarted(new Date(nasData.dateStarted).toLocaleDateString());
 
         if (nasData.image != null) {
@@ -55,19 +54,12 @@ export const NASPersonalInformation = () => {
     };
 
     fetchNas();
-  }, [nasId]);
+  }, [nasId, api]);
 
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
 
     if (file) {
-      const api = axios.create({
-        baseURL: `https://localhost:7001/api/NAS/photo/${nasId}`, // Include nasId in the URL
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
       try {
         const formData = new FormData();
         formData.append("file", file);
@@ -160,11 +152,7 @@ export const NASPersonalInformation = () => {
           <Avatar avatar={avatar} handleAvatarChange={handleAvatarChange} />
         </div>
       </div>
-
-      {/* horizontal line */}
       <hr className="my-5 border-t-2 border-gray-300 mx-2" />
-
-      {/* below the horizontal line fields */}
       <div className="m-3 flex-1">
         <Field
           label="Office Assigned:"
