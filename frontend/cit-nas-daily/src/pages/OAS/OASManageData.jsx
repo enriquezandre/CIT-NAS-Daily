@@ -111,7 +111,7 @@ export const OASManageData = () => {
       await Promise.all(
         nasList.map(async (nas) => {
           const { id, firstName, lastName, middleName } = nas;
-          console.log("NAS Info: ", id, firstName, lastName, middleName);
+          console.log("NAS Info: ", id, firstName, middleName, lastName);
           await checkAttendanceAndSchedule(id, firstName, lastName, middleName);
         })
       );
@@ -130,7 +130,7 @@ export const OASManageData = () => {
       const dtrdata = dtrresponse.data;
 
       const scheduleResponse = await api.get(
-        `/Schedule/${nasId}/${selectedSY}/${selectedSemValue}` //${selectedSemValue}
+        `/Schedule/${nasId}/${selectedSY}/${selectedSemValue}`
       );
       const scheduleData = scheduleResponse.data;
 
@@ -168,7 +168,7 @@ export const OASManageData = () => {
           totalLateOver10Mins = totalLateOver10Mins + 1;
         }
 
-        console.log("NAS timeIn/schedule :" + timeIn, schedStartTime);
+        console.log("NAS Id: " + nasId + "- NAS timeIn/schedule :" + timeIn, schedStartTime);
 
         return attendance;
       });
