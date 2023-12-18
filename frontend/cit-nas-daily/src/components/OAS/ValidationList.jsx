@@ -9,6 +9,17 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
   const [isStatusModalOpen, setStatusModalOpen] = useState(false);
   const [selectedValidationItem, setSelectedValidationItem] = useState(null);
 
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
+
   const getSemesterValue = useMemo(() => {
     return (sem) => {
       switch (sem) {
@@ -57,21 +68,14 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
 
   const fetchValidation = async () => {
     try {
-      const api = axios.create({
-        baseURL: "https://localhost:7001/api",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
       const response = await api.get("/Validation");
 
       // Filter the data based on selected semester and school year
       const filteredData = response.data.filter(
         (item) =>
           item.validationStatus === 0 &&
-          (selectedSem === null || item.semester === getSemesterValue(selectedSem)) &&
-          (selectedSy === null || item.schoolYear === parseInt(selectedSy))
+          item.semester === getSemesterValue(selectedSem) &&
+          item.schoolYear === parseInt(selectedSy)
       );
 
       const validationData = await Promise.all(
@@ -96,18 +100,6 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
 
   const handleSubmit = async (validationStatus, mudHours) => {
     try {
-      if (!selectedValidationItem) {
-        console.error("Selected item is null");
-        return;
-      }
-
-      const api = axios.create({
-        baseURL: "https://localhost:7001/api",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
       const validationId = selectedValidationItem.id;
 
       const requestData = {
@@ -117,6 +109,7 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
 
       const response = await api.put(`/Validation?validationId=${validationId}`, requestData);
       if (response.status === 200 || response.status === 201) {
+        updateNasTimekeeping(selectedValidationItem.nasId);
         console.log("Submitted successfully");
       } else {
         console.error("Submission failed");
@@ -137,6 +130,53 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
   const filteredValidation = validation.filter((item) =>
     item.nasName.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const updateNasTimekeeping = async (nasId) => {
+    try {
+      const validationResponse = await api.get(`/Validation/nas/${nasId}`);
+      const filteredValidation = validationResponse.data.filter(
+        (item) =>
+          item.semester === getSemesterValue(selectedSem) &&
+          item.schoolYear === parseInt(selectedSy)
+      );
+
+      let excusedCount = 0;
+      let unexcusedCount = 0;
+      let forMakeUpDutyCount = 0;
+      filteredValidation.forEach((item) => {
+        if (item.validationStatus === 1) {
+          excusedCount = excusedCount + 1;
+        } else if (item.validationStatus === 2) {
+          unexcusedCount = unexcusedCount + 1;
+        } else if (item.validationStatus === 3) {
+          forMakeUpDutyCount = forMakeUpDutyCount + item.makeUpHours;
+        }
+      });
+
+      const updatedExcusedCount = excusedCount;
+      const updatedUnexcusedCount = unexcusedCount;
+      const updatedMakeUpDutyHours = forMakeUpDutyCount;
+
+      const updateData = {
+        excused: updatedExcusedCount,
+        unexcused: updatedUnexcusedCount,
+        makeUpDutyHours: updatedMakeUpDutyHours,
+      };
+
+      const updateResponse = await api.put(
+        `/TimekeepingSummary/${nasId}/${selectedSy}/${getSemesterValue(selectedSem)}`,
+        updateData
+      );
+      if (updateResponse.status === 200 || updateResponse.status === 201) {
+        console.log(excusedCount, unexcusedCount, forMakeUpDutyCount);
+        console.log("NAS timekeeping updated successfully");
+      } else {
+        console.error("NAS timekeeping update failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
