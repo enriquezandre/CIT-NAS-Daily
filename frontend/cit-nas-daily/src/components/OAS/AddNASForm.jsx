@@ -62,7 +62,7 @@ export const AddNASForm = () => {
     const lastname = lastnameRef.current.value;
     const firstname = firstnameRef.current.value;
     const middlename = middlenameRef.current.value;
-    const username = `${firstname}${lastname}`.toLowerCase();
+    const username = `${lastname}${firstname}`.toLowerCase();
     const officeId = officeRef.current.value;
     const idnumber = idnumberRef.current.value;
     const program = programRef.current.value;
