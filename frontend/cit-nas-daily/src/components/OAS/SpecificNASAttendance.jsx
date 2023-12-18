@@ -80,12 +80,12 @@ export const SpecificNASAttendance = () => {
         const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
         const nasData = nasresponse.data;
 
-        const officeResponse = await api.get(`Offices/${nasId}/NAS`);
+        const officeResponse = await api.get(`/Offices/NAS/${nasId}`);
         const officeData = officeResponse.data;
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
-        setOffice(officeData.name);
+        setOffice(officeData.officeName);
       } catch (error) {
         console.error(error);
       }

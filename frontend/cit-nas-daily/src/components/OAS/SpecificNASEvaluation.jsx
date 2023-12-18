@@ -58,13 +58,13 @@ export const SpecificNASEvaluation = () => {
         console.log(nasResponse);
         const nasData = nasResponse.data;
 
-        const officeResponse = await api.get(`Offices/${nasId}/NAS`);
+        const officeResponse = await api.get(`/Offices/NAS/${nasId}`);
         const officeData = officeResponse.data;
 
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
-        setOffice(officeData.name);
+        setOffice(officeData.officeName);
       } catch (error) {
         console.error(error);
       }

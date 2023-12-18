@@ -73,14 +73,14 @@ export const SpecificNASStatus = () => {
       try {
         const [nasResponse, officeResponse] = await Promise.all([
           api.get(`/NAS/${nasId}/noimg`),
-          api.get(`Offices/${nasId}/NAS`),
+          api.get(`/Offices/NAS/${nasId}`),
         ]);
         const nasData = nasResponse.data;
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
         const officeData = officeResponse.data;
-        setOffice(officeData.name);
+        setOffice(officeData.officeName);
       } catch (error) {
         console.error(error);
       }
