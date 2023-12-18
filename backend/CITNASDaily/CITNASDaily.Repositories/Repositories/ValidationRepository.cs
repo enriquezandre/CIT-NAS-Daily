@@ -22,6 +22,15 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<Validation?> CreateValidationAsync(Validation validation)
         {
+            var check = await _context.NASSchoolYears
+                .SingleOrDefaultAsync(s => s.NASId == validation.NasId && s.Semester == validation.Semester && s.Year == validation.SchoolYear);
+
+            if(check == null)
+            {
+                //nas not enrolled in specified year and semester
+                return null;
+            }
+
             validation.DateSubmitted = DateTime.Now;
             validation.ValidationStatus = ValidationStatus.Pending;
             await _context.Validations.AddAsync(validation);
