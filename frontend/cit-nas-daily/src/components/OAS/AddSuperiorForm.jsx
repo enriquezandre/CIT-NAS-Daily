@@ -41,7 +41,7 @@ export const AddSuperiorForm = () => {
     const lastname = lastnameRef.current.value;
     const firstname = firstnameRef.current.value;
     const officeId = officeRef.current.value;
-    const username = `${lastname}${firstname}`.toLowerCase();
+    const username = `${lastname}${firstname}`.toLowerCase().replace(/[^a-z0-9]/g, "");
 
     //REGISTER AS USER
     try {
