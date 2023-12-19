@@ -28,6 +28,11 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
     }
   };
 
+  const handleCancel = () => {
+    closeModal();
+    resetInput();
+  };
+
   const resetInput = () => {
     setvalidationStatus(0);
     setMudHours(0);
@@ -54,6 +59,7 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
         ></div>
       )}
       <Modal
+        dismissible
         show={isOpen}
         className="rounded-1xl"
         style={{
@@ -63,6 +69,7 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
           left: "50%",
           transform: "translateX(-50%)",
         }}
+        onClose={handleCancel}
       >
         <Modal.Header className="text-center">Update letter status</Modal.Header>
         <Modal.Body>
@@ -103,7 +110,7 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
                 <div className="flex m-2">
                   <button
                     className="bg-primary text-white py-2 px-6 rounded-full hover:bg-secondary hover:text-primary"
-                    onClick={closeModal}
+                    onClick={handleCancel}
                   >
                     Cancel
                   </button>

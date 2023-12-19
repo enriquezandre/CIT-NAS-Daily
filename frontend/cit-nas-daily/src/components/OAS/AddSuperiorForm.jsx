@@ -114,7 +114,7 @@ export const AddSuperiorForm = () => {
                   <option selected="">Select office</option>
                   {offices.map((office) => (
                     <option key={office.id} value={office.id}>
-                      {office.name}
+                      {office.officeName}
                     </option>
                   ))}
                 </select>

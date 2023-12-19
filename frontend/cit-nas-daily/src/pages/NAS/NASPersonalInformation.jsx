@@ -32,8 +32,8 @@ export const NASPersonalInformation = () => {
         const response = await api.get(`/NAS/${nasId}`);
         const nasData = response.data;
 
-        const officeresponse = await api.get(`Offices/${nasId}/NAS`);
-        const officeName = officeresponse.data.name;
+        const officeresponse = await api.get(`/Offices/NAS/${nasId}`);
+        const officeName = officeresponse.data.officeName;
 
         setStudentId(nasData.studentIDNo);
         setFirstName(nasData.firstName);

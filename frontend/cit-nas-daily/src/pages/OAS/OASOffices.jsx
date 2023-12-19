@@ -34,7 +34,7 @@ export const OASOffices = () => {
 
   // Function to filter offices based on search input
   const filteredOffices = offices.filter((office) =>
-    office.name.toLowerCase().includes(searchInput.toLowerCase())
+    office.officeName.toLowerCase().includes(searchInput.toLowerCase())
   );
 
   const handleOfficeClick = (office) => {
@@ -183,7 +183,7 @@ export const OASOffices = () => {
                     className="bg-white p-4 rounded-lg shadow-md text-left"
                     onClick={() => handleOfficeClick(office)}
                   >
-                    <h2 className="text-xl font-semibold">{office.name}</h2>
+                    <h2 className="text-xl font-semibold">{office.officeName}</h2>
                   </button>
                 ))}
               </div>

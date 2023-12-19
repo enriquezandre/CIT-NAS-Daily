@@ -2,13 +2,12 @@ import PropTypes from "prop-types";
 
 export const Dropdown = ({ label, options, selectedValue, onChange }) => {
   return (
-    <div className="flex flex-row gap-2 items-center">
+    <div className="flex flex-col sm:flex-row gap-2 items-center">
       <div className="mr-2">{label}:</div>
       <select
         value={selectedValue}
         onChange={onChange}
-        className="w-full text-base border rounded-md"
-        style={{ width: "7rem" }}
+        className="w-full text-base border rounded-md sm:w-[7rem]"
       >
         {options.map((option, index) => (
           <option key={index} value={option}>

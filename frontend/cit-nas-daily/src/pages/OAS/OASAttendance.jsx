@@ -14,6 +14,7 @@ const second_sem = ["All", "January", "February", "March", "April", "May", "June
 const summer = ["All", "June", "July", "August"];
 
 export const OASAttendance = () => {
+  const [nasId, setNasId] = useState("");
   const [firstName, setFirstname] = useState("");
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
@@ -69,6 +70,7 @@ export const OASAttendance = () => {
         const response = await api.get(`/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`);
         setNasArray(response.data);
 
+        setNasId(response.data[currentIndex].id);
         setFirstname(response.data[currentIndex].firstName);
         setMiddlename(response.data[currentIndex].middleName);
         setLastname(response.data[currentIndex].lastName);
@@ -304,6 +306,7 @@ export const OASAttendance = () => {
               <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
               <p className="text-xl font-bold text-primary">WEEKLY ATTENDANCE</p>
               <WeeklyAttendance
+                nasId={nasId}
                 firstName={firstName}
                 lastName={lastName}
                 middleName={middleName}

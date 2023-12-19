@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 
 export const WeeklyAttendance = ({
+  nasId,
   firstName,
   lastName,
   middleName,
@@ -11,6 +12,7 @@ export const WeeklyAttendance = ({
   selectedSY,
 }) => {
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
+  const [validationData, setValidationData] = useState([]);
 
   const api = useMemo(
     () =>
@@ -156,6 +158,86 @@ export const WeeklyAttendance = ({
     getSemesterValue,
   ]);
 
+  const formatDate = useMemo(
+    () => (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    },
+    []
+  );
+
+  const getValidationStatus = useMemo(
+    () => (validationStatus) => {
+      switch (validationStatus) {
+        case 0:
+          return "PENDING";
+        case 1:
+          return "EXCUSED";
+        case 2:
+          return "UNEXCUSED";
+        case 3:
+          return "FOR MAKEUP DUTY";
+        case 4:
+          return "APPROVED";
+        case 5:
+          return "DISAPPROVED";
+        case 6:
+          return "WARNING";
+        case 7:
+          return "LAST WARNING";
+        case 8:
+          return "REPORT TO OFFICE";
+        default:
+          return "INVALID STATUS";
+      }
+    },
+    []
+  );
+
+  const getStatusColor = useMemo(
+    () => (validationStatus) => {
+      switch (validationStatus) {
+        case 0:
+          return "#e0d90d";
+        case 1:
+        case 3:
+        case 4:
+          return "#10c919";
+        case 2:
+        case 5:
+        case 8:
+          return "red";
+        case 6:
+        case 7:
+          return "#fca903";
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    const fetchValidation = async () => {
+      try {
+        const response = await api.get(`/Validation/nas/${nasId}`);
+        const validationData = response.data;
+
+        // Create an array of objects with absenceDate and validationStatus
+        const validationArray = validationData.map((validation) => ({
+          absenceDate: formatDate(new Date(validation.absenceDate)),
+          validationStatus: validation.validationStatus,
+          makeUpHours: validation.makeUpHours,
+        }));
+
+        setValidationData(validationArray);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchValidation();
+  }, [nasId, formatDate, api]);
+
   return (
     <table className="w-4/5 mx-auto mb-8">
       <thead>
@@ -169,29 +251,67 @@ export const WeeklyAttendance = ({
       </thead>
       <tbody>
         {Array.isArray(attendanceSummaries) &&
-          attendanceSummaries.map((summary) => (
-            <tr key={summary.date}>
-              <td className="border px-4 py-8 w-1/5 text-center">{summary.date}</td>
-              <td className="border px-4 py-2 w-1/5 text-center">
-                {summary.timeIn === "FTP IN" ? "FTP IN" : formatTime(summary.timeIn)}
-              </td>
-              <td className="border px-4 py-2 w-1/5 text-center">
-                {summary.timeOut === "FTP OUT" ? "FTP OUT" : formatTime(summary.timeOut)}
-              </td>
-              <td className="border px-4 py-2 w-1/5 text-center">
-                {formatTime(summary.overtimeIn)}
-              </td>
-              <td className="border px-4 py-2 w-1/5 text-center">
-                {formatTime(summary.overtimeOut)}
-              </td>
-            </tr>
-          ))}
+          attendanceSummaries.map((summary) => {
+            // Find the corresponding validation entry for the current summary date
+            const validationEntry = validationData.find(
+              (validation) => validation.absenceDate === summary.date
+            );
+            return (
+              <tr key={summary.date}>
+                <td className="border px-4 py-8 w-1/5 text-center">{summary.date}</td>
+                <td className="border px-4 py-8 w-1/5 text-center">
+                  {summary.timeIn === "FTP IN"
+                    ? "FTP IN"
+                    : summary.timeIn !== null
+                    ? formatTime(summary.timeIn)
+                    : "-"}
+                </td>
+                <td className="border px-4 py-8 w-1/5 text-center">
+                  {summary.timeOut === "FTP OUT" ? (
+                    "FTP OUT"
+                  ) : summary.timeOut !== null ? (
+                    formatTime(summary.timeOut)
+                  ) : validationEntry ? (
+                    // Display validation status and make-up hours if a corresponding validation entry exists
+                    validationEntry.validationStatus === 3 ? (
+                      <p
+                        style={{ color: getStatusColor(validationEntry.validationStatus) }}
+                        className="font-semibold"
+                      >
+                        {getValidationStatus(validationEntry.validationStatus) +
+                          ": " +
+                          validationEntry.makeUpHours}{" "}
+                        hours
+                      </p>
+                    ) : (
+                      <p
+                        style={{ color: getStatusColor(validationEntry.validationStatus) }} // Use getStatusColor here
+                        className="font-semibold"
+                      >
+                        {getValidationStatus(validationEntry.validationStatus)}
+                      </p>
+                    )
+                  ) : (
+                    // If no validation entry, display "NO RECORD"
+                    <p className="font-bold text-gray">NO RECORD</p>
+                  )}
+                </td>
+                <td className="border px-4 py-8 w-1/5 text-center">
+                  {formatTime(summary.overtimeIn)}
+                </td>
+                <td className="border px-4 py-8 w-1/5 text-center">
+                  {formatTime(summary.overtimeOut)}
+                </td>
+              </tr>
+            );
+          })}
       </tbody>
     </table>
   );
 };
 
 WeeklyAttendance.propTypes = {
+  nasId: PropTypes.number.isRequired,
   firstName: PropTypes.string.isRequired,
   lastName: PropTypes.string.isRequired,
   middleName: PropTypes.string.isRequired,
