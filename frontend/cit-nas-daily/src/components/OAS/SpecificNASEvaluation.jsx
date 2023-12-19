@@ -70,15 +70,12 @@ export const SpecificNASEvaluation = () => {
     };
 
     fetchNas();
-
-    console.log("Selected Sem:", selectedSem);
-    console.log("Selected SY:", selectedSY);
   }, [selectedSY, selectedSem, nasId, api]);
 
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
-        const response = await api.get("/NAS/sysem");
+        const response = await api.get(`/NAS/sysem/${nasId}`);
         setSyOptions(response.data);
 
         // Extract unique years from syOptions
@@ -90,7 +87,7 @@ export const SpecificNASEvaluation = () => {
     };
 
     fetchSchoolYearSemesterOptions();
-  }, [api]);
+  }, [api, nasId]);
 
   return (
     <>

@@ -158,14 +158,7 @@ export const SpecificNASAttendance = () => {
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const response = await api.get("/NAS/sysem");
+        const response = await api.get(`/NAS/sysem/${nasId}`);
         setSyOptions(response.data);
 
         // Extract unique years from syOptions
@@ -177,7 +170,7 @@ export const SpecificNASAttendance = () => {
     };
 
     fetchSchoolYearSemesterOptions();
-  }, []);
+  }, [api, nasId]);
 
   return (
     <>
