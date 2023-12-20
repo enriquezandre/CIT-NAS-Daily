@@ -214,8 +214,19 @@ namespace CITNASDaily.API.Controllers
 
         #region UpdateSuperior
 
+        /// <summary>
+        /// Updates Superior Password
+        /// </summary>
+        /// <param name="superiorId"></param>
+        /// <param name="currentPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <returns>A boolean whether the password change was successful or not</returns>
         [HttpPut("changepassword/{superiorId}", Name = "ChangeSuperiorPassword")]
         [Authorize(Roles = "Superior")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ChangePassword(int superiorId, string currentPassword, string newPassword)
         {
             try

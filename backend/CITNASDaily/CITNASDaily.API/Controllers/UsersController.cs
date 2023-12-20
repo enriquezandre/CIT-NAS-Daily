@@ -23,7 +23,7 @@ namespace CITNASDaily.API.Controllers
             _logger = logger;
         }
         /// <summary>
-        /// gets all users
+        /// Retrieves all users
         /// </summary>
         /// <returns>list of users</returns>
         /// <reponse code="200">Returns a list of users</reponse>
@@ -34,6 +34,7 @@ namespace CITNASDaily.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetUsers()
         {
@@ -61,7 +62,7 @@ namespace CITNASDaily.API.Controllers
         /// Gets a user by <paramref name="userId"/>
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns>one user</returns>
+        /// <returns>Requested user</returns>
         /// <reponse code="200">Returns a user</reponse>
         /// <reponse code="404">User not found</reponse>
         /// <reponse code="401">Unauthorized</reponse>
@@ -97,9 +98,9 @@ namespace CITNASDaily.API.Controllers
             }
         }
         /// <summary>
-        /// gets current user
+        /// Gets current user
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Current user logged in</returns>
         [HttpGet("currentUser")]
         [Authorize]
         [Produces("application/json")]
@@ -124,6 +125,12 @@ namespace CITNASDaily.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
+
+        /// <summary>
+        /// Checks username
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>A boolean whether the user exist or not</returns>
         [HttpGet("checkUsername")]
         [AllowAnonymous]
         [Produces("application/json")]
