@@ -1,4 +1,5 @@
 ﻿using CITNASDaily.Entities.Dtos.NASDtos;
+using CITNASDaily.Entities.Models;
 using CITNASDaily.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,9 +30,17 @@ namespace CITNASDaily.API.Controllers
 
         #region CreateNAS
 
+        /// <summary>
+        /// Creates new NAS entry
+        /// </summary>
+        /// <param name="nasCreate"></param>
+        /// <returns>Newly created NAS</returns>
         [HttpPost]
         [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(NASDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateNAS([FromBody] NASCreateDto nasCreate)
         {
             try
@@ -60,11 +69,19 @@ namespace CITNASDaily.API.Controllers
 
         #endregion
 
-
         #region GetNAS
 
+        /// <summary>
+        /// Retrieves NAS by id
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <returns>Requested NAS</returns>
         [HttpGet("{nasId}", Name = "GetNAS")]
         [Authorize(Roles = "OAS, NAS, Superior")]
+        [ProducesResponseType(typeof(NASDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetNAS(int nasId)
         {
             try
@@ -89,8 +106,17 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves NAS by id without image
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <returns>Requested NAS</returns>
         [HttpGet("{nasId}/noimg", Name = "GetNASNoImage")]
         [Authorize(Roles = "OAS, NAS, Superior")]
+        [ProducesResponseType(typeof(NASDtoNoImage), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetNASNoImage(int nasId)
         {
             try
@@ -115,12 +141,23 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves all NAS
+        /// </summary>
+        /// <returns>List of all NAS</returns>
         [HttpGet(Name = "GetAllNAS")]
         [Authorize(Roles = "OAS")]
+        [ProducesResponseType(typeof(IEnumerable<NASDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllNAS()
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
                 var nas = await _nasService.GetAllNASAsync();
 
                 if (nas.IsNullOrEmpty())
@@ -137,12 +174,23 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves all NAS without image
+        /// </summary>
+        /// <returns>List of all NAS without image</returns>
         [HttpGet("noimg", Name = "GetAllNASNoImage")]
         [Authorize(Roles = "OAS, Superior")]
+        [ProducesResponseType(typeof(IEnumerable<NASDtoNoImage>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllNASNoImage()
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
                 var nas = await _nasService.GetAllNASNoImageAsync();
 
                 if (nas.IsNullOrEmpty())
@@ -159,12 +207,25 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves all NAS by SY and semester
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="semester"></param>
+        /// <returns>List of NAS by SY and Semester</returns>
         [HttpGet("{year}/{semester}/noimg", Name = "GetAllNASBySYSemester")]
         [Authorize(Roles = "OAS")]
+        [ProducesResponseType(typeof(IEnumerable<NASDtoNoImage>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllNASBySYSemester(int year, int semester)
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
                 var nas = await _nasService.GetAllNasBySYSemesterAsync(year, (Semester) semester);
 
                 if (nas.IsNullOrEmpty())
@@ -181,12 +242,24 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves NAS id by username
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>Requested NAS id</returns>
         [HttpGet("{username}/id", Name = "GetNASId")]
         [Authorize(Roles = "OAS, NAS")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetNASIdAsync(string username)
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
                 var nasId = await _nasService.GetNASIdByUsernameAsync(username);
 
                 if (nasId == 0)
@@ -203,12 +276,26 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves NAS by office id
+        /// </summary>
+        /// <param name="officeId"></param>
+        /// <param name="year"></param>
+        /// <param name="semester"></param>
+        /// <returns>List of NAS by office id</returns>
         [HttpGet("{officeId}/{year}/{semester}", Name = "GetNASByOfficeIdSYSemester")]
         [Authorize(Roles = "OAS, Superior")]
+        [ProducesResponseType(typeof(IEnumerable<NasByOfficeIdListDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetNASByOfficeIdSYSemester(int officeId, int year, int semester)
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
                 var nas = await _nasService.GetNASByOfficeIdSYSemesterAsync(officeId, year, (Semester)semester);
 
                 if (nas == null)
@@ -225,12 +312,26 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves Superior Evaluation Rating of NAS
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <param name="semester"></param>
+        /// <param name="year"></param>
+        /// <returns>Requested superior evaluation rating</returns>
         [HttpGet("{nasId}/rating", Name = "GetNASSuperiorEvaluationRating")]
         [Authorize(Roles = "OAS, NAS, Superior")]
+        [ProducesResponseType(typeof(SuperiorEvaluationRating), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetNASSuperiorEvaluationRatingAsync(int nasId, Semester semester, int year)
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
                 var superiorEval = await _superiorEvaluationRatingService.GetSuperiorEvaluationRatingByNASIdAndSemesterAndSchoolYearAsync(nasId, semester, year);
 
                 if (superiorEval == null)
@@ -247,12 +348,23 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves all SY and Semester
+        /// </summary>
+        /// <returns>List of SY and semester</returns>
         [HttpGet("sysem", Name = "GetAllSYAndSem")]
         [Authorize(Roles = "OAS, NAS, Superior")]
+        [ProducesResponseType(typeof(List<NASSYSemOnly>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllSYAndSem()
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
                 var sysem = await _nasService.GetAllSYAndSem();
 
                 if (sysem == null)
@@ -269,12 +381,26 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves NAS by nas id, year, and semester without image
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <param name="year"></param>
+        /// <param name="semester"></param>
+        /// <returns>Requested NAS without image</returns>
         [HttpGet("{nasId}/{year}/{semester}/noimg", Name = "GetNASByNASIdSYSemesterNoImg")]
         [Authorize(Roles = "OAS, NAS, Superior")]
+        [ProducesResponseType(typeof(NASDtoNoImage), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetNASByNASIdSYSemesterNoImg(int nasId, int year, int semester)
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
                 var nas = await _nasService.GetNASByNASIdSYSemesterNoImgAsync(nasId, year, (Semester)semester);
 
                 if(nas == null)
@@ -291,12 +417,25 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves a list of enrolled SY and semester by NAS id
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <returns>List of semester and SY</returns>
         [HttpGet("sysem/{nasId}", Name = "GetSYSemByNASId")]
         [Authorize(Roles = "OAS, NAS, Superior")]
+        [ProducesResponseType(typeof(IEnumerable<NASSYSemOnly>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetSYSemByNASId(int nasId)
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
                 var check = await _nasService.GetNASAsync(nasId);
                 if(check == null)
                 {
@@ -322,8 +461,20 @@ namespace CITNASDaily.API.Controllers
 
         #region UpdateUpload
 
+        /// <summary>
+        /// Upload grades by year and semester
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <param name="year"></param>
+        /// <param name="semester"></param>
+        /// <param name="file"></param>
+        /// <returns>NAS Grade</returns>
         [HttpPut("grades/{nasId}/{year}/{semester}", Name = "UploadGrades")]
         [Authorize(Roles = "OAS, NAS")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UploadGrades(int nasId, int year, int semester, [FromForm] IFormFile file)
         {
             try
@@ -350,8 +501,18 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Uploads photo of NAS
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <param name="file"></param>
+        /// <returns>NAS image</returns>
         [HttpPut("photo/{nasId}", Name = "UploadPhoto")]
         [Authorize(Roles = "OAS, NAS")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UploadPhoto(int nasId, [FromForm] IFormFile file)
         {
             try
@@ -378,8 +539,18 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates NAS entry
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <param name="nasUpdate"></param>
+        /// <returns>Newly updated NAS</returns>
         [HttpPut("{nasId}", Name = "UpdateNAS")]
         [Authorize(Roles = "OAS")]
+        [ProducesResponseType(typeof(NASDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateNAS(int nasId, [FromBody] NASUpdateDto nasUpdate)
         {
             try
@@ -404,8 +575,19 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Change NAS password
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <param name="currentPassword"></param>
+        /// <param name="newPassword"></param>
+        /// <returns>A boolean whether the password change was successful or not</returns>
         [HttpPut("changepassword/{nasId}", Name = "ChangePassword")]
         [Authorize(Roles = "NAS")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ChangePassword(int nasId, string currentPassword, string newPassword)
         {
             try
