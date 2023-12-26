@@ -1,4 +1,5 @@
-﻿using CITNASDaily.Entities.Dtos.OASDtos;
+﻿using CITNASDaily.Entities.Models;
+using CITNASDaily.Entities.Dtos.OASDtos;
 using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Services.Contracts;
 using CITNASDaily.Services.Services;
@@ -26,9 +27,17 @@ namespace CITNASDaily.API.Controllers
 
         #region CreateOAS
 
+        /// <summary>
+        /// Creates new OAS entry
+        /// </summary>
+        /// <param name="oasCreate"></param>
+        /// <returns>Newly created OAS</returns>
         [HttpPost]
         [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(OASDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> OASCreate([FromBody] OASCreateDto oasCreate)
         {
             try
@@ -59,8 +68,17 @@ namespace CITNASDaily.API.Controllers
 
         #region GetOAS
 
+        /// <summary>
+        /// Retrieves OAS by id
+        /// </summary>
+        /// <param name="oasId"></param>
+        /// <returns>Requested OAS</returns>
         [HttpGet("{oasId}", Name = "GetOAS")]
         [Authorize(Roles = "OAS")]
+        [ProducesResponseType(typeof(OASDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetOAS(int oasId)
         {
             try
@@ -86,8 +104,17 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves OAS Id by username
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>OAS id</returns>
         [HttpGet("{username}/id", Name = "GetOASId")]
         [Authorize(Roles = "OAS")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetOASIdAsync(string username)
         {
             try
@@ -115,8 +142,16 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves all OAS
+        /// </summary>
+        /// <returns></returns>
         [HttpGet(Name = "GetAllOAS")]
         [Authorize(Roles = "OAS")]
+        [ProducesResponseType(typeof(OAS), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllOAS()
         {
             try

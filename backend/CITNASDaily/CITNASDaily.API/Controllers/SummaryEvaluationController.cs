@@ -26,9 +26,17 @@ namespace CITNASDaily.API.Controllers
 
         #region CreateSummaryEvaluation
 
+        /// <summary>
+        /// Creates a new summary evaluation entry
+        /// </summary>
+        /// <param name="summary"></param>
+        /// <returns>Newly created summary evaluation</returns>
         [HttpPost]
         [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(SummaryEvaluation), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateSummaryEvaluation([FromBody] SummaryEvaluationCreateDto summary)
         {
             try
@@ -59,8 +67,16 @@ namespace CITNASDaily.API.Controllers
 
         #region GetSummaryEvaluation
 
+        /// <summary>
+        /// Retrieves all summary evaluation
+        /// </summary>
+        /// <returns>List of summary evaluation</returns>
         [HttpGet]
         [Authorize(Roles = "OAS")]
+        [ProducesResponseType(typeof(IEnumerable<SummaryEvaluationDto>), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetSummaryEvaluations()
         {
             try
@@ -86,8 +102,19 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("{year}/{semester}/{nasId}", Name = "GetSummaryEvaluationByNASId")]
+        /// <summary>
+        /// Retrieves summary evaluation by nas ID, semester, and year
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <param name="semester"></param>
+        /// <param name="year"></param>
+        /// <returns>Requested summary evaluation</returns>
+        [HttpGet("{year}/{semester}/{nasId}", Name = "GetSummaryEvaluationByNASIdSemesterYear")]
         [Authorize(Roles = "OAS, Superior, NAS")]
+        [ProducesResponseType(typeof(SummaryEvaluationDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetSummaryEvaluationByNASIdSemesterYear(int nasId, Semester semester, int year)
         {
             try
@@ -114,8 +141,20 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieves NAS grade picture by nas ID, semester, and year
+        /// </summary>
+        /// <param name="nasId"></param>
+        /// <param name="year"></param>
+        /// <param name="semester"></param>
+        /// <returns>Requested grade picture</returns>
         [HttpGet("grades/{nasId}/{year}/{semester}", Name = "GetNASGradePicture")]
         [Authorize(Roles = "OAS, Superior")]
+        [ProducesResponseType(typeof(byte[]), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetNASGradePicture(int nasId, int year, int semester)
         {
             try
@@ -150,8 +189,17 @@ namespace CITNASDaily.API.Controllers
 
         #region PutSummaryEvaluation
 
+        /// <summary>
+        /// Updates summary evaluation
+        /// </summary>
+        /// <param name="summary"></param>
+        /// <returns>Newly updated summary evaluation</returns>
         [HttpPut]
         [Authorize(Roles = "OAS")]
+        [ProducesResponseType(typeof(SummaryEvaluation), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateSummaryEvaluation([FromBody] SummaryEvaluationUpdateDto summary)
         {
             try

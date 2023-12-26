@@ -1,4 +1,5 @@
 ﻿using CITNASDaily.Entities.Models;
+using CITNASDaily.Entities.Dtos.DailyTimeRecordDto;
 using CITNASDaily.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,12 +25,26 @@ namespace CITNASDaily.API.Controllers
             _dtrService = dtrService;
         }
 
+        /// <summary>
+        /// Retrieves all Daily Time Records
+        /// </summary>
+        /// <returns>List of all Daily Time Records</returns>
         [HttpGet(Name = "GetAllDTR")]
         [Authorize(Roles = "OAS, Superior")]
-        public async Task<IActionResult> GetAllNAS()
+        [ProducesResponseType(typeof(IEnumerable<DailyTimeRecord>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllDTR()
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
                 var dtr = await _dtrService.GetAllDTRAsync();
 
                 if (dtr.IsNullOrEmpty())
@@ -46,13 +61,33 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("{year}/{semester}/{firstName}/{lastName}", Name = "GetAllDTRBySYSem")]
+        /// <summary>
+        /// Retrieves Daily Time Record by year, semester, first name, last name, and middle name
+        /// </summary>
+        /// <param name="year"></param>
+        /// <param name="semester"></param>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <param name="middleName"></param>
+        /// <returns>Requested Daily Time Record</returns>
+        [HttpGet("{year}/{semester}/{lastName}/{firstName}", Name = "GetAllDTRBySYSem")]
         [Authorize(Roles = "OAS, NAS, Superior")]
-        public async Task<IActionResult> GetAllDTRBySYSem(int year, int semester, string firstName, string lastName, [FromQuery] string middleName = "")
+        [ProducesResponseType(typeof(DailyTimeRecordListDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllDTRBySYSem(int year, int semester, string lastName, string firstName, [FromQuery] string middleName = "")
         {
             try
             {
-                var dtr = await _dtrService.GetDTRsBySYSemesterAsync(year, (Semester)semester, firstName, lastName, middleName);
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var dtr = await _dtrService.GetDTRsBySYSemesterAsync(year, (Semester)semester, lastName, firstName, middleName);
+
 
                 if (dtr == null)
                 {
@@ -68,12 +103,28 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Uploads a Daily Time Record with year and semester
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="year"></param>
+        /// <param name="semester"></param>
+        /// <returns></returns>
         [HttpPost("UploadExcel/{year}/{semester}")]
         [Authorize(Roles = "OAS")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UploadExcel(IFormFile file, int year, int semester)
         {
             try
             {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
                 await _dtrService.SaveDTRs(file, year, (Semester)semester);
 
                 return Ok();
@@ -85,9 +136,20 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
-        [HttpGet("GetByNasName/{firstName}/{lastName}")]
+        /// <summary>
+        /// Retrieves Daily Time Record by name
+        /// </summary>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <param name="middleName"></param>
+        /// <returns>Requested Daily Time Record</returns>
+        [HttpGet("GetByNasName/{lastName}/{firstName}")]
         [Authorize(Roles = "OAS, Superior")]
-        public async Task<IActionResult> GetByNasName(string firstName, string lastName, [FromQuery] string middleName = "")
+        [ProducesResponseType(typeof(IEnumerable<DailyTimeRecord>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetByNasName(string lastName, string firstName, [FromQuery] string middleName = "")
         {
             try
             {
@@ -96,8 +158,10 @@ namespace CITNASDaily.API.Controllers
                 {
                     return Forbid();
                 }
-                var fullName = string.IsNullOrEmpty(middleName) ? $"{firstName} {lastName}" : $"{firstName} {middleName} {lastName}";
-                var dtr = await _dtrService.GetDTRByNasNameAsync(firstName, lastName, middleName);
+                
+                var fullName = string.IsNullOrEmpty(middleName) ? $"{lastName} {firstName}" : $"{lastName} {middleName} {firstName}";
+                var dtr = await _dtrService.GetDTRByNasNameAsync(lastName, firstName, middleName);
+
 
                 if (dtr == null || !dtr.Any())
                 {
