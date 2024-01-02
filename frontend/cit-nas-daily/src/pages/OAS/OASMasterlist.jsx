@@ -78,9 +78,6 @@ export const OASMasterlist = () => {
               </div>
             </div>
             <div className="flex justify-end">
-              <button className="mr-8 py-2 rounded-md bg-secondary w-24 items-center justify center hover:bg-primary hover:text-white font-normal text-base">
-                Update
-              </button>
               <div className="relative w-1/2">
                 <input
                   type="search"

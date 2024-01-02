@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import { AddExistingNASModal } from "./AddExistingNASModal";
 
 export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
   const [nasData, setNasData] = useState([]);
   const [filteredNASData, setFilteredNASData] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const api = useMemo(
     () =>
@@ -104,6 +106,10 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
     setFilteredNASData(filteredData);
   }, [searchInput, nasData]);
 
+  const handleAdd = () => {
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="table-auto mx-auto mb-8">
@@ -192,7 +198,25 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
             </tr>
           ))}
         </tbody>
+        <tbody>
+          <tr>
+            <td colSpan="20" className="text-center border-2">
+              <button
+                className="btn btn-primary bg-secondary px-4 py-2 rounded-lg m-1 text-sm hover:bg-primary hover:text-white"
+                onClick={handleAdd}
+              >
+                Add existing NAS
+              </button>
+            </td>
+          </tr>
+        </tbody>
       </table>
+      <AddExistingNASModal
+        isOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+        toaddSY={selectedSY}
+        toaddSem={selectedSem}
+      />
     </div>
   );
 };
