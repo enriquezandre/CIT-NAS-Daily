@@ -576,6 +576,43 @@ namespace CITNASDaily.API.Controllers
         }
 
         /// <summary>
+        /// Updates multiple NAS Semester and Year
+        /// </summary>
+        /// <param name="nasUpdate">Information to update</param>
+        /// <returns>Newly Updated NAS Entries</returns>
+        [HttpPut(Name = "UpdateMultipleNAS")]
+        [Authorize]
+        [ProducesResponseType(typeof(IEnumerable<NASDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateMultipleNAS([FromBody] NASSYAndSemUpdateDto nasUpdate)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var nas = await _nasService.UpdateMultipleNASAsync(nasUpdate);
+                if (nas.IsNullOrEmpty())
+                {
+                    return BadRequest("Failed to Update NAS");
+                }
+
+                return Ok(nas);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating nas.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        /// <summary>
         /// Change NAS password
         /// </summary>
         /// <param name="nasId"></param>
