@@ -6,6 +6,7 @@ export const AddSuperiorForm = () => {
   const lastnameRef = useRef();
   const firstnameRef = useRef();
   const officeRef = useRef();
+  const [submitted, setSubmitted] = useState(false);
 
   const api = useMemo(
     () =>
@@ -22,14 +23,17 @@ export const AddSuperiorForm = () => {
     const fetchOffices = async () => {
       try {
         const response = await api.get(`/Offices`);
-        setOffices(response.data);
-        console.log(response.data);
+        const filteredData = response.data.filter(
+          (office) => !office.superiorFirstName && !office.superiorLastName
+        );
+        setOffices(filteredData);
+        console.log("OFFICES", filteredData);
       } catch (error) {
         console.error(error);
       }
     };
     fetchOffices();
-  }, [api]);
+  }, [api, submitted]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -37,34 +41,49 @@ export const AddSuperiorForm = () => {
     const lastname = lastnameRef.current.value;
     const firstname = firstnameRef.current.value;
     const officeId = officeRef.current.value;
+    const username = `${lastname}${firstname}`.toLowerCase().replace(/[^a-z0-9]/g, "");
 
-    const username = `${firstname}${lastname}`.toLowerCase();
-    console.log(username);
-    console.log(officeId);
+    //REGISTER AS USER
+    try {
+      const registeruser = await api.post(`/Auth/register/`, {
+        username: username,
+        password: username,
+        role: "Superior",
+      });
+      console.log(registeruser);
+    } catch (error) {
+      console.error(error);
+    }
 
-    // REGISTER AS USER
-    //   try {
-    //     const registeruser = await api.post(`/Auth/register/`, {
-    //       username: username,
-    //       password: username,
-    //       role: "Superior",
-    //     });
-    //     console.log(registeruser);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
+    //REGISTER AS SUPERIOR
+    try {
+      const registersuperior = await api.post(`/Superiors`, {
+        firstName: firstname,
+        lastName: lastname,
+        username: username,
+      });
+      console.log(registersuperior);
+    } catch (error) {
+      console.error(error);
+    }
 
-    //   REGISTER AS SUPERIOR
-    // try {
-    //   const registersuperior = await api.post(`/Superiors`, {
-    //     firstName: firstname,
-    //     lastName: lastname,
-    //     username: username,
-    //   });
-    //   console.log(registersuperior);
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    //ASSIGN SUPERIOR TO OFFICE
+    const officeData = {
+      id: officeId,
+      superiorFirstName: firstname,
+      superiorLastName: lastname,
+    };
+
+    const officeresponse = await api.put(`/Offices`, officeData);
+    if (officeresponse.status === 200 || officeresponse.status === 201) {
+      alert("Submitted successfully");
+      firstnameRef.current.value = "";
+      lastnameRef.current.value = "";
+      officeRef.current.value = "Select office";
+      setSubmitted(true);
+    } else {
+      alert("Submission failed");
+    }
   };
 
   return (

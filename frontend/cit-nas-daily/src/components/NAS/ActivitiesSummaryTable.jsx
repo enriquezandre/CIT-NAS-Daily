@@ -152,6 +152,6 @@ ActivitiesSummaryTable.propTypes = {
   selectedMonth: PropTypes.number.isRequired,
   selectedSem: PropTypes.string.isRequired,
   selectedSY: PropTypes.string.isRequired,
-  currentYear: PropTypes.number.isRequired,
+  currentYear: PropTypes.string.isRequired,
   currentSem: PropTypes.string.isRequired,
 };

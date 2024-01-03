@@ -4,6 +4,7 @@ import { calculateSchoolYear, calculateSemester } from "../../components/SySemUt
 import { AddNASForm } from "../../components/OAS/AddNASForm";
 import axios from "axios";
 import { AddSuperiorForm } from "../../components/OAS/AddSuperiorForm";
+import { AddOfficeForm } from "../../components/OAS/AddOfficeForm";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
@@ -227,30 +228,6 @@ export const OASManageData = () => {
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
-            <div className="flex flex-row items-center">
-              <div className="flex items-center">
-                <div className="flex flex-row justify-start items-center gap-10 ml-5 mr-4">
-                  <div className="flex flex-row gap-2 items-center">
-                    <Dropdown
-                      label="SY"
-                      options={uniqueYears}
-                      selectedValue={selectedSY}
-                      onChange={(e) => handleSelectSY(e)}
-                    />
-                  </div>
-                  <div className="flex flex-row gap-2 items-center">
-                    <Dropdown
-                      label="Semester"
-                      options={sem_options}
-                      selectedValue={selectedSem}
-                      onChange={(e) => handleSelectSem(e)}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </ul>
           <div className="px-8 py-4">
             <div className="flex mt-2 mb-8">
               <p className="mr-5 font-bold text-xl">Upload DTR:</p>
@@ -270,6 +247,26 @@ export const OASManageData = () => {
                   </button>
                 ) : null}
               </div>
+              <div className="flex flex-row justify-start items-center gap-10 ml-5 mr-4">
+                <div className="flex flex-row gap-2 items-center">
+                  Select
+                  <Dropdown
+                    label="SY"
+                    options={uniqueYears}
+                    selectedValue={selectedSY}
+                    onChange={(e) => handleSelectSY(e)}
+                  />
+                </div>
+                <div className="flex flex-row gap-2 items-center">
+                  Select
+                  <Dropdown
+                    label="Semester"
+                    options={sem_options}
+                    selectedValue={selectedSem}
+                    onChange={(e) => handleSelectSem(e)}
+                  />
+                </div>
+              </div>
             </div>
             <hr className="my-5 border-t-2 border-gray-300" />
             <div>
@@ -278,6 +275,10 @@ export const OASManageData = () => {
             </div>
             <div>
               <AddSuperiorForm />
+              <hr className="my-5 border-t-2 border-gray-300" />
+            </div>
+            <div>
+              <AddOfficeForm />
             </div>
           </div>
         </div>

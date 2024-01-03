@@ -79,10 +79,6 @@ export const NASEvaluationResult = () => {
 
   const handleSubmit = async () => {
     const semNum = sem_options.indexOf(selectedSem);
-    console.log("NAS ID: " + nasId);
-    console.log("selectedSY: " + selectedSY);
-    console.log("semNum: " + semNum);
-
     if (fileUploaded) {
       try {
         const formData = new FormData();
@@ -131,7 +127,6 @@ export const NASEvaluationResult = () => {
         );
         const summaryEvaluationData = summaryEvaluationResponse.data;
         setSummaryEvaluation(summaryEvaluationData);
-        console.log(summaryEvaluationData);
       } catch (error) {
         console.error(error);
         setSummaryEvaluation({});
@@ -139,8 +134,6 @@ export const NASEvaluationResult = () => {
     };
     fetchEvalResult();
   }, [selectedSY, selectedSem, nasId, api]);
-
-  console.log("SUMMARY EVAL", summaryEvaluation);
 
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">

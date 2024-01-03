@@ -9,9 +9,15 @@ import axios from "axios";
 export const SpecificNASAttendance = () => {
   const currentYear = calculateSchoolYear();
   const currentSem = calculateSemester();
-  const first_sem = ["All", "August", "September", "October", "November", "December"];
-  const second_sem = ["All", "January", "February", "March", "April", "May", "June"];
-  const summer = ["All", "June", "July", "August"];
+  const first_sem = useMemo(
+    () => ["All", "August", "September", "October", "November", "December"],
+    []
+  );
+  const second_sem = useMemo(
+    () => ["All", "January", "February", "March", "April", "May", "June"],
+    []
+  );
+  const summer = useMemo(() => ["All", "June", "July", "August"], []);
   const sem_options = ["First", "Second", "Summer"];
   const [uniqueYears, setUniqueYears] = useState([]);
   // eslint-disable-next-line no-unused-vars
@@ -79,13 +85,10 @@ export const SpecificNASAttendance = () => {
       try {
         const nasresponse = await api.get(`/NAS/${nasId}/noimg`);
         const nasData = nasresponse.data;
-
-        const officeResponse = await api.get(`/Offices/NAS/${nasId}`);
-        const officeData = officeResponse.data;
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
-        setOffice(officeData.officeName);
+        setOffice(nasData.officeName);
       } catch (error) {
         console.error(error);
       }
@@ -121,7 +124,17 @@ export const SpecificNASAttendance = () => {
     }
 
     setSelectedMonthIndex(selectedMonthIndex);
-  }, [nasId, selectedSY, selectedSem, selectedMonth, api, getSemesterValue]);
+  }, [
+    nasId,
+    selectedSY,
+    selectedSem,
+    selectedMonth,
+    api,
+    getSemesterValue,
+    first_sem,
+    second_sem,
+    summer,
+  ]);
 
   useEffect(() => {
     const fetchTimekeepingSummary = async () => {
@@ -145,14 +158,7 @@ export const SpecificNASAttendance = () => {
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const response = await api.get("/NAS/sysem");
+        const response = await api.get(`/NAS/sysem/${nasId}`);
         setSyOptions(response.data);
 
         // Extract unique years from syOptions
@@ -164,7 +170,7 @@ export const SpecificNASAttendance = () => {
     };
 
     fetchSchoolYearSemesterOptions();
-  }, []);
+  }, [api, nasId]);
 
   return (
     <>

@@ -13,6 +13,9 @@ export const AddNASForm = () => {
   const birthdateRef = useRef();
   const datestartedRef = useRef();
   const yearlevelRef = useRef();
+  const unitsAllowedRef = useRef();
+  const syRef = useRef();
+  const semRef = useRef();
 
   const api = useMemo(
     () =>
@@ -24,6 +27,21 @@ export const AddNASForm = () => {
       }),
     []
   );
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 2;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const fetchOffices = async () => {
@@ -43,53 +61,82 @@ export const AddNASForm = () => {
 
     const lastname = lastnameRef.current.value;
     const firstname = firstnameRef.current.value;
+    const middlename = middlenameRef.current.value;
+    const username = `${lastname}${firstname}`.toLowerCase().replace(/[^a-z0-9]/g, "");
     const officeId = officeRef.current.value;
-    const birthDate = birthdateRef.current.value;
+    const idnumber = idnumberRef.current.value;
+    const program = programRef.current.value;
+    const gender = genderRef.current.value;
+    const sy = syRef.current.value;
+    const sem = semRef.current.value;
+    const yearlevel = yearlevelRef.current.value;
+    const unitsAllowed = unitsAllowedRef.current.value;
+    let birthDate = birthdateRef.current.value;
+    let birth = new Date(birthDate);
+    let birthDateISOString = birth.toISOString();
+    let datestarted = datestartedRef.current.value;
+    let start = new Date(datestarted);
+    let datestartedISOString = start.toISOString();
 
-    const username = `${firstname}${lastname}`.toLowerCase();
-    console.log(username);
-    console.log(officeId);
-    console.log(birthDate);
+    //REGISTER AS USER
+    try {
+      const registeruser = await api.post(`/Auth/register/`, {
+        username: username,
+        password: username,
+        role: "NAS",
+      });
+      console.log(registeruser);
+    } catch (error) {
+      console.error(error);
+    }
 
-    // REGISTER AS USER
-    //   try {
-    //     const registeruser = await api.post(`/Auth/register/`, {
-    //       username: username,
-    //       password: username,
-    //       role: "NAS",
-    //     });
-    //     console.log(registeruser);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
+    //REGISTER AS NAS
+    try {
+      const nasData = {
+        studentIDNo: idnumber,
+        username: username,
+        firstName: firstname,
+        middleName: middlename,
+        lastName: lastname,
+        gender: gender,
+        birthDate: birthDateISOString,
+        course: program,
+        yearLevel: yearlevel,
+        sySem: [
+          {
+            year: sy,
+            semester: getSemesterValue(sem),
+          },
+        ],
+        unitsAllowed: unitsAllowed,
+        officeId: officeId,
+        enNo: null,
+        dateStarted: datestartedISOString,
+      };
 
-    //   REGISTER AS NAS
-    // try {
-    //   const registernas = await api.post(`/NAS`, {
-    //     studentIDNo: idnumberRef,
-    //     username: username,
-    //     firstName: firstname,
-    //     middleName: middlenameRef,
-    //     lastName: lastname,
-    //     gender: "string",
-    //     birthDate: birthdateRef,
-    //     course: "string",
-    //     yearLevel: yearlevelRef,
-    //     sySem: [
-    //       {
-    //         year: 0,
-    //         semester: 0,
-    //       },
-    //     ],
-    //     unitsAllowed: 0,
-    //     officeId: 0,
-    //     enNo: 0,
-    //     dateStarted: datestartedRef,
-    //   });
-    //   console.log(registernas);
-    // } catch (error) {
-    //   console.error(error);
-    // }
+      const registernas = await api.post(`/NAS`, nasData);
+
+      if (registernas.status === 200 || registernas.status === 201) {
+        alert("Submitted successfully");
+        firstnameRef.current.value = "";
+        lastnameRef.current.value = "";
+        middlenameRef.current.value = "";
+        officeRef.current.value = "Select office";
+        idnumberRef.current.value = "";
+        programRef.current.value = "";
+        genderRef.current.value = "Select gender";
+        syRef.current.value = "";
+        semRef.current.value = "Select semester";
+        birthdateRef.current.value = "";
+        datestartedRef.current.value = "";
+        yearlevelRef.current.value = "";
+        unitsAllowedRef.current.value = "";
+      } else {
+        alert("Submission failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -140,7 +187,7 @@ export const AddNASForm = () => {
                   name="middlename"
                   id="middlename"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  placeholder="Middle name"
+                  placeholder="Middle name (Optional)"
                   required=""
                 />
               </div>
@@ -167,7 +214,7 @@ export const AddNASForm = () => {
                 </label>
                 <input
                   ref={idnumberRef}
-                  type="number"
+                  type="text"
                   name="item-weight"
                   id="item-weight"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
@@ -179,32 +226,136 @@ export const AddNASForm = () => {
                 <label htmlFor="program" className="block mb-2 text-sm font-medium text-gray-900">
                   Program
                 </label>
-                <input
+                <select
                   ref={programRef}
-                  type="text"
                   name="program"
                   id="program"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  placeholder="Program"
-                  required=""
-                />
+                >
+                  <option value="">Select program</option>
+                  <optgroup label="College of Engineering and Architecture">
+                    <option value="BS Architecture">BS Architecture</option>
+                    <option value="BS Chemical Engineering">BS Chemical Engineering</option>
+                    <option value="BS Civil Engineering">BS Civil Engineering</option>
+                    <option value="BS Computer Engineering">BS Computer Engineering</option>
+                    <option value="BS Electrical Engineering">BS Electrical Engineering</option>
+                    <option value="BS Electronics Engineering">BS Electronics Engineering</option>
+                    <option value="BS Industrial Engineering">BS Industrial Engineering</option>
+                    <option value="BS Mechanical Engineering">BS Mechanical Engineering</option>
+                    <option value="BS Mining Engineering">BS Mining Engineering</option>
+                  </optgroup>
+                  <optgroup label="College of Management, Business and Accountancy">
+                    <option value="BS Accountancy">BS Accountancy</option>
+                    <option value="BS Accounting Information Systems">
+                      BS Accounting Information Systems
+                    </option>
+                    <option value="BS Management Accounting">BS Management Accounting</option>
+                    <option value="BS Business Administration - Banking & Financial Management">
+                      BS Business Administration - Banking & Financial Management
+                    </option>
+                    <option value="BS Business Administration - Business Analytics">
+                      BS Business Administration - Business Analytics
+                    </option>
+                    <option value="BS Business Administration - General Business Management">
+                      BS Business Administration - General Business Management
+                    </option>
+                    <option value="BS Business Administration - Human Resource Management">
+                      BS Business Administration - Human Resource Management
+                    </option>
+                    <option value="BS Business Administration - Marketing Management">
+                      BS Business Administration - Marketing Management
+                    </option>
+                    <option value="BS Business Administration - Operations Management">
+                      BS Business Administration - Operations Management
+                    </option>
+                    <option value="BS Business Administration - Quality Management">
+                      BS Business Administration - Quality Management
+                    </option>
+                    <option value="BS Office Administration - Associate in Office Administration">
+                      BS Office Administration - Associate in Office Administration
+                    </option>
+                    <option value="BS Public Administration">BS Public Administration</option>
+                  </optgroup>
+                  <optgroup label="College of Arts, Sciences, and Education">
+                    <option value="AB Communication">AB Communication</option>
+                    <option value="AB English Language">AB English Language</option>
+                    <option value="Bachelor of Elementary Education">
+                      Bachelor of Elementary Education
+                    </option>
+                    <option value="Bachelor of Secondary Education Major in English">
+                      Bachelor of Secondary Education Major in English
+                    </option>
+                    <option value="Bachelor of Secondary Education Major in Filipino">
+                      Bachelor of Secondary Education Major in Filipino
+                    </option>
+                    <option value="Bachelor of Secondary Education Major in Mathematics">
+                      Bachelor of Secondary Education Major in Mathematics
+                    </option>
+                    <option value="Bachelor of Secondary Education Major in Science">
+                      Bachelor of Secondary Education Major in Science
+                    </option>
+                    <option value="Bachelor of Multimedia Arts">Bachelor of Multimedia Arts</option>
+                    <option value="BS Biology">BS Biology</option>
+                    <option value="BS Mathematics">BS Mathematics</option>
+                    <option value="BS Psychology">BS Psychology</option>
+                  </optgroup>
+                  <optgroup label="College of Nursing and Allied Health Sciences">
+                    <option value="BS Pharmacy">BS Pharmacy</option>
+                  </optgroup>
+                  <optgroup label="College of Computer Studies">
+                    <option value="BS Computer Science">BS Computer Science</option>
+                    <option value="BS Information Technology">BS Information Technology</option>
+                  </optgroup>
+                  <optgroup label="College of Criminal Justice">
+                    <option value="BS Criminology">BS Criminology</option>
+                  </optgroup>
+                </select>
               </div>
-            </div>
-            <div className="grid grid-cols-4 gap-6 mt-5">
               <div>
                 <label htmlFor="gender" className="block mb-2 text-sm font-medium text-gray-900">
                   Gender
                 </label>
                 <select
                   ref={genderRef}
-                  id="category"
+                  id="gender"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                 >
                   <option selected="">Select gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
                 </select>
               </div>
+              <div className="w-full">
+                <label htmlFor="sy" className="block mb-2 text-sm font-medium text-gray-900">
+                  School Year
+                </label>
+                <input
+                  ref={syRef}
+                  type="number"
+                  name="sy"
+                  id="sy"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  placeholder="Format: 2324"
+                  required=""
+                />
+              </div>
+              <div className="w-full">
+                <label htmlFor="sem" className="block mb-2 text-sm font-medium text-gray-900">
+                  Semester
+                </label>
+                <select
+                  ref={semRef}
+                  id="category"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
+                >
+                  <option selected="">Select semester</option>
+                  <option value="First">First</option>
+                  <option value="Second">Second</option>
+                  <option value="Summer">Summer</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 gap-6 mt-5">
               <div className="w-full">
                 <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900">
                   Birthdate
@@ -243,7 +394,25 @@ export const AddNASForm = () => {
                   name="yearLevel"
                   id="yearLevel"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  placeholder="Year Level"
+                  placeholder="1, 2, 3, 4, etc."
+                  required=""
+                />
+              </div>
+
+              <div className="w-full">
+                <label
+                  htmlFor="unitsAllowed"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Units Allowed
+                </label>
+                <input
+                  ref={unitsAllowedRef}
+                  type="number"
+                  name="unitsAllowed"
+                  id="unitsAllowed"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  placeholder="18"
                   required=""
                 />
               </div>

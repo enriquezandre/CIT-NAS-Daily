@@ -1,16 +1,18 @@
 "use client";
 import { Card, Avatar } from "flowbite-react";
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import axios from "axios";
 
 export const NASList = ({ office, selectedSY, selectedSem }) => {
   const [nasList, setNasList] = useState([]);
+  const oasId = useParams().oasId;
+  console.log("OASID:", oasId);
   const navigate = useNavigate();
 
   const handleNASClick = (nasId) => {
-    navigate(`/oas/${nasId}`);
+    navigate(`/oas/${oasId}/${nasId}`);
   };
 
   const getSemesterValue = useMemo(() => {
@@ -55,7 +57,7 @@ export const NASList = ({ office, selectedSY, selectedSem }) => {
     <div className="flex justify-center items-center">
       <Card className="w-3/5 m-5">
         <h5 className="text-2xl font-bold tracking-tight">
-          <p>{office.name}</p>
+          <p>{office.officeName}</p>
         </h5>
         <div className="grid gap-3">
           {nasList.map((nas) => (
@@ -79,9 +81,9 @@ export const NASList = ({ office, selectedSY, selectedSem }) => {
 NASList.propTypes = {
   office: PropTypes.shape({
     id: PropTypes.number,
-    name: PropTypes.string,
+    officeName: PropTypes.string,
   }).isRequired,
-  selectedSY: PropTypes.number,
-  selectedSem: PropTypes.number,
+  selectedSY: PropTypes.string,
+  selectedSem: PropTypes.string,
 };
 export default NASList;

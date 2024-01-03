@@ -10,6 +10,7 @@ export const Header = () => {
   const navigate = useNavigate();
   const { nasId } = useParams();
   const { superiorId } = useParams();
+  const { oasId } = useParams();
   const [user, setUser] = useState({});
 
   const handleLogout = () => {
@@ -39,7 +40,7 @@ export const Header = () => {
             setUser(nasResponse.data);
             break;
           case "OAS": //PLACEHOLDER
-            const oasResponse = await api.get(`/OAS/1`);
+            const oasResponse = await api.get(`/OAS/${oasId}`);
             setUser(oasResponse.data);
             break;
           case "Superior":
@@ -55,7 +56,7 @@ export const Header = () => {
     };
 
     fetchUser();
-  }, [nasId, superiorId]);
+  }, [nasId, oasId, superiorId]);
 
   return (
     <>
@@ -63,11 +64,7 @@ export const Header = () => {
         <div className="flex items-center">
           <div className="mr-4">
             {user.image ? (
-              <Avatar
-                alt={user.fullName}
-                img={`data:image/png;base64,${user.image}`}
-                rounded
-              />
+              <Avatar alt={user.fullName} img={`data:image/png;base64,${user.image}`} rounded />
             ) : (
               <Avatar alt={user.fullName} img={placeholder} rounded />
             )}

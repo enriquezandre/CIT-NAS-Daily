@@ -155,8 +155,6 @@ export const SuperiorEvaluation = () => {
       try {
         const response = await api.get(`/NAS/${nasId}/noimg`);
         const nasdata = response.data;
-
-        console.log(nasdata);
         setNas(nasdata);
       } catch (error) {
         console.error(error);

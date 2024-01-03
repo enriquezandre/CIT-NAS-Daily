@@ -71,16 +71,13 @@ export const SpecificNASStatus = () => {
   useEffect(() => {
     const fetchNasAndOffice = async () => {
       try {
-        const [nasResponse, officeResponse] = await Promise.all([
-          api.get(`/NAS/${nasId}/noimg`),
-          api.get(`/Offices/NAS/${nasId}`),
-        ]);
+        const nasResponse = await api.get(`/NAS/${nasId}/noimg`);
         const nasData = nasResponse.data;
+
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
-        const officeData = officeResponse.data;
-        setOffice(officeData.officeName);
+        setOffice(nasData.officeName);
       } catch (error) {
         console.error(error);
       }
@@ -138,14 +135,7 @@ export const SpecificNASStatus = () => {
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const response = await api.get("/NAS/sysem");
+        const response = await api.get(`/NAS/sysem/${nasId}`);
         setSyOptions(response.data);
 
         // Extract unique years from syOptions
@@ -157,7 +147,7 @@ export const SpecificNASStatus = () => {
     };
 
     fetchSchoolYearSemesterOptions();
-  }, []);
+  }, [api, nasId]);
 
   return (
     <>

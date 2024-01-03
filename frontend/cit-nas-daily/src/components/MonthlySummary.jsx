@@ -42,12 +42,14 @@ export const MonthlySummary = ({ timekeepingSummaries }) => {
 };
 
 MonthlySummary.propTypes = {
-  timekeepingSummaries: PropTypes.shape({
-    makeUpDutyHours: PropTypes.number.isRequired,
-    lateOver10Mins: PropTypes.number.isRequired,
-    unexcused: PropTypes.number.isRequired,
-    lateOver45Mins: PropTypes.number.isRequired,
-    excused: PropTypes.number.isRequired,
-    failedToPunch: PropTypes.number.isRequired,
-  }).isRequired,
+  timekeepingSummaries: PropTypes.arrayOf(
+    PropTypes.shape({
+      makeUpDutyHours: PropTypes.number.isRequired,
+      lateOver10Mins: PropTypes.number.isRequired,
+      unexcused: PropTypes.number.isRequired,
+      lateOver45Mins: PropTypes.number.isRequired,
+      excused: PropTypes.number.isRequired,
+      failedToPunch: PropTypes.number.isRequired,
+    })
+  ).isRequired,
 };

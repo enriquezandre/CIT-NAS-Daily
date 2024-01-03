@@ -104,7 +104,7 @@ export const SuperiorEval = ({ nasId, selectedSem, selectedSY }) => {
 };
 
 SuperiorEval.propTypes = {
-  nasId: PropTypes.number.isRequired,
+  nasId: PropTypes.string.isRequired,
   selectedSem: PropTypes.number.isRequired,
-  selectedSY: PropTypes.string.isRequired,
+  selectedSY: PropTypes.number.isRequired,
 };

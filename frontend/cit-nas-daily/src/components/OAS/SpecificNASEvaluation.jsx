@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { SuperiorEval } from "../../components/SuperiorEval";
 import { Dropdown } from "../Dropdown";
 import { calculateSchoolYear, calculateSemester } from "../SySemUtils.js";
@@ -19,6 +19,17 @@ export const SpecificNASEvaluation = () => {
   const [syOptions, setSyOptions] = useState([]);
   const sem_options = ["First", "Second", "Summer"];
   const nasId = useParams().nasId;
+
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -46,47 +57,25 @@ export const SpecificNASEvaluation = () => {
   useEffect(() => {
     const fetchNas = async () => {
       try {
-        // Create an Axios instance with the Authorization header
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
         const nasResponse = await api.get(`/NAS/${nasId}/noimg`);
-        console.log(nasResponse);
         const nasData = nasResponse.data;
-
-        const officeResponse = await api.get(`/Offices/NAS/${nasId}`);
-        const officeData = officeResponse.data;
 
         setFirstname(nasData.firstName);
         setMiddlename(nasData.middleName);
         setLastname(nasData.lastName);
-        setOffice(officeData.officeName);
+        setOffice(nasData.officeName);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchNas();
-
-    console.log("Selected Sem:", selectedSem);
-    console.log("Selected SY:", selectedSY);
-  }, [selectedSY, selectedSem, nasId]);
+  }, [selectedSY, selectedSem, nasId, api]);
 
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const response = await api.get("/NAS/sysem");
+        const response = await api.get(`/NAS/sysem/${nasId}`);
         setSyOptions(response.data);
 
         // Extract unique years from syOptions
@@ -98,7 +87,7 @@ export const SpecificNASEvaluation = () => {
     };
 
     fetchSchoolYearSemesterOptions();
-  }, []);
+  }, [api, nasId]);
 
   return (
     <>
