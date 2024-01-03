@@ -5,6 +5,7 @@ using CITNASDaily.Repositories.Context;
 using CITNASDaily.Repositories.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel;
 using static CITNASDaily.Entities.Enums.Enums;
 
@@ -152,6 +153,49 @@ namespace CITNASDaily.Repositories.Repositories
                 return existingNAS;
             }
             return null;
+        }
+
+        public async Task<IEnumerable<NAS>?> UpdateMultipleNASAsync(int[] nasIds, Semester semester, int year)
+        {
+            var nasList = new List<NAS>();
+
+            foreach(var nasId in nasIds)
+            {
+                var nas = await _context.NAS.FirstOrDefaultAsync(n => n.Id == nasId);
+                if(nas == null)
+                {
+                    return null; //wont update nas if one of the id does not exist
+                }
+                nasList.Add(nas);
+            }
+
+            if (nasList.IsNullOrEmpty())
+            {
+                return null;
+            }
+
+            foreach(var nas in nasList)
+            {
+                var sysem = await _context.NASSchoolYears
+                    .SingleOrDefaultAsync(s => s.NASId == nas.Id && s.Semester == semester && s.Year == year);
+
+                if(sysem != null)
+                {
+                    return null; //error if one of nasid already is assigned to specified semester and year
+                }
+
+                var schoolyear = new NASSchoolYearSemester
+                {
+                    NASId = nas.Id,
+                    Year = year,
+                    Semester = semester
+                };
+
+                await _context.NASSchoolYears.AddAsync(schoolyear);
+                await _context.SaveChangesAsync();
+            }
+
+            return nasList;
         }
 
         public async Task<bool> ChangePasswordAsync(int nasId, string newPassword)
