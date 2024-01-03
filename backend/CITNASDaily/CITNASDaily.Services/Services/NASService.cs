@@ -236,6 +236,18 @@ namespace CITNASDaily.Services.Services
             return result;
         }
 
+        public async Task<IEnumerable<NASDto>> UpdateMultipleNASAsync(NASSYAndSemUpdateDto nasUpdate)
+        {
+            var nasList = await _nasRepository.UpdateMultipleNASAsync(nasUpdate.NasIds, nasUpdate.Semester, nasUpdate.Year);
+            var mappedNas = _mapper.Map<List<NASDto>>(nasList);
+            foreach (var nas in mappedNas)
+            {
+                nas.SYSem = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(await _schoolYearSemRepository.GetSchoolYearSemesterAsync(nas.Id));
+                nas.OfficeName = await _officeRepository.GetOfficeNameAsync(nas.OfficeId);
+            }
+            return mappedNas;
+        }
+
         public async Task<bool> ChangePasswordAsync(int nasId, string currentPassword, string newPassword)
         {
             var nas = await _nasRepository.GetNASAsync(nasId);

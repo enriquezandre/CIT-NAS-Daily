@@ -8,6 +8,9 @@ using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing activities summary.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ActivitiesSummaryController : ControllerBase
@@ -16,10 +19,16 @@ namespace CITNASDaily.API.Controllers
         private readonly IActivitiesSummaryService _activitiesSummaryService;
         private readonly ILogger<ActivitiesSummaryController> _logger;
 
-        public ActivitiesSummaryController(IAuthService authService, IActivitiesSummaryService activitiesSummaryervice, ILogger<ActivitiesSummaryController> logger)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActivitiesSummaryController"/> class.
+        /// </summary>
+        /// <param name="authService">The authentication service.</param>
+        /// <param name="activitiesSummaryService">The activities summary service.</param>
+        /// <param name="logger">The logger.</param>
+        public ActivitiesSummaryController(IAuthService authService, IActivitiesSummaryService activitiesSummaryService, ILogger<ActivitiesSummaryController> logger)
         {
             _authService = authService;
-            _activitiesSummaryService = activitiesSummaryervice;
+            _activitiesSummaryService = activitiesSummaryService;
             _logger = logger;
         }
 
@@ -30,9 +39,20 @@ namespace CITNASDaily.API.Controllers
         /// </summary>
         /// <param name="activitiesSummaryCreate">Information of Activities Summary</param>
         /// <returns>Newly created activities summary</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/ActivitiesSummary/1/2324/0
+        ///     {
+        ///         "activitiesOfTheDay": "Assisted the teacher in organizing classroom materials.",
+        ///         "skillsLearned": "Improved organizational skills through managing classroom materials.",
+        ///         "valuesLearned": "Learned the importance of creating a positive and inclusive learning environment."
+        ///     }
+        /// 
+        /// </remarks>
         /// <response code="201">Successfully created activities summary</response>
-        /// <response code="400">Invalid Activities Summary</response>
-        /// <response code="403">Forbidden error</response>
+        /// <response code="400">Invalid activities summary</response>
+        /// <response code="403">Invalid user role</response>
         /// <response code="422">Invalid semester input</response>
         /// <response code="500">Internal server error</response>
         [HttpPost("{nasId}/{year}/{semester}")]
@@ -81,8 +101,14 @@ namespace CITNASDaily.API.Controllers
         /// Retrieves all Activities Summary
         /// </summary>
         /// <returns>List of Activities Summary</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/ActivitiesSummary/1/2324/0
+        /// 
+        /// </remarks>
         /// <response code="200">Successfully retrieved created Activities Summary</response>
-        /// <response code="403">Forbidden error</response>
+        /// <response code="403">Invalid user role</response>
         /// <response code="404">No Activity Summaries found</response>
         /// <response code="500">Internal server error</response>
         [HttpGet]
@@ -120,8 +146,14 @@ namespace CITNASDaily.API.Controllers
         /// </summary>
         /// <param name="nasId">NAS unique identifier</param>
         /// <returns>List of Activities Summary under NAS id</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/ActivitiesSummary
+        /// 
+        /// </remarks>
         /// <response code="200">Successfully retrieved created Activities Summary</response>
-        /// <response code="403">Forbidden error</response>
+        /// <response code="403">Invalid user role</response>
         /// <response code="404">No Activities Summary found</response>
         /// <response code="500">Internal server error</response>
         [HttpGet("{nasId}", Name = "GetAllActivitiesSummary")]
@@ -162,10 +194,16 @@ namespace CITNASDaily.API.Controllers
         /// <param name="month"></param>
         /// <param name="year"></param>
         /// <returns>Requested activities summary</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/ActivitiesSummary/GetByMonth/1/2324/1
+        /// 
+        /// </remarks>
         /// <response code="200">Successfully retrieved created activities summary</response>
-        /// <response code="404">act summary not found</response>
+        /// <response code="404">No Activities Summary found</response>
         /// <response code="500">Internal server error</response>
-        /// <response code="403">Forbidden error</response>
+        /// <response code="403">Invalid user role</response>
         [HttpGet("GetByMonth/{nasId}/{year}/{month}", Name = "GetAllActivitiesSummaryByNASIdMonthYear")]
         [Authorize]
         [ProducesResponseType(typeof(IEnumerable<ActivitiesSummary>), StatusCodes.Status200OK)]
@@ -204,6 +242,16 @@ namespace CITNASDaily.API.Controllers
         /// <param name="year"></param>
         /// <param name="semester"></param>
         /// <returns>Requested Activities Summary</returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/ActivitiesSummary/1/2324/0
+        /// 
+        /// </remarks>
+        /// <response code="200">Successfully retrieved activities summary</response>
+        /// <response code="403">Invalid user role</response>
+        /// <response code="422">Invalid semester input</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet("{nasId}/{year}/{semester}", Name = "GetAllActivitiesSummaryByNASIdYearSemester")]
         [Authorize]
         [ProducesResponseType(typeof(IEnumerable<ActivitiesSummary>), StatusCodes.Status200OK)]

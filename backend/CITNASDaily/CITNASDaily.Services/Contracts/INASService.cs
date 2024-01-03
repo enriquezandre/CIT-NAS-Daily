@@ -21,6 +21,7 @@ namespace CITNASDaily.Services.Contracts
         Task<IEnumerable<NASSYSemOnly?>> GetSYSemByNASIdAsync(int nasId);
         Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file);
         Task<NASDto?> UpdateNASAsync(int nasId, NASUpdateDto nasUpdate);
+        Task<IEnumerable<NASDto>> UpdateMultipleNASAsync(NASSYAndSemUpdateDto nasUpdate);
         Task<bool> ChangePasswordAsync(int nasId, string currentPassword, string newPassword);
     }
 }

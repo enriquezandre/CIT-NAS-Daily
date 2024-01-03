@@ -1,10 +1,4 @@
 ﻿using CITNASDaily.Entities.Dtos.SchoolYearDto;
-using CITNASDaily.Entities.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CITNASDaily.Entities.Dtos.NASDtos
 {
