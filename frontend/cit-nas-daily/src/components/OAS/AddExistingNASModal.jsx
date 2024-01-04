@@ -6,12 +6,13 @@ import { Modal } from "flowbite-react";
 import { Dropdown } from "../Dropdown";
 import axios from "axios";
 
-export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem }) => {
+export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onSubmitted }) => {
   // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [nasData, setNasData] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const [selectedSY, setSelectedSY] = useState(toaddSY);
+  const [selectedIds, setSelectedIds] = useState([]);
   const [selectedSem, setSelectedSem] = useState("First");
   const sem_options = ["First", "Second", "Summer"];
 
@@ -41,23 +42,6 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem }) =
     []
   );
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await api.post(`https://localhost:7001/api/NAS/${nasData.id}`, {
-        sySem: [
-          {
-            year: toaddSY,
-            semester: getSemesterValue(toaddSem),
-          },
-        ],
-      });
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
@@ -83,6 +67,7 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem }) =
         );
         const nasData = nasresponse.data;
         setNasData(nasData);
+        console.log("nasData", nasData);
       } catch (error) {
         console.error(error);
         if (error.response.status === 404) {
@@ -94,6 +79,23 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem }) =
     fetchNas();
   }, [selectedSY, selectedSem, api, getSemesterValue]);
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = {
+      nasIds: selectedIds,
+      semester: getSemesterValue(toaddSem),
+      year: toaddSY,
+    };
+    console.log("DATA", data);
+    try {
+      const response = await api.put(`https://localhost:7001/api/NAS`, data);
+      console.log(response);
+      onSubmitted(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleSelectSY = (event) => {
     const value = event.target.value;
     setSelectedSY(value);
@@ -103,6 +105,22 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem }) =
     const value = event.target.value;
     setSelectedSem(value);
   };
+
+  const handleCheckboxClick = (id) => {
+    setSelectedIds((prevSelectedIds) => {
+      // Check if the id is already selected
+      if (prevSelectedIds.includes(id)) {
+        // If it is, remove it from the array
+        return prevSelectedIds.filter((selectedId) => selectedId !== id);
+      } else {
+        // If it's not, add it to the array
+        return [...prevSelectedIds, id].sort((a, b) => a - b);
+      }
+    });
+  };
+
+  console.log("selectedIds", selectedIds);
+
   return (
     <div>
       {isOpen && (
@@ -139,7 +157,7 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem }) =
               {nasData.map((index) => (
                 <Table.Row key={index.id}>
                   <Table.Cell className="text-center text-xs border p-3">
-                    <input type="checkbox" />
+                    <input type="checkbox" onChange={() => handleCheckboxClick(index.id)} />
                   </Table.Cell>
                   <Table.Cell
                     className="text-center text-xs border p-3"
@@ -171,6 +189,7 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem }) =
             onClick={(event) => {
               closeModal();
               handleSubmit(event);
+              setSelectedIds([]);
             }}
           >
             Submit
@@ -178,7 +197,10 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem }) =
           <button
             className="bg-primary text-white py-2 px-4 rounded"
             color="gray"
-            onClick={closeModal}
+            onClick={() => {
+              closeModal();
+              setSelectedIds([]);
+            }}
           >
             Cancel
           </button>
@@ -193,4 +215,5 @@ AddExistingNASModal.propTypes = {
   closeModal: PropTypes.func.isRequired,
   toaddSY: PropTypes.string.isRequired,
   toaddSem: PropTypes.string.isRequired,
+  onSubmitted: PropTypes.func.isRequired,
 };

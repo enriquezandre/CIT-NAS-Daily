@@ -7,6 +7,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
   const [nasData, setNasData] = useState([]);
   const [filteredNASData, setFilteredNASData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const api = useMemo(
     () =>
@@ -20,7 +21,6 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
   );
 
   const header = [
-    "No.",
     "ID Number",
     "Last Name",
     "First Name",
@@ -63,19 +63,15 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
         );
         const nasData = nasresponse.data;
 
-        const nasDataWithOffice = await Promise.all(
+        const nasDataWithTimekeeping = await Promise.all(
           nasData.map(async (nas) => {
             const nasId = nas.id;
-
             try {
-              const [officeResponse, timekeepingresponse] = await Promise.all([
-                api.get(`Offices/${nasId}/NAS`),
-                api.get(
-                  `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
-                ),
-              ]);
-              nas.office = officeResponse.data;
+              const timekeepingresponse = await api.get(
+                `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
+              );
               nas.timekeeping = timekeepingresponse.data;
+              console.log("nas.timekeeping", nas.timekeeping);
             } catch (error) {
               console.error("Error fetching data for NAS:", error);
               nas.office = { name: "N/A" };
@@ -84,7 +80,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
             return nas;
           })
         );
-        setNasData(nasDataWithOffice);
+        setNasData(nasDataWithTimekeeping);
       } catch (error) {
         console.error(error);
         if (error.response.status === 404) {
@@ -94,7 +90,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
     };
 
     fetchNas();
-  }, [selectedSY, selectedSem, api]);
+  }, [selectedSY, selectedSem, api, submitted]);
 
   useEffect(() => {
     const filteredData = nasData.filter(
@@ -106,9 +102,24 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
     setFilteredNASData(filteredData);
   }, [searchInput, nasData]);
 
+  const sortedNASData = useMemo(
+    () => [...filteredNASData].sort((a, b) => a.lastName.localeCompare(b.lastName)),
+    [filteredNASData]
+  );
+
   const handleAdd = () => {
     setIsModalOpen(true);
   };
+
+  const handleSubmitted = (isSubmitted) => {
+    setSubmitted(isSubmitted);
+  };
+
+  useEffect(() => {
+    if (submitted) {
+      setSubmitted(false);
+    }
+  }, [submitted]);
 
   return (
     <div className="overflow-x-auto">
@@ -127,9 +138,8 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
           </tr>
         </thead>
         <tbody>
-          {filteredNASData.map((nas, index) => (
+          {sortedNASData.map((nas, index) => (
             <tr key={index}>
-              <td className="border-2 border-black text-center px-4 py-2">{nas.id}</td>
               <td className="border-2 border-black text-center px-4 py-2">{nas.studentIDNo}</td>
               <td
                 className="border-2 border-black text-center px-4 py-2"
@@ -216,6 +226,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
         closeModal={() => setIsModalOpen(false)}
         toaddSY={selectedSY}
         toaddSem={selectedSem}
+        onSubmitted={handleSubmitted}
       />
     </div>
   );
