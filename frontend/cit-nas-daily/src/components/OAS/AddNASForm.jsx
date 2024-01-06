@@ -64,19 +64,70 @@ export const AddNASForm = () => {
     const middlename = middlenameRef.current.value;
     const username = `${lastname}${firstname}`.toLowerCase().replace(/[^a-z0-9]/g, "");
     const officeId = officeRef.current.value;
-    const idnumber = idnumberRef.current.value;
     const program = programRef.current.value;
     const gender = genderRef.current.value;
     const sy = syRef.current.value;
     const sem = semRef.current.value;
     const yearlevel = yearlevelRef.current.value;
     const unitsAllowed = unitsAllowedRef.current.value;
+    const idnumber = idnumberRef.current.value;
+
+    const inputs = [
+      lastname,
+      firstname,
+      middlename,
+      username,
+      officeId,
+      idnumber,
+      program,
+      gender,
+      sy,
+      sem,
+      yearlevel,
+      unitsAllowed,
+    ];
+    for (let i = 0; i < inputs.length; i++) {
+      if (!inputs[i]) {
+        alert("Please fill out all fields.");
+        return;
+      }
+    }
+
     let birthDate = birthdateRef.current.value;
     let birth = new Date(birthDate);
+    let birthYear = birth.getFullYear();
+    if (isNaN(birth.getTime()) || birthYear < 1000 || birthYear > 9999) {
+      alert("Please enter a valid date.");
+      return;
+    }
     let birthDateISOString = birth.toISOString();
     let datestarted = datestartedRef.current.value;
     let start = new Date(datestarted);
+    let startYear = start.getFullYear();
+    if (isNaN(start.getTime()) || startYear < 1000 || startYear > 9999) {
+      alert("Please enter a valid date.");
+      return;
+    }
     let datestartedISOString = start.toISOString();
+
+    const selectInputs = [officeId, program, gender, sem];
+    for (let i = 0; i < selectInputs.length; i++) {
+      if (
+        selectInputs[i] === "Select office" ||
+        selectInputs[i] === "Select program" ||
+        selectInputs[i] === "Select gender" ||
+        selectInputs[i] === "Select semester"
+      ) {
+        alert("Please recheck and select a valid option.");
+        return;
+      }
+    }
+
+    const idnumberFormat = /^(?:\d{2}-\d{4}-\d{3}|\d{4}-\d{5})$/;
+    if (!idnumberFormat.test(idnumber)) {
+      alert("ID number is not in the correct format. Please use XX-XXXX-XXX or XXXX-XXXXX.");
+      return;
+    }
 
     //REGISTER AS USER
     try {
