@@ -3,6 +3,7 @@ import axios from "axios";
 import { MasterlistTable } from "../../components/OAS/MasterlistTable";
 import { Dropdown } from "../../components/Dropdown";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
+import { AddExistingNASModal } from "../../components/OAS/AddExistingNASModal";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
@@ -14,6 +15,8 @@ export const OASMasterlist = () => {
   const [uniqueYears, setUniqueYears] = useState([]);
   const [selectedSem, setSelectedSem] = useState(currentSem);
   const [searchInput, setSearchInput] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const sem_options = ["First", "Second", "Summer"];
 
   const api = useMemo(
@@ -54,6 +57,20 @@ export const OASMasterlist = () => {
     setSelectedSem(value);
   };
 
+  const handleAdd = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleSubmitted = (isSubmitted) => {
+    setSubmitted(isSubmitted);
+  };
+
+  useEffect(() => {
+    if (submitted) {
+      setSubmitted(false);
+    }
+  }, [submitted]);
+
   return (
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10 max-h-screen">
@@ -78,6 +95,12 @@ export const OASMasterlist = () => {
               </div>
             </div>
             <div className="flex justify-end">
+              <button
+                className="btn btn-primary bg-secondary px-4 py-2 rounded-lg m-1 text-sm hover:bg-primary hover:text-white font-normal mr-3"
+                onClick={handleAdd}
+              >
+                Add existing NAS
+              </button>
               <div className="relative w-1/2">
                 <input
                   type="search"
@@ -115,10 +138,18 @@ export const OASMasterlist = () => {
               searchInput={searchInput}
               selectedSY={selectedSY}
               selectedSem={selectedSem}
+              submitted={submitted}
             />
           </div>
         </div>
       </div>
+      <AddExistingNASModal
+        isOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+        toaddSY={selectedSY}
+        toaddSem={selectedSem}
+        onSubmitted={handleSubmitted}
+      />
     </>
   );
 };

@@ -1,13 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { AddExistingNASModal } from "./AddExistingNASModal";
 
-export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
+export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitted }) => {
   const [nasData, setNasData] = useState([]);
   const [filteredNASData, setFilteredNASData] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
 
   const api = useMemo(
     () =>
@@ -107,20 +104,6 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
     [filteredNASData]
   );
 
-  const handleAdd = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleSubmitted = (isSubmitted) => {
-    setSubmitted(isSubmitted);
-  };
-
-  useEffect(() => {
-    if (submitted) {
-      setSubmitted(false);
-    }
-  }, [submitted]);
-
   return (
     <div className="w-auto">
       <table className="w-auto table-auto">
@@ -214,26 +197,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
             </tr>
           ))}
         </tbody>
-        <tbody>
-          <tr>
-            <td colSpan="20" className="text-center border-2">
-              <button
-                className="btn btn-primary bg-secondary px-4 py-2 rounded-lg m-1 text-sm hover:bg-primary hover:text-white"
-                onClick={handleAdd}
-              >
-                Add existing NAS
-              </button>
-            </td>
-          </tr>
-        </tbody>
       </table>
-      <AddExistingNASModal
-        isOpen={isModalOpen}
-        closeModal={() => setIsModalOpen(false)}
-        toaddSY={selectedSY}
-        toaddSem={selectedSem}
-        onSubmitted={handleSubmitted}
-      />
     </div>
   );
 };
@@ -242,4 +206,5 @@ MasterlistTable.propTypes = {
   searchInput: PropTypes.string.isRequired,
   selectedSY: PropTypes.string.isRequired,
   selectedSem: PropTypes.string.isRequired,
+  submitted: PropTypes.bool.isRequired,
 };
