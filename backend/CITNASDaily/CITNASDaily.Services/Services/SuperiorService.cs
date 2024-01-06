@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CITNASDaily.Entities.Dtos.OASDtos;
 using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
@@ -74,11 +73,26 @@ namespace CITNASDaily.Services.Services
             return await _superiorRepository.GetSuperiorIdByUsernameAsync(username);
         }
 
+        public async Task<bool> CheckCurrentPasswordAsync(int superiorId, string currentPassword)
+        {
+            var superior = await _superiorRepository.GetSuperiorAsync(superiorId);
+
+            //superior does not exist
+            if (superior == null)
+            {
+                return false;
+            }
+
+            var user = await _userRepository.GetUserByUsernameAsync(superior.Username);
+
+            return PasswordManager.VerifyPassword(currentPassword, user.PasswordHash);
+        }
+
         public async Task<bool> ChangePasswordAsync(int superiorId, string currentPassword, string newPassword)
         {
             var superior = await _superiorRepository.GetSuperiorAsync(superiorId);
 
-            //nas does not exist
+            //superior does not exist
             if (superior == null)
             {
                 return false;

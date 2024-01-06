@@ -613,6 +613,42 @@ namespace CITNASDaily.API.Controllers
         }
 
         /// <summary>
+        /// Check whether the current password input is correct
+        /// </summary>
+        /// <param name="nasId">NAS Id</param>
+        /// <param name="currentPassword">NAS Current Password</param>
+        /// <returns>A boolean whether the password is correct or not</returns>
+        [HttpPut("currentpassword/{nasId}", Name = "CheckNASCurrentPassword")]
+        [Authorize(Roles = "NAS")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CheckCurrentPassword(int nasId, string currentPassword)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+                var change = await _nasService.CheckCurrentPasswordAsync(nasId, currentPassword);
+                if (change == false)
+                {
+                    return BadRequest("Incorrect Password");
+                }
+                return Ok(true);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Incorrect Password");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        /// <summary>
         /// Change NAS password
         /// </summary>
         /// <param name="nasId"></param>
