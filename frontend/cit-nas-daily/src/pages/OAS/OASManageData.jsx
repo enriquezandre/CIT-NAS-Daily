@@ -121,34 +121,36 @@ export const OASManageData = () => {
     }
   };
 
+  const fetchDTRData = async (firstName, lastName, middleName) => {
+    const response = await api.get(
+      `DTR/${selectedSY}/${selectedSemValue}/${lastName}/${firstName}?middleName=${middleName}`
+    );
+    return response.data;
+  };
+
+  const fetchScheduleData = async (nasId) => {
+    const response = await api.get(`/Schedule/${nasId}/${selectedSY}/${selectedSemValue}`);
+    const scheduleData = response.data;
+
+    if (Array.isArray(scheduleData.schedules)) {
+      scheduleData.schedules = scheduleData.schedules.sort(
+        (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+      );
+    }
+    return scheduleData;
+  };
+
   //function for checking attendance and schedule for each NAS
   const checkAttendanceAndSchedule = async (nasId, firstName, lastName, middleName) => {
     try {
-      const dtrresponse = await api.get(
-        `DTR/${selectedSY}/${selectedSemValue}/${lastName}/${firstName}?middleName=${middleName}`
-      );
-      const dtrdata = dtrresponse.data;
-      //console.log(dtrdata);
+      const dtrdata = await fetchDTRData(firstName, lastName, middleName);
+      const scheduleData = await fetchScheduleData(nasId);
 
-      const scheduleResponse = await api.get(
-        `/Schedule/${nasId}/${selectedSY}/${selectedSemValue}`
-      );
-      let scheduleData = scheduleResponse.data;
-      if (Array.isArray(scheduleData.schedules)) {
-        scheduleData.schedules = scheduleData.schedules.sort((a, b) => {
-          const timeA = new Date(a.startTime).getTime();
-          const timeB = new Date(b.startTime).getTime();
-          return timeA - timeB;
-        });
-      }
-      //console.log(scheduleData);
-
-      // Calculate the totals for failedToPunch, lateOver10Mins, and lateOver45Mins
       let totalFailedToPunch = 0;
       let totalLateOver10Mins = 0;
       let totalLateOver45Mins = 0;
 
-      // Loop through each day in the DTR and compare it with the schedule
+      // Loop through each day in the DTR and compare it with the schedule and calculate the totals for failedToPunch, lateOver10Mins, and lateOver45Mins
       const attendanceSummaries = dtrdata.dailyTimeRecords.map((attendance) => {
         const attendanceDate = new Date(attendance.date);
 
@@ -165,13 +167,11 @@ export const OASManageData = () => {
           // If at least one schedule is found, assign the first schedule to schedule1
           schedule1 = schedulesForDay[0];
         }
-        // console.log("Schedule 1: ", schedule1.startTime);
 
         if (schedulesForDay.length >= 2) {
           // If at least two schedules are found, assign the second schedule to schedule2
           schedule2 = schedulesForDay[1];
         }
-        // console.log("Schedule 2: ", schedule2?.startTime);
 
         if (attendance.punch1 === "FTP IN" || attendance.punch2 === "FTP OUT") {
           totalFailedToPunch = totalFailedToPunch + 1;
@@ -181,59 +181,51 @@ export const OASManageData = () => {
           totalFailedToPunch = totalFailedToPunch + 1;
         }
 
-        // console.log("FTP: ", totalFailedToPunch);
         //check if there is L10 and L45
         const timeIn1 = new Date("2023-08-14 " + formatDtrTime(attendance.punch1));
         const timeIn2 = new Date("2023-08-14 " + formatDtrTime(attendance.punch3));
         const schedStartTime1 = new Date(schedule1.startTime);
         const schedStartTime2 = new Date(schedule2?.startTime);
 
-        console.log("Time In 1: ", timeIn1 + " " + schedStartTime1);
-        console.log("Time In 2: ", timeIn2 + " " + schedStartTime2);
         // Extract only the hours and minutes from the date objects
         const hoursDiff1 = timeIn1.getHours() - schedStartTime1.getHours();
         const minutesDiff1 = timeIn1.getMinutes() - schedStartTime1.getMinutes();
-
         const hoursDiff2 = timeIn2.getHours() - schedStartTime2.getHours();
         const minutesDiff2 = timeIn2.getMinutes() - schedStartTime2.getMinutes();
 
-        console.log("Hours Diff 1 ", hoursDiff1 + "& Mins Diff: ", minutesDiff1);
-        console.log("Hours Diff 2 ", hoursDiff2 + "& Mins Diff: ", minutesDiff2);
-        //-----checking stops here
+        // Convert the time difference to minutes
+        const totalMinutesDifference1 = hoursDiff1 * 60 + minutesDiff1;
+        const totalMinutesDifference2 = hoursDiff2 * 60 + minutesDiff2;
 
-        //   // Convert the time difference to minutes
-        //   const totalMinutesDifference1 = hoursDiff1 * 60 + minutesDiff1;
-        //   const totalMinutesDifference2 = hoursDiff2 * 60 + minutesDiff2;
+        if (totalMinutesDifference1 > 45) {
+          totalLateOver45Mins = totalLateOver45Mins + 1;
+        } else if (totalMinutesDifference1 > 10) {
+          totalLateOver10Mins = totalLateOver10Mins + 1;
+        }
 
-        //   if (totalMinutesDifference1 > 45) {
-        //     totalLateOver45Mins = totalLateOver45Mins + 1;
-        //   } else if (totalMinutesDifference1 > 10) {
-        //     totalLateOver10Mins = totalLateOver10Mins + 1;
-        //   }
+        if (totalMinutesDifference2 > 45) {
+          totalLateOver45Mins = totalLateOver45Mins + 1;
+        } else if (totalMinutesDifference2 > 10) {
+          totalLateOver10Mins = totalLateOver10Mins + 1;
+        }
 
-        //   if (totalMinutesDifference2 > 45) {
-        //     totalLateOver45Mins = totalLateOver45Mins + 1;
-        //   } else if (totalMinutesDifference2 > 10) {
-        //     totalLateOver10Mins = totalLateOver10Mins + 1;
-        //   }
-
-        //   return attendance;
+        return attendance;
       });
-      //setAttendanceSummaries(attendanceSummaries);
 
-      // // Make the API call to post the summary
-      // const postResponse = await api.post(
-      //   `/TimekeepingSummary/${nasId}/${selectedSY}/${selectedSemValue}`,
-      //   {
-      //     excused: 0,
-      //     unexcused: 0,
-      //     failedToPunch: totalFailedToPunch,
-      //     lateOver10mins: totalLateOver10Mins,
-      //     lateOver45mins: totalLateOver45Mins,
-      //     makeUpDutyHours: 0,
-      //   }
-      // );
-      // console.log(postResponse);
+      setAttendanceSummaries(attendanceSummaries);
+
+      // Make the API call to post the summary
+      const postResponse = await api.post(
+        `/TimekeepingSummary/${nasId}/${selectedSY}/${selectedSemValue}`,
+        {
+          excused: 0,
+          unexcused: 0,
+          failedToPunch: totalFailedToPunch,
+          lateOver10mins: totalLateOver10Mins,
+          lateOver45mins: totalLateOver45Mins,
+          makeUpDutyHours: 0,
+        }
+      );
     } catch (error) {
       console.error(error);
     }
