@@ -75,7 +75,6 @@ export const AddNASForm = () => {
     const inputs = [
       lastname,
       firstname,
-      middlename,
       username,
       officeId,
       idnumber,

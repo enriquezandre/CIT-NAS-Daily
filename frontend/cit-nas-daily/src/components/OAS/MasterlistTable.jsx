@@ -122,14 +122,14 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
   }, [submitted]);
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table-auto mx-auto mb-8">
+    <div className="w-auto">
+      <table className="w-auto table-auto">
         <thead>
           <tr>
             {header.map((header, index) => (
               <th
                 key={index}
-                className="border-2 border-black text-white text-center uppercase font-semibold bg-primary px-4 py-2"
+                className="border-2 border-black text-white text-center text-xs uppercase font-semibold bg-primary px-4 py-2"
                 value={header}
               >
                 {header}
@@ -140,71 +140,77 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
         <tbody>
           {sortedNASData.map((nas, index) => (
             <tr key={index}>
-              <td className="border-2 border-black text-center px-4 py-2">{nas.studentIDNo}</td>
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
+                {nas.studentIDNo}
+              </td>
               <td
-                className="border-2 border-black text-center px-4 py-2"
+                className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "capitalize" }}
               >
                 {nas.lastName}
               </td>
               <td
-                className="border-2 border-black text-center px-4 py-2"
+                className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "capitalize" }}
               >
                 {nas.firstName}
               </td>
               <td
-                className="border-2 border-black text-center px-4 py-2"
+                className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "capitalize" }}
               >
                 {nas.middleName}
               </td>
               <td
-                className="border-2 border-black text-center px-4 py-2"
+                className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "capitalize" }}
               >
                 {nas.gender}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {new Date(nas.birthDate).toLocaleDateString()}
               </td>
               <td
-                className="border-2 border-black text-center px-4 py-2"
+                className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "uppercase" }}
               >
                 {nas.course}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">{nas.yearLevel}</td>
-              <td className="border-2 border-black text-center px-4 py-2">{nas.unitsAllowed}</td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
+                {nas.yearLevel}
+              </td>
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
+                {nas.unitsAllowed}
+              </td>
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {new Date(nas.dateStarted).toLocaleDateString()}
               </td>
               <td
-                className="border-2 border-black text-center px-4 py-2"
+                className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "uppercase" }}
               >
                 {nas.office ? nas.officeName : "N/A"}{" "}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.excused : "NR"}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.unexcused : "NR"}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.lateOver10Mins : "NR"}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.lateOver45Mins : "NR"}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.failedToPunch : "NR"}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.makeUpDutyHours : "NR"}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2"> </td>
-              <td className="border-2 border-black text-center px-4 py-2"> </td>
+              <td className="border-2 border-black text-center px-1 py-2 text-xs"> </td>
+              <td className="border-2 border-black text-center px-1 py-2 text-xs"> </td>
             </tr>
           ))}
         </tbody>
