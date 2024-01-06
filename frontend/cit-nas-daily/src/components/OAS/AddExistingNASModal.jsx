@@ -9,6 +9,7 @@ import axios from "axios";
 export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onSubmitted }) => {
   // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
+  const [currentNasList, setCurrentNasList] = useState([]);
   const [nasData, setNasData] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const [selectedSY, setSelectedSY] = useState(toaddSY);
@@ -77,7 +78,27 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
     };
 
     fetchNas();
-  }, [selectedSY, selectedSem, api, getSemesterValue]);
+  }, [selectedSY, selectedSem, api, getSemesterValue, onSubmitted]);
+
+  useEffect(() => {
+    const fetchCurrentNAS = async () => {
+      try {
+        const currentnasresponse = await api.get(
+          `/NAS/${toaddSY}/${getSemesterValue(toaddSem)}/noimg`
+        );
+        const currentnas = currentnasresponse.data;
+        setCurrentNasList(currentnas);
+        console.log("currentnas", currentnas);
+      } catch (error) {
+        console.error(error);
+        if (error.response.status === 404) {
+          setNasData([]);
+        }
+      }
+    };
+
+    fetchCurrentNAS();
+  }, [toaddSY, toaddSem, api, getSemesterValue, onSubmitted]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -119,8 +140,6 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
     });
   };
 
-  console.log("selectedIds", selectedIds);
-
   return (
     <div>
       {isOpen && (
@@ -154,31 +173,33 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
               <Table.HeadCell className="text-center border w-36">Office</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
-              {nasData.map((index) => (
-                <Table.Row key={index.id}>
-                  <Table.Cell className="text-center text-xs border p-3">
-                    <input type="checkbox" onChange={() => handleCheckboxClick(index.id)} />
-                  </Table.Cell>
-                  <Table.Cell
-                    className="text-center text-xs border p-3"
-                    style={{ overflowWrap: "break-word", maxWidth: "100px" }}
-                  >
-                    {index.studentIDNo}
-                  </Table.Cell>
-                  <Table.Cell
-                    className="text-center text-xs border"
-                    style={{ overflowWrap: "break-word", maxWidth: "100px" }}
-                  >
-                    {index.fullName}
-                  </Table.Cell>
-                  <Table.Cell
-                    className="text-center text-xs border p-3"
-                    style={{ overflowWrap: "break-word", maxWidth: "100px" }}
-                  >
-                    {index.officeName}
-                  </Table.Cell>
-                </Table.Row>
-              ))}
+              {nasData
+                .filter((data) => !currentNasList.find((currentData) => currentData.id === data.id))
+                .map((index) => (
+                  <Table.Row key={index.id}>
+                    <Table.Cell className="text-center text-xs border p-3">
+                      <input type="checkbox" onChange={() => handleCheckboxClick(index.id)} />
+                    </Table.Cell>
+                    <Table.Cell
+                      className="text-center text-xs border p-3"
+                      style={{ overflowWrap: "break-word", maxWidth: "100px" }}
+                    >
+                      {index.studentIDNo}
+                    </Table.Cell>
+                    <Table.Cell
+                      className="text-center text-xs border"
+                      style={{ overflowWrap: "break-word", maxWidth: "100px" }}
+                    >
+                      {index.fullName}
+                    </Table.Cell>
+                    <Table.Cell
+                      className="text-center text-xs border p-3"
+                      style={{ overflowWrap: "break-word", maxWidth: "100px" }}
+                    >
+                      {index.officeName}
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
             </Table.Body>
           </Table>
         </Modal.Body>
