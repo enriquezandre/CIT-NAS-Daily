@@ -5,6 +5,7 @@ import { AddNASForm } from "../../components/OAS/AddNASForm";
 import axios from "axios";
 import { AddSuperiorForm } from "../../components/OAS/AddSuperiorForm";
 import { AddOfficeForm } from "../../components/OAS/AddOfficeForm";
+import { UpdatePassword } from "../../components/OAS/UpdatePassword";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
@@ -279,6 +280,15 @@ export const OASManageData = () => {
             </div>
             <div>
               <AddOfficeForm />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-5">
+        <div className="flex h-full flex-col justify-center">
+          <div className="px-8 pt-4">
+            <div className="flex mt-2">
+              <UpdatePassword />
             </div>
           </div>
         </div>
