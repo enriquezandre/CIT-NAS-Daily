@@ -9,6 +9,7 @@ using CITNASDaily.Repositories.Repositories;
 using CITNASDaily.Services.Contracts;
 using CITNASDaily.Utils;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Net.Http.Headers;
 using static CITNASDaily.Entities.Enums.Enums;
 
@@ -45,6 +46,11 @@ namespace CITNASDaily.Services.Services
             var nas = _mapper.Map<NAS>(nasCreate);
             nas.UserId = userId;
             var createdNAS = await _nasRepository.CreateNASAsync(nas);
+
+            if(createdNAS == null)
+            {
+                return null;
+            }
 
             var createdSY = await _schoolYearSemRepository.AddSchoolYearSemesterAsync(createdNAS.Id, nasCreate.SYSem);
             var sy = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(createdSY);

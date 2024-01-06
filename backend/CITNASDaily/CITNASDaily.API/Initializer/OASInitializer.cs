@@ -41,10 +41,10 @@ namespace CITNASDaily.API.Initializer
                         context.OAS.Add(new OAS
                         {
                             Username = "admin",
+                            User = context.Users.Where(u => u.Username == "admin").FirstOrDefault(),
                             FirstName = "Ana Marie",
                             MiddleName = "",
-                            LastName = "Granaderos",
-                            User = context.Users.Where(u => u.Username == "admin").FirstOrDefault()
+                            LastName = "Granaderos"
                         });
 
                         context.SaveChanges();
@@ -139,6 +139,7 @@ namespace CITNASDaily.API.Initializer
                     {
                         existingOASOffice.SuperiorFirstName = oasSuperior.FirstName;
                         existingOASOffice.SuperiorLastName = oasSuperior.LastName;
+                        oasSuperior.OfficeName = existingOASOffice.OfficeName;
                         context.SaveChanges();
                     }
                 }
