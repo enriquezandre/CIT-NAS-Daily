@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { TimeInLog } from "../../pages/NAS/TimeInLog";
+import { Homepage } from "../../pages/Homepage";
 import { AttendanceSummary } from "../../pages/NAS/AttendanceSummary";
 import { ActivitiesSummary } from "../../pages/NAS/ActivitiesSummary";
 import { NASEvaluationResult } from "../../pages/NAS/NASEvaluationResult";
@@ -80,7 +80,7 @@ export const NASTabs = () => {
           {/* Content for each tab */}
           {activeTab === 1 && (
             <div>
-              <TimeInLog />
+              <Homepage />
             </div>
           )}
           {activeTab === 2 && (

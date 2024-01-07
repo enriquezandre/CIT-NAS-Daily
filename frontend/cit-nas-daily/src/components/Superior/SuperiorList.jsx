@@ -48,7 +48,7 @@ export const SuperiorList = () => {
           },
         });
 
-        const officeresponse = await api.get(`/Offices/${superiorId}`);
+        const officeresponse = await api.get(`/Offices/superior/${superiorId}`);
         const officeData = officeresponse.data;
 
         const response = await api.get(
@@ -71,15 +71,15 @@ export const SuperiorList = () => {
 
   return (
     <div>
-      <div className="flex flex-row justify-start items-center gap-10 mt-5 mb-8 ml-10">
+      <div className="flex flex-row justify-start items-center gap-10 ml-1 py-2">
         <div className="flex flex-row gap-2 items-center">
-          <div className="mr-2">SY:</div>
+          <div className="mr-2 text-lg">SY:</div>
           <select
             id="sy"
             name="sy"
             value={selectedSY}
             onChange={handleSelectSY}
-            className=" w-full text-base border rounded-md"
+            className=" w-full text-lg border rounded-md"
           >
             {Array.isArray(sy_options) &&
               sy_options.map((sy, index) => (
@@ -90,13 +90,13 @@ export const SuperiorList = () => {
           </select>
         </div>
         <div className="flex flex-row gap-2 items-center">
-          <div className="mr-2">SEMESTER:</div>
+          <div className="mr-2 text-lg">SEMESTER:</div>
           <select
             id="sem"
             name="sem"
             value={selectedSem}
             onChange={handleSelectSem}
-            className=" w-full text-base border rounded-md"
+            className=" w-full text-lg border rounded-md"
           >
             {sem_options.map((sem, index) => (
               <option key={index} value={sem}>
@@ -106,7 +106,7 @@ export const SuperiorList = () => {
           </select>
         </div>
       </div>
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center pt-2">
         <Card className="w-3/5 m-5">
           <h5 className="text-2xl font-bold tracking-tight">
             <p>{office.officeName}</p>
