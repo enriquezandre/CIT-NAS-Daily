@@ -6,6 +6,7 @@ import { ActivitiesSummary } from "../../pages/NAS/ActivitiesSummary";
 import { NASEvaluationResult } from "../../pages/NAS/NASEvaluationResult";
 import { NASPersonalInformation } from "../../pages/NAS/NASPersonalInformation";
 import { NASSchedule } from "../../pages/NAS/NASSchedule";
+import { NASChangePassword } from "../../pages/NAS/NASChangePassword";
 
 export const NASTabs = () => {
   const [activeTab, setActiveTab] = useState(1);
@@ -66,6 +67,14 @@ export const NASTabs = () => {
           >
             Evaluation Result
           </button>
+          <button
+            className={`${
+              activeTab === 7 ? "font-bold bg-primary text-white" : "bg-secondary"
+            } px-4 py-2 rounded-tr-lg w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
+            onClick={() => handleTabClick(7)}
+          >
+            Change Password
+          </button>
         </div>
         <div className="pt-4 pr-1 pb-4 pl-1 bg-white rounded-b-lg">
           {/* Content for each tab */}
@@ -97,6 +106,11 @@ export const NASTabs = () => {
           {activeTab === 6 && (
             <div>
               <NASEvaluationResult />
+            </div>
+          )}
+          {activeTab === 7 && (
+            <div>
+              <NASChangePassword />
             </div>
           )}
         </div>

@@ -5,7 +5,7 @@ import { AddNASForm } from "../../components/OAS/AddNASForm";
 import axios from "axios";
 import { AddSuperiorForm } from "../../components/OAS/AddSuperiorForm";
 import { AddOfficeForm } from "../../components/OAS/AddOfficeForm";
-import { UpdatePassword } from "../../components/OAS/UpdatePassword";
+import { UpdatePassword } from "../../components/UpdatePassword";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();

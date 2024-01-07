@@ -6,16 +6,16 @@ export const UpdatePassword = () => {
   const newpassRef = useRef();
   const retypepassRef = useRef();
 
-  //   const api = useMemo(
-  //     () =>
-  //       axios.create({
-  //         baseURL: "https://localhost:7001/api",
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }),
-  //     []
-  //   );
+  // const api = useMemo(
+  //   () =>
+  //     axios.create({
+  //       baseURL: "https://localhost:7001/api",
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     }),
+  //   []
+  // );
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -27,6 +27,26 @@ export const UpdatePassword = () => {
       alert("New password and Retyped password do not match!");
       return;
     }
+
+    // try {
+    //   // Get the user's details
+    //   const userResponse = await api.get(`/Users/currentUser`);
+    //   const userRole = userResponse.data.role;
+
+    //   // Navigate to the respective route based on the user's role
+    //   switch (userRole) {
+    //     case "NAS":
+    //       break;
+    //     case "OAS":
+    //       break;
+    //     case "Superior":
+    //       break;
+    //     default:
+    //       alert("Unknown role");
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (
@@ -72,7 +92,7 @@ export const UpdatePassword = () => {
                   htmlFor="retypepass"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
-                  Retype New Password
+                  Re-type New Password
                 </label>
                 <input
                   ref={retypepassRef}
