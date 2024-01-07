@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
-// import { ActivitiesFormModal } from "./ActivitiesFormModal";
-import { useParams } from "react-router-dom";
 import axios from "axios";
 
-export const TimeLogCard = () => {
-  const { nasId } = useParams();
+export const Homepage = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [nas, setNas] = useState({});
+  const [user, setUser] = useState({});
 
   useEffect(() => {
     // Update the current date and time every second
@@ -39,9 +36,8 @@ export const TimeLogCard = () => {
   };
 
   useEffect(() => {
-    const fetchNas = async () => {
+    const fetchUser = async () => {
       try {
-        // Create an Axios instance with the Authorization header
         const api = axios.create({
           baseURL: "https://localhost:7001/api",
           headers: {
@@ -49,14 +45,14 @@ export const TimeLogCard = () => {
           },
         });
 
-        const response = await api.get(`/NAS/${nasId}/noimg`);
-        setNas(response.data);
+        const response = await api.get(`/Users/currentUser`);
+        setUser(response.data);
       } catch (error) {
         console.error(error);
       }
     };
-    fetchNas();
-  }, [nasId]);
+    fetchUser();
+  });
 
   return (
     <div className="flex justify-center items-center mb-6">
@@ -67,7 +63,7 @@ export const TimeLogCard = () => {
               className="text-5xl font-bold mb-10 text-primary"
               style={{ textTransform: "capitalize" }}
             >
-              Hello, {nas.firstName}
+              Hello, {user.username}
             </div>
             <div className="border-l-2 border-primary">
               <div className="text-2xl ml-4">
