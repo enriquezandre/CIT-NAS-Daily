@@ -4,7 +4,7 @@ import { OASTabs } from "../../components/OAS/OASTabs";
 export const OASPage = () => {
   return (
     <div>
-      <Header role={"OAS Name"} />
+      <Header />
       <OASTabs />
     </div>
   );

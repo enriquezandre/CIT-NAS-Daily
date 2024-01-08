@@ -24,9 +24,15 @@ namespace CITNASDaily.Repositories.Repositories
 
         public async Task<NAS?> CreateNASAsync(NAS nas)
         {
-            await _context.NAS.AddAsync(nas);
-            await _context.SaveChangesAsync();
-            return nas;
+            var checkStudentId = await _context.NAS.FirstOrDefaultAsync(n => n.StudentIDNo == nas.StudentIDNo);
+            if(checkStudentId == null)
+            {
+                await _context.NAS.AddAsync(nas);
+                await _context.SaveChangesAsync();
+                return nas;
+            }
+
+            return null;
         }
 
         public async Task<NAS?> GetNASAsync(int nasId)

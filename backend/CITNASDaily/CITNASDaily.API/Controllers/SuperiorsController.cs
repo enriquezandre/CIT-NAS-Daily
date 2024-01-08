@@ -215,6 +215,42 @@ namespace CITNASDaily.API.Controllers
         #region UpdateSuperior
 
         /// <summary>
+        /// Check whether the current password input is correct
+        /// </summary>
+        /// <param name="nasId">Superior Id</param>
+        /// <param name="currentPassword">Superior Current Password</param>
+        /// <returns>A boolean whether the password is correct or not</returns>
+        [HttpPut("currentpassword/{superiorId}", Name = "CheckSuperiorCurrentPassword")]
+        [Authorize(Roles = "Superior")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CheckCurrentPassword(int superiorId, string currentPassword)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+                var change = await _superiorService.CheckCurrentPasswordAsync(superiorId, currentPassword);
+                if (change == false)
+                {
+                    return BadRequest("Incorrect Password");
+                }
+                return Ok(true);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Incorrect Password");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        /// <summary>
         /// Updates Superior Password
         /// </summary>
         /// <param name="superiorId"></param>

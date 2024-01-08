@@ -43,6 +43,19 @@ export const AddSuperiorForm = () => {
     const officeId = officeRef.current.value;
     const username = `${lastname}${firstname}`.toLowerCase().replace(/[^a-z0-9]/g, "");
 
+    const inputs = [lastname, firstname, officeId, username];
+    for (let i = 0; i < inputs.length; i++) {
+      if (!inputs[i]) {
+        alert("Please fill out all fields.");
+        return;
+      }
+    }
+
+    if (officeId === "Select office") {
+      alert("Please select an office.");
+      return;
+    }
+
     //REGISTER AS USER
     try {
       const registeruser = await api.post(`/Auth/register/`, {

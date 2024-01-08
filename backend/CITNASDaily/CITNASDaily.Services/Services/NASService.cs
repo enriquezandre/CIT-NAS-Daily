@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
 using CITNASDaily.Entities.Dtos.NASDtos;
-using CITNASDaily.Entities.Dtos.OASDtos;
 using CITNASDaily.Entities.Dtos.SchoolYearDto;
-using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
-using CITNASDaily.Repositories.Repositories;
 using CITNASDaily.Services.Contracts;
 using CITNASDaily.Utils;
 using Microsoft.AspNetCore.Http;
-using System.Net.Http.Headers;
 using static CITNASDaily.Entities.Enums.Enums;
 
 namespace CITNASDaily.Services.Services
@@ -45,6 +41,11 @@ namespace CITNASDaily.Services.Services
             var nas = _mapper.Map<NAS>(nasCreate);
             nas.UserId = userId;
             var createdNAS = await _nasRepository.CreateNASAsync(nas);
+
+            if(createdNAS == null)
+            {
+                return null;
+            }
 
             var createdSY = await _schoolYearSemRepository.AddSchoolYearSemesterAsync(createdNAS.Id, nasCreate.SYSem);
             var sy = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(createdSY);
@@ -246,6 +247,21 @@ namespace CITNASDaily.Services.Services
                 nas.OfficeName = await _officeRepository.GetOfficeNameAsync(nas.OfficeId);
             }
             return mappedNas;
+        }
+
+        public async Task<bool> CheckCurrentPasswordAsync(int nasId, string currentPassword)
+        {
+            var nas = await _nasRepository.GetNASAsync(nasId);
+
+            //nas does not exist
+            if (nas == null)
+            {
+                return false;
+            }
+
+            var user = await _userRepository.GetUserByUsernameAsync(nas.Username);
+
+            return PasswordManager.VerifyPassword(currentPassword, user.PasswordHash);
         }
 
         public async Task<bool> ChangePasswordAsync(int nasId, string currentPassword, string newPassword)

@@ -18,6 +18,10 @@ export const AddOfficeForm = () => {
     event.preventDefault();
 
     const officename = officenameRef.current.value;
+    if (!officename) {
+      alert("Please enter office name.");
+      return;
+    }
 
     //REGISTER OFFICE
     try {

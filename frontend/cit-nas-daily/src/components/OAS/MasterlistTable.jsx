@@ -1,12 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { AddExistingNASModal } from "./AddExistingNASModal";
 
-export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
+export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitted }) => {
   const [nasData, setNasData] = useState([]);
   const [filteredNASData, setFilteredNASData] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const api = useMemo(
     () =>
@@ -20,7 +18,6 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
   );
 
   const header = [
-    "No.",
     "ID Number",
     "Last Name",
     "First Name",
@@ -40,6 +37,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
     "FOR MAKE UP",
     "OT",
     "REMARKS",
+    "Update",
   ];
 
   function getSemesterValue(sem) {
@@ -63,19 +61,15 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
         );
         const nasData = nasresponse.data;
 
-        const nasDataWithOffice = await Promise.all(
+        const nasDataWithTimekeeping = await Promise.all(
           nasData.map(async (nas) => {
             const nasId = nas.id;
-
             try {
-              const [officeResponse, timekeepingresponse] = await Promise.all([
-                api.get(`Offices/${nasId}/NAS`),
-                api.get(
-                  `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
-                ),
-              ]);
-              nas.office = officeResponse.data;
+              const timekeepingresponse = await api.get(
+                `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
+              );
               nas.timekeeping = timekeepingresponse.data;
+              console.log("nas.timekeeping", nas.timekeeping);
             } catch (error) {
               console.error("Error fetching data for NAS:", error);
               nas.office = { name: "N/A" };
@@ -84,7 +78,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
             return nas;
           })
         );
-        setNasData(nasDataWithOffice);
+        setNasData(nasDataWithTimekeeping);
       } catch (error) {
         console.error(error);
         if (error.response.status === 404) {
@@ -94,7 +88,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
     };
 
     fetchNas();
-  }, [selectedSY, selectedSem, api]);
+  }, [selectedSY, selectedSem, api, submitted]);
 
   useEffect(() => {
     const filteredData = nasData.filter(
@@ -106,19 +100,20 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
     setFilteredNASData(filteredData);
   }, [searchInput, nasData]);
 
-  const handleAdd = () => {
-    setIsModalOpen(true);
-  };
+  const sortedNASData = useMemo(
+    () => [...filteredNASData].sort((a, b) => a.lastName.localeCompare(b.lastName)),
+    [filteredNASData]
+  );
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table-auto mx-auto mb-8">
+    <div className="w-auto">
+      <table className="w-auto table-auto">
         <thead>
           <tr>
             {header.map((header, index) => (
               <th
                 key={index}
-                className="border-2 border-black text-white text-center uppercase font-semibold bg-primary px-4 py-2"
+                className="border-2 border-black text-white text-center text-xs uppercase font-semibold bg-primary px-4 py-2"
                 value={header}
               >
                 {header}
@@ -127,96 +122,101 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem }) => {
           </tr>
         </thead>
         <tbody>
-          {filteredNASData.map((nas, index) => (
+          {sortedNASData.map((nas, index) => (
             <tr key={index}>
-              <td className="border-2 border-black text-center px-4 py-2">{nas.id}</td>
-              <td className="border-2 border-black text-center px-4 py-2">{nas.studentIDNo}</td>
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
+                {nas.studentIDNo}
+              </td>
               <td
-                className="border-2 border-black text-center px-4 py-2"
+                className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "capitalize" }}
               >
                 {nas.lastName}
               </td>
               <td
-                className="border-2 border-black text-center px-4 py-2"
+                className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "capitalize" }}
               >
                 {nas.firstName}
               </td>
               <td
-                className="border-2 border-black text-center px-4 py-2"
+                className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "capitalize" }}
               >
                 {nas.middleName}
               </td>
               <td
-                className="border-2 border-black text-center px-4 py-2"
+                className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "capitalize" }}
               >
                 {nas.gender}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {new Date(nas.birthDate).toLocaleDateString()}
               </td>
               <td
-                className="border-2 border-black text-center px-4 py-2"
+                className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "uppercase" }}
               >
                 {nas.course}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">{nas.yearLevel}</td>
-              <td className="border-2 border-black text-center px-4 py-2">{nas.unitsAllowed}</td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
+                {nas.yearLevel}
+              </td>
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
+                {nas.unitsAllowed}
+              </td>
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {new Date(nas.dateStarted).toLocaleDateString()}
               </td>
               <td
-                className="border-2 border-black text-center px-4 py-2"
+                className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "uppercase" }}
               >
                 {nas.office ? nas.officeName : "N/A"}{" "}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.excused : "NR"}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.unexcused : "NR"}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.lateOver10Mins : "NR"}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.lateOver45Mins : "NR"}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.failedToPunch : "NR"}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2">
+              <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.makeUpDutyHours : "NR"}
               </td>
-              <td className="border-2 border-black text-center px-4 py-2"> </td>
-              <td className="border-2 border-black text-center px-4 py-2"> </td>
+              <td className="border-2 border-black text-center px-1 py-2 text-xs"> </td>
+              <td className="border-2 border-black text-center px-1 py-2 text-xs"> </td>
+              <td className="border-2 border-black text-xs">
+                <div className="flex justify-center items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6 cursor-pointer hover:transition-colors hover:text-primary"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                    />
+                  </svg>
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>
-        <tbody>
-          <tr>
-            <td colSpan="20" className="text-center border-2">
-              <button
-                className="btn btn-primary bg-secondary px-4 py-2 rounded-lg m-1 text-sm hover:bg-primary hover:text-white"
-                onClick={handleAdd}
-              >
-                Add existing NAS
-              </button>
-            </td>
-          </tr>
-        </tbody>
       </table>
-      <AddExistingNASModal
-        isOpen={isModalOpen}
-        closeModal={() => setIsModalOpen(false)}
-        toaddSY={selectedSY}
-        toaddSem={selectedSem}
-      />
     </div>
   );
 };
@@ -225,4 +225,5 @@ MasterlistTable.propTypes = {
   searchInput: PropTypes.string.isRequired,
   selectedSY: PropTypes.string.isRequired,
   selectedSem: PropTypes.string.isRequired,
+  submitted: PropTypes.bool.isRequired,
 };
