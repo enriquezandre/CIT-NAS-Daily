@@ -10,5 +10,6 @@ namespace CITNASDaily.Repositories.Contracts
         Task<User> CreateUserAsync(User user);
         Task<bool> DoesUserExist(Guid userId);
         Task<bool> DoesUsernameExist(string username);
+        Task<bool> ChangePasswordAsync(string username, string newPassword);
     }
 }

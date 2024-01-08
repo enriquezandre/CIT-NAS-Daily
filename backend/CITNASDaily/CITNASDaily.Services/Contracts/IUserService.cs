@@ -10,5 +10,6 @@ namespace CITNASDaily.Services.Contracts
         Task<UserDto?> CreateUserAsync(UserCreateDto userCreate);
         Task<bool> DoesUserExist(Guid userId);
         Task<bool> DoesUsernameExist(string username);
+        Task<bool> ChangePasswordAsync(UserPasswordUpdateDto update);
     }
 }
