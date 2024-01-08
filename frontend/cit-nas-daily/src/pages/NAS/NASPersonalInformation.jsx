@@ -60,11 +60,18 @@ export const NASPersonalInformation = () => {
     const file = e.target.files[0];
 
     if (file) {
+      // Check if the file size is less than 500 KB (in bytes)
+      const maxSizeInBytes = 500 * 1024; // 500 KB
+      if (file.size > maxSizeInBytes) {
+        console.error("Image size exceeds the limit of 500 KB");
+        return;
+      }
+
       try {
         const formData = new FormData();
         formData.append("file", file);
 
-        const response = await api.put("", formData, {
+        const response = await api.put(`/NAS/photo/${nasId}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
