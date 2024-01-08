@@ -3,10 +3,10 @@ import { Route, Routes } from "react-router-dom";
 import { Navbar } from "./components/Navbar.jsx";
 import { Login } from "./pages/Login/Login";
 import { SuperiorEvaluation } from "./pages/superior/SuperiorEvaluation";
-import { SuperiorNASList } from "./pages/superior/SuperiorNASList";
 import { NASPage } from "./pages/NAS/NASPage";
 import { OASPage } from "./pages/OAS/OASPage";
 import { OASSpecificNAS } from "./pages/OAS/OASSpecificNAS.jsx";
+import { SuperiorPage } from "./pages/superior/SuperiorPage.jsx";
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
         <Route path="/" element={<Login />} />
         {/* Superior */}
         <Route path="/superior/:superiorId/evaluation/:nasId" element={<SuperiorEvaluation />} />
-        <Route path="/superior/:superiorId" element={<SuperiorNASList />} />
+        <Route path="/superior/:superiorId" element={<SuperiorPage />} />
         {/* OAS */}
         <Route path="/oas/:oasId" element={<OASPage />} />
         <Route path="/oas/:oasId/:nasId" element={<OASSpecificNAS />} />

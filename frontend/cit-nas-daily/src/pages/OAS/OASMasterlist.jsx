@@ -3,6 +3,7 @@ import axios from "axios";
 import { MasterlistTable } from "../../components/OAS/MasterlistTable";
 import { Dropdown } from "../../components/Dropdown";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
+import { AddExistingNASModal } from "../../components/OAS/AddExistingNASModal";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
@@ -14,6 +15,8 @@ export const OASMasterlist = () => {
   const [uniqueYears, setUniqueYears] = useState([]);
   const [selectedSem, setSelectedSem] = useState(currentSem);
   const [searchInput, setSearchInput] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const sem_options = ["First", "Second", "Summer"];
 
   const api = useMemo(
@@ -54,12 +57,26 @@ export const OASMasterlist = () => {
     setSelectedSem(value);
   };
 
+  const handleAdd = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleSubmitted = (isSubmitted) => {
+    setSubmitted(isSubmitted);
+  };
+
+  useEffect(() => {
+    if (submitted) {
+      setSubmitted(false);
+    }
+  }, [submitted]);
+
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
-        <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
-            <div className="flex flex-row justify-start items-center gap-10 w-auto">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10 max-h-screen">
+        <div className="flex flex-col justify-center max-h-screen pb-3">
+          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2 max-h-screen">
+            <div className="flex flex-row justify-start items-center gap-10 w-auto max-h-screen">
               <div className="flex flex-row gap-2 items-center ml-9">
                 <Dropdown
                   label="SY"
@@ -78,6 +95,12 @@ export const OASMasterlist = () => {
               </div>
             </div>
             <div className="flex justify-end">
+              <button
+                className="btn btn-primary bg-secondary px-4 py-2 rounded-lg m-1 text-sm hover:bg-primary hover:text-white font-normal mr-3"
+                onClick={handleAdd}
+              >
+                Add existing NAS
+              </button>
               <div className="relative w-1/2">
                 <input
                   type="search"
@@ -110,15 +133,23 @@ export const OASMasterlist = () => {
               </div>
             </div>
           </ul>
-          <div className="px-8 py-4">
+          <div className="py-4 max-h-screen overflow-x-auto mr-6 ml-6">
             <MasterlistTable
               searchInput={searchInput}
               selectedSY={selectedSY}
               selectedSem={selectedSem}
+              submitted={submitted}
             />
           </div>
         </div>
       </div>
+      <AddExistingNASModal
+        isOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+        toaddSY={selectedSY}
+        toaddSem={selectedSem}
+        onSubmitted={handleSubmitted}
+      />
     </>
   );
 };
