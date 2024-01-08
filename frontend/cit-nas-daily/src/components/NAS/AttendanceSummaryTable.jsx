@@ -5,7 +5,13 @@ import { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY, openModal }) => {
+export const AttendanceSummaryTable = ({
+  selectedMonth,
+  selectedSem,
+  selectedSY,
+  openModal,
+  isSubmitted,
+}) => {
   const { nasId } = useParams();
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
   const [firstName, setFirstName] = useState("");
@@ -244,12 +250,26 @@ export const AttendanceSummaryTable = ({ selectedMonth, selectedSem, selectedSY,
         }));
 
         setValidationData(validationArray);
+
+        // Refetch validation data after a successful submission
+        if (isSubmitted) {
+          const responseAfterSubmission = await api.get(`/Validation/nas/${nasId}`);
+          const validationDataAfterSubmission = responseAfterSubmission.data;
+
+          const validationAfterSubmission = validationDataAfterSubmission.map((validation) => ({
+            absenceDate: formatDate(new Date(validation.absenceDate)),
+            validationStatus: validation.validationStatus,
+            makeUpHours: validation.makeUpHours,
+          }));
+
+          setValidationData(validationAfterSubmission);
+        }
       } catch (error) {
         console.error(error);
       }
     };
     fetchValidation();
-  }, [nasId, formatDate, api]);
+  }, [nasId, formatDate, api, isSubmitted]);
 
   return (
     <Table hoverable>

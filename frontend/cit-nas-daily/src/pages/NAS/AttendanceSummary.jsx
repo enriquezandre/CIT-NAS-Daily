@@ -27,6 +27,7 @@ export const AttendanceSummary = () => {
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedAbsentDate, setSelectedAbsentDate] = useState(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const { nasId } = useParams();
 
   // console.log(currentYear, currentSem);
@@ -136,9 +137,8 @@ export const AttendanceSummary = () => {
   const openModal = (date) => {
     setIsOpen(true);
     setSelectedAbsentDate(date);
-
-    // console.log("Selected date:", date);
-    // console.log("Selected absent date:", selectedAbsentDate);
+    setIsSubmitted(false);
+    //set to false when modal is opened para ig sunod submit mu true nasad siya ug mutrigger nasad ang fetchValidation function
   };
 
   const closeModal = () => {
@@ -167,6 +167,7 @@ export const AttendanceSummary = () => {
 
       if (response.status === 200 || response.status === 201) {
         console.log("Submitted successfully");
+        setIsSubmitted(true);
       } else {
         console.error("Submission failed");
       }
@@ -280,6 +281,7 @@ export const AttendanceSummary = () => {
               selectedSem={selectedSem}
               selectedSY={selectedSY}
               openModal={openModal}
+              isSubmitted={isSubmitted}
             />
           </div>
         </div>
