@@ -203,27 +203,5 @@ namespace CITNASDaily.Repositories.Repositories
 
             return nasList;
         }
-
-        public async Task<bool> ChangePasswordAsync(int nasId, string newPassword)
-        {
-            var nas = await _context.NAS.FindAsync(nasId);
-
-            if(nas == null)
-            {
-                return false;
-            }
-
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == nas.Username);
-
-            if (user == null)
-            {
-                return false;
-            }
-
-            user.PasswordHash = newPassword;
-
-            await _context.SaveChangesAsync();
-            return true;
-        }
     }
 }

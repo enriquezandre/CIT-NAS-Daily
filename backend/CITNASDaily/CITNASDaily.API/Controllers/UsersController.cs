@@ -1,7 +1,6 @@
 ﻿using CITNASDaily.Entities.Dtos.UserDtos;
 using CITNASDaily.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -151,5 +150,45 @@ namespace CITNASDaily.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Change Password
+        /// </summary>
+        /// <param name="update"></param>
+        /// <returns>Boolean whether the password was changed successfully</returns>
+        [HttpPut("ChangePassword")]
+        [Authorize]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ChangePassword([FromBody] UserPasswordUpdateDto update)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null) return Forbid();
+
+                var check = await _userService.DoesUsernameExist(update.Username);
+                if(check == false)
+                {
+                    return NotFound($"Username {update.Username} does not exist.");
+                }
+
+                var change = await _userService.ChangePasswordAsync(update);
+                if (change == false)
+                {
+                    return BadRequest("Failed to change password. Please ensure that the password is correct.");
+                }
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error changing password.");
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
     }
 }

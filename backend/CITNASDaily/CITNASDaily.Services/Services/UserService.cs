@@ -3,6 +3,7 @@ using CITNASDaily.Entities.Dtos.UserDtos;
 using CITNASDaily.Entities.Models;
 using CITNASDaily.Repositories.Contracts;
 using CITNASDaily.Services.Contracts;
+using CITNASDaily.Utils;
 
 namespace CITNASDaily.Services.Services
 {
@@ -60,6 +61,27 @@ namespace CITNASDaily.Services.Services
             var users = await _userRepository.GetUsersAsync();
             
             return _mapper.Map<IEnumerable<UserDto>>(users);
+        }
+
+        public async Task<bool> ChangePasswordAsync(UserPasswordUpdateDto update)
+        {
+            var user = await _userRepository.GetUserByUsernameAsync(update.Username);
+
+            //user does not exist
+            if(user == null)
+            {
+                return false;
+            }
+
+            //verify password
+            bool check = PasswordManager.VerifyPassword(update.CurrentPassword, user.PasswordHash);
+            var checkNewPass = update.NewPassword.Equals(update.RetypeNewPassword);
+            if (check == false || checkNewPass == false)
+            {
+                return false;
+            }
+
+            return await _userRepository.ChangePasswordAsync(update.Username, PasswordManager.HashPassword(update.NewPassword));
         }
     }
 }

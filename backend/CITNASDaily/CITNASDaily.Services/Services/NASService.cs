@@ -249,44 +249,6 @@ namespace CITNASDaily.Services.Services
             return mappedNas;
         }
 
-        public async Task<bool> CheckCurrentPasswordAsync(int nasId, string currentPassword)
-        {
-            var nas = await _nasRepository.GetNASAsync(nasId);
-
-            //nas does not exist
-            if (nas == null)
-            {
-                return false;
-            }
-
-            var user = await _userRepository.GetUserByUsernameAsync(nas.Username);
-
-            return PasswordManager.VerifyPassword(currentPassword, user.PasswordHash);
-        }
-
-        public async Task<bool> ChangePasswordAsync(int nasId, string currentPassword, string newPassword)
-        {
-            var nas = await _nasRepository.GetNASAsync(nasId);
-
-            //nas does not exist
-            if(nas == null)
-            {
-                return false;
-            }
-
-            var user = await _userRepository.GetUserByUsernameAsync(nas.Username);
-
-            bool check = PasswordManager.VerifyPassword(currentPassword, user.PasswordHash);
-
-            //password do not match
-            if(check == false)
-            {
-                return false;
-            }
-
-            return await _nasRepository.ChangePasswordAsync(nasId, PasswordManager.HashPassword(newPassword));
-        }
-
         #endregion
     }
 }
