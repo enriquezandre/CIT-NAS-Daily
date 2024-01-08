@@ -141,7 +141,7 @@ export const OASManageData = () => {
     return scheduleData;
   };
 
-  //function for checking attendance and schedule for each NAS
+  //function for checking attendance and schedule for each NAS, note: to be optimized pa
   const checkAttendanceAndSchedule = async (nasId, firstName, lastName, middleName) => {
     try {
       const dtrdata = await fetchDTRData(firstName, lastName, middleName);
@@ -170,7 +170,7 @@ export const OASManageData = () => {
         }
 
         if (schedulesForDay.length >= 2) {
-          // If at least two schedules are found, assign the second schedule to schedule2
+          // If at least two schedules are found (broken sched), assign the second schedule to schedule2
           schedule2 = schedulesForDay[1];
         }
 
@@ -184,7 +184,7 @@ export const OASManageData = () => {
 
         //check if there is L10 and L45
         const timeIn1 = new Date("2023-08-14 " + formatDtrTime(attendance.punch1));
-        const timeIn2 = new Date("2023-08-14 " + formatDtrTime(attendance.punch3));
+        const timeIn2 = new Date("2023-08-14 " + formatDtrTime(attendance.punch3)); //for broken sched
         const schedStartTime1 = new Date(schedule1.startTime);
         const schedStartTime2 = new Date(schedule2?.startTime);
 
