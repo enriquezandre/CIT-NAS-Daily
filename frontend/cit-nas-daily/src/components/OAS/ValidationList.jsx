@@ -40,9 +40,6 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
     };
 
     const date = new Date(dateString);
@@ -191,7 +188,10 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
               <p className="ml-5">
                 <span>{item.nasName}</span>
                 <br />
-                <span className="text-xs">{formatDateString(item.dateSubmitted)}</span>
+                <span className="text-xs">
+                  Submission Date: {formatDateString(item.dateSubmitted)}, Absent Date:{" "}
+                  {formatDateString(item.absenceDate)}
+                </span>
               </p>
             </div>
             <div className="flex items-center space-x-2">
