@@ -3,11 +3,13 @@ import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { ValidationStatusModal } from "./ValidationStatusModal"; // Import the modal
+import placeholder from "../../placeholders/user.png";
 
 export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
   const [validation, setValidation] = useState([]);
   const [isStatusModalOpen, setStatusModalOpen] = useState(false);
   const [selectedValidationItem, setSelectedValidationItem] = useState(null);
+  const [nasImages, setNasImages] = useState({}); //added for image
 
   const api = useMemo(
     () =>
@@ -175,6 +177,44 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
     }
   };
 
+  //added for image
+  const getImage = async (nasId) => {
+    try {
+      const api = axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const response = await api.get(`/NAS/${nasId}`);
+      return response.data.image;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
+  //added for image
+  useEffect(() => {
+    const fetchNasImages = async () => {
+      const imagePromises = validation.map(async (item) => {
+        const image = await getImage(item.nasId);
+        return { id: item.nasId, image };
+      });
+
+      const images = await Promise.all(imagePromises);
+      const imageMap = images.reduce((acc, { id, image }) => {
+        acc[id] = image;
+        return acc;
+      }, {});
+
+      setNasImages(imageMap);
+    };
+
+    fetchNasImages();
+  }, [validation]);
+
   return (
     <>
       <div className="grid gap-3">
@@ -184,7 +224,14 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
             className="border border-solid rounded-md p-3 flex items-center justify-between"
           >
             <div className="flex items-center">
-              <Avatar rounded />
+              <Avatar
+                img={
+                  nasImages[item.nasId]
+                    ? `data:image/png;base64,${nasImages[item.nasId]}`
+                    : placeholder
+                }
+                rounded
+              />
               <p className="ml-5">
                 <span>{item.nasName}</span>
                 <br />
