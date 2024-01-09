@@ -1,14 +1,14 @@
-import { useMemo, useRef, useEffect, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import axios from "axios";
 import ProgramDropdown from "../ProgramDropdown";
+import OfficeDropdown from "../OfficeDropdown";
 
 export const AddNASForm = () => {
-  const [offices, setOffices] = useState([]);
   const [selectedProgram, setSelectedProgram] = useState("");
+  const [selectedOffice, setSelectedOffice] = useState("");
   const lastnameRef = useRef();
   const firstnameRef = useRef();
   const middlenameRef = useRef();
-  const officeRef = useRef();
   const idnumberRef = useRef();
   const genderRef = useRef();
   const birthdateRef = useRef();
@@ -17,6 +17,8 @@ export const AddNASForm = () => {
   const unitsAllowedRef = useRef();
   const syRef = useRef();
   const semRef = useRef();
+
+  console.log("selectedoffice", selectedOffice);
 
   const api = useMemo(
     () =>
@@ -44,19 +46,6 @@ export const AddNASForm = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchOffices = async () => {
-      try {
-        const response = await api.get(`/Offices`);
-        setOffices(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchOffices();
-  }, [api]);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -64,7 +53,7 @@ export const AddNASForm = () => {
     const firstname = firstnameRef.current.value;
     const middlename = middlenameRef.current.value;
     const username = `${lastname}${firstname}`.toLowerCase().replace(/[^a-z0-9]/g, "");
-    const officeId = officeRef.current.value;
+    const officeId = selectedOffice;
     const program = selectedProgram;
     const gender = genderRef.current.value;
     const sy = syRef.current.value;
@@ -72,8 +61,6 @@ export const AddNASForm = () => {
     const yearlevel = yearlevelRef.current.value;
     const unitsAllowed = unitsAllowedRef.current.value;
     const idnumber = idnumberRef.current.value;
-
-    console.log("programValue", program);
 
     const inputs = [
       lastname,
@@ -174,7 +161,7 @@ export const AddNASForm = () => {
         firstnameRef.current.value = "";
         lastnameRef.current.value = "";
         middlenameRef.current.value = "";
-        officeRef.current.value = "Select office";
+        setSelectedOffice("Select office");
         idnumberRef.current.value = "";
         setSelectedProgram("");
         genderRef.current.value = "Select gender";
@@ -248,18 +235,10 @@ export const AddNASForm = () => {
                 <label htmlFor="office" className="block mb-2 text-sm font-medium text-gray-900">
                   Assigned Office
                 </label>
-                <select
-                  ref={officeRef}
-                  id="category"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
-                >
-                  <option selected="">Select office</option>
-                  {offices.map((office) => (
-                    <option key={office.id} value={office.id}>
-                      {office.officeName}
-                    </option>
-                  ))}
-                </select>
+                <OfficeDropdown
+                  onChange={(value) => setSelectedOffice(value)}
+                  value={selectedOffice}
+                />
               </div>
               <div>
                 <label htmlFor="idNumber" className="block mb-2 text-sm font-medium text-gray-900">
@@ -279,7 +258,6 @@ export const AddNASForm = () => {
                 <label htmlFor="program" className="block mb-2 text-sm font-medium text-gray-900">
                   Program
                 </label>
-
                 <ProgramDropdown
                   onChange={(value) => setSelectedProgram(value)}
                   value={selectedProgram}
