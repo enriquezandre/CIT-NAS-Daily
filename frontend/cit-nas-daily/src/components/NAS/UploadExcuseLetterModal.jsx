@@ -108,7 +108,7 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
                 />
                 <button
                   className="bg-primary text-white py-1 px-5 rounded"
-                  style={{ height: "2rem", minWidth: "8rem" }} // Set a minimum width for the button
+                  style={{ height: "2rem", minWidth: "8rem" }}
                   onClick={handleButtonClick}
                 >
                   Choose Files
