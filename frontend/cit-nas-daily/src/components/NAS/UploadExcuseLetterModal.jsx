@@ -71,6 +71,7 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
       )}
       <Modal
         show={isOpen}
+        onClose={handleCloseUploadModal}
         className="rounded-2xl"
         style={{
           padding: "0",
