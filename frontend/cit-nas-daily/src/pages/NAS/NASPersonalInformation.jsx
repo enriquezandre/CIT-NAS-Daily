@@ -19,7 +19,6 @@ export const NASPersonalInformation = () => {
   const [dateStarted, setDateStarted] = useState("");
   const [avatar, setAvatar] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [error, setError] = useState("");
 
   const api = useMemo(
     () =>
@@ -212,7 +211,6 @@ export const NASPersonalInformation = () => {
         closeModal={closeModal}
         handleAvatarChange={handleAvatarChange}
         avatar={avatar}
-        error={error}
       />
     </div>
   );
