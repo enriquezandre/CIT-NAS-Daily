@@ -20,17 +20,7 @@ export const ValidationModal = ({ isOpen, closeModal, handleSubmit }) => {
   return (
     <div>
       {isOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0, 0, 0, 0.3)",
-            zIndex: 999,
-          }}
-        ></div>
+        <div className="fixed inset-0 flex items-center justify-center z-999 bg-black bg-opacity-50"></div>
       )}
       <Modal
         show={isOpen}
@@ -60,6 +50,7 @@ export const ValidationModal = ({ isOpen, closeModal, handleSubmit }) => {
             paddingBottom: "0.3rem",
             display: "flex",
             justifyContent: "flex-end",
+            borderTop: "2px solid #c2c4c3",
           }}
         >
           <div className="flex justify-end items-center">

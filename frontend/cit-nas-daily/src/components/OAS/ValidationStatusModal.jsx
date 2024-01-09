@@ -45,18 +45,7 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
   return (
     <div>
       {isOpen && (
-        <div
-          id="modal-overlay"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0, 0, 0, 0.3)",
-            zIndex: 999,
-          }}
-        ></div>
+        <div className="fixed inset-0 flex items-center justify-center z-999 bg-black bg-opacity-50"></div>
       )}
       <Modal
         dismissible
@@ -65,13 +54,24 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
         style={{
           padding: "0",
           zIndex: 1000,
-          width: "35rem",
+          width: "30rem",
           left: "50%",
           transform: "translateX(-50%)",
         }}
         onClose={handleCancel}
       >
-        <Modal.Header className="text-center">Update letter status</Modal.Header>
+        <Modal.Header
+          style={{
+            paddingTop: "1em",
+            paddingBottom: "1em",
+            alignItems: "center",
+            borderBottom: "2px solid #c2c4c3",
+          }}
+        >
+          <div>
+            <p className="text-center font-bold text-base">Update Validation Status</p>
+          </div>
+        </Modal.Header>
         <Modal.Body>
           <div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
