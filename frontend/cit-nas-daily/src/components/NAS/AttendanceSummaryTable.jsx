@@ -355,4 +355,5 @@ AttendanceSummaryTable.propTypes = {
   selectedSem: PropTypes.string.isRequired,
   selectedSY: PropTypes.number.isRequired,
   openModal: PropTypes.func.isRequired,
+  isSubmitted: PropTypes.bool.isRequired,
 };
