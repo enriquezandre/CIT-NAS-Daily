@@ -33,12 +33,15 @@ const OfficeDropdown = ({ onChange, value }) => {
     <select
       id="category"
       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
-      onChange={(e) => onChange(e.target.value)}
-      value={value}
+      onChange={(e) => {
+        const [id, officeName] = e.target.value.split(",");
+        onChange(id, officeName);
+      }}
+      value={value ? value.officeName : value}
     >
       <option selected="">Select office</option>
       {offices.map((office) => (
-        <option key={office.id} value={office.id}>
+        <option key={office.id} value={`${office.id},${office.officeName}`}>
           {office.officeName}
         </option>
       ))}

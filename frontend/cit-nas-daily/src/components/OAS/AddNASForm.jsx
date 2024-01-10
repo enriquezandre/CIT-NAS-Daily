@@ -5,7 +5,8 @@ import OfficeDropdown from "../OfficeDropdown";
 
 export const AddNASForm = () => {
   const [selectedProgram, setSelectedProgram] = useState("");
-  const [selectedOffice, setSelectedOffice] = useState("");
+  const [selectedOfficeName, setSelectedOfficeName] = useState(null);
+  const [selectedOfficeId, setOfficeId] = useState(null);
   const lastnameRef = useRef();
   const firstnameRef = useRef();
   const middlenameRef = useRef();
@@ -18,8 +19,6 @@ export const AddNASForm = () => {
   const syRef = useRef();
   const semRef = useRef();
 
-  console.log("selectedoffice", selectedOffice);
-
   const api = useMemo(
     () =>
       axios.create({
@@ -30,6 +29,11 @@ export const AddNASForm = () => {
       }),
     []
   );
+
+  const handleOfficeChange = (id, officeName) => {
+    setSelectedOfficeName(officeName);
+    setOfficeId(id);
+  };
 
   const getSemesterValue = useMemo(() => {
     return (sem) => {
@@ -53,7 +57,7 @@ export const AddNASForm = () => {
     const firstname = firstnameRef.current.value;
     const middlename = middlenameRef.current.value;
     const username = `${lastname}${firstname}`.toLowerCase().replace(/[^a-z0-9]/g, "");
-    const officeId = selectedOffice;
+    const officeId = selectedOfficeId;
     const program = selectedProgram;
     const gender = genderRef.current.value;
     const sy = syRef.current.value;
@@ -161,7 +165,7 @@ export const AddNASForm = () => {
         firstnameRef.current.value = "";
         lastnameRef.current.value = "";
         middlenameRef.current.value = "";
-        setSelectedOffice("Select office");
+        setSelectedOfficeName("");
         idnumberRef.current.value = "";
         setSelectedProgram("");
         genderRef.current.value = "Select gender";
@@ -235,10 +239,7 @@ export const AddNASForm = () => {
                 <label htmlFor="office" className="block mb-2 text-sm font-medium text-gray-900">
                   Assigned Office
                 </label>
-                <OfficeDropdown
-                  onChange={(value) => setSelectedOffice(value)}
-                  value={selectedOffice}
-                />
+                <OfficeDropdown onChange={handleOfficeChange} value={selectedOfficeName} />
               </div>
               <div>
                 <label htmlFor="idNumber" className="block mb-2 text-sm font-medium text-gray-900">
