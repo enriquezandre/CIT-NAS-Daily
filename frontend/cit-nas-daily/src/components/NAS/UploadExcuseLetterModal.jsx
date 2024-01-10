@@ -69,19 +69,7 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-999 bg-black bg-opacity-50"></div>
       )}
-      <Modal
-        show={isOpen}
-        onClose={handleCloseUploadModal}
-        className="rounded-2xl"
-        style={{
-          padding: "0",
-          zIndex: 1000,
-          maxWidth: "30rem",
-          width: "100%",
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
+      <Modal show={isOpen} onClose={handleCloseUploadModal} className="rounded-2xl" size={"md"}>
         <Modal.Header
           style={{
             paddingTop: "1em",
@@ -122,7 +110,7 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
                 </span>
               </div>
               <div>
-                <p className="text-md text-gray pt-1">Accepted file types: PDF</p>
+                <p className="text-sm text-gray">Accepted file types: PDF</p>
               </div>
               <div className="pt-3 text-red text-center">
                 <p>{error}</p>

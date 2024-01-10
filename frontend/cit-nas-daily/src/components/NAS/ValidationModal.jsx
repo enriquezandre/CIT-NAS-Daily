@@ -22,17 +22,7 @@ export const ValidationModal = ({ isOpen, closeModal, handleSubmit }) => {
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-999 bg-black bg-opacity-50"></div>
       )}
-      <Modal
-        show={isOpen}
-        className="rounded-2xl"
-        style={{
-          padding: "0",
-          zIndex: 1000,
-          width: "30rem",
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
+      <Modal show={isOpen} className="rounded-2xl" size={"md"}>
         <Modal.Body>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <div>
