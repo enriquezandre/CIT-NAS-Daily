@@ -59,8 +59,20 @@ export const ActivitiesFormModal = ({ isOpen, closeModal, currentYear, currentSe
         <div className="fixed inset-0 flex items-center justify-center z-999 bg-black bg-opacity-50"></div>
       )}
       <Modal show={isOpen} onClose={closeModal}>
+        <Modal.Header
+          style={{
+            paddingTop: "1em",
+            paddingBottom: "1em",
+            alignItems: "center",
+            borderBottom: "2px solid #c2c4c3",
+          }}
+        >
+          <div>
+            <p className="text-center font-bold">NSWA Form</p>
+          </div>
+        </Modal.Header>
         <Modal.Body>
-          <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
+          <div className="flex flex-row justify-start items-center gap-10 mb-6">
             <div className="flex flex-row gap-2 items-center">
               <div className="mr-2">SY:</div>
               <select
@@ -122,23 +134,31 @@ export const ActivitiesFormModal = ({ isOpen, closeModal, currentYear, currentSe
             </div>
           </div>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer
+          style={{
+            paddingTop: "1rem",
+            paddingBottom: "1rem",
+            display: "flex",
+            justifyContent: "flex-end",
+            borderTop: "2px solid #c2c4c3",
+          }}
+        >
+          <button
+            className="bg-primary text-white py-2 px-6 rounded-full  hover:bg-secondary hover:text-primary"
+            color="gray"
+            onClick={closeModal}
+          >
+            Cancel
+          </button>
           <button
             type="submit"
-            className="bg-primary text-white py-2 px-4 rounded"
+            className="bg-primary text-white py-2 px-6 rounded-full  hover:bg-secondary hover:text-primary"
             onClick={(event) => {
               closeModal();
               handleSubmit(event);
             }}
           >
             Submit
-          </button>
-          <button
-            className="bg-primary text-white py-2 px-4 rounded"
-            color="gray"
-            onClick={closeModal}
-          >
-            Cancel
           </button>
         </Modal.Footer>
       </Modal>
