@@ -8,6 +8,7 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
 
   const handleCancel = () => {
     setError("");
+    setSelectedFile(null);
     closeModal();
   };
 
@@ -31,8 +32,8 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
   };
 
   const handleConfirm = async () => {
-    console.log("Handling confirm with file:", selectedFile);
     handleAvatarChange(selectedFile);
+    setSelectedFile(null);
     closeModal();
   };
 
@@ -77,7 +78,12 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
           >
             <div
               className="avatar-square"
-              style={{ width: "100px", height: "100px", border: "2px solid gray" }}
+              style={{
+                width: "125px",
+                height: "125px",
+                border: "2px solid gray",
+                alignItems: "center",
+              }}
             >
               {selectedFile && (
                 <img
@@ -88,7 +94,7 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
                 />
               )}
             </div>
-            <div className="ml-3" style={{ width: "15rem" }}>
+            <div className="ml-3" style={{ width: "12rem" }}>
               <label
                 className="rounded bg-primary text-white"
                 htmlFor="fileInput"
@@ -108,7 +114,7 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
                 />
               </label>
 
-              <p className="pb-3 text-gray">PNG or JPG (MAX: 500KB).</p>
+              <p className="text-sm text-gray pb-3">PNG or JPG (MAX: 500KB).</p>
               <p className=" text-red">{error}</p>
             </div>
           </div>
