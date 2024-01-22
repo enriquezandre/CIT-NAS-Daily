@@ -1,10 +1,21 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import ProgramDropdown from "../ProgramDropdown";
+import OfficeDropdown from "../OfficeDropdown";
 
 export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitted }) => {
   const [nasData, setNasData] = useState([]);
   const [filteredNASData, setFilteredNASData] = useState([]);
+  const [toUpdate, setToUpdate] = useState(false);
+  const [nasId, setNasId] = useState();
+  const [selectedProgram, setSelectedProgram] = useState("");
+  const [selectedOfficeName, setSelectedOfficeName] = useState(null);
+  const [selectedOfficeId, setSelectedOfficeId] = useState(null);
+  const [selectedRowId, setSelectedRowId] = useState(null);
+  const nasCourseRef = useRef();
+  const nasYearLvlRef = useRef();
+  const nasUnitsAllowedRef = useRef();
 
   const api = useMemo(
     () =>
@@ -53,6 +64,58 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
     }
   }
 
+  const handleClick = (e, rowId, officeName, officeId) => {
+    e.preventDefault();
+    setToUpdate(!toUpdate);
+    setSelectedRowId(rowId);
+    setSelectedOfficeName(officeName);
+    setSelectedOfficeId(officeId);
+    console.log("selectedOfficeId", selectedOfficeId);
+    console.log("selectedOfficeName", selectedOfficeName);
+  };
+
+  console.log("selectedOfficeId", selectedOfficeId);
+  console.log("selectedOfficeName", selectedOfficeName);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setToUpdate(!toUpdate);
+    setSelectedRowId(null);
+
+    const nasCourse = nasCourseRef.current.value;
+    const nasYearLvl = nasYearLvlRef.current.value;
+    const nasUnitsAllowed = nasUnitsAllowedRef.current.value;
+    const data = {
+      nasId: nasId,
+      officeId: selectedOfficeId,
+      yearLevel: nasYearLvl,
+      course: nasCourse,
+      sySem: [{ year: selectedSY, semester: selectedSem }],
+      unitsAllowed: nasUnitsAllowed,
+    };
+    console.log("data", data);
+
+    try {
+      // const response = await api.put(`/NAS/${nasId}`, data);
+      // if (response.status === 200) {
+      //   alert("NAS updated successfully!");
+      // }
+      console.log("selectedoffice submit", selectedOfficeId);
+    } catch (error) {
+      console.log(error);
+      if (error.response.status === 400) {
+        alert("Failed to update NAS.");
+      }
+    }
+  };
+
+  // const handleOfficeChange = (id, officeName) => {
+  //   setSelectedOfficeName(officeName);
+  //   setSelectedOfficeId(id);
+  //   console.log("selectedOfficeId", selectedOfficeId);
+  //   console.log("selectedOfficeName", selectedOfficeName);
+  // };
+
   useEffect(() => {
     const fetchNas = async () => {
       try {
@@ -63,7 +126,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
 
         const nasDataWithTimekeeping = await Promise.all(
           nasData.map(async (nas) => {
-            const nasId = nas.id;
+            setNasId(nas.id);
             try {
               const timekeepingresponse = await api.get(
                 `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
@@ -88,7 +151,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
     };
 
     fetchNas();
-  }, [selectedSY, selectedSem, api, submitted]);
+  }, [selectedSY, selectedSem, api, submitted, nasId]);
 
   useEffect(() => {
     const filteredData = nasData.filter(
@@ -158,13 +221,28 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                 className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "uppercase" }}
               >
-                {nas.course}
+                {selectedRowId === nas.id && toUpdate ? (
+                  <ProgramDropdown
+                    onChange={(value) => setSelectedProgram(value)}
+                    value={selectedProgram ? selectedProgram : nas.course}
+                  />
+                ) : (
+                  nas.course
+                )}
               </td>
               <td className="border-2 border-black text-center px-1 py-2 text-xs">
-                {nas.yearLevel}
+                {selectedRowId === nas.id && toUpdate ? (
+                  <input ref={nasYearLvlRef} type="text" value={nas.yearLevel} />
+                ) : (
+                  nas.yearLevel
+                )}
               </td>
               <td className="border-2 border-black text-center px-1 py-2 text-xs">
-                {nas.unitsAllowed}
+                {selectedRowId === nas.id && toUpdate ? (
+                  <input ref={nasUnitsAllowedRef} type="text" value={nas.unitsAllowed} />
+                ) : (
+                  nas.unitsAllowed
+                )}
               </td>
               <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {new Date(nas.dateStarted).toLocaleDateString()}
@@ -173,7 +251,14 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                 className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "uppercase" }}
               >
-                {nas.office ? nas.officeName : "N/A"}{" "}
+                {selectedRowId === nas.id && toUpdate ? (
+                  <OfficeDropdown
+                    onChange={(value) => setSelectedOfficeId(value)}
+                    value={selectedOfficeId ? selectedOfficeId : nas.officeName}
+                  />
+                ) : (
+                  nas.officeName
+                )}
               </td>
               <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.excused : "NR"}
@@ -197,20 +282,39 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
               <td className="border-2 border-black text-center px-1 py-2 text-xs"> </td>
               <td className="border-2 border-black text-xs">
                 <div className="flex justify-center items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6 cursor-pointer hover:transition-colors hover:text-primary"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                    />
-                  </svg>
+                  {selectedRowId === nas.id && toUpdate ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6 cursor-pointer hover:transition-colors hover:text-primary"
+                      onClick={(e) => handleSubmit(e, nas.id)}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m4.5 12.75 6 6 9-13.5"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6 cursor-pointer hover:transition-colors hover:text-primary"
+                      onClick={(e) => handleClick(e, nas.id, nas.officeName, nas.officeId)}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                      />
+                    </svg>
+                  )}
                 </div>
               </td>
             </tr>

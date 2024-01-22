@@ -4,6 +4,7 @@ import axios from "axios";
 
 const OfficeDropdown = ({ onChange, value }) => {
   const [offices, setOffices] = useState([]);
+  console.log("value yawa", value);
 
   const api = useMemo(
     () =>
@@ -33,15 +34,12 @@ const OfficeDropdown = ({ onChange, value }) => {
     <select
       id="category"
       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
-      onChange={(e) => {
-        const [id, officeName] = e.target.value.split(",");
-        onChange(id, officeName);
-      }}
-      value={value ? value.officeName : value}
+      onChange={(e) => onChange(e.target.value)}
+      value={value}
     >
-      <option selected="">Select office</option>
+      <option selected={value}>Select office</option>
       {offices.map((office) => (
-        <option key={office.id} value={`${office.id},${office.officeName}`}>
+        <option key={office.id} value={`${office.id}`}>
           {office.officeName}
         </option>
       ))}
