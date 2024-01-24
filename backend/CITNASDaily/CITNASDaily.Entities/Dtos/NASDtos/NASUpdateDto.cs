@@ -7,7 +7,6 @@ namespace CITNASDaily.Entities.Dtos.NASDtos
         public int? OfficeId { get; set; }
         public int? YearLevel { get; set; }
         public string? Course { get; set; }
-        public List<NASSchoolYearSemesterCreateDto>? SYSem { get; set; }
         public int? UnitsAllowed { get; set; }
     }
 }
