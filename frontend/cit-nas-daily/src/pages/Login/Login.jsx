@@ -100,7 +100,7 @@ export const Login = () => {
                     setError(""); // Clear error when there are changes in the password
                   }}
                 />
-                <div className="h-5 mb-3 text-white">{error}</div>
+                <div className="h-5 mb-1 text-white">{error}</div>
                 <input type="submit" className="button-submit hover:cursor-pointer" value="Login" />
               </div>
             </form>
