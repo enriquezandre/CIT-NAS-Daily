@@ -30,8 +30,7 @@ export const AddNASForm = () => {
     []
   );
 
-  const handleOfficeChange = (id, officeName) => {
-    setSelectedOfficeName(officeName);
+  const handleOfficeChange = (id) => {
     setOfficeId(id);
   };
 

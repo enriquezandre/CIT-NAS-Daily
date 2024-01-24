@@ -9,11 +9,12 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
   const [filteredNASData, setFilteredNASData] = useState([]);
   const [toUpdate, setToUpdate] = useState(false);
   const [nasId, setNasId] = useState();
-  const [selectedProgram, setSelectedProgram] = useState("");
+  const [selectedProgram, setSelectedProgram] = useState(null);
   const [selectedOfficeName, setSelectedOfficeName] = useState(null);
   const [selectedOfficeId, setSelectedOfficeId] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
-  const nasCourseRef = useRef();
+  const [nasYearLevel, setNasYearLevel] = useState(null);
+  const [nasUnitsAllowed, setNasUnitsAllowed] = useState(null);
   const nasYearLvlRef = useRef();
   const nasUnitsAllowedRef = useRef();
 
@@ -74,32 +75,28 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
     console.log("selectedOfficeName", selectedOfficeName);
   };
 
-  console.log("selectedOfficeId", selectedOfficeId);
-  console.log("selectedOfficeName", selectedOfficeName);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setToUpdate(!toUpdate);
     setSelectedRowId(null);
+    console.log("NAS ID", nasId);
+    console.log("nasYearLvl", nasYearLevel);
+    console.log("nasUnitsAllowed", nasUnitsAllowed);
+    console.log("selectedprogram submit", selectedProgram);
 
-    const nasCourse = nasCourseRef.current.value;
-    const nasYearLvl = nasYearLvlRef.current.value;
-    const nasUnitsAllowed = nasUnitsAllowedRef.current.value;
     const data = {
-      nasId: nasId,
       officeId: selectedOfficeId,
-      yearLevel: nasYearLvl,
-      course: nasCourse,
-      sySem: [{ year: selectedSY, semester: selectedSem }],
+      yearLevel: nasYearLevel,
+      course: selectedProgram,
       unitsAllowed: nasUnitsAllowed,
     };
-    console.log("data", data);
+    console.log("DATA SUBMIT", data);
 
     try {
-      // const response = await api.put(`/NAS/${nasId}`, data);
-      // if (response.status === 200) {
-      //   alert("NAS updated successfully!");
-      // }
+      const response = await api.put(`/NAS/${nasId}`, data);
+      if (response.status === 200) {
+        alert("NAS updated successfully!");
+      }
       console.log("selectedoffice submit", selectedOfficeId);
     } catch (error) {
       console.log(error);
@@ -108,13 +105,6 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
       }
     }
   };
-
-  // const handleOfficeChange = (id, officeName) => {
-  //   setSelectedOfficeName(officeName);
-  //   setSelectedOfficeId(id);
-  //   console.log("selectedOfficeId", selectedOfficeId);
-  //   console.log("selectedOfficeName", selectedOfficeName);
-  // };
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -224,7 +214,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                 {selectedRowId === nas.id && toUpdate ? (
                   <ProgramDropdown
                     onChange={(value) => setSelectedProgram(value)}
-                    value={selectedProgram ? selectedProgram : nas.course}
+                    value={selectedProgram ? selectedProgram : setSelectedProgram(nas.course)}
                   />
                 ) : (
                   nas.course
@@ -232,14 +222,39 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
               </td>
               <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {selectedRowId === nas.id && toUpdate ? (
-                  <input ref={nasYearLvlRef} type="text" value={nas.yearLevel} />
+                  <input
+                    ref={nasYearLvlRef}
+                    type="text"
+                    value={nasYearLevel ? nasYearLevel : setNasYearLevel(nas.yearLevel)}
+                    placeholder={nas.yearLevel}
+                    onChange={(e) => {
+                      let inputValue = e.target.value;
+                      if (!inputValue) {
+                        inputValue = nas.yearLevel;
+                      }
+                      setNasYearLevel(inputValue);
+                      console.log("nasYearLevelyawaaaa!!", nasYearLevel);
+                    }}
+                  />
                 ) : (
                   nas.yearLevel
                 )}
               </td>
               <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {selectedRowId === nas.id && toUpdate ? (
-                  <input ref={nasUnitsAllowedRef} type="text" value={nas.unitsAllowed} />
+                  <input
+                    ref={nasUnitsAllowedRef}
+                    type="text"
+                    value={nasUnitsAllowed ? nasUnitsAllowed : setNasUnitsAllowed(nas.unitsAllowed)}
+                    placeholder={nas.unitsAllowed}
+                    onChange={(e) => {
+                      let inputValue = e.target.value;
+                      if (!inputValue) {
+                        inputValue = nas.unitsAllowed;
+                      }
+                      setNasUnitsAllowed(inputValue);
+                    }}
+                  />
                 ) : (
                   nas.unitsAllowed
                 )}
