@@ -225,9 +225,6 @@ namespace CITNASDaily.Services.Services
 
             var updateNAS = await _nasRepository.UpdateNASAsync(nasId, nas);
 
-            var createdSY = await _schoolYearSemRepository.AddSchoolYearSemesterAsync(updateNAS.Id, nasUpdate.SYSem);
-            var sy = _mapper.Map<List<NASSchoolYearSemesterCreateDto>>(createdSY);
-
             var newUpdate = await _nasRepository.GetNASAsync(updateNAS.Id);
 
             var result = _mapper.Map<NASDto>(newUpdate);
