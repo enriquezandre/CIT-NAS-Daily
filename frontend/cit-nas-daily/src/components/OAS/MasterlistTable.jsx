@@ -8,9 +8,10 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
   const [nasData, setNasData] = useState([]);
   const [filteredNASData, setFilteredNASData] = useState([]);
   const [toUpdate, setToUpdate] = useState(false);
+  const [toSubmit, setToSubmit] = useState(false);
   const [nasId, setNasId] = useState();
   const [selectedProgram, setSelectedProgram] = useState(null);
-  const [selectedOfficeName, setSelectedOfficeName] = useState(null);
+  const [, setSelectedOfficeName] = useState(null);
   const [selectedOfficeId, setSelectedOfficeId] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [nasYearLevel, setNasYearLevel] = useState(null);
@@ -68,21 +69,17 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
   const handleClick = (e, rowId, officeName, officeId) => {
     e.preventDefault();
     setToUpdate(!toUpdate);
+    setToSubmit(false);
     setSelectedRowId(rowId);
     setSelectedOfficeName(officeName);
     setSelectedOfficeId(officeId);
-    console.log("selectedOfficeId", selectedOfficeId);
-    console.log("selectedOfficeName", selectedOfficeName);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setToUpdate(!toUpdate);
+    setToSubmit(true);
     setSelectedRowId(null);
-    console.log("NAS ID", nasId);
-    console.log("nasYearLvl", nasYearLevel);
-    console.log("nasUnitsAllowed", nasUnitsAllowed);
-    console.log("selectedprogram submit", selectedProgram);
 
     const data = {
       officeId: selectedOfficeId,
@@ -90,14 +87,13 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
       course: selectedProgram,
       unitsAllowed: nasUnitsAllowed,
     };
-    console.log("DATA SUBMIT", data);
 
     try {
       const response = await api.put(`/NAS/${nasId}`, data);
       if (response.status === 200) {
+        setToSubmit(false);
         alert("NAS updated successfully!");
       }
-      console.log("selectedoffice submit", selectedOfficeId);
     } catch (error) {
       console.log(error);
       if (error.response.status === 400) {
@@ -113,6 +109,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
           `/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`
         );
         const nasData = nasresponse.data;
+        console.log("nasData", nasData);
 
         const nasDataWithTimekeeping = await Promise.all(
           nasData.map(async (nas) => {
@@ -141,7 +138,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
     };
 
     fetchNas();
-  }, [selectedSY, selectedSem, api, submitted, nasId]);
+  }, [selectedSY, selectedSem, api, submitted, nasId, toSubmit]);
 
   useEffect(() => {
     const filteredData = nasData.filter(
@@ -151,7 +148,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
         nas.middleName.toLowerCase().includes(searchInput.toLowerCase())
     );
     setFilteredNASData(filteredData);
-  }, [searchInput, nasData]);
+  }, [searchInput, nasData, toSubmit]);
 
   const sortedNASData = useMemo(
     () => [...filteredNASData].sort((a, b) => a.lastName.localeCompare(b.lastName)),
@@ -225,15 +222,19 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                   <input
                     ref={nasYearLvlRef}
                     type="text"
-                    value={nasYearLevel ? nasYearLevel : setNasYearLevel(nas.yearLevel)}
+                    value={
+                      toSubmit
+                        ? nasYearLevel != null
+                          ? nasYearLevel
+                          : setNasYearLevel(nas.yearLevel)
+                        : nasYearLevel != null
+                        ? nasYearLevel
+                        : setNasYearLevel(nas.yearLevel)
+                    }
                     placeholder={nas.yearLevel}
                     onChange={(e) => {
                       let inputValue = e.target.value;
-                      if (!inputValue) {
-                        inputValue = nas.yearLevel;
-                      }
                       setNasYearLevel(inputValue);
-                      console.log("nasYearLevelyawaaaa!!", nasYearLevel);
                     }}
                   />
                 ) : (
@@ -245,13 +246,18 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                   <input
                     ref={nasUnitsAllowedRef}
                     type="text"
-                    value={nasUnitsAllowed ? nasUnitsAllowed : setNasUnitsAllowed(nas.unitsAllowed)}
+                    value={
+                      toSubmit
+                        ? nasUnitsAllowed != null
+                          ? nasUnitsAllowed
+                          : setNasUnitsAllowed(nas.unitsAllowed)
+                        : nasUnitsAllowed != null
+                        ? nasUnitsAllowed
+                        : setNasUnitsAllowed(nas.unitsAllowed)
+                    }
                     placeholder={nas.unitsAllowed}
                     onChange={(e) => {
                       let inputValue = e.target.value;
-                      if (!inputValue) {
-                        inputValue = nas.unitsAllowed;
-                      }
                       setNasUnitsAllowed(inputValue);
                     }}
                   />
