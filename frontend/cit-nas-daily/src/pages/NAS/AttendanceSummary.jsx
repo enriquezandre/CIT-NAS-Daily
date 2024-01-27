@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { Dropdown } from "../../components/Dropdown.jsx";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils.js";
 import { ValidationModal } from "../../components/NAS/ValidationModal.jsx";
+import { Snackbar } from "../../components/Snackbar.jsx";
 import axios from "axios";
 
 const currentYear = calculateSchoolYear();
@@ -28,20 +29,27 @@ export const AttendanceSummary = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedAbsentDate, setSelectedAbsentDate] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
   const { nasId } = useParams();
 
   // console.log(currentYear, currentSem);
 
-  const api = useMemo(
-    () =>
-      axios.create({
-        baseURL: "https://localhost:7001/api",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }),
-    []
-  );
+  const getAxiosInstance = () => {
+    return axios.create({
+      baseURL: "https://localhost:7001/api",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  const api = useMemo(() => getAxiosInstance(), []);
+
+  const handleSnackbarClose = () => {
+    setSnackbarVisible(false);
+  };
 
   const getSemesterValue = useMemo(() => {
     return (sem) => {
@@ -159,20 +167,23 @@ export const AttendanceSummary = () => {
         nasId: nasId,
         absenceDate: selectedAbsentDate,
         nasLetter: base64String,
-        semester: getSemesterValue(selectedSem),
+        semester: getSemesterValue(), //selectedSem removed to view the error snackbar
         schoolYear: selectedSY,
       };
 
       const response = await api.post("/Validation", requestData);
 
       if (response.status === 200 || response.status === 201) {
-        console.log("Submitted successfully");
         setIsSubmitted(true);
+        setSnackbarVisible(true); // Show the success snackbar
+        setSnackbarMsg("Submitted successfully");
       } else {
-        console.error("Submission failed");
+        setSnackbarVisible(true); // Show the error snackbar
+        setSnackbarMsg("Submission failed");
       }
     } catch (error) {
-      console.error("Error during submission:", error);
+      setSnackbarVisible(true);
+      setSnackbarMsg("An error occurred");
     }
   };
 
@@ -287,6 +298,12 @@ export const AttendanceSummary = () => {
         </div>
       </div>
       <ValidationModal isOpen={isOpen} closeModal={closeModal} handleSubmit={handleSubmit} />
+      <Snackbar
+        message={snackbarMsg}
+        onClose={handleSnackbarClose}
+        isSnackbarVisible={isSnackbarVisible}
+        isSubmitted={isSubmitted}
+      />
     </div>
   );
 };

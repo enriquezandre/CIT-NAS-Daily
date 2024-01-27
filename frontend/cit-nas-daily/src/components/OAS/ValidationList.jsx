@@ -4,12 +4,16 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { ValidationStatusModal } from "./ValidationStatusModal"; // Import the modal
 import placeholder from "../../placeholders/user.png";
+import { Snackbar } from "../Snackbar";
 
 export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
   const [validation, setValidation] = useState([]);
   const [isStatusModalOpen, setStatusModalOpen] = useState(false);
   const [selectedValidationItem, setSelectedValidationItem] = useState(null);
   const [nasImages, setNasImages] = useState({}); //added for image
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
 
   const api = useMemo(
     () =>
@@ -167,13 +171,16 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
         updateData
       );
       if (updateResponse.status === 200 || updateResponse.status === 201) {
-        console.log(excusedCount, unexcusedCount, forMakeUpDutyCount);
-        console.log("NAS timekeeping updated successfully");
+        setIsSubmitted(true);
+        setSnackbarVisible(true); // Show the success snackbar
+        setSnackbarMsg("Status updated successfully");
       } else {
-        console.error("NAS timekeeping update failed");
+        setSnackbarVisible(true); // Show the error snackbar
+        setSnackbarMsg("Status update failed");
       }
     } catch (error) {
-      console.error(error);
+      setSnackbarVisible(true); // Show the error snackbar
+      setSnackbarMsg("An error occurred.");
     }
   };
 
@@ -214,6 +221,10 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
 
     fetchNasImages();
   }, [validation]);
+
+  const handleSnackbarClose = () => {
+    setSnackbarVisible(false);
+  };
 
   return (
     <>
@@ -266,6 +277,12 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
         closeModal={closeStatusModal}
         handleSubmit={handleSubmit}
         selectedItem={selectedValidationItem}
+      />
+      <Snackbar
+        message={snackbarMsg}
+        onClose={handleSnackbarClose}
+        isSnackbarVisible={isSnackbarVisible}
+        isSubmitted={isSubmitted}
       />
     </>
   );

@@ -21,8 +21,7 @@ export const Snackbar = ({ message, onClose, isSnackbarVisible, isSubmitted }) =
       style={{
         position: "fixed",
         bottom: "16px",
-        left: "50%",
-        transform: "translateX(-50%)",
+        left: "16px", // Adjust the left position
         backgroundColor: isSubmitted ? "#4CAF50" : "#D32F2F", // Green for success, Red for error
         color: "#fff",
         padding: "8px 16px",
