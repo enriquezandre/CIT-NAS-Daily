@@ -93,27 +93,5 @@ namespace CITNASDaily.Repositories.Repositories
             }
             return 0;
         }
-
-        public async Task<bool> ChangePasswordAsync(int superiorId, string newPassword)
-        {
-            var superior = await _context.Superiors.FindAsync(superiorId);
-
-            if (superior == null)
-            {
-                return false;
-            }
-
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == superior.Username);
-
-            if (user == null)
-            {
-                return false;
-            }
-
-            user.PasswordHash = newPassword;
-
-            await _context.SaveChangesAsync();
-            return true;
-        }
     }
 }

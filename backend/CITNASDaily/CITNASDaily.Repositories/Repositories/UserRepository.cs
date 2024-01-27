@@ -46,5 +46,19 @@ namespace CITNASDaily.Repositories.Repositories
         {
             return await _context.Users.ToListAsync();
         }
+
+        public async Task<bool> ChangePasswordAsync(string username, string newPassword)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == username);
+            if (user == null)
+            {
+                return false;
+            }
+
+            user.PasswordHash = newPassword;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

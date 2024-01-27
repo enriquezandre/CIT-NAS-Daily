@@ -19,6 +19,5 @@ namespace CITNASDaily.Repositories.Contracts
         Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file);
         Task<NAS?> UpdateNASAsync(int nasId, NAS nas);
         Task<IEnumerable<NAS>?> UpdateMultipleNASAsync(int[] nasIds, Semester semester, int year);
-        Task<bool> ChangePasswordAsync(int nasId, string newPassword);
     }
 }
