@@ -1,8 +1,8 @@
 "use client";
 import { Card, Avatar } from "flowbite-react";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Dropdown } from "../../components/Dropdown.jsx";
 import axios from "axios";
 
 export const SuperiorList = () => {
@@ -11,7 +11,9 @@ export const SuperiorList = () => {
   const [office, setOffice] = useState({});
   const [selectedSY, setSelectedSY] = useState(2324);
   const [selectedSem, setSelectedSem] = useState("First");
-  const sy_options = ["2324", "2223", "2122", "2021"];
+  // eslint-disable-next-line no-unused-vars
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
   const sem_options = ["First", "Second", "Summer"];
   const navigate = useNavigate();
 
@@ -37,6 +39,30 @@ export const SuperiorList = () => {
         return "Invalid semester";
     }
   }
+
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, []);
 
   useEffect(() => {
     const fetchNasList = async () => {
@@ -73,37 +99,20 @@ export const SuperiorList = () => {
     <div>
       <div className="flex flex-row justify-start items-center gap-10 ml-1 py-2">
         <div className="flex flex-row gap-2 items-center">
-          <div className="mr-2 text-lg">SY:</div>
-          <select
-            id="sy"
-            name="sy"
-            value={selectedSY}
-            onChange={handleSelectSY}
-            className=" w-full text-lg border rounded-md"
-          >
-            {Array.isArray(sy_options) &&
-              sy_options.map((sy, index) => (
-                <option key={index} value={sy}>
-                  {sy}
-                </option>
-              ))}
-          </select>
+          <Dropdown
+            label="SY"
+            options={uniqueYears}
+            selectedValue={selectedSY}
+            onChange={(e) => handleSelectSY(e)}
+          />
         </div>
         <div className="flex flex-row gap-2 items-center">
-          <div className="mr-2 text-lg">SEMESTER:</div>
-          <select
-            id="sem"
-            name="sem"
-            value={selectedSem}
-            onChange={handleSelectSem}
-            className=" w-full text-lg border rounded-md"
-          >
-            {sem_options.map((sem, index) => (
-              <option key={index} value={sem}>
-                {sem}
-              </option>
-            ))}
-          </select>
+          <Dropdown
+            label="SEMESTER"
+            options={sem_options}
+            selectedValue={selectedSem}
+            onChange={(e) => handleSelectSem(e)}
+          />
         </div>
       </div>
       <div className="flex justify-center items-center pt-2">

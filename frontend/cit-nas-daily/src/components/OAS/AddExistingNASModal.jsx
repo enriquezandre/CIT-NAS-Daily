@@ -60,6 +60,7 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
     fetchSchoolYearSemesterOptions();
   }, [api]);
 
+  //fetches list of NAS to be add on that sy and sem
   useEffect(() => {
     const fetchNas = async () => {
       try {
@@ -78,10 +79,12 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
     };
 
     fetchNas();
-  }, [selectedSY, selectedSem, api, getSemesterValue, onSubmitted]);
+  }, [toaddSY, toaddSem, selectedSY, selectedSem, api, getSemesterValue, onSubmitted]);
 
+  //fetches list of current NAS in that sy and sem
   useEffect(() => {
     const fetchCurrentNAS = async () => {
+      setCurrentNasList([]);
       try {
         const currentnasresponse = await api.get(
           `/NAS/${toaddSY}/${getSemesterValue(toaddSem)}/noimg`
@@ -139,6 +142,10 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
       }
     });
   };
+
+  console.log("CURRENT NAS", currentNasList);
+  console.log("NAS DATA", nasData);
+  console.log("toaddsem", toaddSem);
 
   return (
     <div>

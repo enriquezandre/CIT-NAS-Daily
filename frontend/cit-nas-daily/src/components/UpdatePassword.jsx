@@ -1,25 +1,26 @@
-import { useRef } from "react";
-// import axios from "axios";
+import { useRef, useMemo } from "react";
+import axios from "axios";
 
 export const UpdatePassword = () => {
   const currentpassRef = useRef();
   const newpassRef = useRef();
   const retypepassRef = useRef();
 
-  // const api = useMemo(
-  //   () =>
-  //     axios.create({
-  //       baseURL: "https://localhost:7001/api",
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //       },
-  //     }),
-  //   []
-  // );
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const currentPass = currentpassRef.current.value;
     const newPass = newpassRef.current.value;
     const retypePass = retypepassRef.current.value;
 
@@ -28,25 +29,29 @@ export const UpdatePassword = () => {
       return;
     }
 
-    // try {
-    //   // Get the user's details
-    //   const userResponse = await api.get(`/Users/currentUser`);
-    //   const userRole = userResponse.data.role;
+    try {
+      const getUsername = await api.get("/Users/currentUser");
+      const username = getUsername.data.username;
+      const data = {
+        username: username,
+        currentPassword: currentPass,
+        newPassword: newPass,
+        retypeNewPassword: retypePass,
+      };
+      const response = await api.put("/Users/ChangePassword", data);
 
-    //   // Navigate to the respective route based on the user's role
-    //   switch (userRole) {
-    //     case "NAS":
-    //       break;
-    //     case "OAS":
-    //       break;
-    //     case "Superior":
-    //       break;
-    //     default:
-    //       alert("Unknown role");
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
+      if (response.status === 200) {
+        alert("Password updated successfully!");
+        currentpassRef.current.value = "";
+        newpassRef.current.value = "";
+        retypepassRef.current.value = "";
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response.status === 400) {
+        alert("Failed to change password. Please ensure that the password is correct.");
+      }
+    }
   };
 
   return (

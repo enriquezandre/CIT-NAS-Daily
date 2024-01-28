@@ -16,12 +16,12 @@ export const OASTabs = () => {
 
   return (
     <div className="bg-gray-2000 w-full">
-      <div className="mx-auto ml-10 mr-10">
-        <div className="flex justify-center w-full">
+      <div className="mx-auto ml-5 mr-5 md:ml-5 md:mr-5">
+        <div className="md:flex justify-center w-full grid grid-cols-2 gap-1">
           <button
             className={`${
               activeTab === 1 ? "font-bold bg-primary text-white" : "bg-secondary"
-            } px-4 py-2 rounded-tl-lg w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
+            } px-4 py-2 rounded-tl-lg w-full rounded-lg m-1 text-xs sm:text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(1)}
           >
             Offices
@@ -29,7 +29,7 @@ export const OASTabs = () => {
           <button
             className={`${
               activeTab === 2 ? "font-bold bg-primary text-white" : "bg-secondary"
-            } px-4 py-2 w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
+            } px-4 py-2 w-full rounded-lg m-1 text-xs sm:text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(2)}
           >
             Attendance
@@ -37,7 +37,7 @@ export const OASTabs = () => {
           <button
             className={`${
               activeTab === 3 ? "font-bold bg-primary text-white" : "bg-secondary"
-            } px-4 py-2 w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
+            } px-4 py-2 w-full rounded-lg m-1 text-xs sm:text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(3)}
           >
             Evaluation
@@ -45,7 +45,7 @@ export const OASTabs = () => {
           <button
             className={`${
               activeTab === 4 ? "font-bold bg-primary text-white" : "bg-secondary"
-            } px-4 py-2 w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
+            } px-4 py-2 w-full rounded-lg m-1 text-xs sm:text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(4)}
           >
             NAS Status
@@ -53,7 +53,7 @@ export const OASTabs = () => {
           <button
             className={`${
               activeTab === 5 ? "font-bold bg-primary text-white" : "bg-secondary"
-            } px-4 py-2 rounded-tr-lg w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
+            } px-4 py-2 rounded-tr-lg w-full rounded-lg m-1 text-xs sm:text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(5)}
           >
             Validation
@@ -61,7 +61,7 @@ export const OASTabs = () => {
           <button
             className={`${
               activeTab === 6 ? "font-bold bg-primary text-white" : "bg-secondary"
-            } px-4 py-2 rounded-tr-lg w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
+            } px-4 py-2 rounded-tr-lg w-full rounded-lg m-1 text-xs sm:text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(6)}
           >
             NAS Masterlist
@@ -69,7 +69,7 @@ export const OASTabs = () => {
           <button
             className={`${
               activeTab === 7 ? "font-bold bg-primary text-white" : "bg-secondary"
-            } px-4 py-2 rounded-tr-lg w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
+            } px-4 py-2 rounded-tr-lg w-full rounded-lg m-1 text-xs sm:text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(7)}
           >
             Manage Data

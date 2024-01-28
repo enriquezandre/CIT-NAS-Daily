@@ -84,7 +84,7 @@ export const OASOffices = () => {
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
             <div className="flex items-center w-auto">
@@ -108,7 +108,7 @@ export const OASOffices = () => {
                       {" "}
                       <input
                         type="search"
-                        className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
+                        className="block p-2.5 w-full z-20 text-xs md:text-sm text-gray-900 bg-gray-50 rounded border"
                         placeholder="Search Office..."
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
@@ -180,10 +180,12 @@ export const OASOffices = () => {
                 {filteredOffices.map((office, index) => (
                   <button
                     key={index}
-                    className="bg-white p-4 rounded-lg shadow-md text-left"
+                    className="bg-white p-2 sm:p-4 rounded-lg shadow-md text-left overflow-hidden whitespace-nowrap"
                     onClick={() => handleOfficeClick(office)}
                   >
-                    <h2 className="text-xl font-semibold">{office.officeName}</h2>
+                    <h2 className="text-xs sm:text-base md:text-xl font-semibold truncate">
+                      {office.officeName}
+                    </h2>
                   </button>
                 ))}
               </div>
