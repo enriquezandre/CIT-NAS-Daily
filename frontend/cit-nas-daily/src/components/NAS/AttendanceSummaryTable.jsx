@@ -275,8 +275,10 @@ export const AttendanceSummaryTable = ({
     <Table hoverable>
       <Table.Head className="text-center">
         <Table.HeadCell>DATE</Table.HeadCell>
-        <Table.HeadCell>TIME-IN</Table.HeadCell>
-        <Table.HeadCell>TIME-OUT</Table.HeadCell>
+        <Table.HeadCell>TIME-IN1</Table.HeadCell>
+        <Table.HeadCell>TIME-OUT1</Table.HeadCell>
+        <Table.HeadCell>TIME-IN2</Table.HeadCell>
+        <Table.HeadCell>TIME-OUT2</Table.HeadCell>
         <Table.HeadCell>OVERTIME-IN</Table.HeadCell>
         <Table.HeadCell>OVERTIME-OUT</Table.HeadCell>
         <Table.HeadCell>APPEAL</Table.HeadCell>
@@ -331,6 +333,8 @@ export const AttendanceSummaryTable = ({
                     <p className="font-bold text-gray">NO RECORD</p>
                   )}
                 </Table.Cell>
+                <Table.Cell>Time IN2</Table.Cell>
+                <Table.Cell>Time OUT2</Table.Cell>
                 <Table.Cell>{formatTime(summary.overtimeIn)}</Table.Cell>
                 <Table.Cell>{formatTime(summary.overtimeOut)}</Table.Cell>
                 <Table.Cell>
