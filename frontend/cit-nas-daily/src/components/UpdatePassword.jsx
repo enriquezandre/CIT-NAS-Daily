@@ -55,12 +55,11 @@ export const UpdatePassword = () => {
   };
 
   return (
-    <div>
-      <section>
-        <div className="max-w-full mb-10">
-          <h2 className="mb-4 text-xl font-bold text-black">Update Password</h2>
-          <form action="#">
-            <div className="grid grid-cols-3 gap-6">
+    <>
+      <div className="w-full mb-10">
+        <h2 className="mb-4 text-xl font-bold text-black">Update Password</h2>
+        <form action="#">
+            <div className="flex flex-col gap-6 md:flex-row">
               <div className="w-full">
                 <label
                   htmlFor="currentpass"
@@ -118,8 +117,7 @@ export const UpdatePassword = () => {
               Update
             </button>
           </form>
-        </div>
-      </section>
-    </div>
+      </div>
+    </>
   );
 };
