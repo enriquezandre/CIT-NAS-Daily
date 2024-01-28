@@ -198,10 +198,14 @@ export const OASAttendance = () => {
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
-            <div className={`flex items-center w-auto ${currentIndex === 0 ? "ml-9" : ""}`}>
+          <ul className="flex-wrap items-center text-sm md:text-base lg:text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-rows-2 md:grid-cols-2">
+            <div
+              className={`flex items-center w-auto ${
+                currentIndex === 0 ? "ml-5 mb-3 md:mb-0" : ""
+              }`}
+            >
               <div>
                 {currentIndex != 0 ? (
                   <Button
@@ -216,8 +220,8 @@ export const OASAttendance = () => {
                   ""
                 )}
               </div>
-              <div className="flex flex-row justify-start items-center gap-10">
-                <div className="flex flex-row gap-2 items-center">
+              <div className="flex flex-row justify-start items-center gap-3 lg:gap-10">
+                <div>
                   <Dropdown
                     label="SY"
                     options={uniqueYears}
@@ -225,7 +229,7 @@ export const OASAttendance = () => {
                     onChange={(e) => handleSelectSY(e)}
                   />
                 </div>
-                <div className="flex flex-row gap-2 items-center">
+                <div>
                   <Dropdown
                     label="Semester"
                     options={sem_options}
@@ -233,7 +237,7 @@ export const OASAttendance = () => {
                     onChange={(e) => handleSelectSem(e)}
                   />
                 </div>
-                <div className="flex flex-row gap-2 items-center">
+                <div>
                   <Dropdown
                     label="Month"
                     options={monthOptions}
@@ -248,7 +252,7 @@ export const OASAttendance = () => {
                 <div className="relative w-auto">
                   <input
                     type="search"
-                    className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
+                    className="block p-2.5 w-full z-20 text-xs md:text-base lg:text-lg text-gray-900 rounded border"
                     placeholder="Search NAS..."
                     value={searchInput}
                     onChange={handleSearchChange}
@@ -256,7 +260,7 @@ export const OASAttendance = () => {
                   />
                   <button
                     type="submit"
-                    className="absolute top-0 right-0 p-2.5 text-sm font-medium h-full"
+                    className="absolute top-0 right-0 p-2.5 text-xs md:text-base lg:text-lg font-medium h-full"
                   >
                     <svg
                       className="w-4 h-4"
@@ -290,30 +294,38 @@ export const OASAttendance = () => {
               )}
             </li>
           </ul>
-          <div className="px-9 py-4">
-            <div className="flex gap-10 mb-7 text-lg">
+          <div className="px-5 md:px-9 py-4">
+            <div className="flex gap-10 mb-7 text-xs md:text-base lg:text-lg overflow-x-auto">
               <div className="font-bold" style={{ textTransform: "uppercase" }}>
                 NAS NAME: {lastName}, {firstName} {middleName}
               </div>
               <div>
-                <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
+                <p className="font-bold" style={{ textTransform: "uppercase" }}>
                   DEPT/OFFICE: {office}
                 </p>
               </div>
             </div>
-            <div className="flex flex-col justify-center items-center gap-4">
-              <p className="text-xl font-bold text-primary">MONTHLY SUMMARY OF ABSENCES/LATE</p>
-              <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
-              <p className="text-xl font-bold text-primary">WEEKLY ATTENDANCE</p>
-              <WeeklyAttendance
-                nasId={nasId}
-                firstName={firstName}
-                lastName={lastName}
-                middleName={middleName}
-                selectedMonth={selectedMonthIndex}
-                selectedSem={selectedSem}
-                selectedSY={selectedSY}
-              />
+            <div className="flex flex-col justify-center gap-2 md:gap-4">
+              <p className="text-xs md:text-base lg:text-xl text-center font-bold text-primary overflow-x-auto">
+                MONTHLY SUMMARY OF ABSENCES/LATE
+              </p>
+              <div className="overflow-x-auto">
+                <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
+              </div>
+              <p className="text-xs md:text-base lg:text-xl text-center font-bold text-primary overflow-x-auto">
+                WEEKLY ATTENDANCE
+              </p>
+              <div className="overflow-x-auto">
+                <WeeklyAttendance
+                  nasId={nasId}
+                  firstName={firstName}
+                  lastName={lastName}
+                  middleName={middleName}
+                  selectedMonth={selectedMonthIndex}
+                  selectedSem={selectedSem}
+                  selectedSY={selectedSY}
+                />
+              </div>
             </div>
           </div>
         </div>

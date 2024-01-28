@@ -53,10 +53,10 @@ export const SuperiorEval = ({ nasId, selectedSem, selectedSY }) => {
       <div className="flex flex-col ">
         <div className="flex h-full flex-col justify-center">
           <div className="flex flex-col">
-            <p className="text-center text-xl font-bold mb-8 text-primary">
+            <p className="text-center text-sm md:text-lg lg:text-xl font-bold mb-8 text-primary">
               SUPERIOR EVALUATION SUMMARY
             </p>
-            <table className="text-xl justify-center w-4/6 items-center">
+            <table className="text-xs md:text-base lg:text-lg justify-center w-4/6 items-center">
               <tbody>
                 <tr>
                   <td className="w-1/2 py-2">ATTENDANCE AND PUNCTUALITY:</td>

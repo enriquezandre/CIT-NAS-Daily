@@ -1,10 +1,23 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import ProgramDropdown from "../ProgramDropdown";
+import OfficeDropdown from "../OfficeDropdown";
 
 export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitted }) => {
   const [nasData, setNasData] = useState([]);
   const [filteredNASData, setFilteredNASData] = useState([]);
+  const [toUpdate, setToUpdate] = useState(false);
+  const [toSubmit, setToSubmit] = useState(false);
+  const [nasId, setNasId] = useState();
+  const [selectedProgram, setSelectedProgram] = useState(null);
+  const [, setSelectedOfficeName] = useState(null);
+  const [selectedOfficeId, setSelectedOfficeId] = useState(null);
+  const [selectedRowId, setSelectedRowId] = useState(null);
+  const [nasYearLevel, setNasYearLevel] = useState(null);
+  const [nasUnitsAllowed, setNasUnitsAllowed] = useState(null);
+  const nasYearLvlRef = useRef();
+  const nasUnitsAllowedRef = useRef();
 
   const api = useMemo(
     () =>
@@ -53,6 +66,42 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
     }
   }
 
+  const handleClick = (e, rowId, officeName, officeId) => {
+    e.preventDefault();
+    setToUpdate(!toUpdate);
+    setToSubmit(false);
+    setSelectedRowId(rowId);
+    setSelectedOfficeName(officeName);
+    setSelectedOfficeId(officeId);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setToUpdate(!toUpdate);
+    setToSubmit(true);
+    setSelectedRowId(null);
+
+    const data = {
+      officeId: selectedOfficeId,
+      yearLevel: nasYearLevel,
+      course: selectedProgram,
+      unitsAllowed: nasUnitsAllowed,
+    };
+
+    try {
+      const response = await api.put(`/NAS/${nasId}`, data);
+      if (response.status === 200) {
+        setToSubmit(false);
+        alert("NAS updated successfully!");
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response.status === 400) {
+        alert("Failed to update NAS.");
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchNas = async () => {
       try {
@@ -60,10 +109,11 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
           `/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`
         );
         const nasData = nasresponse.data;
+        console.log("nasData", nasData);
 
         const nasDataWithTimekeeping = await Promise.all(
           nasData.map(async (nas) => {
-            const nasId = nas.id;
+            setNasId(nas.id);
             try {
               const timekeepingresponse = await api.get(
                 `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
@@ -88,7 +138,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
     };
 
     fetchNas();
-  }, [selectedSY, selectedSem, api, submitted]);
+  }, [selectedSY, selectedSem, api, submitted, nasId, toSubmit]);
 
   useEffect(() => {
     const filteredData = nasData.filter(
@@ -98,7 +148,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
         nas.middleName.toLowerCase().includes(searchInput.toLowerCase())
     );
     setFilteredNASData(filteredData);
-  }, [searchInput, nasData]);
+  }, [searchInput, nasData, toSubmit]);
 
   const sortedNASData = useMemo(
     () => [...filteredNASData].sort((a, b) => a.lastName.localeCompare(b.lastName)),
@@ -158,13 +208,62 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                 className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "uppercase" }}
               >
-                {nas.course}
+                {selectedRowId === nas.id && toUpdate ? (
+                  <ProgramDropdown
+                    onChange={(value) => setSelectedProgram(value)}
+                    value={selectedProgram ? selectedProgram : setSelectedProgram(nas.course)}
+                  />
+                ) : (
+                  nas.course
+                )}
               </td>
               <td className="border-2 border-black text-center px-1 py-2 text-xs">
-                {nas.yearLevel}
+                {selectedRowId === nas.id && toUpdate ? (
+                  <input
+                    ref={nasYearLvlRef}
+                    type="text"
+                    value={
+                      toSubmit
+                        ? nasYearLevel != null
+                          ? nasYearLevel
+                          : setNasYearLevel(nas.yearLevel)
+                        : nasYearLevel != null
+                        ? nasYearLevel
+                        : setNasYearLevel(nas.yearLevel)
+                    }
+                    placeholder={nas.yearLevel}
+                    onChange={(e) => {
+                      let inputValue = e.target.value;
+                      setNasYearLevel(inputValue);
+                    }}
+                  />
+                ) : (
+                  nas.yearLevel
+                )}
               </td>
               <td className="border-2 border-black text-center px-1 py-2 text-xs">
-                {nas.unitsAllowed}
+                {selectedRowId === nas.id && toUpdate ? (
+                  <input
+                    ref={nasUnitsAllowedRef}
+                    type="text"
+                    value={
+                      toSubmit
+                        ? nasUnitsAllowed != null
+                          ? nasUnitsAllowed
+                          : setNasUnitsAllowed(nas.unitsAllowed)
+                        : nasUnitsAllowed != null
+                        ? nasUnitsAllowed
+                        : setNasUnitsAllowed(nas.unitsAllowed)
+                    }
+                    placeholder={nas.unitsAllowed}
+                    onChange={(e) => {
+                      let inputValue = e.target.value;
+                      setNasUnitsAllowed(inputValue);
+                    }}
+                  />
+                ) : (
+                  nas.unitsAllowed
+                )}
               </td>
               <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {new Date(nas.dateStarted).toLocaleDateString()}
@@ -173,7 +272,14 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                 className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "uppercase" }}
               >
-                {nas.office ? nas.officeName : "N/A"}{" "}
+                {selectedRowId === nas.id && toUpdate ? (
+                  <OfficeDropdown
+                    onChange={(value) => setSelectedOfficeId(value)}
+                    value={selectedOfficeId ? selectedOfficeId : nas.officeName}
+                  />
+                ) : (
+                  nas.officeName
+                )}
               </td>
               <td className="border-2 border-black text-center px-1 py-2 text-xs">
                 {nas.timekeeping ? nas.timekeeping.excused : "NR"}
@@ -197,20 +303,39 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
               <td className="border-2 border-black text-center px-1 py-2 text-xs"> </td>
               <td className="border-2 border-black text-xs">
                 <div className="flex justify-center items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6 cursor-pointer hover:transition-colors hover:text-primary"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                    />
-                  </svg>
+                  {selectedRowId === nas.id && toUpdate ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6 cursor-pointer hover:transition-colors hover:text-primary"
+                      onClick={(e) => handleSubmit(e, nas.id)}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m4.5 12.75 6 6 9-13.5"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6 cursor-pointer hover:transition-colors hover:text-primary"
+                      onClick={(e) => handleClick(e, nas.id, nas.officeName, nas.officeId)}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                      />
+                    </svg>
+                  )}
                 </div>
               </td>
             </tr>

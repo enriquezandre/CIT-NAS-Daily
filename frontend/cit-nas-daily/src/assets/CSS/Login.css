@@ -12,7 +12,7 @@
   font-family: "Barlow", sans-serif;
   display: flex;
   justify-content: space-between;
-  width: 60%;
+  width: 70%;
   height: 80%;
   border-width: 0.5px;
   border-radius: 10px;
@@ -33,9 +33,6 @@
 
 .text-container {
   width: 40%;
-}
-
-.text-container {
   font-family: "Barlow", sans-serif;
   background-color: #8a353c;
   border-radius: 0px 10px 10px 0px;
@@ -51,11 +48,10 @@
 .text-login {
   text-align: center;
   font-weight: 700;
-  font-size: x-large;
+  font-size: 4vh;
   border-bottom: 2px solid #e9c434;
   color: #e9c434;
   width: 60%;
-  margin-bottom: 10%;
 }
 
 .input-container {
@@ -94,4 +90,98 @@
 .button-submit:hover {
   background-color: #d7b62e;
   cursor: pointer;
+}
+
+@media screen and (max-width: 795px) {
+  .main-container {
+    width: 80%;
+  }
+
+  .login-image-container {
+    width: 60%;
+  }
+
+  .text-container {
+    width: 40%;
+  }
+
+  .text-login {
+    font-size: 3vh;
+  }
+}
+
+@media screen and (max-width: 660px) {
+  .main-container {
+    width: 85%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .center-container {
+    display: flex;
+    justify-content: center;
+    align-items: initial;
+    height: 100%;
+  }
+  .text-login {
+    font-size: 3vh;
+  }
+  .login-image-container {
+    display: none;
+  }
+  .main-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+    margin-bottom: 5rem;
+    width: 70%;
+    height: 20rem;
+  }
+
+  .text-container {
+    width: 80%;
+    border-radius: 10px;
+  }
+
+  .input-label {
+    font-size: 2vh;
+    margin-bottom: 2px;
+  }
+
+  .text-input {
+    margin-bottom: 5px;
+    font-size: 2vh;
+    border-radius: 3px;
+  }
+
+  .button-submit {
+    font-size: 2vh;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .text-login {
+    font-size: 2vh;
+  }
+  .login-image-container {
+    display: none;
+  }
+
+  .main-container {
+    margin-top: 2rem;
+    width: 65%;
+    height: 16rem;
+  }
+
+  .input-label {
+    font-size: 1.5vh;
+  }
+
+  .text-input {
+    font-size: 1.5vh;
+  }
+
+  .button-submit {
+    font-size: 1.5vh;
+  }
 }

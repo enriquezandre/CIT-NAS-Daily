@@ -239,14 +239,14 @@ export const WeeklyAttendance = ({
   }, [nasId, formatDate, api]);
 
   return (
-    <table className="w-4/5 mx-auto mb-8">
+    <table className="w-auto table-auto mx-auto mb-8">
       <thead>
         <tr>
-          <th className="border px-4 py-2 w-1/5">DATE</th>
-          <th className="border px-4 py-2 w-1/5">TIME-IN</th>
-          <th className="border px-4 py-2 w-1/5">TIMEOUT</th>
-          <th className="border px-4 py-2 w-1/5">OVERTIME IN</th>
-          <th className="border px-4 py-2 w-1/5">OVERTIME OUT</th>
+          <th className="border px-4 py-2 w-1/5 text-xs md:text-base lg:text-lg">DATE</th>
+          <th className="border px-4 py-2 w-1/5 text-xs md:text-base lg:text-lg">TIME-IN</th>
+          <th className="border px-4 py-2 w-1/5 text-xs md:text-base lg:text-lg">TIMEOUT</th>
+          <th className="border px-4 py-2 w-1/5 text-xs md:text-base lg:text-lg">OVERTIME IN</th>
+          <th className="border px-4 py-2 w-1/5 text-xs md:text-base lg:text-lg">OVERTIME OUT</th>
         </tr>
       </thead>
       <tbody>
@@ -258,15 +258,17 @@ export const WeeklyAttendance = ({
             );
             return (
               <tr key={summary.date}>
-                <td className="border px-4 py-8 w-1/5 text-center">{summary.date}</td>
-                <td className="border px-4 py-8 w-1/5 text-center">
+                <td className="border px-4 py-8 w-1/5 text-center text-xs md:text-base lg:text-lg">
+                  {summary.date}
+                </td>
+                <td className="border px-4 py-8 w-1/5 text-center text-xs md:text-base lg:text-lg">
                   {summary.timeIn === "FTP IN"
                     ? "FTP IN"
                     : summary.timeIn !== null
                     ? formatTime(summary.timeIn)
                     : "-"}
                 </td>
-                <td className="border px-4 py-8 w-1/5 text-center">
+                <td className="border px-4 py-8 w-1/5 text-center text-xs md:text-base lg:text-lg">
                   {summary.timeOut === "FTP OUT" ? (
                     "FTP OUT"
                   ) : summary.timeOut !== null ? (
@@ -293,13 +295,13 @@ export const WeeklyAttendance = ({
                     )
                   ) : (
                     // If no validation entry, display "NO RECORD"
-                    <p className="font-bold text-gray">NO RECORD</p>
+                    <p className="font-bold text-gray text-xs md:text-base lg:text-lg">NO RECORD</p>
                   )}
                 </td>
-                <td className="border px-4 py-8 w-1/5 text-center">
+                <td className="border px-4 py-8 w-1/5 text-center text-xs md:text-base lg:text-lg">
                   {formatTime(summary.overtimeIn)}
                 </td>
-                <td className="border px-4 py-8 w-1/5 text-center">
+                <td className="border px-4 py-8 w-1/5 text-center text-xs md:text-base lg:text-lg">
                   {formatTime(summary.overtimeOut)}
                 </td>
               </tr>

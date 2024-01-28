@@ -123,10 +123,14 @@ export const OASEvaluation = () => {
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
-            <div className={`flex items-center w-auto ${currentIndex === 0 ? "ml-9" : ""}`}>
+          <ul className="flex-wrap items-center text-sm md:text-base lg:text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-rows-2 md:grid-cols-2">
+            <div
+              className={`flex items-center w-auto ${
+                currentIndex === 0 ? "ml-5 mb-3 md:mb-0" : ""
+              }`}
+            >
               <div>
                 {currentIndex != 0 ? (
                   <Button
@@ -141,8 +145,8 @@ export const OASEvaluation = () => {
                   ""
                 )}
               </div>
-              <div className="flex flex-row justify-start items-center gap-10">
-                <div className="flex flex-row gap-2 items-center">
+              <div className="flex flex-row justify-start items-center gap-3 lg:gap-10">
+                <div>
                   <Dropdown
                     label="SY"
                     options={uniqueYears}
@@ -150,7 +154,7 @@ export const OASEvaluation = () => {
                     onChange={(e) => handleSelectSY(e)}
                   />
                 </div>
-                <div className="flex flex-row gap-2 items-center">
+                <div>
                   <Dropdown
                     label="Semester"
                     options={sem_options}
@@ -165,7 +169,7 @@ export const OASEvaluation = () => {
                 <div className="relative w-auto">
                   <input
                     type="search"
-                    className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
+                    className="block p-2.5 w-full z-20 text-xs md:text-base lg:text-lg rounded border"
                     placeholder="Search NAS..."
                     value={searchInput}
                     onChange={handleSearchChange}
@@ -173,7 +177,7 @@ export const OASEvaluation = () => {
                   />
                   <button
                     type="submit"
-                    className="absolute top-0 right-0 p-2.5 text-sm font-medium h-full"
+                    className="absolute top-0 right-0 p-2.5 text-xs md:text-base lg:text-lg font-medium h-full"
                   >
                     <svg
                       className="w-4 h-4"
@@ -207,8 +211,8 @@ export const OASEvaluation = () => {
               )}
             </li>
           </ul>
-          <div className="px-9 py-4">
-            <div className="flex gap-10 mb-7 text-lg">
+          <div className="px-5 md:px-9 py-4">
+            <div className="flex gap-10 mb-7 text-xs md:text-base lg:text-lg overflow-x-auto">
               <div className="font-bold" style={{ textTransform: "uppercase" }}>
                 NAS NAME: {lastName}, {firstName} {middleName}
               </div>
@@ -219,7 +223,7 @@ export const OASEvaluation = () => {
               </div>
             </div>
             <hr className="my-5 border-t-2 border-gray-300" />
-            <div>
+            <div className="overflow-x-auto">
               {" "}
               <SuperiorEval
                 nasId={
