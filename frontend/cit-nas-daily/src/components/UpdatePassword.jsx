@@ -57,7 +57,7 @@ export const UpdatePassword = () => {
   return (
     <div>
       <section>
-        <div className="max-w-full mb-10">
+        <div className="max-w-full mb-10 overflow-x-auto">
           <h2 className="mb-4 text-xl font-bold text-black">Update Password</h2>
           <form action="#">
             <div className="grid md:grid-cols-3 gap-6">
