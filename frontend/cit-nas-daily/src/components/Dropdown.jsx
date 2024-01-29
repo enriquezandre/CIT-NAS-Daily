@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 export const Dropdown = ({ label, options, selectedValue, onChange }) => {
   return (
-    <div className="flex flex-col sm:flex-row gap-1 md:gap-2 items-center">
+    <div className="flex flex-row gap-1 md:gap-2 items-center">
       <div className="mr-1 lg:mr-2">{label}:</div>
       <select
         value={selectedValue}

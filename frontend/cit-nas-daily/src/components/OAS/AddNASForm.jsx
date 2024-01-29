@@ -188,7 +188,7 @@ export const AddNASForm = () => {
         <div className="max-w-full mb-10">
           <h2 className="mb-4 text-xl font-bold text-black">Add a NAS</h2>
           <form action="#">
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               <div className="w-full">
                 <label htmlFor="lastname" className="block mb-2 text-sm font-medium text-gray-900">
                   Last Name
@@ -307,7 +307,7 @@ export const AddNASForm = () => {
                 </select>
               </div>
             </div>
-            <div className="grid grid-cols-4 gap-6 mt-5">
+            <div className="grid md:grid-cols-4 gap-6 mt-5">
               <div className="w-full">
                 <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900">
                   Birthdate

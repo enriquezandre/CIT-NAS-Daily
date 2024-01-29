@@ -46,7 +46,7 @@ export const AddOfficeForm = () => {
         <div className="max-w-full mb-10">
           <h2 className="mb-4 text-xl font-bold text-black">Add an Office</h2>
           <form action="#">
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid gap-6">
               <div className="w-full">
                 <label
                   htmlFor="officename"
