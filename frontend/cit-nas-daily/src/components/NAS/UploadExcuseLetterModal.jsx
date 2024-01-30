@@ -41,10 +41,10 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
           setError("Invalid file type. Please select a PDF file.");
         }
       } else {
-        setError("No file selected");
+        setError("Please select a file.");
       }
     } catch (error) {
-      console.error("Error during file processing:", error);
+      setError("Error during file processing:", error); //snackbar
     }
   };
 
