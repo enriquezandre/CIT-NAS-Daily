@@ -25,14 +25,7 @@ export const ScheduleModal = ({ isOpen, closeModal, handleSubmit }) => {
       )}
       <Modal
         show={isOpen}
-        className="rounded-2xl"
-        style={{
-          padding: "0",
-          zIndex: 1000,
-          width: "30rem",
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
+        className="rounded-2xl p-0 z-[1000] w-full"
       >
         <Modal.Body>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

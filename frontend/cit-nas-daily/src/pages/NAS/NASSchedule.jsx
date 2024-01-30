@@ -279,8 +279,8 @@ export const NASSchedule = () => {
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
         <div className="md:m-2">
-          <div className="flex flex-row justify-center md:justify-start items-center gap-5 md:gap-10 mt-6 mb-6">
-            <div className="flex flex-row gap-2 items-center">
+          <div className="flex flex-row justify-center md:justify-start items-center gap-8 md:gap-10 mt-6 mb-6">
+            <div className="flex flex-row md:gap-2 items-center">
               <div className="mr-2">SY:</div>
               <select
                 id="sy"
@@ -291,7 +291,7 @@ export const NASSchedule = () => {
                 <option>{currentYear}</option>
               </select>
             </div>
-            <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-row md:gap-2 items-center">
               <div className="mr-2">SEMESTER:</div>
               <select
                 id="sem"
