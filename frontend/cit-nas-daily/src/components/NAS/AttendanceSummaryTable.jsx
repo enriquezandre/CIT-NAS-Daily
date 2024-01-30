@@ -134,7 +134,7 @@ export const AttendanceSummaryTable = ({
         const dtrresponse = await api.get(
           `DTR/${selectedSY}/${getSemesterValue(
             selectedSem
-          )}/${firstName}/${lastName}?middleName=${middleName}`
+          )}/${lastName}/${firstName}?middleName=${middleName}`
         );
         const dtrdata = dtrresponse.data.dailyTimeRecords;
 
@@ -150,14 +150,13 @@ export const AttendanceSummaryTable = ({
           const date = curr.date.split(" ")[0];
           if (!acc[date]) {
             acc[date] = {
-              timeIn: curr.timeIn,
-              timeOut: curr.timeOut,
+              punch1: curr.punch1,
+              punch2: curr.punch2,
+              punch3: curr.punch3,
+              punch4: curr.punch4,
               overtimeIn: curr.overtimeIn,
               overtimeOut: curr.overtimeOut,
             };
-          }
-          if (curr.inOut && curr.date) {
-            acc[date][curr.inOut].push(curr);
           }
           return acc;
         }, {});
@@ -165,20 +164,23 @@ export const AttendanceSummaryTable = ({
         const latestLogs = dateRange.map((date) => {
           const dateString = date.toISOString().split("T")[0];
           const logs = groupedData[dateString];
-          // console.log("LOGS", logs);
           if (logs) {
             return {
               date: dateString,
-              timeIn: logs.timeIn,
-              timeOut: logs.timeOut,
+              punch1: logs.punch1,
+              punch2: logs.punch2,
+              punch3: logs.punch3,
+              punch4: logs.punch4,
               overtimeIn: logs.overtimeIn,
               overtimeOut: logs.overtimeOut,
             };
           } else {
             return {
               date: dateString,
-              timeIn: null,
-              timeOut: null,
+              punch1: null,
+              punch2: null,
+              punch3: null,
+              punch4: null,
               overtimeIn: null,
               overtimeOut: null,
             };
@@ -297,17 +299,17 @@ export const AttendanceSummaryTable = ({
               <Table.Row key={summary.date}>
                 <Table.Cell>{summary.date}</Table.Cell>
                 <Table.Cell>
-                  {summary.timeIn === "FTP IN"
+                  {summary.punch1 === "FTP IN"
                     ? "FTP IN"
-                    : summary.timeIn !== null
-                    ? formatTime(summary.timeIn)
+                    : summary.punch1 !== null
+                    ? formatTime(summary.punch1)
                     : "-"}
                 </Table.Cell>
                 <Table.Cell>
-                  {summary.timeOut === "FTP OUT" ? (
+                  {summary.punch2 === "FTP OUT" ? (
                     "FTP OUT"
-                  ) : summary.timeOut !== null ? (
-                    formatTime(summary.timeOut)
+                  ) : summary.punch2 !== null ? (
+                    formatTime(summary.punch2)
                   ) : validationEntry ? (
                     // Display validation status and make-up hours if a corresponding validation entry exists
                     validationEntry.validationStatus === 3 ? (
@@ -333,12 +335,24 @@ export const AttendanceSummaryTable = ({
                     <p className="font-bold text-gray">NO RECORD</p>
                   )}
                 </Table.Cell>
-                <Table.Cell>Time IN2</Table.Cell>
-                <Table.Cell>Time OUT2</Table.Cell>
+                <Table.Cell>
+                  {summary.punch3 === "FTP IN"
+                    ? "FTP IN"
+                    : summary.punch3 !== null
+                    ? formatTime(summary.punch3)
+                    : "-"}
+                </Table.Cell>
+                <Table.Cell>
+                  {summary.punch4 === "FTP OUT"
+                    ? "FTP OUT"
+                    : summary.punch4 !== null
+                    ? formatTime(summary.punch4)
+                    : "-"}
+                </Table.Cell>
                 <Table.Cell>{formatTime(summary.overtimeIn)}</Table.Cell>
                 <Table.Cell>{formatTime(summary.overtimeOut)}</Table.Cell>
                 <Table.Cell>
-                  {(summary.timeIn === null || summary.timeOut === null) && !validationEntry ? (
+                  {(summary.punch1 === null || summary.punch2 === null) && !validationEntry ? (
                     <button className="hover:underline" onClick={() => openModal(summary.date)}>
                       YES
                     </button>
