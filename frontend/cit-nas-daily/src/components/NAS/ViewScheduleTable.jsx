@@ -134,10 +134,10 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
 
   return (
     <div>
-      <div className="pb-3" style={{ display: "flex", justifyContent: "center" }}>
-        <table className="w-10/12 border-collapse border">
+      <div className="pb-3 flex justify-center">
+        <table className="md:w-10/12 border-collapse border">
           <thead>
-            <tr className=" bg-primary text-white">
+            <tr className="bg-primary text-white">
               <th colSpan="4" className="border p-2 text-center">
                 Schedule of Duty
               </th>

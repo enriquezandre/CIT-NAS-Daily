@@ -278,15 +278,14 @@ export const NASSchedule = () => {
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3">
-        <div className="m-2">
-          <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
+        <div className="md:m-2">
+          <div className="flex flex-row justify-center md:justify-start items-center gap-5 md:gap-10 mt-6 mb-6">
             <div className="flex flex-row gap-2 items-center">
               <div className="mr-2">SY:</div>
               <select
                 id="sy"
                 name="sy"
-                className=" w-full text-base border rounded-md"
-                style={{ width: "7rem" }}
+                className="md:w-28 text-base border rounded-md"
                 disabled
               >
                 <option>{currentYear}</option>
@@ -298,8 +297,7 @@ export const NASSchedule = () => {
                 id="sem"
                 name="sem"
                 onChange={handleSelectedSem}
-                className="w-full text-base border rounded-md"
-                style={{ width: "7rem" }}
+                className="md:w-28 text-base border rounded-md"
               >
                 <option value={0}>First</option>
                 <option value={1}>Second</option>
