@@ -167,7 +167,7 @@ export const AttendanceSummary = () => {
         nasId: nasId,
         absenceDate: selectedAbsentDate,
         nasLetter: base64String,
-        semester: getSemesterValue(), //selectedSem removed to view the error snackbar
+        semester: getSemesterValue(selectedSem), //selectedSem removed to view the error snackbar
         schoolYear: selectedSY,
       };
 
@@ -176,14 +176,14 @@ export const AttendanceSummary = () => {
       if (response.status === 200 || response.status === 201) {
         setIsSubmitted(true);
         setSnackbarVisible(true); // Show the success snackbar
-        setSnackbarMsg("Submitted successfully");
+        setSnackbarMsg("Submitted successfully!");
       } else {
         setSnackbarVisible(true); // Show the error snackbar
-        setSnackbarMsg("Submission failed");
+        setSnackbarMsg("Submission failed.");
       }
     } catch (error) {
       setSnackbarVisible(true);
-      setSnackbarMsg("An error occurred");
+      setSnackbarMsg("An error occurred.");
     }
   };
 
