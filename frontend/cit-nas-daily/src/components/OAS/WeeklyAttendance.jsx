@@ -58,7 +58,7 @@ export const WeeklyAttendance = ({
         const dtrresponse = await api.get(
           `DTR/${selectedSY}/${getSemesterValue(
             selectedSem
-          )}/${firstName}/${lastName}?middleName=${middleName}`
+          )}/${lastName}/${firstName}?middleName=${middleName}`
         );
         const dtrdata = dtrresponse.data.dailyTimeRecords;
 
@@ -74,8 +74,10 @@ export const WeeklyAttendance = ({
           const date = curr.date.split(" ")[0];
           if (!acc[date]) {
             acc[date] = {
-              timeIn: curr.timeIn,
-              timeOut: curr.timeOut,
+              punch1: curr.punch1,
+              punch2: curr.punch2,
+              punch3: curr.punch3,
+              punch4: curr.punch4,
               overtimeIn: curr.overtimeIn,
               overtimeOut: curr.overtimeOut,
             };
@@ -93,16 +95,20 @@ export const WeeklyAttendance = ({
           if (logs) {
             return {
               date: dateString,
-              timeIn: logs.timeIn,
-              timeOut: logs.timeOut,
+              punch1: logs.punch1,
+              punch2: logs.punch2,
+              punch3: logs.punch3,
+              punch4: logs.punch4,
               overtimeIn: logs.overtimeIn,
               overtimeOut: logs.overtimeOut,
             };
           } else {
             return {
               date: dateString,
-              timeIn: null,
-              timeOut: null,
+              punch1: null,
+              punch2: null,
+              punch3: null,
+              punch4: null,
               overtimeIn: null,
               overtimeOut: null,
             };
@@ -239,14 +245,16 @@ export const WeeklyAttendance = ({
   }, [nasId, formatDate, api]);
 
   return (
-    <table className="w-auto table-auto mx-auto mb-8">
+    <table className="w-4/5 table-auto mx-auto mb-8">
       <thead>
         <tr>
-          <th className="border px-4 py-2 w-1/5 text-xs md:text-base lg:text-lg">DATE</th>
-          <th className="border px-4 py-2 w-1/5 text-xs md:text-base lg:text-lg">TIME-IN</th>
-          <th className="border px-4 py-2 w-1/5 text-xs md:text-base lg:text-lg">TIMEOUT</th>
-          <th className="border px-4 py-2 w-1/5 text-xs md:text-base lg:text-lg">OVERTIME IN</th>
-          <th className="border px-4 py-2 w-1/5 text-xs md:text-base lg:text-lg">OVERTIME OUT</th>
+          <th className="border px-4 py-2 w-1/7 text-xs md:text-base lg:text-lg">DATE</th>
+          <th className="border px-4 py-2 w-1/7 text-xs md:text-base lg:text-lg">TIME-IN1</th>
+          <th className="border px-4 py-2 w-1/7 text-xs md:text-base lg:text-lg">TIMEOUT1</th>
+          <th className="border px-4 py-2 w-1/7 text-xs md:text-base lg:text-lg">TIME-IN2</th>
+          <th className="border px-4 py-2 w-1/7 text-xs md:text-base lg:text-lg">TIMEOUT2</th>
+          <th className="border px-4 py-2 w-1/7 text-xs md:text-base lg:text-lg">OVERTIME IN</th>
+          <th className="border px-4 py-2 w-1/7 text-xs md:text-base lg:text-lg">OVERTIME OUT</th>
         </tr>
       </thead>
       <tbody>
@@ -258,21 +266,21 @@ export const WeeklyAttendance = ({
             );
             return (
               <tr key={summary.date}>
-                <td className="border px-4 py-8 w-1/5 text-center text-xs md:text-base lg:text-lg">
+                <td className="border px-4 py-8 w-1/7 text-center text-xs md:text-base lg:text-lg">
                   {summary.date}
                 </td>
-                <td className="border px-4 py-8 w-1/5 text-center text-xs md:text-base lg:text-lg">
-                  {summary.timeIn === "FTP IN"
+                <td className="border px-4 py-8 w-1/7 text-center text-xs md:text-base lg:text-lg">
+                  {summary.punch1 === "FTP IN"
                     ? "FTP IN"
-                    : summary.timeIn !== null
-                    ? formatTime(summary.timeIn)
+                    : summary.punch1 !== null
+                    ? formatTime(summary.punch1)
                     : "-"}
                 </td>
-                <td className="border px-4 py-8 w-1/5 text-center text-xs md:text-base lg:text-lg">
-                  {summary.timeOut === "FTP OUT" ? (
+                <td className="border px-4 py-8 w-1/7 text-center text-xs md:text-base lg:text-lg">
+                  {summary.punch2 === "FTP OUT" ? (
                     "FTP OUT"
-                  ) : summary.timeOut !== null ? (
-                    formatTime(summary.timeOut)
+                  ) : summary.punch2 !== null ? (
+                    formatTime(summary.punch2)
                   ) : validationEntry ? (
                     // Display validation status and make-up hours if a corresponding validation entry exists
                     validationEntry.validationStatus === 3 ? (
@@ -298,10 +306,24 @@ export const WeeklyAttendance = ({
                     <p className="font-bold text-gray text-xs md:text-base lg:text-lg">NO RECORD</p>
                   )}
                 </td>
-                <td className="border px-4 py-8 w-1/5 text-center text-xs md:text-base lg:text-lg">
+                <td className="border px-4 py-8 w-1/7 text-center text-xs md:text-base lg:text-lg">
+                  {summary.punch3 === "FTP IN"
+                    ? "FTP IN"
+                    : summary.punch3 !== null
+                    ? formatTime(summary.punch3)
+                    : "-"}
+                </td>
+                <td className="border px-4 py-8 w-1/7 text-center text-xs md:text-base lg:text-lg">
+                  {summary.punch4 === "FTP IN"
+                    ? "FTP IN"
+                    : summary.punch4 !== null
+                    ? formatTime(summary.punch4)
+                    : "-"}
+                </td>
+                <td className="border px-4 py-8 w-1/7 text-center text-xs md:text-base lg:text-lg">
                   {formatTime(summary.overtimeIn)}
                 </td>
-                <td className="border px-4 py-8 w-1/5 text-center text-xs md:text-base lg:text-lg">
+                <td className="border px-4 py-8 w-1/7 text-center text-xs md:text-base lg:text-lg">
                   {formatTime(summary.overtimeOut)}
                 </td>
               </tr>
