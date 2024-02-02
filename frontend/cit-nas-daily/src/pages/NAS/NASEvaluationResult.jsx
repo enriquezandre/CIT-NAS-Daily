@@ -138,11 +138,11 @@ export const NASEvaluationResult = () => {
   return (
     <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3 mb-10">
-        <div className="m-2">
+        <div className="md:m-2">
           <div className="flex items-center justify-center text-xl font-bold">
             Evaluation Result
           </div>
-          <div className="flex flex-row justify-start items-center gap-10 mt-2 mb-8">
+          <div className="flex flex-row justify-center md:justify-start items-center gap-5 md:gap-10 mt-2 mb-4 md:mb-8">
             <div className="flex flex-row gap-2 items-center">
               <Dropdown
                 label="SY"
@@ -160,8 +160,8 @@ export const NASEvaluationResult = () => {
               />
             </div>
           </div>
-          <hr className="my-5 border-t-2 border-gray-300 mx-2" />
-          <div className="flex gap-44 ml-2">
+          <hr className="my-5 border-t-2 border-gray-300 md:mx-2" />
+          <div className="flex flex-col md:flex-row md:gap-44 md:ml-2">
             <div className="flex flex-col mt-2">
               <div className="flex flex-row gap-28 justify-start items-center text-lg">
                 <div>SUPERIOR EVALUATION:</div>

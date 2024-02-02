@@ -55,24 +55,18 @@ export const Homepage = () => {
   });
 
   return (
-    <div className="flex justify-center items-center mb-6">
-      <div className="bg-[url('/src/assets/glebuilding.png')] bg-cover bg-center rounded h-screen w-screen">
-        <div className="flex items-center justify-between">
-          <div className="ml-10 mt-10">
-            <div
-              className="text-5xl font-bold mb-10 text-primary"
-              style={{ textTransform: "capitalize" }}
-            >
-              Hello, {user.username}
-            </div>
-            <div className="border-l-2 border-primary">
-              <div className="text-2xl ml-4">
-                <div>{formatDay(currentDateTime)}</div>
-                <div>{formatDate(currentDateTime)}</div>
-                <div>{formatTime(currentDateTime)}</div>
-              </div>
-            </div>
-          </div>
+    <div className="bg-[url('/src/assets/glebuilding.png')] bg-cover bg-center rounded p-10 md:h-screen">
+      <div
+        className="text-2xl sm:text-4xl lg:text-5xl text-wrap font-bold mb-5 sm:mb-10 text-primary"
+        style={{ textTransform: "capitalize" }}
+      >
+        Hello, {user.username}
+      </div>
+      <div className="border-l-2 border-primary">
+        <div className="text-xl ml-4 sm:text-2xl">
+          <div>{formatDay(currentDateTime)}</div>
+          <div>{formatDate(currentDateTime)}</div>
+          <div>{formatTime(currentDateTime)}</div>
         </div>
       </div>
     </div>
