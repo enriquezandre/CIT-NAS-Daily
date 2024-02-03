@@ -55,8 +55,8 @@ export const OASValidation = () => {
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="text-sm md:text-base lg:text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid max-[450px]:grid-cols-1 grid-cols-2 overflow-x-auto">
-            <div className="flex flex-row justify-start items-center gap-3 lg:gap-10 w-auto mb-3 ml-5 min-[450px]:mb-0">
+          <ul className="text-sm md:text-base lg:text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid max-[530px]:grid-cols-1 grid-cols-2 overflow-x-auto">
+            <div className="flex max-[530px]:flex-col flex-row justify-start min-[530px]:items-center gap-3 lg:gap-10 w-auto mb-3 ml-5 min-[530px]:mb-0">
               <div>
                 <Dropdown
                   label="SY"
@@ -74,8 +74,8 @@ export const OASValidation = () => {
                 />
               </div>
             </div>
-            <div className="flex max-[450px]:justify-start max-[450px]:ml-5 justify-end">
-              <div className="relative w-1/2">
+            <div className="flex max-[530px]:justify-start max-[530px]:ml-5 justify-end">
+              <div className="relative w-auto">
                 <input
                   type="search"
                   className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
@@ -83,10 +83,7 @@ export const OASValidation = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   required
                 />
-                <button
-                  type="submit"
-                  className="absolute top-0 right-0 p-2.5 text-sm font-medium h-full"
-                >
+                <button type="submit" className="absolute top-0 right-0 p-2.5 text-sm font-medium">
                   <svg
                     className="w-4 h-4"
                     aria-hidden="true"
