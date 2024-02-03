@@ -200,27 +200,21 @@ export const OASAttendance = () => {
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col">
-          <ul className="text-sm md:text-base lg:text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid max-[450px]:grid-cols-1 grid-cols-2">
-            <div
-              className={`flex items-center w-auto ${
-                currentIndex === 0 ? "ml-5 mb-3 md:mb-0" : ""
-              }`}
-            >
-              <div>
+          <ul className="text-sm md:text-base lg:text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid max-[450px]:grid-cols-1 grid-cols-2 overflow-x-auto">
+            <div className="flex w-auto mb-3 ml-5 min-[450px]:mb-0">
+              <div className="flex flex-col lg:flex-row justify-start lg:items-center gap-3 lg:gap-10">
                 {currentIndex != 0 ? (
-                  <Button
+                  <button
                     className="text-black"
                     onClick={() => {
                       setCurrentIndex((currentIndex - 1) % nasArray.length);
                     }}
                   >
                     <HiOutlineArrowLeft className="h-6 w-6" />
-                  </Button>
+                  </button>
                 ) : (
                   ""
                 )}
-              </div>
-              <div className="flex flex-col md:flex-row justify-start lg:items-center gap-3 lg:gap-10">
                 <div>
                   <Dropdown
                     label="SY"
@@ -247,7 +241,7 @@ export const OASAttendance = () => {
                 </div>
               </div>
             </div>
-            <li className="flex max-[450px]:justify-start justify-end md:items-center ml-5">
+            <div className="flex justify-end lg:items-center ml-5">
               <div className="relative w-auto">
                 <input
                   type="search"
@@ -290,7 +284,7 @@ export const OASAttendance = () => {
               ) : (
                 ""
               )}
-            </li>
+            </div>
           </ul>
           <div className="px-5 md:px-9 py-4">
             <div className="flex gap-10 mb-7 text-xs md:text-base lg:text-lg overflow-x-auto">
