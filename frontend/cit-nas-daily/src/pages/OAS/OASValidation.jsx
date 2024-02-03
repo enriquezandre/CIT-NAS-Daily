@@ -53,11 +53,11 @@ export const OASValidation = () => {
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
-            <div className="flex flex-row justify-start items-center gap-10 w-auto">
-              <div className="flex flex-row gap-2 items-center ml-9">
+          <ul className="text-sm md:text-base lg:text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid max-[450px]:grid-cols-1 grid-cols-2 overflow-x-auto">
+            <div className="flex flex-row justify-start items-center gap-3 lg:gap-10 w-auto mb-3 ml-5 min-[450px]:mb-0">
+              <div>
                 <Dropdown
                   label="SY"
                   options={uniqueYears}
@@ -65,7 +65,7 @@ export const OASValidation = () => {
                   onChange={(e) => handleSelectSY(e)}
                 />
               </div>
-              <div className="flex flex-row gap-2 items-center">
+              <div>
                 <Dropdown
                   label="Semester"
                   options={sem_options}
@@ -74,7 +74,7 @@ export const OASValidation = () => {
                 />
               </div>
             </div>
-            <div className="flex justify-end">
+            <div className="flex max-[450px]:justify-start max-[450px]:ml-5 justify-end">
               <div className="relative w-1/2">
                 <input
                   type="search"
