@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 export const Homepage = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [user, setUser] = useState({});
+  const [firstName, setFirstName] = useState("");
+  const { nasId } = useParams();
+  const { superiorId } = useParams();
 
   useEffect(() => {
     // Update the current date and time every second
@@ -45,8 +48,22 @@ export const Homepage = () => {
           },
         });
 
-        const response = await api.get(`/Users/currentUser`);
-        setUser(response.data);
+        const userResponse = await api.get(`/Users/currentUser`);
+        const userRole = userResponse.data.role;
+        switch (userRole) {
+          case "NAS": {
+            const nasResponse = await api.get(`/NAS/${nasId}/noimg`);
+            setFirstName(nasResponse.data.firstName);
+            break;
+          }
+          case "Superior": {
+            const superiorResponse = await api.get(`/Superiors/${superiorId}`);
+            setFirstName(superiorResponse.data.firstName);
+            break;
+          }
+          default:
+            setFirstName("");
+        }
       } catch (error) {
         console.error(error);
       }
@@ -60,7 +77,7 @@ export const Homepage = () => {
         className="text-2xl sm:text-4xl lg:text-5xl text-wrap font-bold mb-5 sm:mb-10 text-primary"
         style={{ textTransform: "capitalize" }}
       >
-        Hello, {user.username}
+        Hello, {firstName}
       </div>
       <div className="border-l-2 border-primary">
         <div className="text-xl ml-4 sm:text-2xl">
