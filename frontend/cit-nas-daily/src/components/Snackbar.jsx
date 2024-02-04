@@ -31,7 +31,7 @@ export const Snackbar = ({ message, onClose, isSnackbarVisible, isSubmitted }) =
         zIndex: 999,
         display: isSnackbarVisible ? "flex" : "none",
         alignItems: "center", // Center vertically
-        height: "3rem",
+        height: "2.7rem",
         width: "20%",
         justifyContent: "center", // Center horizontally
       }}
