@@ -99,47 +99,81 @@ export const ActivitiesSummary = () => {
   };
 
   return (
-    <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
-      <div className="m-3">
-        <div className="m-2">
-          <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
-            <div className="flex flex-row gap-2 items-center">
-              <Dropdown
-                label="SY"
-                options={uniqueYears}
-                selectedValue={selectedSY}
-                onChange={(e) => handleSelectSY(e)}
+    <>
+      <div className="block md:hidden justify-center w-full h-full items-center border border-solid rounded-lg p-3">
+        <div className="flex flex-row justify-between items-center mb-4">
+          <Dropdown
+            label="SY"
+            options={uniqueYears}
+            selectedValue={selectedSY}
+            onChange={(e) => handleSelectSY(e)}
+          />
+          <Dropdown
+            label="SEMESTER"
+            options={sem_options}
+            selectedValue={selectedSem}
+            onChange={(e) => handleSelectSem(e)}
+          />
+          <Dropdown
+            label="MONTH"
+            options={monthOptions}
+            selectedValue={selectedMonth}
+            onChange={(e) => handleSelectedMonth(e)}
+          />
+        </div>
+        <div className="overflow-x-auto">
+          <ActivitiesSummaryTable
+            selectedMonth={selectedMonthIndex}
+            selectedSem={selectedSem}
+            selectedSY={selectedSY}
+            currentYear={currentYear}
+            currentSem={currentSem}
+          />
+        </div>
+      </div>
+
+      <div className="hidden md:block justify-center w-full h-full items-center border border-solid rounded-lg">
+        <div className="m-3">
+          <div className="m-2">
+            <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
+              <div className="flex flex-row gap-2 items-center">
+                <Dropdown
+                  label="SY"
+                  options={uniqueYears}
+                  selectedValue={selectedSY}
+                  onChange={(e) => handleSelectSY(e)}
+                />
+              </div>
+              <div className="flex flex-row gap-2 items-center">
+                <Dropdown
+                  label="SEMESTER"
+                  options={sem_options}
+                  selectedValue={selectedSem}
+                  onChange={(e) => handleSelectSem(e)}
+                />
+              </div>
+              <div className="flex flex-row gap-2 items-center">
+                <Dropdown
+                  label="MONTH"
+                  options={monthOptions}
+                  selectedValue={selectedMonth}
+                  onChange={(e) => handleSelectedMonth(e)}
+                />
+              </div>
+            </div>
+            <div></div>
+            <div className="m-5">
+              <ActivitiesSummaryTable
+                selectedMonth={selectedMonthIndex}
+                selectedSem={selectedSem}
+                selectedSY={selectedSY}
+                currentYear={currentYear}
+                currentSem={currentSem}
               />
             </div>
-            <div className="flex flex-row gap-2 items-center">
-              <Dropdown
-                label="SEMESTER"
-                options={sem_options}
-                selectedValue={selectedSem}
-                onChange={(e) => handleSelectSem(e)}
-              />
-            </div>
-            <div className="flex flex-row gap-2 items-center">
-              <Dropdown
-                label="MONTH"
-                options={monthOptions}
-                selectedValue={selectedMonth}
-                onChange={(e) => handleSelectedMonth(e)}
-              />
-            </div>
-          </div>
-          <div></div>
-          <div className="m-5">
-            <ActivitiesSummaryTable
-              selectedMonth={selectedMonthIndex}
-              selectedSem={selectedSem}
-              selectedSY={selectedSY}
-              currentYear={currentYear}
-              currentSem={currentSem}
-            />
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };

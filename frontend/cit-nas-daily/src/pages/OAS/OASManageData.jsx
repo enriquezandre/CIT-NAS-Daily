@@ -265,29 +265,31 @@ export const OASManageData = () => {
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
           <div className="px-8 py-4">
-            <div className="flex mt-2 mb-8">
-              <p className="mr-5 font-bold text-xl">Upload DTR:</p>
-              <div>
-                <input
-                  type="file"
-                  id="fileUpload"
-                  onChange={handleFileUpload}
-                  accept=".xls,.xlsx"
-                />
+            <div className="lg:flex mt-2 mb-8 overflow-x-auto">
+              <div className="flex items-center">
+                <p className="mr-5 font-bold text-sm md:text-lg lg:text-xl">Upload DTR:</p>
+                <div>
+                  <input
+                    type="file"
+                    id="fileUpload"
+                    onChange={handleFileUpload}
+                    accept=".xls,.xlsx"
+                  />
+                </div>
                 {fileUploaded ? (
                   <button
-                    className="py-2 rounded-md bg-secondary w-24 items-center justify center hover:bg-primary hover:text-white"
+                    className="py-2 rounded-md bg-secondary w-24 items-center justify center hover:bg-primary hover:text-white text-sm md:text-lg lg:text-xl"
                     onClick={handleSubmit}
                   >
                     Submit
                   </button>
                 ) : null}
               </div>
-              <div className="flex flex-row justify-start items-center gap-10 ml-5 mr-4">
-                <div className="flex flex-row gap-2 items-center">
+              <div className="flex flex-col sm:flex-row justify-start lg:items-center gap-3 mt-3 lg:mt-0 lg:gap-10 lg:ml-5 lg:mr-4">
+                <div className="flex flex-row gap-2 sm:items-center">
                   Select
                   <Dropdown
                     label="SY"
@@ -296,7 +298,7 @@ export const OASManageData = () => {
                     onChange={(e) => handleSelectSY(e)}
                   />
                 </div>
-                <div className="flex flex-row gap-2 items-center">
+                <div className="flex flex-row gap-2 sm:items-center">
                   Select
                   <Dropdown
                     label="Semester"
@@ -325,7 +327,7 @@ export const OASManageData = () => {
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-5">
         <div className="flex h-full flex-col justify-center">
           <div className="px-8 pt-4">
-            <div className="flex mt-2">
+            <div className="mt-2">
               <UpdatePassword />
             </div>
           </div>

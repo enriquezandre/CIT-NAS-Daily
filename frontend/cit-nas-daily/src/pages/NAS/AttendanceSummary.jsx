@@ -207,7 +207,167 @@ export const AttendanceSummary = () => {
   }, [api, nasId, selectedSY, selectedSem, getSemesterValue]);
 
   return (
-    <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
+    <>
+      <div className="block md:hidden justify-center w-full h-full items-center border border-solid rounded-lg p-3">
+        <div className="flex flex-row justify-between items-center mb-4">
+          <Dropdown
+            label="SY"
+            options={uniqueYears}
+            selectedValue={selectedSY}
+            onChange={(e) => handleSelectSY(e)}
+          />
+          <Dropdown
+            label="SEMESTER"
+            options={sem_options}
+            selectedValue={selectedSem}
+            onChange={(e) => handleSelectSem(e)}
+          />
+          <Dropdown
+            label="MONTH"
+            options={monthOptions}
+            selectedValue={selectedMonth}
+            onChange={(e) => handleSelectedMonth(e)}
+          />
+        </div>
+        <div className="flex flex-col gap-2 mb-4">
+          <DataDisplayBox
+            label="Make-up Duty Hours"
+            data={
+              timekeepingSummaries.makeUpDutyHours !== null
+                ? timekeepingSummaries.makeUpDutyHours
+                : 0
+            }
+          />
+          <DataDisplayBox
+            label="Number of Unexcused Absences"
+            data={timekeepingSummaries.unexcused !== null ? timekeepingSummaries.unexcused : 0}
+          />
+          <DataDisplayBox
+            label="Number of Excused Absences"
+            data={timekeepingSummaries.excused !== null ? timekeepingSummaries.excused : 0}
+          />
+          <DataDisplayBox
+            label="Late > 10 Minutes"
+            data={
+              timekeepingSummaries.lateOver10Mins !== null ? timekeepingSummaries.lateOver10Mins : 0
+            }
+          />
+          <DataDisplayBox
+            label="Late > 45 Minutes"
+            data={
+              timekeepingSummaries.lateOver45Mins !== null ? timekeepingSummaries.lateOver45Mins : 0
+            }
+          />
+          <DataDisplayBox
+            label="FTP - Failure to Punch IN/OUT"
+            data={
+              timekeepingSummaries.failedToPunch !== null ? timekeepingSummaries.failedToPunch : 0
+            }
+          />
+        </div>
+        <div className="overflow-x-auto">
+          <AttendanceSummaryTable
+            selectedMonth={selectedMonthIndex}
+            selectedSem={selectedSem}
+            selectedSY={selectedSY}
+            openModal={openModal}
+          />
+        </div>
+      </div>
+
+      <div className="hidden md:block justify-center w-full h-full items-center border border-solid rounded-lg">
+        <div className="m-3 mb-10">
+          <div className="m-2">
+            <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
+              <div className="flex flex-row gap-2 items-center">
+                <Dropdown
+                  label="SY"
+                  options={uniqueYears}
+                  selectedValue={selectedSY}
+                  onChange={(e) => handleSelectSY(e)}
+                />
+              </div>
+              <div className="flex flex-row gap-2 items-center">
+                <Dropdown
+                  label="SEMESTER"
+                  options={sem_options}
+                  selectedValue={selectedSem}
+                  onChange={(e) => handleSelectSem(e)}
+                />
+              </div>
+              <div className="flex flex-row gap-2 items-center">
+                <Dropdown
+                  label="MONTH"
+                  options={monthOptions}
+                  selectedValue={selectedMonth}
+                  onChange={(e) => handleSelectedMonth(e)}
+                />
+              </div>
+            </div>
+            <div>
+              <div className="m-2">
+                <div className="flex">
+                  <DataDisplayBox
+                    label="Make-up Duty Hours"
+                    data={
+                      timekeepingSummaries.makeUpDutyHours !== null
+                        ? timekeepingSummaries.makeUpDutyHours
+                        : 0
+                    }
+                  />
+                  <DataDisplayBox
+                    label="Number of Excused Absences"
+                    data={timekeepingSummaries.excused !== null ? timekeepingSummaries.excused : 0}
+                  />
+                  <DataDisplayBox
+                    label="Late > 45 Minutes"
+                    data={
+                      timekeepingSummaries.lateOver45Mins !== null
+                        ? timekeepingSummaries.lateOver45Mins
+                        : 0
+                    }
+                  />
+                </div>
+                <div className="flex">
+                  <DataDisplayBox
+                    label="Number of Unexcused Absences"
+                    data={
+                      timekeepingSummaries.unexcused !== null ? timekeepingSummaries.unexcused : 0
+                    }
+                  />
+                  <DataDisplayBox
+                    label="Late > 10 Minutes"
+                    data={
+                      timekeepingSummaries.lateOver10Mins !== null
+                        ? timekeepingSummaries.lateOver10Mins
+                        : 0
+                    }
+                  />
+                  <DataDisplayBox
+                    label="FTP - Failure to Punch IN/OUT"
+                    data={
+                      timekeepingSummaries.failedToPunch !== null
+                        ? timekeepingSummaries.failedToPunch
+                        : 0
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="m-5">
+              <AttendanceSummaryTable
+                selectedMonth={selectedMonthIndex}
+                selectedSem={selectedSem}
+                selectedSY={selectedSY}
+                openModal={openModal}
+              />
+            </div>
+          </div>
+        </div>
+        <ValidationModal isOpen={isOpen} closeModal={closeModal} handleSubmit={handleSubmit} />
+      </div>
+    </>
+    /*<div className="justify-center w-full h-full items-center border border-solid rounded-lg">
       <div className="m-3 mb-10">
         <div className="m-2">
           <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
@@ -305,5 +465,6 @@ export const AttendanceSummary = () => {
         isSubmitted={isSubmitted}
       />
     </div>
+    </div>*/
   );
 };

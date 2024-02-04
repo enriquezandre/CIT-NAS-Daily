@@ -95,76 +95,60 @@ export const NASPersonalInformation = () => {
   };
 
   return (
-    <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
-      <div className="flex">
-        <div className="m-3 flex-1">
-          <div className="flex">
-            <div className="flex-1 pr-5">
-              <Field
-                label="Student ID:"
-                id="studentId"
-                type="text"
-                value={studentId}
-                onChange={(e) => setStudentId(e.target.value)}
-                readOnly={true}
-              />
-              <br />
-              <Field
-                label="Gender:"
-                id="gender"
-                type="text"
-                value={gender.toUpperCase()}
-                onChange={(e) => setGender(e.target.value)}
-                readOnly={true}
-              />
-            </div>
-            <div className="flex-1 pr-5">
-              <Field
-                label="Lastname:"
-                id="lastname"
-                type="text"
-                value={lastName.toUpperCase()}
-                onChange={(e) => setLastName(e.target.value)}
-                readOnly={true}
-              />
-              <br />
-              <Field
-                label="Birthdate:"
-                id="bday"
-                type="text"
-                value={bday}
-                onChange={(e) => setBday(e.target.value)}
-                readOnly={true}
-              />
-            </div>
-            <div className="flex-1 pr-5">
-              <Field
-                label="Middlename:"
-                id="middlename"
-                type="text"
-                value={middleName.toUpperCase()}
-                onChange={(e) => setMiddleName(e.target.value)}
-                readOnly={true}
-              />
-            </div>
-            <div className="flex-1 pr-5">
-              <Field
-                label="Firstname:"
-                id="firstname"
-                type="text"
-                value={firstName.toUpperCase()}
-                onChange={(e) => setFirstName(e.target.value)}
-                readOnly={true}
-              />
-            </div>
-          </div>
+    <>
+      <div className="block md:hidden justify-center w-full h-full items-center border border-solid rounded-lg p-3">
+        <div className="flex justify-center">
+          <Avatar avatar={avatar} handleAvatarChange={handleAvatarChange} />
         </div>
-        <div className="m-3 flex-2">
-          <Avatar avatar={avatar} openModal={openModal} />
-        </div>
-      </div>
-      <hr className="my-5 border-t-2 border-gray-300 mx-2" />
-      <div className="m-3 flex-1">
+        <Field
+          label="Student ID:"
+          id="studentId"
+          type="text"
+          value={studentId}
+          onChange={(e) => setStudentId(e.target.value)}
+          readOnly={true}
+        />
+        <Field
+          label="Lastname:"
+          id="lastname"
+          type="text"
+          value={lastName.toUpperCase()}
+          onChange={(e) => setLastName(e.target.value)}
+          readOnly={true}
+        />
+        <Field
+          label="Firstname:"
+          id="firstname"
+          type="text"
+          value={firstName.toUpperCase()}
+          onChange={(e) => setFirstName(e.target.value)}
+          readOnly={true}
+        />
+        <Field
+          label="Middlename:"
+          id="middlename"
+          type="text"
+          value={middleName.toUpperCase()}
+          onChange={(e) => setMiddleName(e.target.value)}
+          readOnly={true}
+        />
+        <Field
+          label="Birthdate:"
+          id="bday"
+          type="text"
+          value={bday}
+          onChange={(e) => setBday(e.target.value)}
+          readOnly={true}
+        />
+        <Field
+          label="Gender:"
+          id="gender"
+          type="text"
+          value={gender.toUpperCase()}
+          onChange={(e) => setGender(e.target.value)}
+          readOnly={true}
+        />
+        <hr className="my-5 border-t-2 border-gray-300" />
         <Field
           label="Office Assigned:"
           id="office"
@@ -173,45 +157,143 @@ export const NASPersonalInformation = () => {
           onChange={(e) => setOffice(e.target.value)}
           readOnly={true}
         />
+        <Field
+          label="Course:"
+          id="course"
+          type="text"
+          value={course.toUpperCase()}
+          onChange={(e) => setCourse(e.target.value)}
+          readOnly={true}
+        />
+        <Field
+          label="Year Level:"
+          id="yearLevel"
+          type="text"
+          value={yearLevel}
+          onChange={(e) => setYearLevel(e.target.value)}
+          readOnly={true}
+        />
+        <Field
+          label="Date Started:"
+          id="dateStarted"
+          type="text"
+          value={dateStarted}
+          onChange={(e) => setDateStarted(e.target.value)}
+          readOnly={true}
+        />
       </div>
-      <div className="flex">
+      <div className="hidden md:block justify-center w-full h-full items-center border border-solid rounded-lg">
+        <div className="flex">
+          <div className="m-3 flex-1">
+            <div className="flex">
+              <div className="flex-1 pr-5">
+                <Field
+                  label="Student ID:"
+                  id="studentId"
+                  type="text"
+                  value={studentId}
+                  onChange={(e) => setStudentId(e.target.value)}
+                  readOnly={true}
+                />
+                <br />
+                <Field
+                  label="Gender:"
+                  id="gender"
+                  type="text"
+                  value={gender.toUpperCase()}
+                  onChange={(e) => setGender(e.target.value)}
+                  readOnly={true}
+                />
+              </div>
+              <div className="flex-1 pr-5">
+                <Field
+                  label="Lastname:"
+                  id="lastname"
+                  type="text"
+                  value={lastName.toUpperCase()}
+                  onChange={(e) => setLastName(e.target.value)}
+                  readOnly={true}
+                />
+                <br />
+                <Field
+                  label="Birthdate:"
+                  id="bday"
+                  type="text"
+                  value={bday}
+                  onChange={(e) => setBday(e.target.value)}
+                  readOnly={true}
+                />
+              </div>
+              <div className="flex-1 pr-5">
+                <Field
+                  label="Middlename:"
+                  id="middlename"
+                  type="text"
+                  value={middleName.toUpperCase()}
+                  onChange={(e) => setMiddleName(e.target.value)}
+                  readOnly={true}
+                />
+              </div>
+              <div className="flex-1 pr-5">
+                <Field
+                  label="Firstname:"
+                  id="firstname"
+                  type="text"
+                  value={firstName.toUpperCase()}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  readOnly={true}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="m-3 flex-2">
+            <Avatar avatar={avatar} handleAvatarChange={handleAvatarChange} />
+          </div>
+        </div>
+        <hr className="my-5 border-t-2 border-gray-300 mx-2" />
         <div className="m-3 flex-1">
           <Field
-            label="Course:"
-            id="course"
+            label="Office Assigned:"
+            id="office"
             type="text"
-            value={course.toUpperCase()}
-            onChange={(e) => setCourse(e.target.value)}
+            value={office}
+            onChange={(e) => setOffice(e.target.value)}
             readOnly={true}
           />
         </div>
-        <div className="m-3 flex-1">
-          <Field
-            label="Year Level:"
-            id="yearLevel"
-            type="text"
-            value={yearLevel}
-            onChange={(e) => setYearLevel(e.target.value)}
-            readOnly={true}
-          />
-        </div>
-        <div className="m-3 flex-1">
-          <Field
-            label="Date Started:"
-            id="dateStarted"
-            type="text"
-            value={dateStarted}
-            onChange={(e) => setDateStarted(e.target.value)}
-            readOnly={true}
-          />
+        <div className="flex">
+          <div className="m-3 flex-1">
+            <Field
+              label="Course:"
+              id="course"
+              type="text"
+              value={course.toUpperCase()}
+              onChange={(e) => setCourse(e.target.value)}
+              readOnly={true}
+            />
+          </div>
+          <div className="m-3 flex-1">
+            <Field
+              label="Year Level:"
+              id="yearLevel"
+              type="text"
+              value={yearLevel}
+              onChange={(e) => setYearLevel(e.target.value)}
+              readOnly={true}
+            />
+          </div>
+          <div className="m-3 flex-1">
+            <Field
+              label="Date Started:"
+              id="dateStarted"
+              type="text"
+              value={dateStarted}
+              onChange={(e) => setDateStarted(e.target.value)}
+              readOnly={true}
+            />
+          </div>
         </div>
       </div>
-      <UploadImageModal
-        isModalOpen={isModalOpen}
-        closeModal={closeModal}
-        handleAvatarChange={handleAvatarChange}
-        avatar={avatar}
-      />
-    </div>
+    </>
   );
 };
