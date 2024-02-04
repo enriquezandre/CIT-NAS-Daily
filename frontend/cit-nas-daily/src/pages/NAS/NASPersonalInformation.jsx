@@ -98,7 +98,7 @@ export const NASPersonalInformation = () => {
     <>
       <div className="block md:hidden justify-center w-full h-full items-center border border-solid rounded-lg p-3">
         <div className="flex justify-center">
-          <Avatar avatar={avatar} handleAvatarChange={handleAvatarChange} />
+          <Avatar avatar={avatar} openModal={openModal} />
         </div>
         <Field
           label="Student ID:"
@@ -247,7 +247,7 @@ export const NASPersonalInformation = () => {
             </div>
           </div>
           <div className="m-3 flex-2">
-            <Avatar avatar={avatar} handleAvatarChange={handleAvatarChange} />
+            <Avatar avatar={avatar} openModal={openModal} />
           </div>
         </div>
         <hr className="my-5 border-t-2 border-gray-300 mx-2" />
@@ -294,6 +294,12 @@ export const NASPersonalInformation = () => {
           </div>
         </div>
       </div>
+      <UploadImageModal
+        isModalOpen={isModalOpen}
+        closeModal={closeModal}
+        handleAvatarChange={handleAvatarChange}
+        avatar={avatar}
+      />
     </>
   );
 };

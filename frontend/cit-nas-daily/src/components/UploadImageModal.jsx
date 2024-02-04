@@ -1,6 +1,6 @@
 import { Modal } from "flowbite-react";
 import { useState } from "react";
-import PropType from "prop-types";
+import PropTypes from "prop-types";
 
 export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }) => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -17,16 +17,14 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
 
     if (file) {
       console.log("Selected file:", file);
-      // Check if the file size is less than 500 KB (in bytes)
+
       const maxSizeInBytes = 500 * 1024; // 500 KB
 
       if (file.size > maxSizeInBytes) {
-        // Show an alert and return without setting the selectedFile
         setError("File size must be less than 500KB.");
         return;
       }
 
-      // Set the selectedFile if the size is within the limit
       setSelectedFile(file);
     }
   };
@@ -69,6 +67,7 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
+              flexWrap: "wrap", // Responsive styling for smaller screens
             }}
           >
             <div
@@ -78,6 +77,7 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
                 height: "125px",
                 border: "2px solid gray",
                 alignItems: "center",
+                marginBottom: "1rem", // Responsive styling for smaller screens
               }}
             >
               {selectedFile && (
@@ -110,7 +110,7 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
               </label>
 
               <p className="text-sm text-gray pb-3">PNG or JPG (MAX: 500KB).</p>
-              <p className=" text-red">{error}</p>
+              <p className="text-red">{error}</p>
             </div>
           </div>
         </Modal.Body>
@@ -127,7 +127,7 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
           <div className="flex justify-end items-center">
             <div className="flex m-2">
               <button
-                className="bg-primary text-white py-2 px-5 rounded-full  hover:bg-secondary hover:text-primary"
+                className="bg-primary text-white py-2 px-4 md:px-5 rounded-full hover:bg-secondary hover:text-primary"
                 onClick={handleCancel}
               >
                 Cancel
@@ -135,7 +135,7 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
             </div>
             <div className="flex">
               <button
-                className="bg-primary text-white py-2 px-5 rounded-full  hover:bg-secondary hover:text-primary"
+                className="bg-primary text-white py-2 px-4 md:px-5 rounded-full hover:bg-secondary hover:text-primary"
                 onClick={handleConfirm}
               >
                 Upload Photo
@@ -149,7 +149,7 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
 };
 
 UploadImageModal.propTypes = {
-  isModalOpen: PropType.bool.isRequired,
-  closeModal: PropType.func.isRequired,
-  handleAvatarChange: PropType.func.isRequired,
+  isModalOpen: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  handleAvatarChange: PropTypes.func.isRequired,
 };
