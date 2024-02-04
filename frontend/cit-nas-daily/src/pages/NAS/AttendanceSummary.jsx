@@ -360,11 +360,18 @@ export const AttendanceSummary = () => {
                 selectedSem={selectedSem}
                 selectedSY={selectedSY}
                 openModal={openModal}
+                isSubmitted={isSubmitted}
               />
             </div>
           </div>
         </div>
         <ValidationModal isOpen={isOpen} closeModal={closeModal} handleSubmit={handleSubmit} />
+        <Snackbar
+          message={snackbarMsg}
+          onClose={handleSnackbarClose}
+          isSnackbarVisible={isSnackbarVisible}
+          isSubmitted={isSubmitted}
+        />
       </div>
     </>
     /*<div className="justify-center w-full h-full items-center border border-solid rounded-lg">
