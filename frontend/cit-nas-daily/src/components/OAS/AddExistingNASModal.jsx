@@ -143,19 +143,15 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
     });
   };
 
-  console.log("CURRENT NAS", currentNasList);
-  console.log("NAS DATA", nasData);
-  console.log("toaddsem", toaddSem);
-
   return (
     <div>
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-999 bg-black bg-opacity-50"></div>
       )}
       <Modal show={isOpen} onClose={closeModal}>
-        <Modal.Body className="w-max">
+        <Modal.Body className="w-full">
           <div className="flex flex-row justify-start items-center gap-10 w-auto">
-            <div className="flex flex-row gap-2 items-center">
+            <div>
               <Dropdown
                 label="SY"
                 options={uniqueYears}
@@ -163,7 +159,7 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
                 onChange={(e) => handleSelectSY(e)}
               />
             </div>
-            <div className="flex flex-row gap-2 items-center">
+            <div>
               <Dropdown
                 label="Semester"
                 options={sem_options}
@@ -172,9 +168,9 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
               />
             </div>
           </div>
-          <Table hoverable className="border mt-5 w-max">
+          <Table hoverable className="border mt-5 items-center">
             <Table.Head className="border">
-              <Table.HeadCell className="text-center border">Select</Table.HeadCell>
+              <Table.HeadCell className="text-center border w-1">Select</Table.HeadCell>
               <Table.HeadCell className="text-center border w-24">ID No.</Table.HeadCell>
               <Table.HeadCell className="text-center border p-2 w-60">Name</Table.HeadCell>
               <Table.HeadCell className="text-center border w-36">Office</Table.HeadCell>
@@ -213,7 +209,7 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
         <Modal.Footer>
           <button
             type="submit"
-            className="bg-primary text-white py-2 px-4 rounded"
+            className="bg-primary text-white py-2 px-4 rounded text-xs"
             onClick={(event) => {
               closeModal();
               handleSubmit(event);
@@ -223,7 +219,7 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
             Submit
           </button>
           <button
-            className="bg-primary text-white py-2 px-4 rounded"
+            className="bg-primary text-white py-2 px-4 rounded text-xs"
             color="gray"
             onClick={() => {
               closeModal();

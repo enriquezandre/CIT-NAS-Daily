@@ -1,4 +1,3 @@
-/* eslint-disable no-case-declarations */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../assets/CSS/Login.css";
@@ -36,21 +35,24 @@ export const Login = () => {
 
       // Navigate to the respective route based on the user's role
       switch (userRole) {
-        case "NAS":
+        case "NAS": {
           const nasIdResponse = await api.get(`/NAS/${username}/id`);
           const nasId = nasIdResponse.data;
           navigate(`/nas/${nasId}`);
           break;
-        case "OAS":
+        }
+        case "OAS": {
           const oasIdResponse = await api.get(`/OAS/${username}/id`);
           const oasId = oasIdResponse.data;
           navigate(`/oas/${oasId}`);
           break;
-        case "Superior":
+        }
+        case "Superior": {
           const superiorIdResponse = await api.get(`/Superiors/${username}/id`);
           const superiorId = superiorIdResponse.data;
           navigate(`/superior/${superiorId}`);
           break;
+        }
         default:
           navigate("Unknown role");
       }

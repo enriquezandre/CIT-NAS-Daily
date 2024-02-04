@@ -183,24 +183,22 @@ export const OASStatus = () => {
     <>
       <div className="flex rounded-lg border border-gray-200 bg-white shadow-md flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2">
-            <div className={`flex items-center w-auto ${currentIndex === 0 ? "ml-9" : ""}`}>
-              <div>
+          <ul className="text-sm md:text-base lg:text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid max-[450px]:grid-cols-1 grid-cols-2 overflow-x-auto">
+            <div className="flex w-auto mb-3 ml-5 min-[450px]:mb-0">
+              <div className="flex flex-col md:flex-row justify-start md:items-center gap-3 lg:gap-10">
                 {currentIndex != 0 ? (
-                  <Button
+                  <button
                     className="text-black"
                     onClick={() => {
                       setCurrentIndex((currentIndex - 1) % nasArray.length);
                     }}
                   >
                     <HiOutlineArrowLeft className="h-6 w-6" />
-                  </Button>
+                  </button>
                 ) : (
                   ""
                 )}
-              </div>
-              <div className="flex flex-row justify-start items-center gap-10">
-                <div className="flex flex-row gap-2 items-center">
+                <div>
                   <Dropdown
                     label="SY"
                     options={uniqueYears}
@@ -208,7 +206,7 @@ export const OASStatus = () => {
                     onChange={(e) => handleSelectSY(e)}
                   />
                 </div>
-                <div className="flex flex-row gap-2 items-center">
+                <div>
                   <Dropdown
                     label="Semester"
                     options={sem_options}
@@ -218,42 +216,40 @@ export const OASStatus = () => {
                 </div>
               </div>
             </div>
-            <li className="flex justify-end">
-              <div className="flex">
-                <div className="relative w-auto">
-                  <input
-                    type="search"
-                    className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
-                    placeholder="Search NAS..."
-                    value={searchInput}
-                    onChange={handleSearchChange}
-                    required
-                  />
-                  <button
-                    type="submit"
-                    className="absolute top-0 right-0 p-2.5 text-sm font-medium h-full"
+            <div className="flex justify-end lg:items-center ml-5">
+              <div className="relative w-auto">
+                <input
+                  type="search"
+                  className="block p-2.5 w-full z-20 text-xs md:p-2 md:text-sm lg:text-base text-gray-900 rounded border"
+                  placeholder="Search NAS..."
+                  value={searchInput}
+                  onChange={handleSearchChange}
+                  required
+                />
+                <button
+                  type="submit"
+                  className="absolute top-0 right-0 p-2.5 text-xs md:text-base lg:text-lg font-medium"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 20 20"
                   >
-                    <svg
-                      className="w-4 h-4"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                      />
-                    </svg>
-                  </button>
-                </div>
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                    />
+                  </svg>
+                </button>
               </div>
               {currentIndex != maxNasId ? (
                 <Button
-                  className="text-black"
+                  className="text-black items-start py-0 lg:items-center"
                   onClick={() => {
                     setCurrentIndex((currentIndex + 1) % nasArray.length);
                   }}
@@ -263,7 +259,7 @@ export const OASStatus = () => {
               ) : (
                 ""
               )}
-            </li>
+            </div>
           </ul>
           <div className="px-5 md:px-9 py-4">
             <div className="flex gap-10 mb-7 text-xs md:text-base lg:text-lg overflow-x-auto">

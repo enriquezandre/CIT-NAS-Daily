@@ -60,20 +60,20 @@ export const Header = () => {
 
   return (
     <>
-      <div className="flex mt-5 ml-10 items-center justify-between">
+      <div className="flex mt-5 ml-10 mr-10 items-center justify-between overflow-x-auto">
         <div className="flex items-center">
-          <div className="mr-4">
+          <div className="mr-4 w-fit h-fit">
             {user.image ? (
               <Avatar alt={user.fullName} img={`data:image/png;base64,${user.image}`} rounded />
             ) : (
               <Avatar alt={user.fullName} img={placeholder} rounded />
             )}
           </div>
-          <div className="text-base" style={{ textTransform: "capitalize" }}>
+          <div className="text-xs md:text-base" style={{ textTransform: "capitalize" }}>
             {user.fullName}
           </div>
         </div>
-        <button className="text-base text-red-500 mr-10" onClick={handleLogout}>
+        <button className="text-xs md:text-base" onClick={handleLogout}>
           Logout
         </button>
       </div>

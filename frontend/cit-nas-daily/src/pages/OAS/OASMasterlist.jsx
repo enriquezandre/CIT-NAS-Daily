@@ -73,11 +73,11 @@ export const OASMasterlist = () => {
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10 max-h-screen">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md flex-col w-9/10 mb-10 max-h-screen">
         <div className="flex flex-col justify-center max-h-screen pb-3">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-2 max-h-screen">
-            <div className="flex flex-row justify-start items-center gap-10 w-auto max-h-screen">
-              <div className="flex flex-row gap-2 items-center ml-9">
+          <ul className="text-sm md:text-base lg:text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid min-[450px]:grid-cols-2 overflow-x-auto max-h-screen">
+            <div className="flex flex-col md:flex-row justify-start md:items-center gap-3 lg:gap-10 w-auto mb-3 ml-5 max-h-screen">
+              <div>
                 <Dropdown
                   label="SY"
                   options={uniqueYears}
@@ -85,7 +85,7 @@ export const OASMasterlist = () => {
                   onChange={(e) => handleSelectSY(e)}
                 />
               </div>
-              <div className="flex flex-row gap-2 items-center">
+              <div>
                 <Dropdown
                   label="Semester"
                   options={sem_options}
@@ -94,42 +94,44 @@ export const OASMasterlist = () => {
                 />
               </div>
             </div>
-            <div className="flex justify-end">
-              <button
-                className="btn btn-primary bg-secondary px-4 py-2 rounded-lg m-1 text-sm hover:bg-primary hover:text-white font-normal mr-3"
-                onClick={handleAdd}
-              >
-                Add existing NAS
-              </button>
-              <div className="relative w-1/2">
-                <input
-                  type="search"
-                  className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
-                  placeholder="Search NAS..."
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  required
-                />
+            <div>
+              <div className="flex md:justify-end ml-5 md:ml-0">
                 <button
-                  type="submit"
-                  className="absolute top-0 right-0 p-2.5 text-sm font-medium h-full"
+                  className="btn btn-primary bg-secondary min-[450px]:justify-start px-3 py-1 md:px-4 md:py-2 rounded-lg md:m-1 text-xs md:text-sm hover:bg-primary hover:text-white font-normal mr-3"
+                  onClick={handleAdd}
                 >
-                  <svg
-                    className="w-4 h-4"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                    />
-                  </svg>
+                  Add existing NAS
                 </button>
+                <div className="relative w-auto">
+                  <input
+                    type="search"
+                    className="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded border"
+                    placeholder="Search NAS..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="absolute top-0 right-0 p-2.5 text-sm font-medium"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </ul>
