@@ -113,9 +113,9 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
       const response = await api.put(`/Validation?validationId=${validationId}`, requestData);
       if (response.status === 200 || response.status === 201) {
         updateNasTimekeeping(selectedValidationItem.nasId);
-        console.log("Submitted successfully");
+        console.log("Submitted successfully!");
       } else {
-        console.error("Submission failed");
+        console.error("Submission failed.");
       }
 
       if (response.status === 200 || response.status === 201) {
@@ -173,10 +173,10 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
       if (updateResponse.status === 200 || updateResponse.status === 201) {
         setIsSubmitted(true);
         setSnackbarVisible(true); // Show the success snackbar
-        setSnackbarMsg("Status updated successfully");
+        setSnackbarMsg("Status updated successfully!");
       } else {
         setSnackbarVisible(true); // Show the error snackbar
-        setSnackbarMsg("Status update failed");
+        setSnackbarMsg("Status update failed.");
       }
     } catch (error) {
       setSnackbarVisible(true); // Show the error snackbar
