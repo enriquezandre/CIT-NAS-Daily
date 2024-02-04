@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 export const Snackbar = ({ message, onClose, isSnackbarVisible, isSubmitted }) => {
   const [visible, setVisible] = useState(true);
 
-  const duration = 3000;
+  const duration = 1500;
   useEffect(() => {
     setVisible(isSnackbarVisible);
 
