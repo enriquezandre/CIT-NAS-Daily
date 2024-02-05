@@ -116,11 +116,11 @@ export const SuperiorList = () => {
         </div>
       </div>
       <div className="flex justify-center items-center pt-2">
-        <Card className="w-3/5 m-5">
+        <Card className=" w-full md:w-3/5 m-5">
           <h5 className="text-2xl font-bold tracking-tight">
             <p>{office.officeName}</p>
           </h5>
-          <div className="grid gap-3">
+          <div className="grid gap-3 overflow-x-auto">
             {nasList.map((nas) => (
               <button
                 key={nas.id}
@@ -128,7 +128,7 @@ export const SuperiorList = () => {
                 onClick={() => handleNasClick(nas.id)}
               >
                 <Avatar rounded />
-                <span className="ml-5" style={{ textTransform: "capitalize" }}>
+                <span className="ml-5 text-xs sm:text-base" style={{ textTransform: "capitalize" }}>
                   {nas.firstName} {nas.lastName}
                 </span>
               </button>
