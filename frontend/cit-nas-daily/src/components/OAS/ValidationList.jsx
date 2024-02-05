@@ -11,9 +11,12 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
   const [isStatusModalOpen, setStatusModalOpen] = useState(false);
   const [selectedValidationItem, setSelectedValidationItem] = useState(null);
   const [nasImages, setNasImages] = useState({}); //added for image
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [isFirstSubmitted, setFirstIsSubmitted] = useState(false);
+  const [isFirstSnackbarVisible, setFirstSnackbarVisible] = useState(false);
+  const [firstSnackbarMsg, setFirstSnackbarMsg] = useState("");
+  const [isScndSubmitted, setScndIsSubmitted] = useState(false);
+  const [isScndSnackbarVisible, setScndSnackbarVisible] = useState(false);
+  const [scndSnackbarMsg, setScndSnackbarMsg] = useState("");
 
   const api = useMemo(
     () =>
@@ -111,20 +114,18 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
       };
 
       const response = await api.put(`/Validation?validationId=${validationId}`, requestData);
+
       if (response.status === 200 || response.status === 201) {
+        setFirstIsSubmitted(true);
+        setFirstSnackbarVisible(true);
+        setFirstSnackbarMsg("Status updated successfully!");
         updateNasTimekeeping(selectedValidationItem.nasId);
-        console.log("Submitted successfully!");
+        closeStatusModal(); // Close the modal
       } else {
-        console.error("Submission failed.");
+        setFirstSnackbarVisible(true);
+        setFirstSnackbarMsg("Status update failed.");
       }
-
-      if (response.status === 200 || response.status === 201) {
-        fetchValidation();
-      } else {
-        console.error("Submission failed");
-      }
-
-      closeStatusModal();
+      fetchValidation();
     } catch (error) {
       console.error(error);
     }
@@ -170,17 +171,22 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
         `/TimekeepingSummary/${nasId}/${selectedSy}/${getSemesterValue(selectedSem)}`,
         updateData
       );
+
       if (updateResponse.status === 200 || updateResponse.status === 201) {
-        setIsSubmitted(true);
-        setSnackbarVisible(true); // Show the success snackbar
-        setSnackbarMsg("Status updated successfully!");
+        // Display the second snackbar for successful status update
+        setScndIsSubmitted(true);
+        setScndSnackbarVisible(true);
+        setScndSnackbarMsg("Timekeeping updated!");
       } else {
-        setSnackbarVisible(true); // Show the error snackbar
-        setSnackbarMsg("Status update failed.");
+        // Display the second snackbar for status update failure
+        setScndSnackbarVisible(true);
+        setScndSnackbarMsg("Timekeeping not updated.");
       }
+      fetchValidation();
     } catch (error) {
-      setSnackbarVisible(true); // Show the error snackbar
-      setSnackbarMsg("An error occurred.");
+      // Display the second snackbar for an error during status update
+      setScndSnackbarVisible(true);
+      setScndSnackbarMsg("An error occurred.");
     }
   };
 
@@ -222,8 +228,12 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
     fetchNasImages();
   }, [validation]);
 
-  const handleSnackbarClose = () => {
-    setSnackbarVisible(false);
+  const handleFirstSnackbarClose = () => {
+    setFirstSnackbarVisible(false);
+  };
+
+  const handleScndSnackbarClose = () => {
+    setScndSnackbarVisible(false);
   };
 
   return (
@@ -279,10 +289,16 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
         selectedItem={selectedValidationItem}
       />
       <Snackbar
-        message={snackbarMsg}
-        onClose={handleSnackbarClose}
-        isSnackbarVisible={isSnackbarVisible}
-        isSubmitted={isSubmitted}
+        message={firstSnackbarMsg}
+        onClose={handleFirstSnackbarClose}
+        isSnackbarVisible={isFirstSnackbarVisible}
+        isSubmitted={isFirstSubmitted}
+      />
+      <Snackbar
+        message={scndSnackbarMsg}
+        onClose={handleScndSnackbarClose}
+        isSnackbarVisible={isScndSnackbarVisible}
+        isSubmitted={isScndSubmitted}
       />
     </>
   );
