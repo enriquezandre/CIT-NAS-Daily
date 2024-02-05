@@ -120,7 +120,7 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
         setFirstSnackbarVisible(true);
         setFirstSnackbarMsg("Status updated successfully!");
         updateNasTimekeeping(selectedValidationItem.nasId);
-        closeStatusModal(); // Close the modal
+        closeStatusModal();
       } else {
         setFirstSnackbarVisible(true);
         setFirstSnackbarMsg("Status update failed.");
