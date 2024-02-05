@@ -76,7 +76,13 @@ export const ActivitiesSummaryTable = ({
               return month === selectedMonth && year === second;
           }
         });
-        setActivitySummaries(filteredData);
+        setActivitySummaries((prevActivitySummaries) => {
+          if (JSON.stringify(prevActivitySummaries) !== JSON.stringify(filteredData)) {
+            return filteredData;
+          } else {
+            return prevActivitySummaries;
+          }
+        });
       } catch (error) {
         console.error(error);
       }
