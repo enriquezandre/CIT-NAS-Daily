@@ -1,56 +1,52 @@
 "use client";
 import PropTypes from "prop-types";
 import { Modal } from "flowbite-react";
-import { useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import { useState } from "react";
 
-export const ActivitiesFormModal = ({ isOpen, closeModal, currentYear, currentSem }) => {
-  const { nasId } = useParams();
+export const ActivitiesFormModal = ({
+  isOpen,
+  closeModal,
+  currentYear,
+  currentSem,
+  handleSubmit,
+}) => {
   const [activitiesOfTheDay, setActivitiesOfTheDay] = useState("");
   const [skillsLearned, setSkillsLearned] = useState("");
   const [valuesLearned, setValuesLearned] = useState("");
 
-  const getSemesterValue = useMemo(() => {
-    return (sem) => {
-      switch (sem) {
-        case "First":
-          return 0;
-        case "Second":
-          return 1;
-        case "Summer":
-          return 2;
-        default:
-          return "Invalid semester";
-      }
-    };
-  }, []);
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  //   try {
+  //     const api = axios.create({
+  //       baseURL: "https://localhost:7001/api",
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     });
 
-    try {
-      const api = axios.create({
-        baseURL: "https://localhost:7001/api",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+  //     const response = await api.post(
+  //       `https://localhost:7001/api/ActivitiesSummary/${nasId}/${currentYear}/${getSemesterValue(
+  //         currentSem
+  //       )}`,
+  //       {
+  //         activitiesOfTheDay,
+  //         skillsLearned,
+  //         valuesLearned,
+  //       }
+  //     );
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
-      const response = await api.post(
-        `https://localhost:7001/api/ActivitiesSummary/${nasId}/${currentYear}/${getSemesterValue(
-          currentSem
-        )}`,
-        {
-          activitiesOfTheDay,
-          skillsLearned,
-          valuesLearned,
-        }
-      );
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleSubmitForm = async (activitiesOfTheDay, skillsLearned, valuesLearned) => {
+    handleSubmit(activitiesOfTheDay, skillsLearned, valuesLearned);
+    setActivitiesOfTheDay("");
+    setSkillsLearned("");
+    setValuesLearned("");
+    closeModal();
   };
 
   return (
@@ -153,9 +149,9 @@ export const ActivitiesFormModal = ({ isOpen, closeModal, currentYear, currentSe
           <button
             type="submit"
             className="bg-primary text-white py-2 px-6 rounded-full  hover:bg-secondary hover:text-primary"
-            onClick={(event) => {
+            onClick={() => {
               closeModal();
-              handleSubmit(event);
+              handleSubmitForm(activitiesOfTheDay, skillsLearned, valuesLearned);
             }}
           >
             Submit
@@ -171,4 +167,5 @@ ActivitiesFormModal.propTypes = {
   closeModal: PropTypes.func.isRequired,
   currentYear: PropTypes.string.isRequired,
   currentSem: PropTypes.string.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 };

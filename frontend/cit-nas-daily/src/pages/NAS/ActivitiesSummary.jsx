@@ -1,8 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import { ActivitiesSummaryTable } from "../../components/NAS/ActivitiesSummaryTable.jsx";
 import { Dropdown } from "../../components/Dropdown.jsx";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils.js";
+import { ActivitiesFormModal } from "../../components/NAS/ActivitiesFormModal.jsx";
+import { Snackbar } from "../../components/Snackbar.jsx";
 import axios from "axios";
 
 const currentYear = calculateSchoolYear();
@@ -21,18 +24,27 @@ export const ActivitiesSummary = () => {
   const [monthOptions, setMonthOptions] = useState(first_sem);
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(-1);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const { nasId } = useParams();
+
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    []
+  );
 
   //getting school year from the /NAS/sysem
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }); // Corrected placement of the comma
-
         const response = await api.get("/NAS/sysem");
         setSyOptions(response.data);
 
@@ -45,7 +57,7 @@ export const ActivitiesSummary = () => {
     };
 
     fetchSchoolYearSemesterOptions();
-  }, []);
+  }, [api]);
 
   useEffect(() => {
     let selectedMonthIndex;
@@ -78,6 +90,14 @@ export const ActivitiesSummary = () => {
     setSelectedMonthIndex(selectedMonthIndex);
   }, [selectedSY, selectedSem, selectedMonth]);
 
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
   const handleSelectSY = (event) => {
     const value = event.target.value;
     setSelectedSY(value);
@@ -96,6 +116,52 @@ export const ActivitiesSummary = () => {
     } else {
       setSelectedMonth(value);
     }
+  };
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 2;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
+
+  const handleSubmit = async (activitiesOfTheDay, skillsLearned, valuesLearned) => {
+    try {
+      const response = await api.post(
+        `https://localhost:7001/api/ActivitiesSummary/${nasId}/${currentYear}/${getSemesterValue(
+          selectedSem
+        )}`,
+        {
+          activitiesOfTheDay,
+          skillsLearned,
+          valuesLearned,
+        }
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        setIsSubmitted(true);
+        setSnackbarVisible(true); // Show the success snackbar
+        setSnackbarMsg("Submitted successfully!");
+      } else {
+        setSnackbarVisible(true); // Show the error snackbar
+        setSnackbarMsg("Submission failed.");
+      }
+    } catch (error) {
+      setSnackbarVisible(true);
+      setSnackbarMsg("An error occurred.");
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarVisible(false);
   };
 
   return (
@@ -128,6 +194,7 @@ export const ActivitiesSummary = () => {
             selectedSY={selectedSY}
             currentYear={currentYear}
             currentSem={currentSem}
+            openModal={openModal}
           />
         </div>
       </div>
@@ -169,11 +236,25 @@ export const ActivitiesSummary = () => {
                 selectedSY={selectedSY}
                 currentYear={currentYear}
                 currentSem={currentSem}
+                openModal={openModal}
               />
             </div>
           </div>
         </div>
       </div>
+      <ActivitiesFormModal
+        isOpen={isOpen}
+        closeModal={closeModal}
+        currentYear={currentYear}
+        currentSem={currentSem}
+        handleSubmit={handleSubmit}
+      />
+      <Snackbar
+        message={snackbarMsg}
+        onClose={handleSnackbarClose}
+        isSnackbarVisible={isSnackbarVisible}
+        isSubmitted={isSubmitted}
+      />
     </>
   );
 };

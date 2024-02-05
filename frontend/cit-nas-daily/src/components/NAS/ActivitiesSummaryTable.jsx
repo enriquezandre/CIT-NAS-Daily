@@ -11,6 +11,7 @@ export const ActivitiesSummaryTable = ({
   selectedSY,
   currentYear,
   currentSem,
+  openModal,
 }) => {
   const { nasId } = useParams();
   const [activitySummaries, setActivitySummaries] = useState([]);
@@ -30,10 +31,6 @@ export const ActivitiesSummaryTable = ({
       }
     };
   }, []);
-
-  const handleAdd = () => {
-    setIsModalOpen(true);
-  };
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -130,7 +127,7 @@ export const ActivitiesSummaryTable = ({
             <Table.Cell colSpan={4} className="text-center border">
               <button
                 className="btn btn-primary bg-secondary px-4 py-2 rounded-lg m-1 text-sm hover:bg-primary hover:text-white"
-                onClick={handleAdd}
+                onClick={openModal}
               >
                 Add an entry
               </button>
@@ -154,4 +151,5 @@ ActivitiesSummaryTable.propTypes = {
   selectedSY: PropTypes.string.isRequired,
   currentYear: PropTypes.string.isRequired,
   currentSem: PropTypes.string.isRequired,
+  openModal: PropTypes.func.isRequired,
 };
