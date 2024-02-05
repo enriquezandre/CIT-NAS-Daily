@@ -20,8 +20,8 @@ export const Snackbar = ({ message, onClose, isSnackbarVisible, isSubmitted }) =
     <div
       style={{
         position: "fixed",
-        bottom: "3%", // Adjust this value for the distance from the bottom
-        left: "2%", // Adjust this value for the distance from the left
+        bottom: "3%",
+        left: "2%",
         backgroundColor: isSubmitted ? "#188754" : "#dc3546",
         color: "#fff",
         padding: "8px 16px",
