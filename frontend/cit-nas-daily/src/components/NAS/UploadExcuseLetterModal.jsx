@@ -41,10 +41,10 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
           setError("Invalid file type. Please select a PDF file.");
         }
       } else {
-        setError("No file selected");
+        setError("Please select a file.");
       }
     } catch (error) {
-      console.error("Error during file processing:", error);
+      setError("Error during file processing:", error); //snackbar
     }
   };
 
@@ -67,49 +67,54 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
   return (
     <div>
       {isOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            background: "rgba(0, 0, 0, 0.3)",
-            zIndex: 999,
-          }}
-        ></div>
+        <div className="fixed inset-0 flex items-center justify-center z-999 bg-black bg-opacity-50"></div>
       )}
-
-      <Modal
-        show={isOpen}
-        className="rounded-2xl"
-        style={{
-          padding: "0",
-          zIndex: 1000,
-          width: "30rem",
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
+      <Modal show={isOpen} onClose={handleCloseUploadModal} className="rounded-2xl" size={"md"}>
+        <Modal.Header
+          style={{
+            paddingTop: "1em",
+            paddingBottom: "1em",
+            alignItems: "center",
+            borderBottom: "2px solid #c2c4c3",
+          }}
+        >
+          <div>
+            <p className="text-center font-bold text-base">Upload Excuse Letter</p>
+          </div>
+        </Modal.Header>
         <Modal.Body>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <div>
-              <p className="font-bold text-lg">Upload Excuse Letter</p>
-            </div>
-            <div className="pt-5">
-              <input
-                type="file"
-                onChange={handleFileChange}
-                ref={fileInputRef}
-                style={{ display: "none" }}
-              />
-              <button className="bg-primary text-white py-1 px-5" onClick={handleButtonClick}>
-                Choose Files
-              </button>
-              <span className="ml-3">{selectedFileName || "No file selected"}</span>
-            </div>
-            <div className="pt-2 text-red">
-              <p>{error}</p>
+              <div
+                className="border border-gray rounded"
+                style={{ width: "20rem", display: "flex", alignItems: "center" }}
+              >
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                />
+                <button
+                  className="bg-primary text-white py-1 px-5 rounded"
+                  style={{ height: "2rem", minWidth: "8rem" }}
+                  onClick={handleButtonClick}
+                >
+                  Choose Files
+                </button>
+                <span
+                  className="ml-3"
+                  style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+                >
+                  {selectedFileName || "No file selected"}
+                </span>
+              </div>
+              <div>
+                <p className="text-sm text-gray">Accepted file types: PDF</p>
+              </div>
+              <div className="pt-3 text-red text-center">
+                <p>{error}</p>
+              </div>
             </div>
           </div>
         </Modal.Body>
@@ -119,6 +124,7 @@ export const UploadExcuseLetterModal = ({ isOpen, closeModal, handleSubmit }) =>
             paddingBottom: "0.3rem",
             display: "flex",
             justifyContent: "flex-end",
+            borderTop: "2px solid #c2c4c3",
           }}
         >
           <div className="flex justify-end items-center">

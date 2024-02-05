@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { Dropdown } from "../../components/Dropdown.jsx";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils.js";
 import { ValidationModal } from "../../components/NAS/ValidationModal.jsx";
+import { Snackbar } from "../../components/Snackbar.jsx";
 import axios from "axios";
 
 const currentYear = calculateSchoolYear();
@@ -27,20 +28,28 @@ export const AttendanceSummary = () => {
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedAbsentDate, setSelectedAbsentDate] = useState(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
   const { nasId } = useParams();
 
   // console.log(currentYear, currentSem);
 
-  const api = useMemo(
-    () =>
-      axios.create({
-        baseURL: "https://localhost:7001/api",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }),
-    []
-  );
+  const getAxiosInstance = () => {
+    return axios.create({
+      baseURL: "https://localhost:7001/api",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
+  const api = useMemo(() => getAxiosInstance(), []);
+
+  const handleSnackbarClose = () => {
+    setSnackbarVisible(false);
+  };
 
   const getSemesterValue = useMemo(() => {
     return (sem) => {
@@ -136,9 +145,8 @@ export const AttendanceSummary = () => {
   const openModal = (date) => {
     setIsOpen(true);
     setSelectedAbsentDate(date);
-
-    // console.log("Selected date:", date);
-    // console.log("Selected absent date:", selectedAbsentDate);
+    setIsSubmitted(false);
+    //set to false when modal is opened para ig sunod submit mu true nasad siya ug mutrigger nasad ang fetchValidation function
   };
 
   const closeModal = () => {
@@ -159,19 +167,23 @@ export const AttendanceSummary = () => {
         nasId: nasId,
         absenceDate: selectedAbsentDate,
         nasLetter: base64String,
-        semester: getSemesterValue(selectedSem),
+        semester: getSemesterValue(selectedSem), //selectedSem removed to view the error snackbar
         schoolYear: selectedSY,
       };
 
       const response = await api.post("/Validation", requestData);
 
       if (response.status === 200 || response.status === 201) {
-        console.log("Submitted successfully");
+        setIsSubmitted(true);
+        setSnackbarVisible(true); // Show the success snackbar
+        setSnackbarMsg("Submitted successfully!");
       } else {
-        console.error("Submission failed");
+        setSnackbarVisible(true); // Show the error snackbar
+        setSnackbarMsg("Submission failed.");
       }
     } catch (error) {
-      console.error("Error during submission:", error);
+      setSnackbarVisible(true);
+      setSnackbarMsg("An error occurred.");
     }
   };
 
@@ -228,9 +240,7 @@ export const AttendanceSummary = () => {
           />
           <DataDisplayBox
             label="Number of Unexcused Absences"
-            data={
-              timekeepingSummaries.unexcused !== null ? timekeepingSummaries.unexcused : 0
-            }
+            data={timekeepingSummaries.unexcused !== null ? timekeepingSummaries.unexcused : 0}
           />
           <DataDisplayBox
             label="Number of Excused Absences"
@@ -239,25 +249,19 @@ export const AttendanceSummary = () => {
           <DataDisplayBox
             label="Late > 10 Minutes"
             data={
-              timekeepingSummaries.lateOver10Mins !== null
-                ? timekeepingSummaries.lateOver10Mins
-                : 0
+              timekeepingSummaries.lateOver10Mins !== null ? timekeepingSummaries.lateOver10Mins : 0
             }
           />
           <DataDisplayBox
             label="Late > 45 Minutes"
             data={
-              timekeepingSummaries.lateOver45Mins !== null
-                ? timekeepingSummaries.lateOver45Mins
-                : 0
+              timekeepingSummaries.lateOver45Mins !== null ? timekeepingSummaries.lateOver45Mins : 0
             }
           />
           <DataDisplayBox
             label="FTP - Failure to Punch IN/OUT"
             data={
-              timekeepingSummaries.failedToPunch !== null
-                ? timekeepingSummaries.failedToPunch
-                : 0
+              timekeepingSummaries.failedToPunch !== null ? timekeepingSummaries.failedToPunch : 0
             }
           />
         </div>
@@ -356,103 +360,19 @@ export const AttendanceSummary = () => {
                 selectedSem={selectedSem}
                 selectedSY={selectedSY}
                 openModal={openModal}
+                isSubmitted={isSubmitted}
               />
             </div>
           </div>
         </div>
         <ValidationModal isOpen={isOpen} closeModal={closeModal} handleSubmit={handleSubmit} />
+        <Snackbar
+          message={snackbarMsg}
+          onClose={handleSnackbarClose}
+          isSnackbarVisible={isSnackbarVisible}
+          isSubmitted={isSubmitted}
+        />
       </div>
     </>
-    /*<div className="justify-center w-full h-full items-center border border-solid rounded-lg">
-      <div className="m-3 mb-10">
-        <div className="m-2">
-          <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
-            <div className="flex flex-row gap-2 items-center">
-              <Dropdown
-                label="SY"
-                options={uniqueYears}
-                selectedValue={selectedSY}
-                onChange={(e) => handleSelectSY(e)}
-              />
-            </div>
-            <div className="flex flex-row gap-2 items-center">
-              <Dropdown
-                label="SEMESTER"
-                options={sem_options}
-                selectedValue={selectedSem}
-                onChange={(e) => handleSelectSem(e)}
-              />
-            </div>
-            <div className="flex flex-row gap-2 items-center">
-              <Dropdown
-                label="MONTH"
-                options={monthOptions}
-                selectedValue={selectedMonth}
-                onChange={(e) => handleSelectedMonth(e)}
-              />
-            </div>
-          </div>
-          <div>
-            <div className="m-2">
-              <div className="flex">
-                <DataDisplayBox
-                  label="Make-up Duty Hours"
-                  data={
-                    timekeepingSummaries.makeUpDutyHours !== null
-                      ? timekeepingSummaries.makeUpDutyHours
-                      : 0
-                  }
-                />
-                <DataDisplayBox
-                  label="Number of Excused Absences"
-                  data={timekeepingSummaries.excused !== null ? timekeepingSummaries.excused : 0}
-                />
-                <DataDisplayBox
-                  label="Late > 45 Minutes"
-                  data={
-                    timekeepingSummaries.lateOver45Mins !== null
-                      ? timekeepingSummaries.lateOver45Mins
-                      : 0
-                  }
-                />
-              </div>
-              <div className="flex">
-                <DataDisplayBox
-                  label="Number of Unexcused Absences"
-                  data={
-                    timekeepingSummaries.unexcused !== null ? timekeepingSummaries.unexcused : 0
-                  }
-                />
-                <DataDisplayBox
-                  label="Late > 10 Minutes"
-                  data={
-                    timekeepingSummaries.lateOver10Mins !== null
-                      ? timekeepingSummaries.lateOver10Mins
-                      : 0
-                  }
-                />
-                <DataDisplayBox
-                  label="FTP - Failure to Punch IN/OUT"
-                  data={
-                    timekeepingSummaries.failedToPunch !== null
-                      ? timekeepingSummaries.failedToPunch
-                      : 0
-                  }
-                />
-              </div>
-            </div>
-          </div>
-          <div className="m-5">
-            <AttendanceSummaryTable
-              selectedMonth={selectedMonthIndex}
-              selectedSem={selectedSem}
-              selectedSY={selectedSY}
-              openModal={openModal}
-            />
-          </div>
-        </div>
-      </div>
-      <ValidationModal isOpen={isOpen} closeModal={closeModal} handleSubmit={handleSubmit} />
-    </div>*/
   );
 };

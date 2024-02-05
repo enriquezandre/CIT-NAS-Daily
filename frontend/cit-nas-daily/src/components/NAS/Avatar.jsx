@@ -1,16 +1,6 @@
 import PropTypes from "prop-types";
 
-export const Avatar = ({ avatar, handleAvatarChange }) => {
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file.size > 500 * 1024) {
-      // 500KB in bytes
-      alert("File size must be less than 500KB.");
-    } else {
-      handleAvatarChange(e);
-    }
-  };
-
+export const Avatar = ({ avatar, openModal }) => {
   return (
     <div
       className="avatar-square"
@@ -29,19 +19,11 @@ export const Avatar = ({ avatar, handleAvatarChange }) => {
           //src={URL.createObjectURL(avatar)}
           alt="Avatar"
           className="avatar-image"
-          style={{ width: "100%", height: "100%" }}
+          style={{ width: "100%", height: "100%", cursor: "pointer" }}
+          onClick={openModal}
         />
       ) : (
-        <label htmlFor="avatar" style={{ cursor: "pointer" }}>
-          Upload Photo
-          <input
-            type="file"
-            id="avatar"
-            accept="image/*"
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
-        </label>
+        <button onClick={openModal}>Upload Photo</button>
       )}
     </div>
   );
@@ -49,5 +31,5 @@ export const Avatar = ({ avatar, handleAvatarChange }) => {
 
 Avatar.propTypes = {
   avatar: PropTypes.string,
-  handleAvatarChange: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
 };

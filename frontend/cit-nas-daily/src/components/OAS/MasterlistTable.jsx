@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import ProgramDropdown from "../ProgramDropdown";
 import OfficeDropdown from "../OfficeDropdown";
+import { Snackbar } from "../../components/Snackbar.jsx";
 
 export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitted }) => {
   const [nasData, setNasData] = useState([]);
@@ -16,6 +17,9 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [nasYearLevel, setNasYearLevel] = useState(null);
   const [nasUnitsAllowed, setNasUnitsAllowed] = useState(null);
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
   const nasYearLvlRef = useRef();
   const nasUnitsAllowedRef = useRef();
 
@@ -75,6 +79,10 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
     setSelectedOfficeId(officeId);
   };
 
+  const handleSnackbarClose = () => {
+    setSnackbarVisible(false);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setToUpdate(!toUpdate);
@@ -92,12 +100,15 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
       const response = await api.put(`/NAS/${nasId}`, data);
       if (response.status === 200) {
         setToSubmit(false);
-        alert("NAS updated successfully!");
+        setIsUpdated(true);
+        setSnackbarVisible(true);
+        setSnackbarMsg("Updated successfully!");
       }
     } catch (error) {
       console.log(error);
       if (error.response.status === 400) {
-        alert("Failed to update NAS.");
+        setSnackbarVisible(true);
+        setSnackbarMsg("Failed to update.");
       }
     }
   };
@@ -342,6 +353,12 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
           ))}
         </tbody>
       </table>
+      <Snackbar
+        message={snackbarMsg}
+        onClose={handleSnackbarClose}
+        isSnackbarVisible={isSnackbarVisible}
+        isSubmitted={isUpdated}
+      />
     </div>
   );
 };

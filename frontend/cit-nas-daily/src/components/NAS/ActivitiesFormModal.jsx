@@ -1,56 +1,25 @@
 "use client";
 import PropTypes from "prop-types";
 import { Modal } from "flowbite-react";
-import { useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import { useState } from "react";
 
-export const ActivitiesFormModal = ({ isOpen, closeModal, currentYear, currentSem }) => {
-  const { nasId } = useParams();
+export const ActivitiesFormModal = ({
+  isOpen,
+  closeModal,
+  currentYear,
+  currentSem,
+  handleSubmit,
+}) => {
   const [activitiesOfTheDay, setActivitiesOfTheDay] = useState("");
   const [skillsLearned, setSkillsLearned] = useState("");
   const [valuesLearned, setValuesLearned] = useState("");
 
-  const getSemesterValue = useMemo(() => {
-    return (sem) => {
-      switch (sem) {
-        case "First":
-          return 0;
-        case "Second":
-          return 1;
-        case "Summer":
-          return 2;
-        default:
-          return "Invalid semester";
-      }
-    };
-  }, []);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    try {
-      const api = axios.create({
-        baseURL: "https://localhost:7001/api",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      const response = await api.post(
-        `https://localhost:7001/api/ActivitiesSummary/${nasId}/${currentYear}/${getSemesterValue(
-          currentSem
-        )}`,
-        {
-          activitiesOfTheDay,
-          skillsLearned,
-          valuesLearned,
-        }
-      );
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleSubmitForm = async (activitiesOfTheDay, skillsLearned, valuesLearned) => {
+    handleSubmit(activitiesOfTheDay, skillsLearned, valuesLearned);
+    setActivitiesOfTheDay("");
+    setSkillsLearned("");
+    setValuesLearned("");
+    closeModal();
   };
 
   return (
@@ -59,8 +28,20 @@ export const ActivitiesFormModal = ({ isOpen, closeModal, currentYear, currentSe
         <div className="fixed inset-0 flex items-center justify-center z-999 bg-black bg-opacity-50"></div>
       )}
       <Modal show={isOpen} onClose={closeModal}>
+        <Modal.Header
+          style={{
+            paddingTop: "1em",
+            paddingBottom: "1em",
+            alignItems: "center",
+            borderBottom: "2px solid #c2c4c3",
+          }}
+        >
+          <div>
+            <p className="text-center font-bold">NSWA Form</p>
+          </div>
+        </Modal.Header>
         <Modal.Body>
-          <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6">
+          <div className="flex flex-row justify-start items-center gap-10 mb-6">
             <div className="flex flex-row gap-2 items-center">
               <div className="mr-2">SY:</div>
               <select
@@ -122,23 +103,31 @@ export const ActivitiesFormModal = ({ isOpen, closeModal, currentYear, currentSe
             </div>
           </div>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer
+          style={{
+            paddingTop: "1rem",
+            paddingBottom: "1rem",
+            display: "flex",
+            justifyContent: "flex-end",
+            borderTop: "2px solid #c2c4c3",
+          }}
+        >
           <button
-            type="submit"
-            className="bg-primary text-white py-2 px-4 rounded"
-            onClick={(event) => {
-              closeModal();
-              handleSubmit(event);
-            }}
-          >
-            Submit
-          </button>
-          <button
-            className="bg-primary text-white py-2 px-4 rounded"
+            className="bg-primary text-white py-2 px-6 rounded-full  hover:bg-secondary hover:text-primary"
             color="gray"
             onClick={closeModal}
           >
             Cancel
+          </button>
+          <button
+            type="submit"
+            className="bg-primary text-white py-2 px-6 rounded-full  hover:bg-secondary hover:text-primary"
+            onClick={() => {
+              closeModal();
+              handleSubmitForm(activitiesOfTheDay, skillsLearned, valuesLearned);
+            }}
+          >
+            Submit
           </button>
         </Modal.Footer>
       </Modal>
@@ -151,4 +140,5 @@ ActivitiesFormModal.propTypes = {
   closeModal: PropTypes.func.isRequired,
   currentYear: PropTypes.string.isRequired,
   currentSem: PropTypes.string.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 };

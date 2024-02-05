@@ -5,6 +5,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Modal } from "flowbite-react";
 import { Dropdown } from "../Dropdown";
 import axios from "axios";
+import { Snackbar } from "../../components/Snackbar.jsx";
 
 export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onSubmitted }) => {
   // eslint-disable-next-line no-unused-vars
@@ -16,6 +17,9 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectedSem, setSelectedSem] = useState("First");
   const sem_options = ["First", "Second", "Summer"];
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
 
   const getSemesterValue = useMemo(() => {
     return (sem) => {
@@ -110,13 +114,21 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
       semester: getSemesterValue(toaddSem),
       year: toaddSY,
     };
-    console.log("DATA", data);
+    // console.log("DATA", data);
     try {
       const response = await api.put(`https://localhost:7001/api/NAS`, data);
-      console.log(response);
       onSubmitted(true);
+      if (response.status === 200 || response.status === 201) {
+        setIsSubmitted(true);
+        setSnackbarVisible(true); // Show the success snackbar
+        setSnackbarMsg("Added successfully!");
+      } else {
+        setSnackbarVisible(true); // Show the error snackbar
+        setSnackbarMsg("Failed to add NAS.");
+      }
     } catch (error) {
-      console.error(error);
+      setSnackbarVisible(true); // Show the error snackbar
+      setSnackbarMsg("Failed to add NAS.");
     }
   };
 
@@ -128,6 +140,10 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
   const handleSelectSem = (event) => {
     const value = event.target.value;
     setSelectedSem(value);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarVisible(false);
   };
 
   const handleCheckboxClick = (id) => {
@@ -230,6 +246,12 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
           </button>
         </Modal.Footer>
       </Modal>
+      <Snackbar
+        message={snackbarMsg}
+        onClose={handleSnackbarClose}
+        isSnackbarVisible={isSnackbarVisible}
+        isSubmitted={isSubmitted}
+      />
     </div>
   );
 };

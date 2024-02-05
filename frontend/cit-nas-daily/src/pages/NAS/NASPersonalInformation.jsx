@@ -3,6 +3,7 @@ import axios from "axios";
 import { Avatar } from "../../components/NAS/Avatar";
 import { PersonalInformation as Field } from "../../components/NAS/PersonalInformation";
 import { useParams } from "react-router-dom";
+import { UploadImageModal } from "../../components/UploadImageModal";
 
 export const NASPersonalInformation = () => {
   const { nasId } = useParams();
@@ -17,6 +18,7 @@ export const NASPersonalInformation = () => {
   const [office, setOffice] = useState("");
   const [dateStarted, setDateStarted] = useState("");
   const [avatar, setAvatar] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const api = useMemo(
     () =>
@@ -28,6 +30,14 @@ export const NASPersonalInformation = () => {
       }),
     []
   );
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     const fetchNas = async () => {
@@ -56,15 +66,15 @@ export const NASPersonalInformation = () => {
     fetchNas();
   }, [nasId, api]);
 
-  const handleAvatarChange = async (e) => {
-    const file = e.target.files[0];
+  const handleAvatarChange = async (selectedFile) => {
+    const file = selectedFile;
 
     if (file) {
       try {
         const formData = new FormData();
         formData.append("file", file);
 
-        const response = await api.put("", formData, {
+        const response = await api.put(`/NAS/photo/${nasId}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -73,6 +83,7 @@ export const NASPersonalInformation = () => {
         if (response.status === 200) {
           const responseData = response.data;
           setAvatar(responseData.image);
+          console.log("Image uploaded successfully");
           window.location.reload();
         } else {
           console.error("Image upload failed");
@@ -87,7 +98,7 @@ export const NASPersonalInformation = () => {
     <>
       <div className="block md:hidden justify-center w-full h-full items-center border border-solid rounded-lg p-3">
         <div className="flex justify-center">
-          <Avatar avatar={avatar} handleAvatarChange={handleAvatarChange} />
+          <Avatar avatar={avatar} openModal={openModal} />
         </div>
         <Field
           label="Student ID:"
@@ -236,7 +247,7 @@ export const NASPersonalInformation = () => {
             </div>
           </div>
           <div className="m-3 flex-2">
-            <Avatar avatar={avatar} handleAvatarChange={handleAvatarChange} />
+            <Avatar avatar={avatar} openModal={openModal} />
           </div>
         </div>
         <hr className="my-5 border-t-2 border-gray-300 mx-2" />
@@ -283,6 +294,12 @@ export const NASPersonalInformation = () => {
           </div>
         </div>
       </div>
+      <UploadImageModal
+        isModalOpen={isModalOpen}
+        closeModal={closeModal}
+        handleAvatarChange={handleAvatarChange}
+        avatar={avatar}
+      />
     </>
   );
 };

@@ -1,10 +1,14 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState } from "react";
+import { Snackbar } from "../components/Snackbar";
 import axios from "axios";
 
 export const UpdatePassword = () => {
   const currentpassRef = useRef();
   const newpassRef = useRef();
   const retypepassRef = useRef();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
 
   const api = useMemo(
     () =>
@@ -17,6 +21,10 @@ export const UpdatePassword = () => {
     []
   );
 
+  const handleSnackbarClose = () => {
+    setSnackbarVisible(false);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -25,7 +33,8 @@ export const UpdatePassword = () => {
     const retypePass = retypepassRef.current.value;
 
     if (newPass !== retypePass) {
-      alert("New password and Retyped password do not match!");
+      setSnackbarVisible(true); // Show the success snackbar
+      setSnackbarMsg("Passwords do not match. Please try again.");
       return;
     }
 
@@ -41,15 +50,22 @@ export const UpdatePassword = () => {
       const response = await api.put("/Users/ChangePassword", data);
 
       if (response.status === 200) {
-        alert("Password updated successfully!");
+        setIsSubmitted(true);
+        setSnackbarVisible(true); // Show the success snackbar
+        setSnackbarMsg("Updated successfully!");
         currentpassRef.current.value = "";
         newpassRef.current.value = "";
         retypepassRef.current.value = "";
+      } else {
+        setIsSubmitted(false);
+        setSnackbarVisible(true); // Show the error snackbar
+        setSnackbarMsg("Update failed. Please try again.");
       }
     } catch (error) {
-      console.log(error);
       if (error.response.status === 400) {
-        alert("Failed to change password. Please ensure that the password is correct.");
+        setIsSubmitted(false);
+        setSnackbarVisible(true); // Show the error snackbar
+        setSnackbarMsg("Incorrect password. Please try again.");
       }
     }
   };
@@ -112,6 +128,12 @@ export const UpdatePassword = () => {
           </button>
         </form>
       </div>
+      <Snackbar
+        message={snackbarMsg}
+        onClose={handleSnackbarClose}
+        isSnackbarVisible={isSnackbarVisible}
+        isSubmitted={isSubmitted}
+      />
     </>
   );
 };

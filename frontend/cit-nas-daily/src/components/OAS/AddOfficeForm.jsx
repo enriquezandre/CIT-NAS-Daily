@@ -1,8 +1,13 @@
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
+import { Snackbar } from "../Snackbar";
 import axios from "axios";
 
 export const AddOfficeForm = () => {
   const officenameRef = useRef();
+  const [isSubmitted, setSubmitted] = useState(false);
+  const [isSnackbarVisible, setIsSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [genError, setGenError] = useState("");
   const api = useMemo(
     () =>
       axios.create({
@@ -19,7 +24,7 @@ export const AddOfficeForm = () => {
 
     const officename = officenameRef.current.value;
     if (!officename) {
-      alert("Please enter office name.");
+      setGenError("Please enter office name.");
       return;
     }
 
@@ -30,14 +35,28 @@ export const AddOfficeForm = () => {
       });
       console.log(registeroffice);
       if (registeroffice.status === 200 || registeroffice.status === 201) {
-        alert("Submitted successfully");
+        setSubmitted(true);
+        setIsSnackbarVisible(true);
+        setSnackbarMsg("Office added successfully!");
         officenameRef.current.value = "";
       } else {
-        alert("Submission failed");
+        setSubmitted(false);
+        setIsSnackbarVisible(true);
+        setSnackbarMsg("Office not added. Please try again.");
       }
     } catch (error) {
-      console.error(error);
+      setSubmitted(false);
+      setIsSnackbarVisible(true);
+      setSnackbarMsg("Office not added. Please try again.");
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setIsSnackbarVisible(false);
+  };
+
+  const updateGenError = () => {
+    setGenError("");
   };
 
   return (
@@ -62,7 +81,9 @@ export const AddOfficeForm = () => {
                   className="bg-gray-50 border border-gray text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                   placeholder="Office name"
                   required=""
+                  onChange={updateGenError}
                 />
+                <p className="text-red text-sm">{genError}</p>
               </div>
             </div>
             <button
@@ -75,6 +96,12 @@ export const AddOfficeForm = () => {
           </form>
         </div>
       </section>
+      <Snackbar
+        message={snackbarMsg}
+        onClose={handleSnackbarClose}
+        isSnackbarVisible={isSnackbarVisible}
+        isSubmitted={isSubmitted}
+      />
     </div>
   );
 };

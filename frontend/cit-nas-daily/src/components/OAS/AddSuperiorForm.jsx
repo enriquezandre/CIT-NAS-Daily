@@ -1,4 +1,5 @@
 import { useMemo, useRef, useEffect, useState } from "react";
+import { Snackbar } from "../Snackbar";
 import axios from "axios";
 
 export const AddSuperiorForm = () => {
@@ -7,6 +8,10 @@ export const AddSuperiorForm = () => {
   const firstnameRef = useRef();
   const officeRef = useRef();
   const [submitted, setSubmitted] = useState(false);
+  const [isSnackbarVisible, setIsSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [genError, setGenError] = useState("");
+  const [officeError, setOfficeError] = useState("");
 
   const api = useMemo(
     () =>
@@ -35,6 +40,18 @@ export const AddSuperiorForm = () => {
     fetchOffices();
   }, [api, submitted]);
 
+  const handleSnackbarClose = () => {
+    setIsSnackbarVisible(false);
+  };
+
+  const updateOfficeError = () => {
+    setOfficeError("");
+  };
+
+  const updateGenError = () => {
+    setGenError("");
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -46,13 +63,13 @@ export const AddSuperiorForm = () => {
     const inputs = [lastname, firstname, officeId, username];
     for (let i = 0; i < inputs.length; i++) {
       if (!inputs[i]) {
-        alert("Please fill out all fields.");
+        setGenError("Please fill out all fields.");
         return;
       }
     }
 
     if (officeId === "Select office") {
-      alert("Please select an office.");
+      setOfficeError("Please select an office.");
       return;
     }
 
@@ -89,13 +106,16 @@ export const AddSuperiorForm = () => {
 
     const officeresponse = await api.put(`/Offices`, officeData);
     if (officeresponse.status === 200 || officeresponse.status === 201) {
-      alert("Submitted successfully");
+      setSubmitted(true);
+      setIsSnackbarVisible(true);
+      setSnackbarMsg("Superior added successfully!");
       firstnameRef.current.value = "";
       lastnameRef.current.value = "";
       officeRef.current.value = "Select office";
-      setSubmitted(true);
     } else {
-      alert("Submission failed");
+      setSubmitted(false);
+      setIsSnackbarVisible(true);
+      setSnackbarMsg("Failed to add Superior. Please try again.");
     }
   };
 
@@ -118,6 +138,7 @@ export const AddSuperiorForm = () => {
                   className="bg-gray-50 border border-gray text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                   placeholder="Last name"
                   required=""
+                  onChange={updateGenError}
                 />
               </div>
               <div className="w-full">
@@ -132,6 +153,7 @@ export const AddSuperiorForm = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="First name"
                   required=""
+                  onChange={updateGenError}
                 />
               </div>
               <div>
@@ -142,6 +164,7 @@ export const AddSuperiorForm = () => {
                   ref={officeRef}
                   id="category"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
+                  onChange={updateOfficeError}
                 >
                   <option selected="">Select office</option>
                   {offices.map((office) => (
@@ -150,6 +173,7 @@ export const AddSuperiorForm = () => {
                     </option>
                   ))}
                 </select>
+                <p className="text-red text-sm">{officeError}</p>
               </div>
             </div>
             <button
@@ -159,9 +183,16 @@ export const AddSuperiorForm = () => {
             >
               Add
             </button>
+            <p className="text-red text-sm">{genError}</p>
           </form>
         </div>
       </section>
+      <Snackbar
+        message={snackbarMsg}
+        onClose={handleSnackbarClose}
+        isSnackbarVisible={isSnackbarVisible}
+        isSubmitted={submitted}
+      />
     </div>
   );
 };

@@ -174,58 +174,70 @@ export const SpecificNASAttendance = () => {
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
-        <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
-            <div className="font-bold ml-10" style={{ textTransform: "uppercase" }}>
-              NAS NAME: {lastName}, {firstName} {middleName}
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md flex-col w-9/10 mb-10">
+        <div className="flex h-full flex-col">
+          <ul className="text-sm md:text-base lg:text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid max-[450px]:grid-cols-1 grid-cols-2 overflow-x-auto">
+            <div className="flex w-auto mb-3 ml-5 min-[450px]:mb-0">
+              <div className="flex flex-col lg:flex-row justify-start lg:items-center gap-3 lg:gap-10">
+                <div>
+                  <Dropdown
+                    label="SY"
+                    options={uniqueYears}
+                    selectedValue={selectedSY}
+                    onChange={(e) => handleSelectSY(e)}
+                  />
+                </div>
+                <div>
+                  <Dropdown
+                    label="Semester"
+                    options={sem_options}
+                    selectedValue={selectedSem}
+                    onChange={(e) => handleSelectSem(e)}
+                  />
+                </div>
+                <div>
+                  <Dropdown
+                    label="Month"
+                    options={monthOptions}
+                    selectedValue={selectedMonth}
+                    onChange={(e) => handleSelectedMonth(e)}
+                  />
+                </div>
+              </div>
             </div>
-            <li>
-              <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
-                DEPT/OFFICE: {office}
-              </p>
-            </li>
           </ul>
-          <div className="px-8 py-4">
-            <div className="flex flex-row justify-start items-center gap-10 mt-2 mb-8">
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="SY"
-                  options={uniqueYears}
-                  selectedValue={selectedSY}
-                  onChange={(e) => handleSelectSY(e)}
-                />
+          <div className="px-5 md:px-9 py-4">
+            <div className="flex gap-10 mb-7 text-xs md:text-base lg:text-lg overflow-x-auto">
+              <div className="font-bold" style={{ textTransform: "uppercase" }}>
+                NAS NAME: {lastName}, {firstName} {middleName}
               </div>
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="SEMESTER"
-                  options={sem_options}
-                  selectedValue={selectedSem}
-                  onChange={(e) => handleSelectSem(e)}
-                />
-              </div>
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="MONTH"
-                  options={monthOptions}
-                  selectedValue={selectedMonth}
-                  onChange={(e) => handleSelectedMonth(e)}
-                />
+              <div>
+                <p className="font-bold" style={{ textTransform: "uppercase" }}>
+                  DEPT/OFFICE: {office}
+                </p>
               </div>
             </div>
-            <div className="flex flex-col justify-center items-center gap-4">
-              <p className="text-xl font-bold text-primary">MONTHLY SUMMARY OF ABSENCES/LATE</p>
-              <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
-              <p className="text-xl font-bold text-primary">WEEKLY ATTENDANCE</p>
-              <WeeklyAttendance
-                nasId={nasId}
-                firstName={firstName}
-                lastName={lastName}
-                middleName={middleName}
-                selectedMonth={selectedMonthIndex}
-                selectedSem={selectedSem}
-                selectedSY={selectedSY}
-              />
+            <div className="flex flex-col justify-center gap-2 md:gap-4">
+              <p className="text-xs md:text-base lg:text-xl text-center font-bold text-primary overflow-x-auto">
+                MONTHLY SUMMARY OF ABSENCES/LATE
+              </p>
+              <div className="overflow-x-auto">
+                <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
+              </div>
+              <p className="text-xs md:text-base lg:text-xl text-center font-bold text-primary overflow-x-auto">
+                WEEKLY ATTENDANCE
+              </p>
+              <div className="overflow-x-auto">
+                <WeeklyAttendance
+                  nasId={nasId}
+                  firstName={firstName}
+                  lastName={lastName}
+                  middleName={middleName}
+                  selectedMonth={selectedMonthIndex}
+                  selectedSem={selectedSem}
+                  selectedSY={selectedSY}
+                />
+              </div>
             </div>
           </div>
         </div>

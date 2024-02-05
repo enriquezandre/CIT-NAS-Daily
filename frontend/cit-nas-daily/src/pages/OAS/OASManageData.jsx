@@ -6,6 +6,7 @@ import axios from "axios";
 import { AddSuperiorForm } from "../../components/OAS/AddSuperiorForm";
 import { AddOfficeForm } from "../../components/OAS/AddOfficeForm";
 import { UpdatePassword } from "../../components/UpdatePassword";
+import { Snackbar } from "../../components/Snackbar";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
@@ -20,6 +21,13 @@ export const OASManageData = () => {
   const sem_options = ["First", "Second", "Summer"];
   // eslint-disable-next-line no-unused-vars
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
+  const [isFirstSubmitted, setFirstIsSubmitted] = useState(false);
+  const [isFirstSnackbarVisible, setFirstSnackbarVisible] = useState(false);
+  const [firstSnackbarMsg, setFirstSnackbarMsg] = useState("");
+  const [isScndSubmitted, setScndIsSubmitted] = useState(false);
+  const [isScndSnackbarVisible, setScndSnackbarVisible] = useState(false);
+  const [scndSnackbarMsg, setScndSnackbarMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const api = useMemo(
     () =>
@@ -46,6 +54,14 @@ export const OASManageData = () => {
       }
     };
   }, []);
+
+  const handleFirstSnackbarClose = () => {
+    setFirstSnackbarVisible(false);
+  };
+
+  const handleScndSnackbarClose = () => {
+    setScndSnackbarVisible(false);
+  };
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -98,11 +114,15 @@ export const OASManageData = () => {
     ];
 
     if (!allowedTypes.includes(file.type)) {
-      alert("Invalid file type. Please upload an Excel file.");
+      setErrorMsg("Invalid file type. Please upload an Excel file.");
       return;
     }
 
     setFileUploaded(file);
+  };
+
+  const updateErrorMsg = () => {
+    setErrorMsg("");
   };
 
   const updateNasTimekeeping = async () => {
@@ -122,55 +142,93 @@ export const OASManageData = () => {
     }
   };
 
-  //function for checking attendance and schedule for each NAS
+  const fetchDTRData = async (firstName, lastName, middleName) => {
+    const response = await api.get(
+      `DTR/${selectedSY}/${selectedSemValue}/${lastName}/${firstName}?middleName=${middleName}`
+    );
+    return response.data;
+  };
+
+  const fetchScheduleData = async (nasId) => {
+    const response = await api.get(`/Schedule/${nasId}/${selectedSY}/${selectedSemValue}`);
+    const scheduleData = response.data;
+
+    if (Array.isArray(scheduleData.schedules)) {
+      scheduleData.schedules = scheduleData.schedules.sort(
+        (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+      );
+    }
+    return scheduleData;
+  };
+
+  //function for checking attendance and schedule for each NAS, note: to be optimized pa
   const checkAttendanceAndSchedule = async (nasId, firstName, lastName, middleName) => {
     try {
-      const dtrresponse = await api.get(
-        `DTR/${selectedSY}/${selectedSemValue}/${firstName}/${lastName}?middleName=${middleName}`
-      );
+      const dtrdata = await fetchDTRData(firstName, lastName, middleName);
+      const scheduleData = await fetchScheduleData(nasId);
 
-      const dtrdata = dtrresponse.data;
-
-      const scheduleResponse = await api.get(
-        `/Schedule/${nasId}/${selectedSY}/${selectedSemValue}`
-      );
-      const scheduleData = scheduleResponse.data;
-
-      // Calculate the totals for failedToPunch, lateOver10Mins, and lateOver45Mins
       let totalFailedToPunch = 0;
       let totalLateOver10Mins = 0;
       let totalLateOver45Mins = 0;
 
+      // Loop through each day in the DTR and compare it with the schedule and calculate the totals for failedToPunch, lateOver10Mins, and lateOver45Mins
       const attendanceSummaries = dtrdata.dailyTimeRecords.map((attendance) => {
         const attendanceDate = new Date(attendance.date);
 
-        // Adjust dayOfWeek calculation for Monday - Saturday week
+        //Adjust dayOfWeek calculation for Monday - Saturday
         const dayOfWeek = (attendanceDate.getDay() + 6) % 7;
-        const schedule = scheduleData.schedules.find((sched) => sched.dayOfWeek === dayOfWeek);
+        let schedule1 = null;
+        let schedule2 = "No record";
 
-        //check if there is FTP in dtr
-        if (attendance.timeIn === "FTP IN" || attendance.timeOut === "FTP OUT") {
-          totalFailedToPunch = totalFailedToPunch + 1; //working
+        const schedulesForDay = scheduleData.schedules.filter(
+          (sched) => sched.dayOfWeek === dayOfWeek
+        );
+
+        if (schedulesForDay.length >= 1) {
+          // If at least one schedule is found, assign the first schedule to schedule1
+          schedule1 = schedulesForDay[0];
+        }
+
+        if (schedulesForDay.length >= 2) {
+          // If at least two schedules are found (broken sched), assign the second schedule to schedule2
+          schedule2 = schedulesForDay[1];
+        }
+
+        if (attendance.punch1 === "FTP IN" || attendance.punch2 === "FTP OUT") {
+          totalFailedToPunch = totalFailedToPunch + 1;
+        }
+
+        if (attendance.punch3 === "FTP IN" || attendance.punch4 === "FTP OUT") {
+          totalFailedToPunch = totalFailedToPunch + 1;
         }
 
         //check if there is L10 and L45
-        const timeIn = new Date("2023-08-14 " + formatDtrTime(attendance.timeIn));
-        const schedStartTime = new Date(schedule.startTime);
+        const timeIn1 = new Date("2023-08-14 " + formatDtrTime(attendance.punch1));
+        const timeIn2 = new Date("2023-08-14 " + formatDtrTime(attendance.punch3)); //for broken sched
+        const schedStartTime1 = new Date(schedule1.startTime);
+        const schedStartTime2 = new Date(schedule2?.startTime);
 
         // Extract only the hours and minutes from the date objects
-        const hoursDiff = timeIn.getHours() - schedStartTime.getHours();
-        const minutesDiff = timeIn.getMinutes() - schedStartTime.getMinutes();
+        const hoursDiff1 = timeIn1.getHours() - schedStartTime1.getHours();
+        const minutesDiff1 = timeIn1.getMinutes() - schedStartTime1.getMinutes();
+        const hoursDiff2 = timeIn2.getHours() - schedStartTime2.getHours();
+        const minutesDiff2 = timeIn2.getMinutes() - schedStartTime2.getMinutes();
 
         // Convert the time difference to minutes
-        const totalMinutesDifference = hoursDiff * 60 + minutesDiff;
+        const totalMinutesDifference1 = hoursDiff1 * 60 + minutesDiff1;
+        const totalMinutesDifference2 = hoursDiff2 * 60 + minutesDiff2;
 
-        if (totalMinutesDifference > 45) {
+        if (totalMinutesDifference1 > 45) {
           totalLateOver45Mins = totalLateOver45Mins + 1;
-        } else if (totalMinutesDifference > 10) {
+        } else if (totalMinutesDifference1 > 10) {
           totalLateOver10Mins = totalLateOver10Mins + 1;
         }
 
-        console.log("NAS Id: " + nasId + "- NAS timeIn/schedule :" + timeIn, schedStartTime);
+        if (totalMinutesDifference2 > 45) {
+          totalLateOver45Mins = totalLateOver45Mins + 1;
+        } else if (totalMinutesDifference2 > 10) {
+          totalLateOver10Mins = totalLateOver10Mins + 1;
+        }
 
         return attendance;
       });
@@ -189,15 +247,26 @@ export const OASManageData = () => {
           makeUpDutyHours: 0,
         }
       );
-      console.log(postResponse);
+
+      if (postResponse.status === 200 || postResponse.status === 201) {
+        setScndIsSubmitted(true);
+        setScndSnackbarVisible(true);
+        setScndSnackbarMsg("Timekeeping updated!");
+      } else {
+        setScndIsSubmitted(false);
+        setScndSnackbarVisible(true);
+        setScndSnackbarMsg("Timekeeping update failed.");
+      }
     } catch (error) {
-      console.error(error);
+      setScndIsSubmitted(false);
+      setScndSnackbarVisible(true);
+      setScndSnackbarMsg("Timekeeping update failed.");
     }
   };
 
   const handleSubmit = async () => {
     if (!fileUploaded) {
-      alert("No file uploaded");
+      setErrorMsg("No file uploaded. Please select a file.");
       return;
     }
     const formData = new FormData();
@@ -214,14 +283,18 @@ export const OASManageData = () => {
         }
       );
       if (response.status === 200) {
-        alert("File uploaded successfully");
+        setFirstIsSubmitted(true);
+        setFirstSnackbarVisible(true);
+        setFirstSnackbarMsg("File uploaded sucessfully!");
         setFileUploaded(false); // Reset the file input after successful upload
         updateNasTimekeeping();
       } else {
-        alert("File upload failed");
+        setFirstSnackbarVisible(true);
+        setFirstSnackbarMsg("File upload failed.");
       }
     } catch (error) {
-      console.error("Error uploading file: ", error);
+      setFirstSnackbarVisible(true);
+      setFirstSnackbarMsg("An error occurred.");
     }
   };
 
@@ -241,10 +314,12 @@ export const OASManageData = () => {
                     accept=".xls,.xlsx"
                   />
                 </div>
+
                 {fileUploaded ? (
                   <button
                     className="py-2 rounded-md bg-secondary w-24 items-center justify center hover:bg-primary hover:text-white text-sm md:text-lg lg:text-xl"
                     onClick={handleSubmit}
+                    onChange={updateErrorMsg}
                   >
                     Submit
                   </button>
@@ -271,6 +346,7 @@ export const OASManageData = () => {
                 </div>
               </div>
             </div>
+            <p className="text-red"> {errorMsg}</p>
             <hr className="my-5 border-t-2 border-gray-300" />
             <div>
               <AddNASForm />
@@ -295,6 +371,18 @@ export const OASManageData = () => {
           </div>
         </div>
       </div>
+      <Snackbar
+        message={firstSnackbarMsg}
+        onClose={handleFirstSnackbarClose}
+        isSnackbarVisible={isFirstSnackbarVisible}
+        isSubmitted={isFirstSubmitted}
+      />
+      <Snackbar
+        message={scndSnackbarMsg}
+        onClose={handleScndSnackbarClose}
+        isSnackbarVisible={isScndSnackbarVisible}
+        isSubmitted={isScndSubmitted}
+      />
     </>
   );
 };

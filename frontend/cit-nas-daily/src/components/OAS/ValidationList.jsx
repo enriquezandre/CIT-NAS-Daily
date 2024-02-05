@@ -3,11 +3,20 @@ import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { ValidationStatusModal } from "./ValidationStatusModal"; // Import the modal
+import placeholder from "../../placeholders/user.png";
+import { Snackbar } from "../Snackbar";
 
 export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
   const [validation, setValidation] = useState([]);
   const [isStatusModalOpen, setStatusModalOpen] = useState(false);
   const [selectedValidationItem, setSelectedValidationItem] = useState(null);
+  const [nasImages, setNasImages] = useState({}); //added for image
+  const [isFirstSubmitted, setFirstIsSubmitted] = useState(false);
+  const [isFirstSnackbarVisible, setFirstSnackbarVisible] = useState(false);
+  const [firstSnackbarMsg, setFirstSnackbarMsg] = useState("");
+  const [isScndSubmitted, setScndIsSubmitted] = useState(false);
+  const [isScndSnackbarVisible, setScndSnackbarVisible] = useState(false);
+  const [scndSnackbarMsg, setScndSnackbarMsg] = useState("");
 
   const api = useMemo(
     () =>
@@ -40,9 +49,6 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
     };
 
     const date = new Date(dateString);
@@ -108,22 +114,23 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
       };
 
       const response = await api.put(`/Validation?validationId=${validationId}`, requestData);
+
       if (response.status === 200 || response.status === 201) {
+        setFirstIsSubmitted(true);
+        setFirstSnackbarVisible(true);
+        setFirstSnackbarMsg("Status updated successfully!");
         updateNasTimekeeping(selectedValidationItem.nasId);
-        console.log("Submitted successfully");
+        closeStatusModal();
       } else {
-        console.error("Submission failed");
+        setFirstIsSubmitted(false);
+        setFirstSnackbarVisible(true);
+        setFirstSnackbarMsg("Status update failed.");
       }
-
-      if (response.status === 200 || response.status === 201) {
-        fetchValidation();
-      } else {
-        console.error("Submission failed");
-      }
-
-      closeStatusModal();
+      fetchValidation();
     } catch (error) {
-      console.error(error);
+      setFirstIsSubmitted(false);
+      setFirstSnackbarVisible(true);
+      setFirstSnackbarMsg("Status update failed.");
     }
   };
 
@@ -167,15 +174,69 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
         `/TimekeepingSummary/${nasId}/${selectedSy}/${getSemesterValue(selectedSem)}`,
         updateData
       );
+
       if (updateResponse.status === 200 || updateResponse.status === 201) {
-        console.log(excusedCount, unexcusedCount, forMakeUpDutyCount);
-        console.log("NAS timekeeping updated successfully");
+        // Display the second snackbar for successful status update
+        setScndIsSubmitted(true);
+        setScndSnackbarVisible(true);
+        setScndSnackbarMsg("Timekeeping updated!");
       } else {
-        console.error("NAS timekeeping update failed");
+        // Display the second snackbar for status update failure
+        setScndSnackbarVisible(true);
+        setScndSnackbarMsg("Timekeeping not updated.");
       }
+      fetchValidation();
+    } catch (error) {
+      // Display the second snackbar for an error during status update
+      setScndSnackbarVisible(true);
+      setScndSnackbarMsg("An error occurred.");
+    }
+  };
+
+  //added for image
+  const getImage = async (nasId) => {
+    try {
+      const api = axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const response = await api.get(`/NAS/${nasId}`);
+      return response.data.image;
     } catch (error) {
       console.error(error);
+      return null;
     }
+  };
+
+  //added for image
+  useEffect(() => {
+    const fetchNasImages = async () => {
+      const imagePromises = validation.map(async (item) => {
+        const image = await getImage(item.nasId);
+        return { id: item.nasId, image };
+      });
+
+      const images = await Promise.all(imagePromises);
+      const imageMap = images.reduce((acc, { id, image }) => {
+        acc[id] = image;
+        return acc;
+      }, {});
+
+      setNasImages(imageMap);
+    };
+
+    fetchNasImages();
+  }, [validation]);
+
+  const handleFirstSnackbarClose = () => {
+    setFirstSnackbarVisible(false);
+  };
+
+  const handleScndSnackbarClose = () => {
+    setScndSnackbarVisible(false);
   };
 
   return (
@@ -187,11 +248,21 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
             className="border border-solid rounded-md p-3 flex items-center justify-between"
           >
             <div className="flex items-center">
-              <Avatar rounded />
+              <Avatar
+                img={
+                  nasImages[item.nasId]
+                    ? `data:image/png;base64,${nasImages[item.nasId]}`
+                    : placeholder
+                }
+                rounded
+              />
               <p className="ml-5">
                 <span>{item.nasName}</span>
                 <br />
-                <span className="text-xs">{formatDateString(item.dateSubmitted)}</span>
+                <span className="text-xs">
+                  Submission Date: {formatDateString(item.dateSubmitted)}, Absent Date:{" "}
+                  {formatDateString(item.absenceDate)}
+                </span>
               </p>
             </div>
             <div className="flex items-center space-x-2">
@@ -219,6 +290,18 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
         closeModal={closeStatusModal}
         handleSubmit={handleSubmit}
         selectedItem={selectedValidationItem}
+      />
+      <Snackbar
+        message={firstSnackbarMsg}
+        onClose={handleFirstSnackbarClose}
+        isSnackbarVisible={isFirstSnackbarVisible}
+        isSubmitted={isFirstSubmitted}
+      />
+      <Snackbar
+        message={scndSnackbarMsg}
+        onClose={handleScndSnackbarClose}
+        isSnackbarVisible={isScndSnackbarVisible}
+        isSubmitted={isScndSubmitted}
       />
     </>
   );
