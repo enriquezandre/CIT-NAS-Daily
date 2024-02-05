@@ -151,48 +151,51 @@ export const SpecificNASStatus = () => {
 
   return (
     <>
-      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col w-9/10 mb-10">
+      <div className="flex rounded-lg border border-gray-200 bg-white shadow-md flex-col w-9/10 mb-10">
         <div className="flex h-full flex-col justify-center">
-          <ul className="flex-wrap items-center text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid grid-cols-3">
-            <div className="font-bold ml-10" style={{ textTransform: "uppercase" }}>
-              NAS NAME: {lastName}, {firstName} {middleName}
+          <ul className="text-sm md:text-base lg:text-lg font-medium rounded-t-lg bg-grey pr-4 py-4 grid max-[450px]:grid-cols-1 grid-cols-2 overflow-x-auto">
+            <div className="flex w-auto mb-3 ml-5 min-[450px]:mb-0">
+              <div className="flex flex-col md:flex-row justify-start md:items-center gap-3 lg:gap-10">
+                <div>
+                  <Dropdown
+                    label="SY"
+                    options={uniqueYears}
+                    selectedValue={selectedSY}
+                    onChange={(e) => handleSelectSY(e)}
+                  />
+                </div>
+                <div>
+                  <Dropdown
+                    label="Semester"
+                    options={sem_options}
+                    selectedValue={selectedSem}
+                    onChange={(e) => handleSelectSem(e)}
+                  />
+                </div>
+              </div>
             </div>
-            <li>
-              <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
-                DEPT/OFFICE: {office}
-              </p>
-            </li>
           </ul>
-          <div className="px-8 py-4">
-            <div className="flex flex-row justify-start items-center gap-10 mt-2 mb-8">
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="SY"
-                  options={uniqueYears}
-                  selectedValue={selectedSY}
-                  onChange={(e) => handleSelectSY(e)}
-                />
+          <div className="px-5 md:px-9 py-4">
+            <div className="flex gap-10 mb-7 text-xs md:text-base lg:text-lg overflow-x-auto">
+              <div className="font-bold" style={{ textTransform: "uppercase" }}>
+                NAS NAME: {lastName}, {firstName} {middleName}
               </div>
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="SEMESTER"
-                  options={sem_options}
-                  selectedValue={selectedSem}
-                  onChange={(e) => handleSelectSem(e)}
-                />
+              <div>
+                <p className="font-bold text-center" style={{ textTransform: "uppercase" }}>
+                  DEPT/OFFICE: {office}
+                </p>
               </div>
             </div>
-            <div></div>
             <hr className="my-5 border-t-2 border-gray-300" />
-            <div className="flex flex-col">
-              <p className="text-bold text-center text-xl font-bold mb-8 text-primary">
+            <div className="flex flex-col overflow-x-auto">
+              <p className="text-bold text-center text-sm md:text-lg lg:text-xl font-bold mb-8 text-primary">
                 PERFORMANCE EVALUATION
               </p>
-              <table className="text-xl justify-center w-4/6 items-center">
+              <table className="text-sm md:text-lg lg:text-xl justify-center w-4/6 items-center">
                 <tbody>
                   <tr>
                     <td className="w-1/2 py-2">SUPERIOR&#39;S EVALUATION OVERALL RATING:</td>
-                    <td className="py-2 text-center font-bold">
+                    <td className="py-2 text-center font-bold text-sm md:text-lg lg:text-xl">
                       {summaryEvaluation.superiorOverallRating}
                     </td>
                   </tr>
@@ -200,12 +203,18 @@ export const SpecificNASStatus = () => {
                     <td className="py-2">ACADEMIC PERFORMANCE:</td>
                     <td className="py-2 text-center">
                       {grade === null ? (
-                        <div className="text-xl font-bold">NOT YET UPLOADED</div>
+                        <div className="text-sm md:text-lg lg:text-xl font-bold">
+                          NOT YET UPLOADED
+                        </div>
                       ) : responded ? (
                         allCoursesPassed ? (
-                          <div className="font-bold text-xl text-green">ALL COURSES PASSED</div>
+                          <div className="font-bold text-sm md:text-lg lg:text-xl text-green">
+                            ALL COURSES PASSED
+                          </div>
                         ) : (
-                          <div className="font-bold text-xl text-red">FAILED COURSE/S</div>
+                          <div className="font-bold text-sm md:text-lg lg:text-xl text-red">
+                            FAILED COURSE/S
+                          </div>
                         )
                       ) : (
                         <div>
@@ -231,7 +240,7 @@ export const SpecificNASStatus = () => {
                   </tr>
                   <tr>
                     <td className="py-2">TIMEKEEPING STATUS:</td>
-                    <td className="py-2 text-center font-bold">
+                    <td className="py-2 text-center font-bold text-sm md:text-lg lg:text-xl">
                       {summaryEvaluation.timekeepingStatus}
                     </td>
                   </tr>
@@ -239,7 +248,7 @@ export const SpecificNASStatus = () => {
                     <td className="py-2">ALLOWED FOR ENROLLMENT:</td>
                     <td className="py-2 text-center">
                       <div
-                        className={`font-bold text-xl ${
+                        className={`font-bold text-sm md:text-lg lg:text-xl ${
                           summaryEvaluation.enrollmentAllowed ? "text-green" : "text-red"
                         }`}
                       >
@@ -249,7 +258,9 @@ export const SpecificNASStatus = () => {
                   </tr>
                   <tr>
                     <td className="py-2">NUMBER OF UNITS ALLOWED:</td>
-                    <td className="py-2 text-center font-bold">{summaryEvaluation.unitsAllowed}</td>
+                    <td className="py-2 text-center font-bold text-sm md:text-lg lg:text-xl">
+                      {summaryEvaluation.unitsAllowed}
+                    </td>
                   </tr>
                 </tbody>
               </table>
