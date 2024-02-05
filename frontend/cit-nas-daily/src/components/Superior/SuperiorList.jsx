@@ -97,8 +97,8 @@ export const SuperiorList = () => {
 
   return (
     <div>
-      <div className="flex flex-row justify-start items-center gap-10 ml-1 py-2">
-        <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-col sm:flex-row justify-start sm:items-center gap-3 lg:gap-10">
+        <div>
           <Dropdown
             label="SY"
             options={uniqueYears}
@@ -106,7 +106,7 @@ export const SuperiorList = () => {
             onChange={(e) => handleSelectSY(e)}
           />
         </div>
-        <div className="flex flex-row gap-2 items-center">
+        <div>
           <Dropdown
             label="SEMESTER"
             options={sem_options}
