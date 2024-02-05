@@ -121,14 +121,14 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
       if (response.status === 200 || response.status === 201) {
         setIsSubmitted(true);
         setSnackbarVisible(true); // Show the success snackbar
-        setSnackbarMsg("Submitted successfully!");
+        setSnackbarMsg("Added successfully!");
       } else {
         setSnackbarVisible(true); // Show the error snackbar
-        setSnackbarMsg("Submission failed.");
+        setSnackbarMsg("Failed to add NAS.");
       }
     } catch (error) {
-      setSnackbarVisible(true);
-      setSnackbarMsg("An error occurred.");
+      setSnackbarVisible(true); // Show the error snackbar
+      setSnackbarMsg("Failed to add NAS.");
     }
   };
 
