@@ -14,33 +14,6 @@ export const ActivitiesFormModal = ({
   const [skillsLearned, setSkillsLearned] = useState("");
   const [valuesLearned, setValuesLearned] = useState("");
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-
-  //   try {
-  //     const api = axios.create({
-  //       baseURL: "https://localhost:7001/api",
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //       },
-  //     });
-
-  //     const response = await api.post(
-  //       `https://localhost:7001/api/ActivitiesSummary/${nasId}/${currentYear}/${getSemesterValue(
-  //         currentSem
-  //       )}`,
-  //       {
-  //         activitiesOfTheDay,
-  //         skillsLearned,
-  //         valuesLearned,
-  //       }
-  //     );
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
   const handleSubmitForm = async (activitiesOfTheDay, skillsLearned, valuesLearned) => {
     handleSubmit(activitiesOfTheDay, skillsLearned, valuesLearned);
     setActivitiesOfTheDay("");
