@@ -2,11 +2,19 @@ import { useMemo, useRef, useState } from "react";
 import axios from "axios";
 import ProgramDropdown from "../ProgramDropdown";
 import OfficeDropdown from "../OfficeDropdown";
+import { Snackbar } from "../Snackbar";
 
 export const AddNASForm = () => {
   const [selectedProgram, setSelectedProgram] = useState("");
   const [selectedOfficeName, setSelectedOfficeName] = useState(null);
   const [selectedOfficeId, setOfficeId] = useState(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSnackbarVisible, setIsSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [bdayError, setBdayError] = useState("");
+  const [genError, setgenError] = useState("");
+  const [idNumError, setIdNumError] = useState("");
+  const [dateStartError, setDateStartError] = useState("");
   const lastnameRef = useRef();
   const firstnameRef = useRef();
   const middlenameRef = useRef();
@@ -32,7 +40,17 @@ export const AddNASForm = () => {
 
   const handleOfficeChange = (id) => {
     setOfficeId(id);
+    setgenError("");
   };
+
+  const handleSnackbarClose = () => {
+    setIsSnackbarVisible(false);
+  };
+
+  const updateBdayError = () => setBdayError("");
+  const updateGenError = () => setgenError("");
+  const updateIdNumError = () => setIdNumError("");
+  const updateDateStartError = () => setDateStartError("");
 
   const getSemesterValue = useMemo(() => {
     return (sem) => {
@@ -80,7 +98,7 @@ export const AddNASForm = () => {
     ];
     for (let i = 0; i < inputs.length; i++) {
       if (!inputs[i]) {
-        alert("Please fill out all fields.");
+        setgenError("Please fill out all fields.");
         return;
       }
     }
@@ -89,7 +107,7 @@ export const AddNASForm = () => {
     let birth = new Date(birthDate);
     let birthYear = birth.getFullYear();
     if (isNaN(birth.getTime()) || birthYear < 1000 || birthYear > 9999) {
-      alert("Please enter a valid date.");
+      setBdayError("Please enter a valid date.");
       return;
     }
     let birthDateISOString = birth.toISOString();
@@ -97,7 +115,7 @@ export const AddNASForm = () => {
     let start = new Date(datestarted);
     let startYear = start.getFullYear();
     if (isNaN(start.getTime()) || startYear < 1000 || startYear > 9999) {
-      alert("Please enter a valid date.");
+      setDateStartError("Please enter a valid date.");
       return;
     }
     let datestartedISOString = start.toISOString();
@@ -110,14 +128,16 @@ export const AddNASForm = () => {
         selectInputs[i] === "Select gender" ||
         selectInputs[i] === "Select semester"
       ) {
-        alert("Please recheck and select a valid option.");
+        setgenError("Please recheck and select a valid option.");
         return;
       }
     }
 
     const idnumberFormat = /^(?:\d{2}-\d{4}-\d{3}|\d{4}-\d{5})$/;
     if (!idnumberFormat.test(idnumber)) {
-      alert("ID number is not in the correct format. Please use XX-XXXX-XXX or XXXX-XXXXX.");
+      setIdNumError(
+        "ID number is not in the correct format. Please use XX-XXXX-XXX or XXXX-XXXXX."
+      );
       return;
     }
 
@@ -160,7 +180,9 @@ export const AddNASForm = () => {
       const registernas = await api.post(`/NAS`, nasData);
 
       if (registernas.status === 200 || registernas.status === 201) {
-        alert("Submitted successfully");
+        setIsSubmitted(true);
+        setIsSnackbarVisible(true);
+        setSnackbarMsg("NAS added successfully!");
         firstnameRef.current.value = "";
         lastnameRef.current.value = "";
         middlenameRef.current.value = "";
@@ -175,10 +197,14 @@ export const AddNASForm = () => {
         yearlevelRef.current.value = "";
         unitsAllowedRef.current.value = "";
       } else {
-        alert("Submission failed");
+        setIsSubmitted(false);
+        setIsSnackbarVisible(true);
+        setSnackbarMsg("Failed to add NAS. Please try again.");
       }
     } catch (error) {
-      console.error(error);
+      setIsSubmitted(false);
+      setIsSnackbarVisible(true);
+      setSnackbarMsg("Failed to add NAS. Please try again.");
     }
   };
 
@@ -201,6 +227,7 @@ export const AddNASForm = () => {
                   className="bg-gray-50 border border-gray text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                   placeholder="Last name"
                   required=""
+                  onChange={updateGenError}
                 />
               </div>
               <div className="w-full">
@@ -215,6 +242,7 @@ export const AddNASForm = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="First name"
                   required=""
+                  onChange={updateGenError}
                 />
               </div>
               <div className="w-full">
@@ -232,6 +260,7 @@ export const AddNASForm = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="Middle name (Optional)"
                   required=""
+                  onChange={updateGenError}
                 />
               </div>
               <div>
@@ -252,7 +281,9 @@ export const AddNASForm = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="XX-XXXX-XXX or XXXX-XXXXX"
                   required=""
+                  onChange={updateIdNumError}
                 />
+                <p className="text-red text-sm">{idNumError}</p>
               </div>
               <div className="w-full">
                 <label htmlFor="program" className="block mb-2 text-sm font-medium text-gray-900">
@@ -271,6 +302,7 @@ export const AddNASForm = () => {
                   ref={genderRef}
                   id="gender"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
+                  onChange={updateGenError}
                 >
                   <option selected="">Select gender</option>
                   <option value="Male">Male</option>
@@ -289,6 +321,7 @@ export const AddNASForm = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="Format: 2324"
                   required=""
+                  onChange={updateGenError}
                 />
               </div>
               <div className="w-full">
@@ -298,6 +331,7 @@ export const AddNASForm = () => {
                 <select
                   ref={semRef}
                   id="category"
+                  onChange={updateGenError}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                 >
                   <option selected="">Select semester</option>
@@ -320,7 +354,9 @@ export const AddNASForm = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="$2999"
                   required=""
+                  onChange={updateBdayError}
                 />
+                <p className="text-red text-sm">{bdayError}</p>
               </div>
               <div className="w-full">
                 <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900">
@@ -334,7 +370,9 @@ export const AddNASForm = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="$2999"
                   required=""
+                  onChange={updateDateStartError}
                 />
+                <p className="text-red text-sm">{dateStartError}</p>
               </div>
               <div className="w-full">
                 <label htmlFor="yearLevel" className="block mb-2 text-sm font-medium text-gray-900">
@@ -348,6 +386,7 @@ export const AddNASForm = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="1, 2, 3, 4, etc."
                   required=""
+                  onChange={updateGenError}
                 />
               </div>
 
@@ -366,6 +405,7 @@ export const AddNASForm = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="18"
                   required=""
+                  onChange={updateGenError}
                 />
               </div>
             </div>
@@ -376,9 +416,16 @@ export const AddNASForm = () => {
             >
               Add
             </button>
+            <p className="text-red text-sm">{genError}</p>
           </form>
         </div>
       </section>
+      <Snackbar
+        message={snackbarMsg}
+        onClose={handleSnackbarClose}
+        isSnackbarVisible={isSnackbarVisible}
+        isSubmitted={isSubmitted}
+      />
     </div>
   );
 };
