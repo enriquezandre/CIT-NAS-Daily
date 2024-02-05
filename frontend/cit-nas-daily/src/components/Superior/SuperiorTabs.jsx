@@ -13,12 +13,12 @@ export const SuperiorTabs = () => {
 
   return (
     <div className="w-full">
-      <div className="ml-7 mr-6">
-        <div className="flex justify-center w-full">
+      <div className="px-7">
+        <div className="flex flex-col gap-1 px-1 md:flex-row md:gap-2">
           <button
             className={`${
               activeTab === 1 ? "font-bold bg-primary text-white" : "bg-secondary"
-            } px-4 py-2 rounded-tl-lg w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
+            } px-4 py-2 rounded-tl-lg w-full rounded-lg text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(1)}
           >
             Home
@@ -26,7 +26,7 @@ export const SuperiorTabs = () => {
           <button
             className={`${
               activeTab === 2 ? "font-bold bg-primary text-white" : "bg-secondary"
-            } px-4 py-2 rounded-tl-lg w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
+            } px-4 py-2 rounded-tl-lg w-full rounded-lg text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(2)}
           >
             NAS List
@@ -34,13 +34,13 @@ export const SuperiorTabs = () => {
           <button
             className={`${
               activeTab === 3 ? "font-bold bg-primary text-white" : "bg-secondary"
-            } px-4 py-2 w-full rounded-lg m-1 text-sm hover:bg-primary hover:text-white`}
+            } px-4 py-2 rounded-tl-lg w-full rounded-lg text-sm hover:bg-primary hover:text-white`}
             onClick={() => handleTabClick(3)}
           >
             Change Password
           </button>
         </div>
-        <div className="pt-4 pb-4 bg-white rounded-b-lg">
+        <div className="pt-4 pr-1 pb-4 pl-1 bg-white rounded-b-lg">
           {activeTab === 1 && (
             <div>
               <Homepage />
