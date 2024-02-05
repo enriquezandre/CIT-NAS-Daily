@@ -122,12 +122,15 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
         updateNasTimekeeping(selectedValidationItem.nasId);
         closeStatusModal();
       } else {
+        setFirstIsSubmitted(false);
         setFirstSnackbarVisible(true);
         setFirstSnackbarMsg("Status update failed.");
       }
       fetchValidation();
     } catch (error) {
-      console.error(error);
+      setFirstIsSubmitted(false);
+      setFirstSnackbarVisible(true);
+      setFirstSnackbarMsg("Status update failed.");
     }
   };
 
