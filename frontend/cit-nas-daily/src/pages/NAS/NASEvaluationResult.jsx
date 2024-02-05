@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { Dropdown } from "../../components/Dropdown.jsx";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils.js";
+import { Snackbar } from "../../components/Snackbar.jsx";
 import axios from "axios";
 
 const currentYear = calculateSchoolYear();
@@ -16,6 +17,8 @@ export const NASEvaluationResult = () => {
   const [selectedSem, setSelectedSem] = useState(currentSem);
   const [fileUploaded, setFileUploaded] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
   const [summaryEvaluation, setSummaryEvaluation] = useState({});
   const { nasId } = useParams();
   const sem_options = ["First", "Second", "Summer"];
@@ -58,6 +61,10 @@ export const NASEvaluationResult = () => {
     fetchSchoolYearSemesterOptions();
   }, [api]);
 
+  const handleSnackbarClose = () => {
+    setSnackbarVisible(false);
+  };
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -94,12 +101,15 @@ export const NASEvaluationResult = () => {
           const responseData = response.data;
           setFileUploaded(responseData.grade);
           setSubmitted(true);
-          alert("Grade uploaded successfully");
+          setSnackbarVisible(true); // Show the success snackbar
+          setSnackbarMsg("Uploaded successfully!");
         } else {
-          console.error("Grade upload failed");
+          setSnackbarVisible(true); // Show the error snackbar
+          setSnackbarMsg("Upload failed.");
         }
       } catch (error) {
-        console.error("Error uploading grades:", error);
+        setSnackbarVisible(true);
+        setSnackbarMsg("An error occurred.");
       }
       setSubmitted(true);
       localStorage.setItem("submitted", JSON.stringify(true)); // Save submitted to localStorage
@@ -232,6 +242,12 @@ export const NASEvaluationResult = () => {
           </div>
         </div>
       </div>
+      <Snackbar
+        message={snackbarMsg}
+        onClose={handleSnackbarClose}
+        isSnackbarVisible={isSnackbarVisible}
+        isSubmitted={submitted}
+      />
     </div>
   );
 };
