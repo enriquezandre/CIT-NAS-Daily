@@ -6,6 +6,7 @@ import axios from "axios";
 import { AddSuperiorForm } from "../../components/OAS/AddSuperiorForm";
 import { AddOfficeForm } from "../../components/OAS/AddOfficeForm";
 import { UpdatePassword } from "../../components/UpdatePassword";
+import { Snackbar } from "../../components/Snackbar";
 
 const currentYear = calculateSchoolYear();
 const currentSem = calculateSemester();
@@ -20,6 +21,13 @@ export const OASManageData = () => {
   const sem_options = ["First", "Second", "Summer"];
   // eslint-disable-next-line no-unused-vars
   const [attendanceSummaries, setAttendanceSummaries] = useState([]);
+  const [isFirstSubmitted, setFirstIsSubmitted] = useState(false);
+  const [isFirstSnackbarVisible, setFirstSnackbarVisible] = useState(false);
+  const [firstSnackbarMsg, setFirstSnackbarMsg] = useState("");
+  const [isScndSubmitted, setScndIsSubmitted] = useState(false);
+  const [isScndSnackbarVisible, setScndSnackbarVisible] = useState(false);
+  const [scndSnackbarMsg, setScndSnackbarMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const api = useMemo(
     () =>
@@ -46,6 +54,14 @@ export const OASManageData = () => {
       }
     };
   }, []);
+
+  const handleFirstSnackbarClose = () => {
+    setFirstSnackbarVisible(false);
+  };
+
+  const handleScndSnackbarClose = () => {
+    setScndSnackbarVisible(false);
+  };
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -98,11 +114,15 @@ export const OASManageData = () => {
     ];
 
     if (!allowedTypes.includes(file.type)) {
-      alert("Invalid file type. Please upload an Excel file.");
+      setErrorMsg("Invalid file type. Please upload an Excel file.");
       return;
     }
 
     setFileUploaded(file);
+  };
+
+  const updateErrorMsg = () => {
+    setErrorMsg("");
   };
 
   const updateNasTimekeeping = async () => {
@@ -227,14 +247,26 @@ export const OASManageData = () => {
           makeUpDutyHours: 0,
         }
       );
+
+      if (postResponse.status === 200 || postResponse.status === 201) {
+        setScndIsSubmitted(true);
+        setScndSnackbarVisible(true);
+        setScndSnackbarMsg("Timekeeping updated!");
+      } else {
+        setScndIsSubmitted(false);
+        setScndSnackbarVisible(true);
+        setScndSnackbarMsg("Timekeeping update failed.");
+      }
     } catch (error) {
-      console.error(error);
+      setScndIsSubmitted(false);
+      setScndSnackbarVisible(true);
+      setScndSnackbarMsg("Timekeeping update failed.");
     }
   };
 
   const handleSubmit = async () => {
     if (!fileUploaded) {
-      alert("No file uploaded");
+      setErrorMsg("No file uploaded. Please select a file.");
       return;
     }
     const formData = new FormData();
@@ -251,15 +283,18 @@ export const OASManageData = () => {
         }
       );
       if (response.status === 200) {
-        alert("File uploaded successfully");
-        console.log(response.data);
+        setFirstIsSubmitted(true);
+        setFirstSnackbarVisible(true);
+        setFirstSnackbarMsg("File uploaded sucessfully!");
         setFileUploaded(false); // Reset the file input after successful upload
         updateNasTimekeeping();
       } else {
-        alert("File upload failed");
+        setFirstSnackbarVisible(true);
+        setFirstSnackbarMsg("File upload failed.");
       }
     } catch (error) {
-      console.error("Error uploading file: ", error);
+      setFirstSnackbarVisible(true);
+      setFirstSnackbarMsg("An error occurred.");
     }
   };
 
@@ -279,10 +314,12 @@ export const OASManageData = () => {
                     accept=".xls,.xlsx"
                   />
                 </div>
+
                 {fileUploaded ? (
                   <button
                     className="py-2 rounded-md bg-secondary w-24 items-center justify center hover:bg-primary hover:text-white text-sm md:text-lg lg:text-xl"
                     onClick={handleSubmit}
+                    onChange={updateErrorMsg}
                   >
                     Submit
                   </button>
@@ -309,6 +346,7 @@ export const OASManageData = () => {
                 </div>
               </div>
             </div>
+            <p className="text-red"> {errorMsg}</p>
             <hr className="my-5 border-t-2 border-gray-300" />
             <div>
               <AddNASForm />
@@ -333,6 +371,18 @@ export const OASManageData = () => {
           </div>
         </div>
       </div>
+      <Snackbar
+        message={firstSnackbarMsg}
+        onClose={handleFirstSnackbarClose}
+        isSnackbarVisible={isFirstSnackbarVisible}
+        isSubmitted={isFirstSubmitted}
+      />
+      <Snackbar
+        message={scndSnackbarMsg}
+        onClose={handleScndSnackbarClose}
+        isSnackbarVisible={isScndSnackbarVisible}
+        isSubmitted={isScndSubmitted}
+      />
     </>
   );
 };
