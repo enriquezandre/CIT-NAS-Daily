@@ -40,6 +40,7 @@ export const AddNASForm = () => {
 
   const handleOfficeChange = (id) => {
     setOfficeId(id);
+    setSelectedOfficeName(id);
     setgenError("");
   };
 
@@ -187,6 +188,7 @@ export const AddNASForm = () => {
         lastnameRef.current.value = "";
         middlenameRef.current.value = "";
         setSelectedOfficeName("");
+        setOfficeId();
         idnumberRef.current.value = "";
         setSelectedProgram("");
         genderRef.current.value = "Select gender";
