@@ -104,93 +104,105 @@ export const EvaluateGrades = ({
   return (
     show && (
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-        <div className="relative w-4/6">
+        <div className="relative w-full sm:w-4/6 sm:max-w-md h-auto sm:h-auto">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div className="bg-opacity-50">
-              <div className="flex flex-col items-center justify-center px-20 py-10 rounded-t">
-                <p className="text-4xl text-center w-full font-bold text-primary">
+              <div className="flex flex-col items-center justify-center px-8 sm:px-12 py-6 sm:py-10 rounded-t">
+                <p className="text-xl sm:text-lg text-center w-full font-bold text-primary">
                   GRADE EVALUATION
                 </p>
                 <button
                   type="button"
-                  className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-lg text-sm px-5 py-2.5 my-10"
+                  className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-lg text-xs sm:text-sm px-4 sm:px-5 py-2 my-6 sm:my-10"
                   onClick={openShowGrades}
                 >
                   EVALUATE GRADES
                 </button>
                 <ShowGrades show={isViewingShowGrades} close={closeShowGrades} grade={grade} />
-                <div className="flex flex-row w-full items-center gap-6 mb-10">
-                  <p className="text-xl text-left w-2/4">ALL COURSES PASSED:</p>
-                  <div className="flex flex-row gap-2 justify-center items-center w-1/4">
+                <div className="flex flex-col sm:flex-row w-full sm:items-center gap-4 mb-6 sm:mb-10">
+                  <p className="text-base sm:text-lg text-left w-full sm:w-2/4">
+                    ALL COURSES PASSED:
+                  </p>
+                  <div className="flex flex-row gap-2 justify-center items-center w-full sm:w-1/4">
                     <input
                       id="default-radio-1"
                       type="radio"
                       value="yes"
                       name="course-passed"
-                      className="h-5 w-5"
+                      className="h-4 w-4 sm:h-5 sm:w-5"
                       onChange={handleCoursePassedChange}
                     />
                     <label
                       htmlFor="default-radio-1"
-                      className="ml-2 text-xl font-medium text-green"
+                      className="ml-2 text-base sm:text-lg font-medium text-green"
                     >
                       YES
                     </label>
                   </div>
-                  <div className="flex flex-row gap-2 justify-center items-center w-1/4">
+                  <div className="flex flex-row gap-2 justify-center items-center w-full sm:w-1/4">
                     <input
                       id="default-radio-2"
                       type="radio"
                       value="no"
                       name="course-passed"
-                      className="h-5 w-5"
+                      className="h-4 w-4 sm:h-5 sm:w-5"
                       onChange={handleCoursePassedChange}
                     />
-                    <label htmlFor="default-radio-2" className="ml-2 text-xl font-medium text-red">
+                    <label
+                      htmlFor="default-radio-2"
+                      className="ml-2 text-base sm:text-lg font-medium text-red"
+                    >
                       NO
                     </label>
                   </div>
                 </div>
 
-                <div className="flex flex-row w-full items-center gap-6 mb-10">
-                  <p className="text-xl text-left w-2/4">ALLOW ENROLLMENT:</p>
-                  <div className="flex flex-row gap-2 justify-center items-center w-1/4">
+                <div className="flex flex-col sm:flex-row w-full sm:items-center gap-4 mb-6 sm:mb-10">
+                  <p className="text-base sm:text-lg text-left w-full sm:w-2/4">
+                    ALLOW ENROLLMENT:
+                  </p>
+                  <div className="flex flex-row gap-2 justify-center items-center w-full sm:w-1/4">
                     <input
                       id="default-radio-1"
                       type="radio"
                       value="yes"
                       name="allow-enroll"
-                      className="h-5 w-5"
+                      className="h-4 w-4 sm:h-5 sm:w-5"
                       onChange={handleAllowEnrollment}
                     />
                     <label
                       htmlFor="default-radio-1"
-                      className="ml-2 text-xl font-medium text-green"
+                      className="ml-2 text-base sm:text-lg font-medium text-green"
                     >
                       YES
                     </label>
                   </div>
-                  <div className="flex flex-row gap-2 justify-center items-center w-1/4">
+                  <div className="flex flex-row gap-2 justify-center items-center w-full sm:w-1/4">
                     <input
                       id="default-radio-2"
                       type="radio"
                       value="no"
                       name="allow-enroll"
-                      className="h-5 w-5"
+                      className="h-4 w-4 sm:h-5 sm:w-5"
                       onChange={handleAllowEnrollment}
                     />
-                    <label htmlFor="default-radio-2" className="ml-2 text-xl font-medium text-red">
+                    <label
+                      htmlFor="default-radio-2"
+                      className="ml-2 text-base sm:text-lg font-medium text-red"
+                    >
                       NO
                     </label>
                   </div>
                 </div>
                 {allCoursesPassed ? null : (
-                  <div className="flex flex-row w-full items-center mb-10">
-                    <p className="text-xl text-left w-3/4">NUMBER OF COURSES FAILED:</p>
+                  <div className="flex flex-col sm:flex-row w-full sm:items-center mb-6 sm:mb-10">
+                    <p className="text-base sm:text-lg text-left w-full sm:w-3/4">
+                      NUMBER OF COURSES FAILED:
+                    </p>
                     <input
                       type="number"
                       name="num-courses-failed"
-                      className="w-1/4 border-2 border-gray-300 rounded-md px-2"
+                      className="w-full sm:w-1/4 border-2 border-gray-300 rounded-md px-2 py-1"
                       onChange={handleCoursesFailed}
                     />
                   </div>
@@ -198,14 +210,14 @@ export const EvaluateGrades = ({
 
                 <button
                   type="button"
-                  className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-xl text-sm px-20 py-2.5"
+                  className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-xl text-xs sm:text-sm px-8 sm:px-12 py-2.5 sm:py-3"
                   onClick={handleSubmit}
                 >
                   SUBMIT
                 </button>
                 <button
                   type="button"
-                  className="text-primary hover:underline font-medium text-sm px-20 py-2.5"
+                  className="text-primary hover:underline font-medium text-xs sm:text-sm px-8 sm:px-12 py-2.5 sm:py-3"
                   onClick={handleGoBack}
                 >
                   Go Back
