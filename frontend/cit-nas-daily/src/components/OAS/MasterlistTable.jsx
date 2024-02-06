@@ -70,11 +70,12 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
     }
   }
 
-  const handleClick = (e, rowId, officeName, officeId) => {
+  const handleClick = (e, rowId, nasId, officeName, officeId) => {
     e.preventDefault();
     setToUpdate(!toUpdate);
     setToSubmit(false);
     setSelectedRowId(rowId);
+    setNasId(nasId);
     setSelectedOfficeName(officeName);
     setSelectedOfficeId(officeId);
   };
@@ -83,9 +84,9 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
     setSnackbarVisible(false);
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setToUpdate(!toUpdate);
+  const handleSubmit = async (e, nasId) => {
+    e.preventDefault();
+    setToUpdate(false);
     setToSubmit(true);
     setSelectedRowId(null);
 
@@ -97,6 +98,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
     };
 
     try {
+      console.log("nasId sa process", nasId);
       const response = await api.put(`/NAS/${nasId}`, data);
       if (response.status === 200) {
         setToSubmit(false);
@@ -120,7 +122,6 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
           `/NAS/${selectedSY}/${getSemesterValue(selectedSem)}/noimg`
         );
         const nasData = nasresponse.data;
-        console.log("nasData", nasData);
 
         const nasDataWithTimekeeping = await Promise.all(
           nasData.map(async (nas) => {
@@ -219,7 +220,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                 className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "uppercase" }}
               >
-                {selectedRowId === nas.id && toUpdate ? (
+                {selectedRowId === index && toUpdate ? (
                   <ProgramDropdown
                     onChange={(value) => setSelectedProgram(value)}
                     value={selectedProgram ? selectedProgram : setSelectedProgram(nas.course)}
@@ -229,7 +230,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                 )}
               </td>
               <td className="border-2 border-black text-center px-1 py-2 text-xs">
-                {selectedRowId === nas.id && toUpdate ? (
+                {selectedRowId === index && toUpdate ? (
                   <input
                     ref={nasYearLvlRef}
                     type="text"
@@ -253,7 +254,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                 )}
               </td>
               <td className="border-2 border-black text-center px-1 py-2 text-xs">
-                {selectedRowId === nas.id && toUpdate ? (
+                {selectedRowId === index && toUpdate ? (
                   <input
                     ref={nasUnitsAllowedRef}
                     type="text"
@@ -283,7 +284,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                 className="border-2 border-black text-center px-1 py-2 text-xs"
                 style={{ textTransform: "uppercase" }}
               >
-                {selectedRowId === nas.id && toUpdate ? (
+                {selectedRowId === index && toUpdate ? (
                   <OfficeDropdown
                     onChange={(value) => setSelectedOfficeId(value)}
                     value={selectedOfficeId ? selectedOfficeId : nas.officeName}
@@ -314,7 +315,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
               <td className="border-2 border-black text-center px-1 py-2 text-xs"> </td>
               <td className="border-2 border-black text-xs">
                 <div className="flex justify-center items-center">
-                  {selectedRowId === nas.id && toUpdate ? (
+                  {selectedRowId === index && toUpdate ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -338,7 +339,9 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                       strokeWidth={1.5}
                       stroke="currentColor"
                       className="w-6 h-6 cursor-pointer hover:transition-colors hover:text-primary"
-                      onClick={(e) => handleClick(e, nas.id, nas.officeName, nas.officeId)}
+                      onClick={(e) =>
+                        handleClick(e, index, nas.id, nas.officeName, nas.officeId, index)
+                      }
                     >
                       <path
                         strokeLinecap="round"

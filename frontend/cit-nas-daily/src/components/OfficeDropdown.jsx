@@ -4,7 +4,6 @@ import axios from "axios";
 
 const OfficeDropdown = ({ onChange, value }) => {
   const [offices, setOffices] = useState([]);
-  console.log("value yawa", value);
 
   const api = useMemo(
     () =>
