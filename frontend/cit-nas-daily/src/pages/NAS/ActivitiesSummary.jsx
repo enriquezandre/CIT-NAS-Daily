@@ -172,6 +172,7 @@ export const ActivitiesSummary = () => {
 
   const closeModal = () => {
     setIsOpen(false);
+    setIsSubmitted(false);
   };
 
   const handleSelectSY = (event) => {
