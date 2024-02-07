@@ -33,7 +33,6 @@ export const AddOfficeForm = () => {
       const registeroffice = await api.post(`/Offices`, {
         officename: officename,
       });
-      console.log(registeroffice);
       if (registeroffice.status === 200 || registeroffice.status === 201) {
         setSubmitted(true);
         setIsSnackbarVisible(true);

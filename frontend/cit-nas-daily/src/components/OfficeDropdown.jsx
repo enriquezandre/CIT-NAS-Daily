@@ -21,7 +21,6 @@ const OfficeDropdown = ({ onChange, value }) => {
       try {
         const response = await api.get(`/Offices`);
         setOffices(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error(error);
       }

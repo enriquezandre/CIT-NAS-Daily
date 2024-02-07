@@ -73,7 +73,6 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
         );
         const nasData = nasresponse.data;
         setNasData(nasData);
-        console.log("nasData", nasData);
       } catch (error) {
         console.error(error);
         if (error.response.status === 404) {
@@ -95,7 +94,6 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
         );
         const currentnas = currentnasresponse.data;
         setCurrentNasList(currentnas);
-        console.log("currentnas", currentnas);
       } catch (error) {
         console.error(error);
         if (error.response.status === 404) {
@@ -114,7 +112,6 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
       semester: getSemesterValue(toaddSem),
       year: toaddSY,
     };
-    // console.log("DATA", data);
     try {
       const response = await api.put(`https://localhost:7001/api/NAS`, data);
       onSubmitted(true);

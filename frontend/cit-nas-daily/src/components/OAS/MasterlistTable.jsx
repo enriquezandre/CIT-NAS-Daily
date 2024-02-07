@@ -98,7 +98,6 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
     };
 
     try {
-      console.log("nasId sa process", nasId);
       const response = await api.put(`/NAS/${nasId}`, data);
       if (response.status === 200) {
         setToSubmit(false);
@@ -131,7 +130,6 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                 `/TimekeepingSummary/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
               );
               nas.timekeeping = timekeepingresponse.data;
-              console.log("nas.timekeeping", nas.timekeeping);
             } catch (error) {
               console.error("Error fetching data for NAS:", error);
               nas.office = { name: "N/A" };
