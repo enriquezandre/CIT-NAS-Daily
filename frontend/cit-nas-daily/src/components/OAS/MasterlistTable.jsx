@@ -232,6 +232,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                   <input
                     ref={nasYearLvlRef}
                     type="text"
+                    className="border-2 border-black rounded-md w-1/2 text-center"
                     value={
                       toSubmit
                         ? nasYearLevel != null
@@ -256,6 +257,7 @@ export const MasterlistTable = ({ searchInput, selectedSY, selectedSem, submitte
                   <input
                     ref={nasUnitsAllowedRef}
                     type="text"
+                    className="border-2 border-black rounded-md w-1/2 text-center"
                     value={
                       toSubmit
                         ? nasUnitsAllowed != null
