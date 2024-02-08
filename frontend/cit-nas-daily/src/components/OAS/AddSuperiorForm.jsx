@@ -32,7 +32,6 @@ export const AddSuperiorForm = () => {
           (office) => !office.superiorFirstName && !office.superiorLastName
         );
         setOffices(filteredData);
-        console.log("OFFICES", filteredData);
       } catch (error) {
         console.error(error);
       }

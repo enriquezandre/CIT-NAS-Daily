@@ -97,8 +97,8 @@ export const SuperiorList = () => {
 
   return (
     <div>
-      <div className="flex flex-row justify-start items-center gap-10 ml-1 py-2">
-        <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-col sm:flex-row justify-start sm:items-center gap-3 lg:gap-10">
+        <div>
           <Dropdown
             label="SY"
             options={uniqueYears}
@@ -106,7 +106,7 @@ export const SuperiorList = () => {
             onChange={(e) => handleSelectSY(e)}
           />
         </div>
-        <div className="flex flex-row gap-2 items-center">
+        <div>
           <Dropdown
             label="SEMESTER"
             options={sem_options}
@@ -116,11 +116,11 @@ export const SuperiorList = () => {
         </div>
       </div>
       <div className="flex justify-center items-center pt-2">
-        <Card className="w-3/5 m-5">
+        <Card className=" w-full md:w-3/5 m-5">
           <h5 className="text-2xl font-bold tracking-tight">
             <p>{office.officeName}</p>
           </h5>
-          <div className="grid gap-3">
+          <div className="grid gap-3 overflow-x-auto">
             {nasList.map((nas) => (
               <button
                 key={nas.id}
@@ -128,7 +128,7 @@ export const SuperiorList = () => {
                 onClick={() => handleNasClick(nas.id)}
               >
                 <Avatar rounded />
-                <span className="ml-5" style={{ textTransform: "capitalize" }}>
+                <span className="ml-5 text-xs sm:text-base" style={{ textTransform: "capitalize" }}>
                   {nas.firstName} {nas.lastName}
                 </span>
               </button>

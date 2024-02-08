@@ -77,8 +77,6 @@ export const EvaluateGrades = ({
         responded: responded,
       };
 
-      console.log(requestData);
-
       const response = await api.put(`/SummaryEvaluation`, requestData);
 
       if (response.status === 200 || response.status === 201) {

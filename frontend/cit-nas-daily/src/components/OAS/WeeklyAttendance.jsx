@@ -91,7 +91,6 @@ export const WeeklyAttendance = ({
         const latestLogs = dateRange.map((date) => {
           const dateString = date.toISOString().split("T")[0];
           const logs = groupedData[dateString];
-          // console.log("LOGS", logs);
           if (logs) {
             return {
               date: dateString,

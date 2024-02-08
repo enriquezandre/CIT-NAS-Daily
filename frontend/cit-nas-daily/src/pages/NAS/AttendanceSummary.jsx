@@ -33,8 +33,6 @@ export const AttendanceSummary = () => {
   const [snackbarMsg, setSnackbarMsg] = useState("");
   const { nasId } = useParams();
 
-  // console.log(currentYear, currentSem);
-
   const getAxiosInstance = () => {
     return axios.create({
       baseURL: "https://localhost:7001/api",
@@ -139,7 +137,6 @@ export const AttendanceSummary = () => {
     } else {
       setSelectedMonth(value);
     }
-    console.log("Selected Month:", value);
   };
 
   const openModal = (date) => {

@@ -41,7 +41,7 @@ export const ActivitiesFormModal = ({
           </div>
         </Modal.Header>
         <Modal.Body>
-          <div className="flex flex-row justify-start items-center gap-10 mb-6">
+          <div className="flex flex-col md:flex-row justify-start md:items-center gap-5 md:gap-10 mb-6 overflow-x-auto">
             <div className="flex flex-row gap-2 items-center">
               <div className="mr-2">SY:</div>
               <select

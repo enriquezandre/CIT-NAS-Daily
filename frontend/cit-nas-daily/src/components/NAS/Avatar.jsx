@@ -16,7 +16,6 @@ export const Avatar = ({ avatar, openModal }) => {
       {avatar ? (
         <img
           src={`data:image/png;base64,${avatar}`}
-          //src={URL.createObjectURL(avatar)}
           alt="Avatar"
           className="avatar-image"
           style={{ width: "100%", height: "100%", cursor: "pointer" }}

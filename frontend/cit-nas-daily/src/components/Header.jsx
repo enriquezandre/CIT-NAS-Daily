@@ -39,7 +39,7 @@ export const Header = () => {
             const nasResponse = await api.get(`/NAS/${nasId}`);
             setUser(nasResponse.data);
             break;
-          case "OAS": //PLACEHOLDER
+          case "OAS":
             const oasResponse = await api.get(`/OAS/${oasId}`);
             setUser(oasResponse.data);
             break;
