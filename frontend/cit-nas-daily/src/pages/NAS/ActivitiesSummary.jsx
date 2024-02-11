@@ -231,31 +231,27 @@ export const ActivitiesSummary = () => {
       <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
         <div className="m-3">
           <div className="m-2">
-            <div className="flex flex-row justify-start items-center gap-10 mt-6 mb-6 overflow-x-auto">
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="SY"
-                  options={uniqueYears}
-                  selectedValue={selectedSY}
-                  onChange={(e) => handleSelectSY(e)}
-                />
-              </div>
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="SEMESTER"
-                  options={sem_options}
-                  selectedValue={selectedSem}
-                  onChange={(e) => handleSelectSem(e)}
-                />
-              </div>
-              <div className="flex flex-row gap-2 items-center">
-                <Dropdown
-                  label="MONTH"
-                  options={monthOptions}
-                  selectedValue={selectedMonth}
-                  onChange={(e) => handleSelectedMonth(e)}
-                />
-              </div>
+            <div className="flex flex-col justify-start items-start gap-2 mt-6 mb-6 md:gap-10 md:flex-row lg:gap-10 lg:flex-row lg:items-center">
+              <Dropdown
+                label="SY"
+                options={uniqueYears}
+                selectedValue={selectedSY}
+                onChange={(e) => handleSelectSY(e)}
+              />
+
+              <Dropdown
+                label="SEMESTER"
+                options={sem_options}
+                selectedValue={selectedSem}
+                onChange={(e) => handleSelectSem(e)}
+              />
+
+              <Dropdown
+                label="MONTH"
+                options={monthOptions}
+                selectedValue={selectedMonth}
+                onChange={(e) => handleSelectedMonth(e)}
+              />
             </div>
             <div className="m-5 overflow-x-auto">
               <div>
