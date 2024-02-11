@@ -21,7 +21,8 @@ export const Snackbar = ({ message, onClose, isSnackbarVisible, isSubmitted }) =
       style={{
         position: "fixed",
         bottom: "3%",
-        left: "2%",
+        left: "50%",
+        transform: "translateX(-50%)",
         backgroundColor: isSubmitted ? "#188754" : "#dc3546",
         color: "#fff",
         padding: "8px 16px",
@@ -29,11 +30,12 @@ export const Snackbar = ({ message, onClose, isSnackbarVisible, isSubmitted }) =
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         zIndex: 999,
         display: isSnackbarVisible ? "flex" : "none",
-        alignItems: "left",
-        height: "2.7rem",
-        width: "20%",
+        alignItems: "center",
+        height: "auto",
+        maxWidth: "40%",
         justifyContent: "left",
       }}
+      className="text-xs text-center md:text-center md:text-base lg:text-base lg:text-center"
     >
       {message}
     </div>
