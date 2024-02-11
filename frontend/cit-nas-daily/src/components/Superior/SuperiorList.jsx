@@ -4,13 +4,16 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Dropdown } from "../../components/Dropdown.jsx";
 import axios from "axios";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils.js";
 
+const currentYear = calculateSchoolYear();
+const currentSem = calculateSemester();
 export const SuperiorList = () => {
   const { superiorId } = useParams();
   const [nasList, setNasList] = useState([]);
   const [office, setOffice] = useState({});
-  const [selectedSY, setSelectedSY] = useState(2324);
-  const [selectedSem, setSelectedSem] = useState("First");
+  const [selectedSY, setSelectedSY] = useState(currentYear);
+  const [selectedSem, setSelectedSem] = useState(currentSem);
   // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
