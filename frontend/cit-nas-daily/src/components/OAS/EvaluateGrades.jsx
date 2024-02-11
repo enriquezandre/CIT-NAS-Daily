@@ -2,6 +2,7 @@
 import PropTypes from "prop-types";
 import { useState, useMemo } from "react";
 import { ShowGrades } from "./ShowGrades";
+import { Snackbar } from "../Snackbar";
 import axios from "axios";
 
 export const EvaluateGrades = ({
@@ -13,6 +14,9 @@ export const EvaluateGrades = ({
   selectedSem,
   onEvaluationSubmit,
 }) => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
   const [isViewingShowGrades, setIsViewingShowGrades] = useState(false);
   const [numCoursesFailed, setNumCoursesFailed] = useState(0);
   const [allCoursesPassed, setAllCoursesPassed] = useState(true);
@@ -33,6 +37,10 @@ export const EvaluateGrades = ({
       }
     };
   }, []);
+
+  const handleSnackbarClose = () => {
+    setSnackbarVisible(false);
+  };
 
   const handleCoursePassedChange = (event) => {
     const value = event.target.value;
@@ -80,14 +88,17 @@ export const EvaluateGrades = ({
       const response = await api.put(`/SummaryEvaluation`, requestData);
 
       if (response.status === 200 || response.status === 201) {
-        alert("Submitted successfully");
-        onEvaluationSubmit();
+        setIsSubmitted(true);
+        setSnackbarVisible(true); // Show the success snackbar
+        setSnackbarMsg("Submitted successfully!");
       } else {
-        alert("Submission failed");
+        setSnackbarVisible(true); // Show the error snackbar
+        setSnackbarMsg("Submission failed.");
       }
       close();
     } catch (error) {
-      console.error(error);
+      setSnackbarVisible(true);
+      setSnackbarMsg("An error occurred.");
     }
   };
 
@@ -224,6 +235,12 @@ export const EvaluateGrades = ({
             </div>
           </div>
         </div>
+        <Snackbar
+          message={snackbarMsg}
+          onClose={handleSnackbarClose}
+          isSnackbarVisible={isSnackbarVisible}
+          isSubmitted={isSubmitted}
+        />
       </div>
     )
   );
