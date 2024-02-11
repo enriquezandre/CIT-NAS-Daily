@@ -53,6 +53,7 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
         className="rounded-1xl"
         position={"center"}
         onClose={handleCancel}
+        size={"md"}
       >
         <Modal.Header
           style={{
