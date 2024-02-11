@@ -2,8 +2,8 @@
 import PropTypes from "prop-types";
 import { useState, useMemo } from "react";
 import { ShowGrades } from "./ShowGrades";
-import { Snackbar } from "../Snackbar";
 import axios from "axios";
+import { Snackbar } from "../../components/Snackbar.jsx";
 
 export const EvaluateGrades = ({
   show,
@@ -14,14 +14,14 @@ export const EvaluateGrades = ({
   selectedSem,
   onEvaluationSubmit,
 }) => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMsg, setSnackbarMsg] = useState("");
   const [isViewingShowGrades, setIsViewingShowGrades] = useState(false);
   const [numCoursesFailed, setNumCoursesFailed] = useState(0);
   const [allCoursesPassed, setAllCoursesPassed] = useState(true);
   const [enrollmentAllowed, setEnrollmentAllowed] = useState(null);
   const [responded, setResponded] = useState("true");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
 
   const getSemesterValue = useMemo(() => {
     return (sem) => {
@@ -85,12 +85,15 @@ export const EvaluateGrades = ({
         responded: responded,
       };
 
+      console.log(requestData);
+
       const response = await api.put(`/SummaryEvaluation`, requestData);
 
-      if (response.status === 200 || response.status === 201) {
+      if (response.status === 200 || response.status === 201 || response.status === 204) {
         setIsSubmitted(true);
         setSnackbarVisible(true); // Show the success snackbar
         setSnackbarMsg("Submitted successfully!");
+        onEvaluationSubmit();
       } else {
         setSnackbarVisible(true); // Show the error snackbar
         setSnackbarMsg("Submission failed.");
