@@ -10,7 +10,6 @@ export const NASList = ({ office, selectedSY, selectedSem }) => {
   const [nasList, setNasList] = useState([]);
   const [nasImages, setNasImages] = useState({}); //added for image
   const oasId = useParams().oasId;
-  console.log("OASID:", oasId);
   const navigate = useNavigate();
 
   const getSemesterValue = useMemo(() => {
@@ -41,7 +40,6 @@ export const NASList = ({ office, selectedSY, selectedSem }) => {
         const response = await api.get(
           `/NAS/${office.id}/${selectedSY}/${getSemesterValue(selectedSem)}`
         );
-        console.log(response.data);
         setNasList(response.data.nasEntries);
       } catch (error) {
         console.error(error);

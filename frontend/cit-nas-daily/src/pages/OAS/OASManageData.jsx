@@ -133,7 +133,6 @@ export const OASManageData = () => {
       await Promise.all(
         nasList.map(async (nas) => {
           const { id, firstName, lastName, middleName } = nas;
-          console.log("NAS Info: ", id, firstName, middleName, lastName);
           await checkAttendanceAndSchedule(id, firstName, lastName, middleName);
         })
       );

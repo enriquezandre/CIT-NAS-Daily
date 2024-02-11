@@ -126,14 +126,12 @@ export const PerfSummary = ({ show, close, nasId, selectedSem, selectedSY }) => 
     show && (
       <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
         <div className="relative w-full mx-8">
-          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+          <div className="relative bg-white rounded-lg shadow">
             <div className="flex items-center justify-center p-4 rounded-t">
-              <h3 className="text-xl text-center w-full font-bold text-gray-900 dark:text-white">
-                PERFORMANCE SUMMARY
-              </h3>
+              <h3 className="text-base text-center w-full font-bold">PERFORMANCE SUMMARY</h3>
               <button
                 type="button"
-                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                className="rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
                 onClick={close}
               >
                 <svg
@@ -153,9 +151,9 @@ export const PerfSummary = ({ show, close, nasId, selectedSem, selectedSY }) => 
                 </svg>
               </button>
             </div>
-            <div className="flex flex-col px-6 gap-6">
+            <div className="flex flex-col px-3 md:px-6 gap-3 md:gap-6">
               <div>
-                <h3 className="flex gap-6 text-xl text-left w-full font-semibold">
+                <h3 className="flex text-left w-full font-semibold text-xs sm:text-base md:text-xl">
                   TIMEKEEPING STATUS:
                   {timekeepingStatus === "EXCELLENT" ? (
                     <p className="text-green">{timekeepingStatus}</p>
@@ -166,20 +164,22 @@ export const PerfSummary = ({ show, close, nasId, selectedSem, selectedSY }) => 
                   )}
                 </h3>
               </div>
-              <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
+              <div className="overflow-x-auto">
+                <MonthlySummary timekeepingSummaries={timekeepingSummaries} />
+              </div>
               <div>
-                <h3 className="flex gap-6 text-xl text-left w-full font-semibold">
+                <h3 className="flex text-left w-full font-semibold text-xs sm:text-base md:text-xl">
                   SUMMARY OF DAILY ACTIVITIES:
                 </h3>
-                <div className="w-1/5 mt-3 mb-5">
+                <div className="w-1/2 sm:w-1/5 mt-3 mb-3">
                   <select
                     id="month"
                     name="month"
                     value={selectedMonth}
                     onChange={handleChange}
-                    className="block w-full pl-3 pr-10 py-2 text-base border focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                    className="block w-full pl-3 pr-10 py-2 text-xs sm:text-sm md:text-base border rounded-md"
                   >
-                    <option value="">Select a Month</option>
+                    <option value="">Select Month</option>
                     {months.map((month, index) => (
                       <option key={index} value={month}>
                         {month}
@@ -187,9 +187,9 @@ export const PerfSummary = ({ show, close, nasId, selectedSem, selectedSY }) => 
                     ))}
                   </select>
                 </div>
-                <div className="table-wrapper overflow-auto max-h-40">
+                <div className="table-wrapper overflow-x-auto max-h-40">
                   <Table hoverable className="border">
-                    <Table.Head className="border">
+                    <Table.Head className="border text-xs">
                       <Table.HeadCell className="text-center border">DATE</Table.HeadCell>
                       <Table.HeadCell className="text-center border">
                         Activities of the Day
@@ -197,11 +197,11 @@ export const PerfSummary = ({ show, close, nasId, selectedSem, selectedSY }) => 
                       <Table.HeadCell className="text-center border">Skills Learned</Table.HeadCell>
                       <Table.HeadCell className="text-center border">Values Learned</Table.HeadCell>
                     </Table.Head>
-                    <Table.Body className="divide-y">
+                    <Table.Body className="divide-y text-xs">
                       {filteredSummaries.map((summary) => (
                         <Table.Row key={summary.id}>
                           <Table.Cell
-                            className="text-center border"
+                            className="text-center border text-xs"
                             style={{
                               overflowWrap: "break-word",
                               maxWidth: "100px",
@@ -210,7 +210,7 @@ export const PerfSummary = ({ show, close, nasId, selectedSem, selectedSY }) => 
                             {new Date(summary.dateOfEntry).toLocaleDateString()}
                           </Table.Cell>
                           <Table.Cell
-                            className="text-center border"
+                            className="text-center border text-xs"
                             style={{
                               overflowWrap: "break-word",
                               maxWidth: "100px",
@@ -219,7 +219,7 @@ export const PerfSummary = ({ show, close, nasId, selectedSem, selectedSY }) => 
                             {summary.activitiesOfTheDay}
                           </Table.Cell>
                           <Table.Cell
-                            className="text-center border"
+                            className="text-center border text-xs"
                             style={{
                               overflowWrap: "break-word",
                               maxWidth: "100px",
@@ -228,7 +228,7 @@ export const PerfSummary = ({ show, close, nasId, selectedSem, selectedSY }) => 
                             {summary.skillsLearned}
                           </Table.Cell>
                           <Table.Cell
-                            className="text-center border"
+                            className="text-center border text-xs"
                             style={{
                               overflowWrap: "break-word",
                               maxWidth: "100px",
@@ -243,10 +243,10 @@ export const PerfSummary = ({ show, close, nasId, selectedSem, selectedSY }) => 
                 </div>
               </div>
             </div>
-            <div className="flex justify-center items-center p-6 space-x-2 border-gray-200 rounded-b dark:border-gray-600">
+            <div className="flex justify-center items-center p-2 md:p-6 space-x-2 rounded-b">
               <button
                 type="button"
-                className="text-black bg-secondary hover:bg-primary hover:text-white font-medium rounded-lg text-sm px-10 py-2.5 text-center"
+                className="text-black bg-secondary hover:bg-primary hover:text-white font-medium rounded-lg text-xs sm:text-sm px-10 py-2 md:py-2.5 text-center"
                 onClick={close}
               >
                 CLOSE

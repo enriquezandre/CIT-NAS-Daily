@@ -223,7 +223,7 @@ export const SuperiorEvaluation = () => {
     <>
       <Header />
       <Card className="w-9/10 mx-8 mb-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 text-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-2 text-xs sm:text-sm md:text-base">
           <p className="mb-3">
             <strong className="font-bold" style={{ textTransform: "uppercase" }}>
               NAS NAME: {nas.lastName}, {nas.firstName} {nas.middleName}
@@ -231,11 +231,11 @@ export const SuperiorEvaluation = () => {
           </p>
           <p className="mb-3">
             <strong className="font-bold">
-              PROGRAM: {nas.course} {nas.yearLevel}
+              PROGRAM: {nas.course} - {nas.yearLevel}
             </strong>
           </p>
         </div>
-        <div className="flex">
+        <div className="flex flex-col sm:flex-row justify-start sm:items-center gap-3 lg:gap-10 overflow-x-auto">
           <div className="w-36 z-10 flex mr-10">
             <div className="mr-2">SY:</div>
             <select
@@ -275,7 +275,7 @@ export const SuperiorEvaluation = () => {
         <div className="flex items-center justify-center">
           <button
             type="button"
-            className="text-black bg-secondary hover:bg-primary hover:text-white font-medium rounded-lg text-sm px-5 py-2.5"
+            className="text-black text-xs sm:text-sm md:text-base bg-secondary hover:bg-primary hover:text-white font-medium rounded-lg px-5 py-2.5"
             onClick={openPerfSummary}
           >
             VIEW PERFORMANCE SUMMARY
@@ -297,7 +297,7 @@ export const SuperiorEvaluation = () => {
         ) : (
           <div>
             {Object.keys(evalData).length === 0 && evalData.constructor === Object ? (
-              <div>
+              <div className="text-xs sm:text-sm md:text-base">
                 <hr className="my-2 border-t-2 border-gray-300 ml-7 mr-7" />
                 <p className="my-2 text-justify">
                   <strong className="font-bold">OBJECTIVE: </strong>
@@ -317,63 +317,66 @@ export const SuperiorEvaluation = () => {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                  <table className="w-full">
-                    <thead>
-                      <tr>
-                        <th className="text-left pl-0">
-                          <strong className="font-bold text-gray-900">A. OVERALL RATING </strong>{" "}
-                        </th>
-                        <th className="font-semibold text-gray-900 px-8">5</th>
-                        <th className="font-semibold text-gray-900 px-8">4</th>
-                        <th className="font-semibold text-gray-900 px-8">3</th>
-                        <th className="font-semibold text-gray-900 px-8">2</th>
-                        <th className="font-semibold text-gray-900 px-8">1</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {categories.map((category, index) => (
-                        <React.Fragment key={index}>
-                          <tr>
-                            <td className="pl-0 text-left">
-                              <strong className="font-bold text-gray-900">{category.title}</strong>
-                            </td>
-                          </tr>
-                          {category.rows.map((row, rowIndex) => (
-                            <tr key={rowIndex}>
-                              <td className="text-left">{row}</td>
-                              {[5, 4, 3, 2, 1].map((value) => (
-                                <td key={value} className="text-center">
-                                  <input
-                                    className="form-radio h-5 w-5"
-                                    type="radio"
-                                    name={`row${index}-${rowIndex}`}
-                                    value={`Option ${value}`}
-                                    checked={
-                                      selectedOptions[`row${index}-${rowIndex}`] ===
-                                      `Option ${value}`
-                                    }
-                                    onChange={() =>
-                                      handleOptionChange(
-                                        `row${index}-${rowIndex}`,
-                                        `Option ${value}`
-                                      )
-                                    }
-                                    disabled={isSubmitted}
-                                  />
-                                </td>
-                              ))}
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr>
+                          <th className="text-left pl-0">
+                            <strong className="font-bold">A. OVERALL RATING </strong>{" "}
+                          </th>
+                          <th className="font-semibold px-8">5</th>
+                          <th className="font-semibold px-8">4</th>
+                          <th className="font-semibold px-8">3</th>
+                          <th className="font-semibold px-8">2</th>
+                          <th className="font-semibold px-8">1</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {categories.map((category, index) => (
+                          <React.Fragment key={index}>
+                            <tr>
+                              <td className="pl-0 text-left">
+                                <strong className="font-bold">{category.title}</strong>
+                              </td>
                             </tr>
-                          ))}
-                          <td className="py-2"></td>
-                        </React.Fragment>
-                      ))}
-                    </tbody>
-                  </table>
-                  <div className="flex justify-end gap-10 items-center mt-5">
-                    <strong className="font-bold text-gray-900">OVERALL RATING: {total}</strong>
+
+                            {category.rows.map((row, rowIndex) => (
+                              <tr key={rowIndex}>
+                                <td className="text-left">{row}</td>
+                                {[5, 4, 3, 2, 1].map((value) => (
+                                  <td key={value} className="text-center">
+                                    <input
+                                      className="form-radio h-5 w-5"
+                                      type="radio"
+                                      name={`row${index}-${rowIndex}`}
+                                      value={`Option ${value}`}
+                                      checked={
+                                        selectedOptions[`row${index}-${rowIndex}`] ===
+                                        `Option ${value}`
+                                      }
+                                      onChange={() =>
+                                        handleOptionChange(
+                                          `row${index}-${rowIndex}`,
+                                          `Option ${value}`
+                                        )
+                                      }
+                                      disabled={isSubmitted}
+                                    />
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                            <td className="py-2"></td>
+                          </React.Fragment>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="flex justify-start overflow-x-auto sm:justify-end gap-10 items-center mt-5 text-xs sm:text-sm md:text-base">
+                    <strong className="font-bold">OVERALL RATING: {total}</strong>
                     <button
                       type="submit"
-                      className="text-black bg-secondary hover:bg-primary hover:text-white font-medium rounded-lg text-sm px-10 py-2.5"
+                      className="text-black bg-secondary hover:bg-primary hover:text-white font-medium rounded-lg px-10 py-2.5"
                       disabled={isSubmitted}
                     >
                       SUBMIT

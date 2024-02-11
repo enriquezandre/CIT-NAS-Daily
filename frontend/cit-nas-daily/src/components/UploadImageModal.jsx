@@ -16,8 +16,6 @@ export const UploadImageModal = ({ isModalOpen, closeModal, handleAvatarChange }
     const file = e.target.files[0];
 
     if (file) {
-      console.log("Selected file:", file);
-
       const maxSizeInBytes = 500 * 1024; // 500 KB
 
       if (file.size > maxSizeInBytes) {
