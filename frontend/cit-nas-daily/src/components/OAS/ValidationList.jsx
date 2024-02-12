@@ -241,22 +241,25 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
 
   return (
     <>
-      <div className="grid gap-3">
+      <div className="grid gap-3 grid-cols-1 md:grid-cols-1 lg:grid-cols-1">
         {filteredValidation.map((item) => (
           <div
             key={item.id}
-            className="border border-solid rounded-md p-3 flex items-center justify-between"
+            className="border border-solid rounded-md p-3 flex flex-col items-center md:flex-row lg:flex-row lg:items-center justify-between"
           >
             <div className="flex items-center">
-              <Avatar
-                img={
-                  nasImages[item.nasId]
-                    ? `data:image/png;base64,${nasImages[item.nasId]}`
-                    : placeholder
-                }
-                rounded
-              />
-              <p className="ml-5">
+              {/* Conditional rendering of the avatar based on screen size */}
+              <div className="hidden md:block lg:block">
+                <Avatar
+                  img={
+                    nasImages[item.nasId]
+                      ? `data:image/png;base64,${nasImages[item.nasId]}`
+                      : placeholder
+                  }
+                  rounded
+                />
+              </div>
+              <p className="p-1 text-center md:text-left lg:ml-3 lg:text-left">
                 <span>{item.nasName}</span>
                 <br />
                 <span className="text-xs">
@@ -268,14 +271,14 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
             <div className="flex items-center space-x-2">
               <button
                 type="button"
-                className="text-white bg-primary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5 h-[2.6rem]"
+                className="text-white bg-primary hover:bg-primary hover:text-secondary font-medium rounded-lg text-xs px-5 py-2.5 h-[2.6rem] md:text-sm lg:text-sm"
                 onClick={() => viewPDF(item.nasLetter)}
               >
                 View Letter
               </button>
               <button
                 type="button"
-                className="text-white bg-primary hover:bg-primary hover:text-secondary font-medium rounded-lg text-sm px-5 py-2.5 h-[2.6rem]"
+                className="text-white bg-primary hover:bg-primary hover:text-secondary font-medium rounded-lg text-xs px-5 py-2.5 h-[2.6rem] md:text-sm lg:text-sm"
                 onClick={() => openStatusModal(item)} // Open the status modal for the specific item
               >
                 Update status

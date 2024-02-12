@@ -206,7 +206,7 @@ export const AttendanceSummary = () => {
   return (
     <>
       <div className="block md:hidden justify-center w-full h-full items-center border border-solid rounded-lg p-3">
-        <div className="flex flex-row justify-between items-center mb-4">
+        <div className="flex flex-col gap-2 items-start justify-between mb-4 md:flex-row lg:flex-row lg:items-center">
           <Dropdown
             label="SY"
             options={uniqueYears}

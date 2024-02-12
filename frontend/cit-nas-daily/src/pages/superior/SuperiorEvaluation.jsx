@@ -4,7 +4,9 @@ import { Header } from "../../components/Header";
 import { PerfSummary } from "../../components/Superior/PerfSummary.jsx";
 import { useParams } from "react-router-dom";
 import { SuperiorEval } from "../../components/SuperiorEval";
+import { Dropdown } from "../../components/Dropdown.jsx";
 import axios from "axios";
+import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils.js";
 
 const categories = [
   {
@@ -44,12 +46,18 @@ const categories = [
   },
 ];
 
+const currentYear = calculateSchoolYear();
+const currentSem = calculateSemester();
 export const SuperiorEvaluation = () => {
   const { nasId } = useParams();
   const [nas, setNas] = useState({});
   const [selectedOptions, setSelectedOptions] = useState({});
-  const [selectedSY, setSelectedSY] = useState(2324);
-  const [selectedSem, setSelectedSem] = useState("First");
+  const [selectedSY, setSelectedSY] = useState(currentYear);
+  const [selectedSem, setSelectedSem] = useState(currentSem);
+  // eslint-disable-next-line no-unused-vars
+  const [syOptions, setSyOptions] = useState([]);
+  const [uniqueYears, setUniqueYears] = useState([]);
+  const sem_options = ["First", "Second", "Summer"];
   const [isViewingPerfSummary, setIsViewingPerfSummary] = useState(false);
   const [attendanceAndPunctuality, setAttendanceAndPunctuality] = useState();
   const [qualOfWorkOutput, setQualityOfWorkOutput] = useState();
@@ -147,9 +155,6 @@ export const SuperiorEvaluation = () => {
     }
   }
 
-  const sy_options = ["2324", "2425", "2526"];
-  const sem_options = ["First", "Second", "Summer"];
-
   useEffect(() => {
     const fetchNas = async () => {
       try {
@@ -219,6 +224,54 @@ export const SuperiorEvaluation = () => {
     setTotal((totalRating / 13).toFixed(1));
   }, [selectedOptions]);
 
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, []);
+
+  useEffect(() => {
+    const fetchSchoolYearSemesterOptions = async () => {
+      try {
+        const api = axios.create({
+          baseURL: "https://localhost:7001/api",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const response = await api.get("/NAS/sysem");
+        setSyOptions(response.data);
+
+        // Extract unique years from syOptions
+        const years = [...new Set(response.data.map((option) => option.year))];
+        setUniqueYears(years);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchSchoolYearSemesterOptions();
+  }, []);
+
   return (
     <>
       <Header />
@@ -237,38 +290,21 @@ export const SuperiorEvaluation = () => {
         </div>
         <div className="flex flex-col sm:flex-row justify-start sm:items-center gap-3 lg:gap-10 overflow-x-auto">
           <div className="w-36 z-10 flex mr-10">
-            <div className="mr-2">SY:</div>
-            <select
-              id="sy"
-              name="sy"
-              value={selectedSY}
-              onChange={handleSelectSY}
-              className=" w-full text-base border rounded-md"
-            >
-              {Array.isArray(sy_options) &&
-                sy_options.map((sy, index) => (
-                  <option key={index} value={sy}>
-                    {sy}
-                  </option>
-                ))}
-            </select>
+            <Dropdown
+              label="SY"
+              options={uniqueYears}
+              selectedValue={selectedSY}
+              onChange={(e) => handleSelectSY(e)}
+            />
           </div>
 
           <div className="w-48 z-10 flex">
-            <div className="mr-2">SEMESTER:</div>
-            <select
-              id="sem"
-              name="sem"
-              value={selectedSem}
-              onChange={handleSelectSem}
-              className=" w-full text-base border rounded-md"
-            >
-              {sem_options.map((sem, index) => (
-                <option key={index} value={sem}>
-                  {sem}
-                </option>
-              ))}
-            </select>
+            <Dropdown
+              label="SEMESTER"
+              options={sem_options}
+              selectedValue={selectedSem}
+              onChange={(e) => handleSelectSem(e)}
+            />
           </div>
         </div>
 
