@@ -51,14 +51,9 @@ export const ValidationStatusModal = ({ isOpen, closeModal, handleSubmit }) => {
         dismissible
         show={isOpen}
         className="rounded-1xl"
-        style={{
-          padding: "0",
-          zIndex: 1000,
-          width: "30rem",
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
+        position={"center"}
         onClose={handleCancel}
+        size={"md"}
       >
         <Modal.Header
           style={{

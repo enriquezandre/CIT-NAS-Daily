@@ -4,6 +4,7 @@ import { Button } from "flowbite-react";
 import { Dropdown } from "../../components/Dropdown";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
+import { Snackbar } from "../../components/Snackbar.jsx";
 import axios from "axios";
 
 const currentYear = calculateSchoolYear();
@@ -30,6 +31,10 @@ export const OASStatus = () => {
   const [allCoursesPassed, setAllCoursesPassed] = useState(null);
   const [evaluationSubmitted, setEvaluationSubmitted] = useState(false);
   const sem_options = ["First", "Second", "Summer"];
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState("");
+  const [evalResponded, setEvalResponded] = useState("true");
 
   const api = useMemo(
     () =>
@@ -42,12 +47,8 @@ export const OASStatus = () => {
     []
   );
 
-  const handleEvaluationSubmitted = () => {
-    setEvaluationSubmitted(true);
-
-    setTimeout(() => {
-      setEvaluationSubmitted(false);
-    }, 3000);
+  const handleSnackbarClose = () => {
+    setSnackbarVisible(false);
   };
 
   const handleSearchChange = (event) => {
@@ -164,6 +165,58 @@ export const OASStatus = () => {
       }
     }
   }, [searchInput, nasArray]);
+
+  const handleEvaluationSubmitted = () => {
+    setEvaluationSubmitted(true);
+
+    setTimeout(() => {
+      setEvaluationSubmitted(false);
+    }, 3000);
+  };
+
+  const handleClose = () => {
+    close();
+    handleEvaluationSubmitted();
+  };
+
+  const handleSubmit = async (nasId, enrollmentAllowed, allCoursesPassed, numCoursesFailed) => {
+    try {
+      const api = axios.create({
+        baseURL: "https://localhost:7001/api",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      setEvalResponded("true");
+
+      const requestData = {
+        nasId: nasId,
+        semester: getSemesterValue(selectedSem),
+        schoolYear: selectedSY,
+        enrollmentAllowed: enrollmentAllowed,
+        allCoursesPassed: allCoursesPassed,
+        noOfCoursesFailed: numCoursesFailed,
+        responded: evalResponded,
+      };
+
+      const response = await api.put(`/SummaryEvaluation`, requestData);
+
+      if (response.status === 200 || response.status === 201 || response.status === 204) {
+        setEvaluationSubmitted(true);
+        setIsSubmitted(true);
+        setSnackbarVisible(true); // Show the success snackbar
+        setSnackbarMsg("Submitted successfully!");
+      } else {
+        setSnackbarVisible(true); // Show the error snackbar
+        setSnackbarMsg("Submission failed.");
+      }
+      handleClose();
+    } catch (error) {
+      setSnackbarVisible(true);
+      setSnackbarMsg("An error occurred.");
+    }
+  };
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -320,9 +373,7 @@ export const OASStatus = () => {
                                 ? nasArray[currentIndex].id
                                 : null
                             }
-                            selectedSY={selectedSY}
-                            selectedSem={selectedSem}
-                            onEvaluationSubmit={handleEvaluationSubmitted}
+                            handleSubmit={handleSubmit}
                           />
                         </div>
                       )}
@@ -357,6 +408,12 @@ export const OASStatus = () => {
             </div>
           </div>
         </div>
+        <Snackbar
+          message={snackbarMsg}
+          onClose={handleSnackbarClose}
+          isSnackbarVisible={isSnackbarVisible}
+          isSubmitted={isSubmitted}
+        />
       </div>
     </>
   );
