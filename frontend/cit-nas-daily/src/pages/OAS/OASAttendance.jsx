@@ -121,7 +121,7 @@ export const OASAttendance = () => {
         break;
       case "Second":
         setMonthOptions(second_sem);
-        selectedMonthIndex = second_sem.indexOf(selectedMonth);
+        selectedMonthIndex = second_sem.indexOf(selectedMonth) - 1;
         if (selectedMonth === "All") {
           selectedMonthIndex = -2;
         }
