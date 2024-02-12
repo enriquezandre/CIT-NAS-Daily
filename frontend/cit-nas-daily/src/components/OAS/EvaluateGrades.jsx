@@ -1,46 +1,13 @@
 "use client";
 import PropTypes from "prop-types";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { ShowGrades } from "./ShowGrades";
-import axios from "axios";
-import { Snackbar } from "../../components/Snackbar.jsx";
 
-export const EvaluateGrades = ({
-  show,
-  close,
-  grade,
-  nasId,
-  selectedSY,
-  selectedSem,
-  onEvaluationSubmit,
-}) => {
+export const EvaluateGrades = ({ show, close, grade, nasId, handleSubmit }) => {
   const [isViewingShowGrades, setIsViewingShowGrades] = useState(false);
   const [numCoursesFailed, setNumCoursesFailed] = useState(0);
   const [allCoursesPassed, setAllCoursesPassed] = useState(true);
   const [enrollmentAllowed, setEnrollmentAllowed] = useState(null);
-  const [responded, setResponded] = useState("true");
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isSnackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMsg, setSnackbarMsg] = useState("");
-
-  const getSemesterValue = useMemo(() => {
-    return (sem) => {
-      switch (sem) {
-        case "First":
-          return 0;
-        case "Second":
-          return 1;
-        case "Summer":
-          return 2;
-        default:
-          return "Invalid semester";
-      }
-    };
-  }, []);
-
-  const handleSnackbarClose = () => {
-    setSnackbarVisible(false);
-  };
 
   const handleCoursePassedChange = (event) => {
     const value = event.target.value;
@@ -62,47 +29,6 @@ export const EvaluateGrades = ({
     setNumCoursesFailed(0);
     setEnrollmentAllowed(null);
     close();
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const api = axios.create({
-        baseURL: "https://localhost:7001/api",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      setResponded("true");
-
-      const requestData = {
-        nasId: nasId,
-        semester: getSemesterValue(selectedSem),
-        schoolYear: selectedSY,
-        enrollmentAllowed: enrollmentAllowed,
-        allCoursesPassed: allCoursesPassed,
-        noOfCoursesFailed: numCoursesFailed,
-        responded: responded,
-      };
-
-      console.log(requestData);
-
-      const response = await api.put(`/SummaryEvaluation`, requestData);
-
-      if (response.status === 200 || response.status === 201 || response.status === 204) {
-        setIsSubmitted(true);
-        setSnackbarVisible(true); // Show the success snackbar
-        setSnackbarMsg("Submitted successfully!");
-        onEvaluationSubmit();
-      } else {
-        setSnackbarVisible(true); // Show the error snackbar
-        setSnackbarMsg("Submission failed.");
-      }
-      close();
-    } catch (error) {
-      setSnackbarVisible(true);
-      setSnackbarMsg("An error occurred.");
-    }
   };
 
   const openShowGrades = () => {
@@ -223,7 +149,9 @@ export const EvaluateGrades = ({
                 <button
                   type="button"
                   className="text-white bg-primary hover:bg-secondary hover:text-primary font-medium rounded-xl text-xs sm:text-sm px-8 sm:px-12 py-2.5 sm:py-3"
-                  onClick={handleSubmit}
+                  onClick={() => {
+                    handleSubmit(nasId, enrollmentAllowed, allCoursesPassed, numCoursesFailed);
+                  }}
                 >
                   SUBMIT
                 </button>
@@ -238,12 +166,6 @@ export const EvaluateGrades = ({
             </div>
           </div>
         </div>
-        <Snackbar
-          message={snackbarMsg}
-          onClose={handleSnackbarClose}
-          isSnackbarVisible={isSnackbarVisible}
-          isSubmitted={isSubmitted}
-        />
       </div>
     )
   );
@@ -253,8 +175,6 @@ EvaluateGrades.propTypes = {
   show: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
   grade: PropTypes.string.isRequired,
-  nasId: PropTypes.number.isRequired,
-  selectedSY: PropTypes.string.isRequired,
-  selectedSem: PropTypes.string.isRequired,
-  onEvaluationSubmit: PropTypes.func.isRequired,
+  nasId: PropTypes.string.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 };
