@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OfficeOpenXml;
 using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
@@ -111,7 +112,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", policy =>
+    options.AddPolicy("AllowsAll", policy =>
     {
         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
@@ -122,17 +123,26 @@ ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseCors("AllowSpecificOrigin");
-}
-
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    c.DocumentTitle = "CITNASDaily";
+    c.DocExpansion(DocExpansion.None);
+    c.RoutePrefix = string.Empty;
+});
+app.UseCors("AllowsAll");
+//}
+app.UseStaticFiles();
+app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
+app.UseRouting();
 app.UseAuthorization();
+
 app.Seed();
 
 app.MapControllers();
@@ -149,7 +159,7 @@ void ConfigureServices(IServiceCollection services)
     //cors
     services.AddCors(options =>
     {
-        options.AddPolicy("AllowSpecificOrigin",
+        options.AddPolicy("AllowsAll",
             builder =>
             {
                 builder.AllowAnyOrigin()
