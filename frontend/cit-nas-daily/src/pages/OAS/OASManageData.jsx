@@ -28,16 +28,17 @@ export const OASManageData = () => {
   const [isScndSnackbarVisible, setScndSnackbarVisible] = useState(false);
   const [scndSnackbarMsg, setScndSnackbarMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const api = useMemo(
     () =>
       axios.create({
-        baseURL: "https://localhost:7001/api",
+        baseURL: `${url}/api`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }),
-    []
+    [url]
   );
 
   const getSemesterValue = useMemo(() => {

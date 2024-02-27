@@ -20,16 +20,17 @@ export const OASOffices = () => {
   // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const api = useMemo(
     () =>
       axios.create({
-        baseURL: "https://localhost:7001/api",
+        baseURL: `${url}/api`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }),
-    []
+    [url]
   );
 
   // Function to filter offices based on search input

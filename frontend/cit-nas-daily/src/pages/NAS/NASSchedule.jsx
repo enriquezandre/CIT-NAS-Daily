@@ -16,6 +16,7 @@ export const NASSchedule = () => {
   const [currentMonth, setCurrentMonth] = useState(null);
   const [currentYear, setCurrentYear] = useState(null);
   const [dataExist, setDataExist] = useState(false);
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const openSetSchedModal = () => {
     setSchedModalOpen(true);
@@ -163,12 +164,12 @@ export const NASSchedule = () => {
 
   const api = useMemo(() => {
     return axios.create({
-      baseURL: "https://localhost:7001/api",
+      baseURL: `${url}/api`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
-  }, []);
+  }, [url]);
 
   const handleSubmit = useCallback(async () => {
     try {
@@ -187,7 +188,7 @@ export const NASSchedule = () => {
             const schoolYear = currentYear;
 
             // Send the schedule data for each row
-            await api.post("https://localhost:7001/api/Schedule", {
+            await api.post(`${url}/api/Schedule`, {
               nasId,
               dayOfWeek,
               startTime,
@@ -211,7 +212,7 @@ export const NASSchedule = () => {
           const schoolYear = currentYear;
 
           // Send the schedule data for the single row
-          await api.post("https://localhost:7001/api/Schedule", {
+          await api.post(`${url}/api/Schedule`, {
             nasId,
             dayOfWeek,
             startTime,
@@ -228,7 +229,7 @@ export const NASSchedule = () => {
     } catch (error) {
       console.error(error);
     }
-  }, [days, schedule, selectedSem, currentYear, api, nasId]);
+  }, [days, schedule, selectedSem, currentYear, api, nasId, url]);
   // -------- functions for SetScheduleTable ends here
 
   //fetch schedule
@@ -282,12 +283,7 @@ export const NASSchedule = () => {
           <div className="flex flex-row justify-center md:justify-start items-center gap-8 md:gap-10 mt-6 mb-6">
             <div className="flex flex-row md:gap-2 items-center">
               <div className="mr-2">SY:</div>
-              <select
-                id="sy"
-                name="sy"
-                className="md:w-28 text-base border rounded-md"
-                disabled
-              >
+              <select id="sy" name="sy" className="md:w-28 text-base border rounded-md" disabled>
                 <option>{currentYear}</option>
               </select>
             </div>

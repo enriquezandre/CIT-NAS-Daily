@@ -18,16 +18,17 @@ export const OASMasterlist = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const sem_options = ["First", "Second", "Summer"];
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const api = useMemo(
     () =>
       axios.create({
-        baseURL: "https://localhost:7001/api",
+        baseURL: `${url}/api`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }),
-    []
+    [url]
   );
 
   useEffect(() => {

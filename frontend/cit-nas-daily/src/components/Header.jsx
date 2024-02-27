@@ -12,6 +12,7 @@ export const Header = () => {
   const { superiorId } = useParams();
   const { oasId } = useParams();
   const [user, setUser] = useState({});
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const handleLogout = () => {
     // Clear the authentication token from local storage
@@ -25,7 +26,7 @@ export const Header = () => {
       try {
         // Create an Axios instance with the Authorization header
         const api = axios.create({
-          baseURL: "https://localhost:7001/api",
+          baseURL: `${url}/api`,
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -56,7 +57,7 @@ export const Header = () => {
     };
 
     fetchUser();
-  }, [nasId, oasId, superiorId]);
+  }, [nasId, oasId, superiorId, url]);
 
   return (
     <>

@@ -17,16 +17,17 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
   const [isScndSubmitted, setScndIsSubmitted] = useState(false);
   const [isScndSnackbarVisible, setScndSnackbarVisible] = useState(false);
   const [scndSnackbarMsg, setScndSnackbarMsg] = useState("");
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const api = useMemo(
     () =>
       axios.create({
-        baseURL: "https://localhost:7001/api",
+        baseURL: `${url}/api`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }),
-    []
+    [url]
   );
 
   const getSemesterValue = useMemo(() => {
@@ -197,7 +198,7 @@ export const ValidationList = ({ searchQuery, selectedSem, selectedSy }) => {
   const getImage = async (nasId) => {
     try {
       const api = axios.create({
-        baseURL: "https://localhost:7001/api",
+        baseURL: `${url}/api`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

@@ -7,6 +7,7 @@ export const Homepage = () => {
   const [firstName, setFirstName] = useState("");
   const { nasId } = useParams();
   const { superiorId } = useParams();
+  const url = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     // Update the current date and time every second
@@ -42,7 +43,7 @@ export const Homepage = () => {
     const fetchUser = async () => {
       try {
         const api = axios.create({
-          baseURL: "https://localhost:7001/api",
+          baseURL: `${url}/api`,
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

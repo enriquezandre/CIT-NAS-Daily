@@ -32,18 +32,18 @@ export const AttendanceSummary = () => {
   const [isSnackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
   const { nasId } = useParams();
+  const url = import.meta.env.VITE_APP_API_URL;
 
-  const getAxiosInstance = () => {
-    return axios.create({
-      baseURL: "https://localhost:7001/api",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-    });
-  };
-
-  const api = useMemo(() => getAxiosInstance(), []);
+  const api = useMemo(
+    () =>
+      axios.create({
+        baseURL: `${url}/api`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }),
+    [url]
+  );
 
   const handleSnackbarClose = () => {
     setSnackbarVisible(false);
@@ -68,7 +68,7 @@ export const AttendanceSummary = () => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
         const api = axios.create({
-          baseURL: "https://localhost:7001/api",
+          baseURL: `${url}/api`,
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -86,7 +86,7 @@ export const AttendanceSummary = () => {
     };
 
     fetchSchoolYearSemesterOptions();
-  }, []);
+  }, [url]);
 
   useEffect(() => {
     let selectedMonthIndex;
@@ -152,7 +152,7 @@ export const AttendanceSummary = () => {
 
   const handleSubmit = async (base64String) => {
     const api = axios.create({
-      baseURL: "https://localhost:7001/api",
+      baseURL: `${url}/api`,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",

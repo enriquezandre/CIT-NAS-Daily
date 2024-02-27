@@ -19,6 +19,7 @@ export const SuperiorList = () => {
   const [uniqueYears, setUniqueYears] = useState([]);
   const sem_options = ["First", "Second", "Summer"];
   const navigate = useNavigate();
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -47,7 +48,7 @@ export const SuperiorList = () => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
         const api = axios.create({
-          baseURL: "https://localhost:7001/api",
+          baseURL: `${url}/api`,
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -65,13 +66,13 @@ export const SuperiorList = () => {
     };
 
     fetchSchoolYearSemesterOptions();
-  }, []);
+  }, [url]);
 
   useEffect(() => {
     const fetchNasList = async () => {
       try {
         const api = axios.create({
-          baseURL: "https://localhost:7001/api",
+          baseURL: `${url}/api`,
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -92,7 +93,7 @@ export const SuperiorList = () => {
     };
 
     fetchNasList();
-  }, [superiorId, selectedSY, selectedSem]);
+  }, [superiorId, selectedSY, selectedSem, url]);
 
   const handleNasClick = (nasId) => {
     navigate(`/superior/${superiorId}/evaluation/${nasId}`);

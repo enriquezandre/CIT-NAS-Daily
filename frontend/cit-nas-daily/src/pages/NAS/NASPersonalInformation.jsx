@@ -19,16 +19,17 @@ export const NASPersonalInformation = () => {
   const [dateStarted, setDateStarted] = useState("");
   const [avatar, setAvatar] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const api = useMemo(
     () =>
       axios.create({
-        baseURL: "https://localhost:7001/api",
+        baseURL: `${url}/api`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }),
-    []
+    [url]
   );
 
   const openModal = () => {

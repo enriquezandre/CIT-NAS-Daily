@@ -67,16 +67,17 @@ export const SuperiorEvaluation = () => {
   const [evalData, setEvalData] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [total, setTotal] = useState();
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const api = useMemo(
     () =>
       axios.create({
-        baseURL: "https://localhost:7001/api",
+        baseURL: `${url}/api`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }),
-    []
+    [url]
   );
 
   const openPerfSummary = () => {
@@ -123,7 +124,7 @@ export const SuperiorEvaluation = () => {
       };
 
       const postresponse = await api.post(
-        "https://localhost:7001/api/SuperiorEvaluationRating",
+        `${url}/api/SuperiorEvaluationRating`,
         superiorEvaluationRating
       );
       console.log("Post", postresponse.data);
@@ -227,13 +228,6 @@ export const SuperiorEvaluation = () => {
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
         const response = await api.get("/NAS/sysem");
         setSyOptions(response.data);
 
@@ -246,18 +240,11 @@ export const SuperiorEvaluation = () => {
     };
 
     fetchSchoolYearSemesterOptions();
-  }, []);
+  }, [api]);
 
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
-        const api = axios.create({
-          baseURL: "https://localhost:7001/api",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
         const response = await api.get("/NAS/sysem");
         setSyOptions(response.data);
 
@@ -270,7 +257,7 @@ export const SuperiorEvaluation = () => {
     };
 
     fetchSchoolYearSemesterOptions();
-  }, []);
+  }, [api]);
 
   return (
     <>

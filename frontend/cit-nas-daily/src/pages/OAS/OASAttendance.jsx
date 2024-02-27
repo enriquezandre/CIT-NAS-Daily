@@ -6,6 +6,7 @@ import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { Dropdown } from "../../components/Dropdown";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import axios from "axios";
+const url = import.meta.env.VITE_APP_API_URL;
 
 const currentSchoolYear = calculateSchoolYear();
 const currentSemester = calculateSemester();
@@ -37,7 +38,7 @@ export const OASAttendance = () => {
   const api = useMemo(
     () =>
       axios.create({
-        baseURL: "https://localhost:7001/api",
+        baseURL: `${url}/api`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

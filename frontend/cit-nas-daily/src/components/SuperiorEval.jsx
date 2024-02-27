@@ -4,13 +4,14 @@ import axios from "axios";
 
 export const SuperiorEval = ({ nasId, selectedSem, selectedSY }) => {
   const [evaluationData, setEvaluationData] = useState([]);
+  const url = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     const fetchEvaluation = async () => {
       try {
         // Create an Axios instance with the Authorization header
         const api = axios.create({
-          baseURL: "https://localhost:7001/api",
+          baseURL: `${url}/api`,
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -46,7 +47,7 @@ export const SuperiorEval = ({ nasId, selectedSem, selectedSY }) => {
     };
 
     fetchEvaluation();
-  }, [selectedSY, selectedSem, nasId]);
+  }, [selectedSY, selectedSem, nasId, url]);
 
   return (
     <>

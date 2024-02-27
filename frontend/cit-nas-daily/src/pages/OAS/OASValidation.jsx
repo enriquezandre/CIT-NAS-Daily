@@ -12,12 +12,13 @@ export const OASValidation = () => {
   const [selectedSem, setSelectedSem] = useState(calculateSemester());
   const sem_options = ["First", "Second", "Summer"];
   const [searchQuery, setSearchQuery] = useState("");
+  const url = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
       try {
         const api = axios.create({
-          baseURL: "https://localhost:7001/api",
+          baseURL: `${url}/api`,
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -37,7 +38,7 @@ export const OASValidation = () => {
     };
 
     fetchSchoolYearSemesterOptions();
-  }, []);
+  }, [url]);
 
   const handleSelectSY = (event) => {
     const value = event.target.value;

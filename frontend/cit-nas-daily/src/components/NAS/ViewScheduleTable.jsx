@@ -14,14 +14,14 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
     Friday: [],
     Saturday: [],
   });
-
   const startOfSy = ["January", "June", "August"];
+  const url = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
         const api = axios.create({
-          baseURL: "https://localhost:7001/api",
+          baseURL: `${url}/api`,
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -64,7 +64,7 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
     };
 
     fetchSchedule();
-  }, [nasId, schoolYear, semester]);
+  }, [nasId, schoolYear, semester, url]);
 
   useEffect(() => {
     // Calculate the total hours when the schedule updates

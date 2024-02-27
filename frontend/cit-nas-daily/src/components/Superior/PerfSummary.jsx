@@ -11,6 +11,7 @@ export const PerfSummary = ({ show, close, nasId, selectedSem, selectedSY }) => 
   const [filteredSummaries, setFilteredSummaries] = useState([]);
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const [timekeepingStatus, setTimekeepingStatus] = useState("");
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const months = [
     "January",
@@ -43,12 +44,12 @@ export const PerfSummary = ({ show, close, nasId, selectedSem, selectedSY }) => 
   const api = useMemo(
     () =>
       axios.create({
-        baseURL: "https://localhost:7001/api",
+        baseURL: `${url}/api`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }),
-    []
+    [url]
   );
 
   useEffect(() => {

@@ -11,6 +11,7 @@ export const NASList = ({ office, selectedSY, selectedSem }) => {
   const [nasImages, setNasImages] = useState({}); //added for image
   const oasId = useParams().oasId;
   const navigate = useNavigate();
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const getSemesterValue = useMemo(() => {
     return (sem) => {
@@ -31,7 +32,7 @@ export const NASList = ({ office, selectedSY, selectedSem }) => {
     const fetchNasList = async () => {
       try {
         const api = axios.create({
-          baseURL: "https://localhost:7001/api",
+          baseURL: `${url}/api`,
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -47,13 +48,13 @@ export const NASList = ({ office, selectedSY, selectedSem }) => {
     };
 
     fetchNasList();
-  }, [office.id, selectedSY, selectedSem, getSemesterValue]);
+  }, [office.id, selectedSY, selectedSem, url, getSemesterValue]);
 
   //added for image
   const getImage = async (nasId) => {
     try {
       const api = axios.create({
-        baseURL: "https://localhost:7001/api",
+        baseURL: `${url}/api`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

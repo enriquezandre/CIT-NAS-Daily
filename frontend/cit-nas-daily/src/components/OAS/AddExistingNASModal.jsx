@@ -20,6 +20,7 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSnackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMsg, setSnackbarMsg] = useState("");
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const getSemesterValue = useMemo(() => {
     return (sem) => {
@@ -39,12 +40,12 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
   const api = useMemo(
     () =>
       axios.create({
-        baseURL: "https://localhost:7001/api",
+        baseURL: `${url}/api`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }),
-    []
+    [url]
   );
 
   useEffect(() => {
@@ -113,7 +114,7 @@ export const AddExistingNASModal = ({ isOpen, closeModal, toaddSY, toaddSem, onS
       year: toaddSY,
     };
     try {
-      const response = await api.put(`https://localhost:7001/api/NAS`, data);
+      const response = await api.put(`${url}/api/NAS`, data);
       onSubmitted(true);
       if (response.status === 200 || response.status === 201) {
         setIsSubmitted(true);

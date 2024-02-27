@@ -9,12 +9,13 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const url = import.meta.env.VITE_APP_API_URL;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await axios.post("https://localhost:7001/api/Auth/login", {
+      const response = await axios.post(`${url}/api/Auth/login`, {
         username,
         password,
       });
@@ -23,7 +24,7 @@ export const Login = () => {
 
       // Create an Axios instance with the Authorization header after login
       const api = axios.create({
-        baseURL: "https://localhost:7001/api",
+        baseURL: `${url}/api`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
