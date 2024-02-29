@@ -112,5 +112,19 @@ namespace CITNASDaily.Repositories.Repositories
             await _context.SaveChangesAsync();
             return existingOffice;
         } 
+
+        public async Task<bool> DeleteOfficeByIdAsync(int id)
+        {
+            var officeToDelete =  await _context.Offices.FindAsync(id);
+
+            if (officeToDelete == null)
+            {
+                return false;
+            }
+
+            _context.Offices.Remove(officeToDelete);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

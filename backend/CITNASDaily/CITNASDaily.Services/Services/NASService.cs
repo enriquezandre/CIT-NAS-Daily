@@ -247,5 +247,12 @@ namespace CITNASDaily.Services.Services
         }
 
         #endregion
+
+        #region DeleteNAS
+        public async Task<bool> DeleteNASByIdAsync(int id)
+        {
+            return await _nasRepository.DeleteNASByIdAsync(id);
+        }
+        #endregion
     }
 }

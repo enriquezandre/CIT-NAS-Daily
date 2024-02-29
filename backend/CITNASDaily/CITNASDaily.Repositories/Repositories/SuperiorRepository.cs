@@ -93,5 +93,21 @@ namespace CITNASDaily.Repositories.Repositories
             }
             return 0;
         }
+        public async Task<bool> DeleteSuperiorByIdAsync(int id)
+        {
+            var superiorToDelete = await _context.Superiors.FindAsync(id);
+
+            if (superiorToDelete == null)
+            {
+                return false;
+            }
+
+            var userToDelete = await _context.Users.FirstOrDefaultAsync(u => u.Id == superiorToDelete.UserId);
+
+            _context.Superiors.Remove(superiorToDelete);
+            _context.Users.Remove(userToDelete);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

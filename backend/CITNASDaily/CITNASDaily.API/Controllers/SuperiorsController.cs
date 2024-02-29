@@ -1,5 +1,6 @@
 ﻿using CITNASDaily.Entities.Dtos.SuperiorDtos;
 using CITNASDaily.Services.Contracts;
+using CITNASDaily.Services.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -215,6 +216,40 @@ namespace CITNASDaily.API.Controllers
         #region UpdateSuperior
 
 
+        #endregion
+
+        #region DeleteSuperior
+        [HttpDelete("DeleteSuperior")]
+        [Authorize]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteSuperiorById(int id)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var deleteOAS = await _superiorService.DeleteSuperiorByIdAsync(id);
+
+                if (deleteOAS == false)
+                {
+                    return NotFound($"Superior #{id} does not exist.");
+                }
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting Superior.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
         #endregion
     }
 }

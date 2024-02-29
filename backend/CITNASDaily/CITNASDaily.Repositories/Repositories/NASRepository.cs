@@ -203,5 +203,31 @@ namespace CITNASDaily.Repositories.Repositories
 
             return nasList;
         }
+
+        public async Task<bool> DeleteNASByIdAsync(int id)
+        {
+            var nasToDelete = await _context.NAS.FindAsync(id);
+
+            if (nasToDelete == null)
+            {
+                return false;
+            }
+
+            var existingNASSchoolYears = await _context.NASSchoolYears
+                                    .Where(schedule => schedule.NASId == id)
+                                    .ToListAsync();
+
+            if (existingNASSchoolYears.Any())
+            {
+                _context.NASSchoolYears.RemoveRange(existingNASSchoolYears);
+            }
+
+            var userToDelete = await _context.Users.FirstOrDefaultAsync(u => u.Id == nasToDelete.UserId);
+
+            _context.NAS.Remove(nasToDelete);
+            _context.Users.Remove(userToDelete);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

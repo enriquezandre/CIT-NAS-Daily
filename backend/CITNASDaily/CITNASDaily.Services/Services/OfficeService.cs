@@ -60,5 +60,10 @@ namespace CITNASDaily.Services.Services
             
             return _mapper.Map<OfficeDto>(updatedOffice);
         }
+
+        public async Task<bool> DeleteOfficeByIdAsync(int id)
+        {
+            return await _officeRepository.DeleteOfficeByIdAsync(id);
+        }
     }
 }

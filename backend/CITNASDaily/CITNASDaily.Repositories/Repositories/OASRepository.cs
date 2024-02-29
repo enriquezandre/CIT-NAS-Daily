@@ -42,5 +42,22 @@ namespace CITNASDaily.Repositories.Repositories
             }
             return 0;
         }
+
+        public async Task<bool> DeleteOASByIdAsync(int id)
+        {
+            var oasToDelete = await _context.OAS.FindAsync(id);
+    
+            if (oasToDelete == null)
+            {
+                return false;
+            }
+
+            var userToDelete = await _context.Users.FirstOrDefaultAsync(u => u.Id == oasToDelete.UserId);
+
+            _context.OAS.Remove(oasToDelete);
+            _context.Users.Remove(userToDelete);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

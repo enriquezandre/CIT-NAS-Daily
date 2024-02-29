@@ -11,5 +11,6 @@ namespace CITNASDaily.Services.Contracts
         Task<Guid?> GetOASUserIdByUsernameAsync(string username);
         Task<int> GetOASIdByUsernameAsync(string username);
         Task<IEnumerable<OAS>?> GetAllOASAsync();
+        Task<bool> DeleteOASByIdAsync(int id);
     }
 }

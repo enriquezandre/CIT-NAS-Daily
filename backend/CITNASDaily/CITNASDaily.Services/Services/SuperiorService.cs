@@ -72,5 +72,10 @@ namespace CITNASDaily.Services.Services
         {
             return await _superiorRepository.GetSuperiorIdByUsernameAsync(username);
         }
+
+        public async Task<bool> DeleteSuperiorByIdAsync(int id)
+        {
+            return await _superiorRepository.DeleteSuperiorByIdAsync(id);
+        }
     }
 }

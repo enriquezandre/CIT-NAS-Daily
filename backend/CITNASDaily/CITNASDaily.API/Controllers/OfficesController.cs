@@ -254,5 +254,45 @@ namespace CITNASDaily.API.Controllers
         }
 
         #endregion
+
+        #region DeleteOffice
+        /// <summary>
+        /// Deletes Office by Id
+        /// </summary>
+        /// <param name="id">Office Id</param>
+        /// <returns>Boolean whether the office was deleted successfully</returns>
+        [HttpDelete("DeleteOffice")]
+        [Authorize]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteOfficeById(int id)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var deleteOffice = await _officeService.DeleteOfficeByIdAsync(id);
+
+                if(deleteOffice == false)
+                {
+                    return NotFound($"Office #{id} does not exist.");
+                }
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting Office.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+
+        #endregion
     }
 }

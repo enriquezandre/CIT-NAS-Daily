@@ -613,5 +613,44 @@ namespace CITNASDaily.API.Controllers
         }
 
         #endregion
+
+        #region Delete
+        /// <summary>
+        /// Deletes NAS by Id
+        /// </summary>
+        /// <param name="id">NAS Id</param>
+        /// <returns>Boolean whether the NAS was deleted successfully</returns>
+        [HttpDelete("DeleteNAS")]
+        [Authorize]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteNASById(int id)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var deleteNAS = await _nasService.DeleteNASByIdAsync(id);
+
+                if (deleteNAS == false)
+                {
+                    return NotFound($"NAS #{id} does not exist.");
+                }
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting NAS.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+        #endregion
     }
 }
