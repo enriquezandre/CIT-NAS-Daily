@@ -11,5 +11,6 @@ namespace CITNASDaily.Services.Contracts
         Task<Office?> GetOfficeBySuperiorIdAsync(int superiorId);
         Task<Office?> GetOfficeByNASIdAsync(int nasId);
         Task<OfficeDto?> UpdateOfficeAsync(OfficeUpdateDto office);
+        Task<bool> DeleteOfficeByIdAsync(int id);
     }
 }

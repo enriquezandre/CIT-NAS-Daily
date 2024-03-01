@@ -22,5 +22,6 @@ namespace CITNASDaily.Services.Contracts
         Task<byte[]?> UploadPhotoAsync(int nasId, IFormFile file);
         Task<NASDto?> UpdateNASAsync(int nasId, NASUpdateDto nasUpdate);
         Task<IEnumerable<NASDto>> UpdateMultipleNASAsync(NASSYAndSemUpdateDto nasUpdate);
+        Task<bool> DeleteNASByIdAsync(int id);
     }
 }

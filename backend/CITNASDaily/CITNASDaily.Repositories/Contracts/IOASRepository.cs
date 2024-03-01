@@ -8,5 +8,6 @@ namespace CITNASDaily.Repositories.Contracts
         public Task<OAS?> GetOAS(int oasId);
         Task<int> GetOASIdByUsernameAsync(string username);
         Task<IEnumerable<OAS>?> GetAllOASAsync();
+        Task<bool> DeleteOASByIdAsync(int id);
     }
 }

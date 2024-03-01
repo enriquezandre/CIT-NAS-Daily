@@ -10,5 +10,6 @@ namespace CITNASDaily.Services.Contracts
         Task<Guid?> GetSuperiorUserIdByUsernameAsync(string username);
         Task<SuperiorDto?> GetSuperiorByOfficeId(int officeId);
         Task<int> GetSuperiorIdByUsernameAsync(string username);
+        Task<bool> DeleteSuperiorByIdAsync(int id);
     }
 }

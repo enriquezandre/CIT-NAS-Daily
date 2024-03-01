@@ -179,5 +179,44 @@ namespace CITNASDaily.API.Controllers
         }
 
         #endregion
+
+        #region DeleteOAS
+        /// <summary>
+        /// Deletes OAS by Id
+        /// </summary>
+        /// <param name="id">OAS Id</param>
+        /// <returns>Boolean whether the OAS was deleted successfully</returns>
+        [HttpDelete("DeleteOAS")]
+        [Authorize]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteNASId(int id)
+        {
+            try
+            {
+                var currentUser = _authService.GetCurrentUser(HttpContext.User.Identity as ClaimsIdentity);
+                if (currentUser == null)
+                {
+                    return Forbid();
+                }
+
+                var deleteOAS = await _oasService.DeleteOASByIdAsync(id);
+
+                if (deleteOAS == false)
+                {
+                    return NotFound($"OAS #{id} does not exist.");
+                }
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting OAS.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+            }
+        }
+        #endregion
     }
 }

@@ -67,5 +67,10 @@ namespace CITNASDaily.Services.Services
         {
             return await _oasRepository.GetOASIdByUsernameAsync(username);
         }
+
+        public async Task<bool> DeleteOASByIdAsync(int id)
+        {
+            return await _oasRepository.DeleteOASByIdAsync(id);
+        }
     }
 }
