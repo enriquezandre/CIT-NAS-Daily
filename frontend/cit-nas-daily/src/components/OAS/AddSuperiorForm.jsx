@@ -125,7 +125,7 @@ export const AddSuperiorForm = () => {
         <div className="max-w-full mb-10 overflow-x-auto">
           <h2 className="mb-4 text-xl font-bold text-black">Add a Superior</h2>
           <form action="#">
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-4 gap-6">
               <div className="w-full">
                 <label htmlFor="lastname" className="block mb-2 text-sm font-medium text-gray-900">
                   Last Name
@@ -152,6 +152,25 @@ export const AddSuperiorForm = () => {
                   id="firstname"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="First name"
+                  required=""
+                  onChange={updateGenError}
+                />
+              </div>
+              {/* TO IMPLEMENT IF BACKEND IS UPDATED */}
+              <div className="w-full">
+                <label
+                  htmlFor="middlename"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Middle Name
+                </label>
+                <input
+                  // ref={firstnameRef}
+                  type="text"
+                  name="middlename"
+                  id="middlename"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  placeholder="Middle name (Optional)"
                   required=""
                   onChange={updateGenError}
                 />
