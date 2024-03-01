@@ -19,6 +19,15 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowsAll", policy =>
+    {
+        policy.AllowAnyOrigin() // Allow requests from any origin
+              .AllowAnyMethod() // Allow any HTTP method (GET, POST, etc.)
+              .AllowAnyHeader(); // Allow any headers (e.g., Content-Type, Authorization)
+    });
+});
 
 // Add services to the container.
 
@@ -126,7 +135,7 @@ var app = builder.Build();
 //// Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
+app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
@@ -134,13 +143,14 @@ app.UseSwaggerUI(c =>
     c.DocExpansion(DocExpansion.None);
     c.RoutePrefix = string.Empty;
 });
-app.UseCors("AllowsAll");
 //}
-app.UseStaticFiles();
-app.UseCors();
 app.UseHttpsRedirection();
-app.UseAuthentication();
+app.UseStaticFiles();
 app.UseRouting();
+
+app.UseCors("AllowsAll");
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.Seed();
@@ -148,7 +158,6 @@ app.Seed();
 app.MapControllers();
 
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
 
 app.Run();
 
