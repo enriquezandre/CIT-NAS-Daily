@@ -12,7 +12,7 @@ namespace CITNASDaily.Repositories.Contracts
     {
         Task<Schedule?> CreateScheduleAsync(Schedule schedule);
         Task<IQueryable<Schedule?>> GetSchedulesByNASIdAsync(int nasId);
-        Task<IEnumerable<Schedule>> GetSchedulesByNASIdSYSemesterAsync(int nasId, int year, Semester semester);
-        Task DeleteSchedulesByNASIdAsync(int nasId);
+        Task<IEnumerable<Schedule?>> GetSchedulesByNASIdSYSemesterAsync(int nasId, int year, Semester semester);
+        Task<bool> DeleteSchedulesByNASIdAsync(int nasId, int year, Semester semester);
     }
 }
