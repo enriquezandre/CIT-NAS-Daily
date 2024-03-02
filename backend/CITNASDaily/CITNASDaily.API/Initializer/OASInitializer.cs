@@ -27,8 +27,8 @@ namespace CITNASDaily.API.Initializer
 
                         context.Users.Add(new User
                         {
-                            Username = "telamomerian",
-                            PasswordHash = PasswordManager.HashPassword("telamomerian"),
+                            Username = "granaderosanamarie",
+                            PasswordHash = PasswordManager.HashPassword("granaderosanamarie"),
                             Role = "Superior"
                         });
 
@@ -42,9 +42,9 @@ namespace CITNASDaily.API.Initializer
                         {
                             Username = "admin",
                             User = context.Users.Where(u => u.Username == "admin").FirstOrDefault(),
-                            FirstName = "Ana Marie",
+                            FirstName = "Merian",
                             MiddleName = "",
-                            LastName = "Granaderos"
+                            LastName = "Telamo"
                         });
 
                         context.SaveChanges();
@@ -125,16 +125,16 @@ namespace CITNASDaily.API.Initializer
                     {
                         context.Superiors.Add(new Superior
                         {
-                            FirstName = "Merian",
-                            LastName = "Telamo",
-                            Username = "telamomerian",
-                            User = context.Users.Where(u => u.Username == "telamomerian").FirstOrDefault()
+                            FirstName = "Ana Marie",
+                            LastName = "Granaderos",
+                            Username = "granaderosanamarie",
+                            User = context.Users.Where(u => u.Username == "granaderosanamarie").FirstOrDefault()
                         });
                         context.SaveChanges();
                     }
 
                     var existingOASOffice = context.Offices.FirstOrDefault(o => o.OfficeName == "OAS");
-                    var oasSuperior = context.Superiors.FirstOrDefault(s => s.Username == "telamomerian");
+                    var oasSuperior = context.Superiors.FirstOrDefault(s => s.Username == "granaderosanamarie");
                     if (existingOASOffice != null && oasSuperior != null && existingOASOffice.SuperiorFirstName == null && existingOASOffice.SuperiorLastName == null)
                     {
                         existingOASOffice.SuperiorFirstName = oasSuperior.FirstName;
