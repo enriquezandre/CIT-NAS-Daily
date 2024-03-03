@@ -33,9 +33,14 @@ namespace CITNASDaily.Repositories.Repositories
                 return null;
             }
 
-            await _context.Schedules.AddAsync(schedule);
-            await _context.SaveChangesAsync();
-            return schedule;
+            if(Enum.IsDefined(typeof(Semester), schedule.Semester) && Enum.IsDefined(typeof(DaysOfTheWeek), schedule.DayOfWeek))
+            {
+                await _context.Schedules.AddAsync(schedule);
+                await _context.SaveChangesAsync();
+                return schedule;
+            }
+
+            return null;
         }
 
         public async Task<IQueryable<Schedule?>> GetSchedulesByNASIdAsync(int nasId)
