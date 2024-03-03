@@ -19,6 +19,7 @@ namespace CITNASDaily.Repositories.Repositories
         public async Task<Superior?> CreateSuperiorAsync(Superior superior)
         {
             superior.FirstName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(superior.FirstName);
+            superior.MiddleName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(superior.MiddleName);
             superior.LastName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(superior.LastName);
             await _context.Superiors.AddAsync(superior);
             await _context.SaveChangesAsync();

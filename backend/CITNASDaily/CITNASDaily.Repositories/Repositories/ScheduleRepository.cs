@@ -33,9 +33,14 @@ namespace CITNASDaily.Repositories.Repositories
                 return null;
             }
 
-            await _context.Schedules.AddAsync(schedule);
-            await _context.SaveChangesAsync();
-            return schedule;
+            if(Enum.IsDefined(typeof(Semester), schedule.Semester) && Enum.IsDefined(typeof(DaysOfTheWeek), schedule.DayOfWeek))
+            {
+                await _context.Schedules.AddAsync(schedule);
+                await _context.SaveChangesAsync();
+                return schedule;
+            }
+
+            return null;
         }
 
         public async Task<IQueryable<Schedule?>> GetSchedulesByNASIdAsync(int nasId)
@@ -43,21 +48,23 @@ namespace CITNASDaily.Repositories.Repositories
             return await Task.FromResult(_context.Schedules.Where(s => s.NASId == nasId));
         }
 
-        public async Task<IEnumerable<Schedule>> GetSchedulesByNASIdSYSemesterAsync(int nasId, int year, Semester semester)
+        public async Task<IEnumerable<Schedule?>> GetSchedulesByNASIdSYSemesterAsync(int nasId, int year, Semester semester)
         {
             return await _context.Schedules.Where(s => s.NASId == nasId && s.Semester == semester && s.SchoolYear == year).ToListAsync();
         }
 
-        public async Task DeleteSchedulesByNASIdAsync(int nasId)
+        public async Task<bool> DeleteSchedulesByNASIdAsync(int nasId, int year, Semester semester)
         {
             var existingSchedules = await _context.Schedules
-                                    .Where(schedule => schedule.NASId == nasId)
+                                    .Where(s => s.NASId == nasId && s.Semester == semester && s.SchoolYear == year)
                                     .ToListAsync();
             if (existingSchedules.Any())
             {
                 _context.Schedules.RemoveRange(existingSchedules);
                 await _context.SaveChangesAsync();
+                return true;
             }
+            return false;
         }
     }
 }

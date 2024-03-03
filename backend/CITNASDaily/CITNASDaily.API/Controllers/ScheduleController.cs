@@ -158,13 +158,13 @@ namespace CITNASDaily.API.Controllers
         /// </summary>
         /// <param name="nasId">NAS unique identifier</param>
         /// <returns>Successful deletion message</returns>
-        [HttpDelete]
+        [HttpDelete("{nasId}/{year}/{semester}")]
         [Authorize(Roles = "OAS, NAS")]
-        [ProducesResponseType(typeof(String), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteScheduleByNASIdAsync(int nasId)
+        public async Task<IActionResult> DeleteScheduleByNASIdAsync(int nasId, int year, Semester semester)
         {
             try
             {
@@ -174,15 +174,14 @@ namespace CITNASDaily.API.Controllers
                 {
                     return Forbid();
                 }
+                
+                var deleteSched = await _scheduleService.DeleteSchedulesByNASIdAsync(nasId, year, semester);
 
-                var checkSched = await _scheduleService.GetSchedulesByNASIdAsync(nasId);
-
-                if (checkSched == null)
+                if (deleteSched == false)
                 {
-                    return NotFound($"No Schedule found for NAS ID #{nasId}");
+                    return BadRequest($"Error encountered in deleting schedules for NAS ID #{nasId}");
                 }
 
-                await _scheduleService.DeleteSchedulesByNASIdAsync(nasId);
                 return Ok($"Schedules with NAS Id {nasId} deleted successfully");
             }
             catch (Exception ex)
