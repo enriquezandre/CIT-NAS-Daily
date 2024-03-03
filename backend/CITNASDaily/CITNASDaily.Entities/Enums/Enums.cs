@@ -26,7 +26,8 @@ namespace CITNASDaily.Entities.Enums
             Wednesday,
             Thursday,
             Friday,
-            Saturday
+            Saturday,
+            Sunday
         }
 
         public enum ValidationStatus

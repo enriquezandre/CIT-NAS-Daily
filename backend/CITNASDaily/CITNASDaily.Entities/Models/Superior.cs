@@ -7,17 +7,14 @@ namespace CITNASDaily.Entities.Models
     {
         [Key]
         public int Id { get; set; }
-
         [Required]
         public Guid? UserId { get; set; }
         public string? Username { get; set; }
-
         public User? User { get; set; }
-
         [Required]
         [MaxLength(50)]
         public string? FirstName { get; set; }
-
+        public string? MiddleName { get; set; }
         [Required]
         [MaxLength(50)]
         public string? LastName { get; set; }

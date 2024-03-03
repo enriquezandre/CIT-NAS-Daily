@@ -49,9 +49,14 @@ namespace CITNASDaily.Services.Services
             return null;
         }
 
-        public async Task<ScheduleListDto> GetSchedulesByNASIdSYSemesterAsync(int nasId, int year, Semester semester)
+        public async Task<ScheduleListDto?> GetSchedulesByNASIdSYSemesterAsync(int nasId, int year, Semester semester)
         {
             var schedList = await _scheduleRepository.GetSchedulesByNASIdSYSemesterAsync(nasId, year, semester);
+
+            if(schedList == null)
+            {
+                return null;
+            }
 
             var schedDto = _mapper.Map<List<ScheduleDto>>(schedList);
 
@@ -66,9 +71,9 @@ namespace CITNASDaily.Services.Services
             return scheduleListDto;
         }
 
-        public async Task DeleteSchedulesByNASIdAsync(int nasId)
+        public async Task<bool> DeleteSchedulesByNASIdAsync(int nasId, int year, Semester semester)
         {
-            await _scheduleRepository.DeleteSchedulesByNASIdAsync(nasId);
+            return await _scheduleRepository.DeleteSchedulesByNASIdAsync(nasId, year, semester);
         }
     }
 }

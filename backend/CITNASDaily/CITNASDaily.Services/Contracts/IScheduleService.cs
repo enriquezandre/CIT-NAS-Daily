@@ -13,7 +13,7 @@ namespace CITNASDaily.Services.Contracts
     {
         Task<Schedule> CreateScheduleAsync(ScheduleCreateDto schedule);
         Task<List<Schedule?>> GetSchedulesByNASIdAsync(int nasId);
-        Task<ScheduleListDto> GetSchedulesByNASIdSYSemesterAsync(int nasId, int year, Semester semester);
-        Task DeleteSchedulesByNASIdAsync(int nasId);
+        Task<ScheduleListDto?> GetSchedulesByNASIdSYSemesterAsync(int nasId, int year, Semester semester);
+        Task<bool> DeleteSchedulesByNASIdAsync(int nasId, int year, Semester semester);
     }
 }

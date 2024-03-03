@@ -6,8 +6,9 @@
         public string? Username { get; set; }
         public Guid? UserId { get; set; }
         public string? FirstName { get; set; }
+        public string? MiddleName { get; set; }
         public string? LastName { get; set; }
-        public string FullName => $"{FirstName} {LastName}";
+        public string FullName => string.IsNullOrWhiteSpace(MiddleName) ? $"{FirstName} {LastName}" : $"{FirstName} {MiddleName} {LastName}";
         public string? OfficeName { get; set; }
     }
 }
