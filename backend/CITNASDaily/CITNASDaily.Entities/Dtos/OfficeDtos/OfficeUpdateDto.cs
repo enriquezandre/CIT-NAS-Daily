@@ -10,6 +10,7 @@ namespace CITNASDaily.Entities.Dtos.OfficeDtos
     {
         public int Id { get; set; }
         public string? SuperiorFirstName { get; set; }
+        public string? SuperiorMiddleName { get; set; }
         public string? SuperiorLastName { get; set; }
     }
 }
