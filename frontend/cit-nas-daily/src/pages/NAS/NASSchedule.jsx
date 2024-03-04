@@ -298,11 +298,7 @@ export const NASSchedule = () => {
           </div>
           <div className="pt-1">
             {dataExist ? (
-              <ViewScheduleTable
-                apiData={apiData}
-                schoolYear={currentYear}
-                semester={selectedSem}
-              />
+              <ViewScheduleTable nasId={nasId} schoolYear={currentYear} semester={selectedSem} />
             ) : (
               <ScheduleTable
                 days={days}
