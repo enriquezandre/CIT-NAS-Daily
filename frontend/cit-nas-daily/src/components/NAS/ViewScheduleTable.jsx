@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semester }) => {
+export const ViewScheduleTable = ({ schoolYear, semester }) => {
   const { nasId } = useParams();
   const [totalHours, setTotalHours] = useState(0);
   const [schedule, setSchedule] = useState({
@@ -13,8 +13,9 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
     Thursday: [],
     Friday: [],
     Saturday: [],
+    Sunday: [],
   });
-  const startOfSy = ["January", "June", "August"];
+
   const url = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
@@ -41,6 +42,7 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
             Thursday: [],
             Friday: [],
             Saturday: [],
+            Sunday: [],
           };
 
           nasData.schedules.forEach((item) => {
@@ -88,6 +90,8 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
         return "Friday";
       case 5:
         return "Saturday";
+      case 6:
+        return "Sunday";
       default:
         return "Unknown";
     }
@@ -123,18 +127,9 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
     return total;
   };
 
-  //check if end of school year
-  const isStartOfSy = (currentMonth) => {
-    if (startOfSy.includes(currentMonth)) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   return (
     <div>
-      <div className="pb-3 flex justify-center">
+      <div className="pb-10 flex justify-center">
         <table className="md:w-10/12 border-collapse border">
           <thead>
             <tr className="bg-primary text-white">
@@ -174,31 +169,6 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
             </tr>
           </tbody>
         </table>
-      </div>
-      <div style={{ display: "flex", justifyContent: "center", paddingTop: "1.5em" }}>
-        <button
-          className={`py-2 px-3 rounded-lg flex justify-center items-center ${
-            isStartOfSy(currentMonth) ? "hover: font-semibold" : ""
-          }`}
-          style={{
-            backgroundColor: isStartOfSy(currentMonth) ? "#88333a" : "#c5c5c5",
-            color: "white",
-            width: "12em",
-          }}
-          onClick={isStartOfSy(currentMonth) ? openModal : undefined}
-          disabled={!isStartOfSy(currentMonth)}
-        >
-          <svg
-            className="w-4 h-4 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-          </svg>
-          Add new schedule
-        </button>
       </div>
     </div>
   );
