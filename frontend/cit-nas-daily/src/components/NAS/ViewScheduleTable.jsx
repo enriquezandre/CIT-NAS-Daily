@@ -108,6 +108,7 @@ export const ViewScheduleTable = ({ nasId, schoolYear, semester }) => {
     }
   };
 
+  // Function to format time in HH:MM AM/PM format
   const formatTime = (time) => {
     const date = new Date(time);
     const hours = date.getHours();
@@ -119,6 +120,7 @@ export const ViewScheduleTable = ({ nasId, schoolYear, semester }) => {
       .padStart(2, "0")} ${ampm}`;
   };
 
+  //if broken sched, separate sched with ";"
   const formatTimeSlots = (items) => {
     const timeSlots = items.map(
       (item) => `${formatTime(item.startTime)} - ${formatTime(item.endTime)}`
@@ -147,7 +149,7 @@ export const ViewScheduleTable = ({ nasId, schoolYear, semester }) => {
               <tr key={day}>
                 <td className="border p-2 text-center align-middle">{day}</td>
                 <td className="border p-2 text-center align-middle">
-                  {schedule[day].hasSchedule ? formatTimeSlots(schedule[day].items) : "DAY OFF"}
+                  {schedule[day].hasSchedule ? formatTimeSlots(schedule[day].items) : "NO DUTY"}
                 </td>
                 <td className="border p-2 text-center align-middle">
                   {schedule[day].hasSchedule ? calculateNumOfHours(schedule[day].items) : ""}
