@@ -4,7 +4,7 @@ import { ScheduleTable } from "../../components/NAS/SetScheduleTable.jsx";
 import { ScheduleModal } from "../../components/NAS/ConfirmScheduleModal.jsx";
 import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable.jsx";
 import { ConfirmAddScheduleModal } from "../../components/NAS/ConfirmAddScheduleModal.jsx";
-import { getCurrentMonth, calculateSchoolYear } from "../../components/SySemUtils.js";
+import { calculateSchoolYear } from "../../components/SySemUtils.js";
 import axios from "axios";
 
 export const NASSchedule = () => {
@@ -13,7 +13,6 @@ export const NASSchedule = () => {
   const [isSchedModalOpen, setSchedModalOpen] = useState(false);
   const [isAddSchedModalOpen, setAddSchedModalOpen] = useState(false);
   const [apiData, setApiData] = useState(null);
-  const [currentMonth, setCurrentMonth] = useState(null);
   const [currentYear, setCurrentYear] = useState(null);
   const [dataExist, setDataExist] = useState(false);
   const url = import.meta.env.VITE_APP_API_URL;
@@ -26,10 +25,6 @@ export const NASSchedule = () => {
     setSchedModalOpen(false);
   };
 
-  const openAddSchedModal = () => {
-    setAddSchedModalOpen(true);
-  };
-
   const closeAddSchedModal = () => {
     setAddSchedModalOpen(false);
   };
@@ -40,17 +35,15 @@ export const NASSchedule = () => {
   };
 
   useEffect(() => {
-    const currentMonthValue = getCurrentMonth();
     const currentYearValue = calculateSchoolYear();
 
     // Set the values to state
-    setCurrentMonth(currentMonthValue);
     setCurrentYear(currentYearValue);
   }, []);
 
   // ------------ functions for SetScheduleTable starts here
   const days = useMemo(
-    () => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    () => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
     []
   );
 
@@ -61,6 +54,7 @@ export const NASSchedule = () => {
     Thursday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
     Friday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
     Saturday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Sunday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
   });
 
   const [scheduleChanges, setScheduleChanges] = useState({
@@ -70,6 +64,7 @@ export const NASSchedule = () => {
     Thursday: false,
     Friday: false,
     Saturday: false,
+    Sunday: false,
   });
 
   const handleStartTimeChange = useCallback(
@@ -305,8 +300,6 @@ export const NASSchedule = () => {
             {dataExist ? (
               <ViewScheduleTable
                 apiData={apiData}
-                openModal={openAddSchedModal}
-                currentMonth={currentMonth}
                 schoolYear={currentYear}
                 semester={selectedSem}
               />
