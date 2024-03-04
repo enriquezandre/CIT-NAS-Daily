@@ -9,9 +9,10 @@ namespace CITNASDaily.Entities.Models
 	{
 		[Key]
 		public int Id { get; set; }
-		public string? OfficeName { get; set; }	
-		public string? SuperiorFirstName { get; set; }
-		public string? SuperiorLastName { get; set; }
-		public List<NAS>? NAS { get; set; }
+		public string? OfficeName { get; set; }
+        public string? SuperiorFirstName { get; set; }
+        public string? SuperiorMiddleName { get; set; }
+        public string? SuperiorLastName { get; set; }
+        public List<NAS>? NAS { get; set; }
 	}
 }
