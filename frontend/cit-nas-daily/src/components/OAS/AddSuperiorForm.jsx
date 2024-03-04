@@ -31,7 +31,8 @@ export const AddSuperiorForm = () => {
       try {
         const response = await api.get(`/Offices`);
         const filteredData = response.data.filter(
-          (office) => !office.superiorFirstName && !office.superiorLastName
+          (office) =>
+            !office.superiorFirstName && !office.superiorMiddleName && !office.superiorLastName
         );
         setOffices(filteredData);
       } catch (error) {
@@ -114,6 +115,7 @@ export const AddSuperiorForm = () => {
       setIsSnackbarVisible(true);
       setSnackbarMsg("Superior added successfully!");
       firstnameRef.current.value = "";
+      middlenameRef.current.value = "";
       lastnameRef.current.value = "";
       officeRef.current.value = "Select office";
     } else {
