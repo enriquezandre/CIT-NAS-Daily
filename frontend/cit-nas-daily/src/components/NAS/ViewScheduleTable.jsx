@@ -158,7 +158,7 @@ export const ViewScheduleTable = ({ nasId, schoolYear, semester }) => {
             ))}
             <tr>
               <td className="text-right font-bold p-2" colSpan="2">
-                Number of hours:
+                Total no. of hours:
               </td>
               <td className="text-center font-bold p-2" colSpan="1">
                 {totalHours}
