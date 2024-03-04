@@ -6,6 +6,7 @@ export const AddSuperiorForm = () => {
   const [offices, setOffices] = useState([]);
   const lastnameRef = useRef();
   const firstnameRef = useRef();
+  const middlenameRef = useRef();
   const officeRef = useRef();
   const [submitted, setSubmitted] = useState(false);
   const [isSnackbarVisible, setIsSnackbarVisible] = useState(false);
@@ -57,6 +58,7 @@ export const AddSuperiorForm = () => {
 
     const lastname = lastnameRef.current.value;
     const firstname = firstnameRef.current.value;
+    const middlename = middlenameRef.current.value;
     const officeId = officeRef.current.value;
     const username = `${lastname}${firstname}`.toLowerCase().replace(/[^a-z0-9]/g, "");
 
@@ -89,6 +91,7 @@ export const AddSuperiorForm = () => {
     try {
       const registersuperior = await api.post(`/Superiors`, {
         firstName: firstname,
+        middleName: middlename,
         lastName: lastname,
         username: username,
       });
@@ -101,6 +104,7 @@ export const AddSuperiorForm = () => {
     const officeData = {
       id: officeId,
       superiorFirstName: firstname,
+      superiorMiddleName: middlename,
       superiorLastName: lastname,
     };
 
@@ -156,7 +160,6 @@ export const AddSuperiorForm = () => {
                   onChange={updateGenError}
                 />
               </div>
-              {/* TO IMPLEMENT IF BACKEND IS UPDATED */}
               <div className="w-full">
                 <label
                   htmlFor="middlename"
@@ -165,7 +168,7 @@ export const AddSuperiorForm = () => {
                   Middle Name
                 </label>
                 <input
-                  // ref={firstnameRef}
+                  ref={middlenameRef}
                   type="text"
                   name="middlename"
                   id="middlename"
