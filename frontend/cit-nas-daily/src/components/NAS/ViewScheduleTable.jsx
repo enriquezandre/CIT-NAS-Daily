@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const ViewScheduleTable = ({ nasId, schoolYear, semester }) => {
+export const ViewScheduleTable = ({ nasId, schoolYear, semester, openModal }) => {
   const [totalHours, setTotalHours] = useState(0);
   const [schedule, setSchedule] = useState({
     Monday: { items: [], hasSchedule: false },
@@ -168,7 +168,10 @@ export const ViewScheduleTable = ({ nasId, schoolYear, semester }) => {
         </table>
       </div>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <button className="btn btn-secondary bg-primary text-white min-[450px]:justify-start flex items-center px-3 py-1 md:px-4 md:py-2 rounded-lg md:m-1 text-sm md:text-base hover:bg-secondary hover:text-black font-normal mr-3">
+        <button
+          className="btn btn-secondary bg-primary text-white min-[450px]:justify-start flex items-center px-3 py-1 md:px-4 md:py-2 rounded-lg md:m-1 text-sm md:text-base hover:bg-secondary hover:text-black font-normal mr-3"
+          onClick={openModal}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
