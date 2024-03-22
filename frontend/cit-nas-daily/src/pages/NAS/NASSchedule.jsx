@@ -11,7 +11,7 @@ export const NASSchedule = () => {
   const { nasId } = useParams();
   const [selectedSem, setSelectedSem] = useState(0);
   const [isSchedModalOpen, setSchedModalOpen] = useState(false);
-  const [isAddSchedModalOpen, setAddSchedModalOpen] = useState(false);
+  const [isDelSchedModalOpen, setDelSchedModalOpen] = useState(false);
   const [apiData, setApiData] = useState(null);
   const [currentYear, setCurrentYear] = useState(null);
   const [dataExist, setDataExist] = useState(false);
@@ -25,14 +25,33 @@ export const NASSchedule = () => {
     setSchedModalOpen(false);
   };
 
+  const openDelSchedModal = () => {
+    setDelSchedModalOpen(true);
+  };
+
   const closeAddSchedModal = () => {
-    setAddSchedModalOpen(false);
+    setDelSchedModalOpen(false);
   };
 
   const handleSelectedSem = (event) => {
     const value = event.target.value;
     setSelectedSem(value);
   };
+
+  const getSemesterValue = useMemo(() => {
+    return (sem) => {
+      switch (sem) {
+        case "First":
+          return 0;
+        case "Second":
+          return 1;
+        case "Summer":
+          return 2;
+        default:
+          return "Invalid semester";
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const currentYearValue = calculateSchoolYear();
@@ -252,14 +271,10 @@ export const NASSchedule = () => {
   }, [apiData]);
 
   //delete schedule
-  const deleteSchedule = async (nasId) => {
+  const deleteSchedule = async (nasId, selectedSY, selectedSem) => {
     try {
       //Make delete request
-      await api.delete(`/Schedule`, {
-        params: {
-          nasId: nasId,
-        },
-      });
+      await api.delete(`/Schedule/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`);
 
       window.location.reload();
     } catch (error) {
@@ -267,8 +282,10 @@ export const NASSchedule = () => {
     }
   };
 
-  const handleAddSched = () => {
-    deleteSchedule(nasId);
+  console.log(nasId, currentYear, getSemesterValue(selectedSem));
+
+  const handleDelSched = () => {
+    deleteSchedule(nasId, currentYear, selectedSem);
   };
 
   return (
@@ -298,7 +315,12 @@ export const NASSchedule = () => {
           </div>
           <div className="pt-1">
             {dataExist ? (
-              <ViewScheduleTable nasId={nasId} schoolYear={currentYear} semester={selectedSem} />
+              <ViewScheduleTable
+                nasId={nasId}
+                schoolYear={currentYear}
+                semester={selectedSem}
+                openModal={openDelSchedModal}
+              />
             ) : (
               <ScheduleTable
                 days={days}
@@ -322,9 +344,9 @@ export const NASSchedule = () => {
         handleSubmit={handleSubmit}
       />
       <ConfirmAddScheduleModal
-        isOpen={isAddSchedModalOpen}
+        isOpen={isDelSchedModalOpen}
         closeModal={closeAddSchedModal}
-        handleSubmit={handleAddSched}
+        handleSubmit={handleDelSched}
       />
     </div>
   );

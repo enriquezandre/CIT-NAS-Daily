@@ -4,6 +4,7 @@ import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { Dropdown } from "../../components/Dropdown";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
 import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable";
+import { ConfirmAddScheduleModal } from "../../components/NAS/ConfirmAddScheduleModal";
 import axios from "axios";
 const url = import.meta.env.VITE_APP_API_URL;
 
@@ -26,6 +27,7 @@ export const OASSchedule = () => {
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const sem_options = ["First", "Second", "Summer"];
+  const [isDelSchedModalOpen, setDelSchedModalOpen] = useState(false);
 
   const api = useMemo(
     () =>
@@ -55,6 +57,14 @@ export const OASSchedule = () => {
 
   const handleSearchChange = (event) => {
     setSearchInput(event.target.value);
+  };
+
+  const openDelSchedModal = () => {
+    setDelSchedModalOpen(true);
+  };
+
+  const closeAddSchedModal = () => {
+    setDelSchedModalOpen(false);
   };
 
   useEffect(() => {
@@ -101,6 +111,28 @@ export const OASSchedule = () => {
     };
     fetchSchoolYearSemesterOptions();
   }, [api]);
+
+  //delete schedule
+  const deleteSchedule = async (nasId, selectedSY, selectedSem) => {
+    try {
+      //Make delete request
+      await api.delete(`/Schedule`, {
+        params: {
+          nasId: nasId,
+          year: selectedSY,
+          semester: getSemesterValue(selectedSem),
+        },
+      });
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting schedule:", error);
+    }
+  };
+
+  const handleDelSched = () => {
+    deleteSchedule(nasId, selectedSY, selectedSem);
+  };
 
   const handleSelectSY = (event) => {
     const value = event.target.value;
@@ -211,11 +243,21 @@ export const OASSchedule = () => {
             </div>
             <div className="flex flex-col justify-center gap-2 md:gap-4">
               <div className="overflow-x-auto">
-                <ViewScheduleTable nasId={nasId} schoolYear={selectedSY} semester={selectedSem} />
+                <ViewScheduleTable
+                  nasId={nasId}
+                  schoolYear={selectedSY}
+                  semester={getSemesterValue(selectedSem)}
+                  openModal={openDelSchedModal}
+                />
               </div>
             </div>
           </div>
         </div>
+        <ConfirmAddScheduleModal //delete schedule
+          isOpen={isDelSchedModalOpen}
+          closeModal={closeAddSchedModal}
+          handleSubmit={handleDelSched}
+        />
       </div>
     </>
   );
