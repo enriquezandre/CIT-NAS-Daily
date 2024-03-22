@@ -286,6 +286,17 @@ export const OASSchedule = () => {
     fetchNasData();
   }, [api, selectedSY, selectedSem, currentIndex, getSemesterValue]);
 
+  useEffect(() => {
+    if (searchInput.trim() !== "") {
+      const results = nasArray.filter((data) =>
+        data.fullName.toLowerCase().includes(searchInput.toLowerCase())
+      );
+      if (results[0]) {
+        setCurrentIndex(nasArray.indexOf(results[0]));
+      }
+    }
+  }, [searchInput, nasArray]);
+
   //getting school year from the /NAS/sysem
   useEffect(() => {
     const fetchSchoolYearSemesterOptions = async () => {
