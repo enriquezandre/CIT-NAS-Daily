@@ -1,10 +1,13 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Button } from "flowbite-react";
 import { HiOutlineArrowLeft, HiOutlineArrowRight } from "react-icons/hi";
 import { Dropdown } from "../../components/Dropdown";
 import { calculateSchoolYear, calculateSemester } from "../../components/SySemUtils";
-import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable";
-import { ConfirmAddScheduleModal } from "../../components/NAS/ConfirmAddScheduleModal";
+import { ScheduleTable } from "../../components/NAS/SetScheduleTable.jsx";
+import { ScheduleModal } from "../../components/NAS/ConfirmScheduleModal.jsx";
+import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable.jsx";
+import { ConfirmAddScheduleModal } from "../../components/NAS/ConfirmAddScheduleModal.jsx";
+
 import axios from "axios";
 const url = import.meta.env.VITE_APP_API_URL;
 
@@ -23,11 +26,14 @@ export const OASSchedule = () => {
   const [maxNasId, setMaxNasId] = useState(1);
   const [selectedSem, setSelectedSem] = useState(currentSemester);
   const [selectedSY, setSelectedSY] = useState(currentSchoolYear);
+  const [apiData, setApiData] = useState(null);
+  const [dataExist, setDataExist] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [syOptions, setSyOptions] = useState([]);
   const [uniqueYears, setUniqueYears] = useState([]);
   const sem_options = ["First", "Second", "Summer"];
   const [isDelSchedModalOpen, setDelSchedModalOpen] = useState(false);
+  const [isSchedModalOpen, setSchedModalOpen] = useState(false);
 
   const api = useMemo(
     () =>
@@ -59,6 +65,14 @@ export const OASSchedule = () => {
     setSearchInput(event.target.value);
   };
 
+  const openSetSchedModal = () => {
+    setSchedModalOpen(true);
+  };
+
+  const closeSetSchedModal = () => {
+    setSchedModalOpen(false);
+  };
+
   const openDelSchedModal = () => {
     setDelSchedModalOpen(true);
   };
@@ -66,6 +80,183 @@ export const OASSchedule = () => {
   const closeAddSchedModal = () => {
     setDelSchedModalOpen(false);
   };
+
+  // ------------ functions for SetScheduleTable starts here
+  const days = useMemo(
+    () => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    []
+  );
+
+  const [schedule, setSchedule] = useState({
+    Monday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Tuesday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Wednesday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Thursday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Friday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Saturday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Sunday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+  });
+
+  const [scheduleChanges, setScheduleChanges] = useState({
+    Monday: false,
+    Tuesday: false,
+    Wednesday: false,
+    Thursday: false,
+    Friday: false,
+    Saturday: false,
+    Sunday: false,
+  });
+
+  const handleStartTimeChange = useCallback(
+    (day, index, value) => {
+      const updatedSchedule = { ...schedule };
+      updatedSchedule[day].items[index].start = value;
+      setSchedule(updatedSchedule);
+
+      setScheduleChanges((prevChanges) => ({ ...prevChanges, [day]: true }));
+    },
+    [schedule]
+  );
+
+  const handleEndTimeChange = useCallback(
+    (day, index, value) => {
+      const updatedSchedule = { ...schedule };
+      updatedSchedule[day].items[index].end = value;
+      setSchedule(updatedSchedule);
+
+      setScheduleChanges((prevChanges) => ({ ...prevChanges, [day]: true }));
+    },
+    [schedule]
+  );
+
+  const handleToggleBrokenSchedule = (day, isBroken) => {
+    const updatedSchedule = { ...schedule };
+    updatedSchedule[day].isBroken = isBroken;
+    setSchedule(updatedSchedule);
+
+    setScheduleChanges({ ...scheduleChanges, [day]: true });
+  };
+
+  const handleAddScheduleRow = (day) => {
+    if (schedule[day].isBroken) {
+      const updatedSchedule = { ...schedule };
+      updatedSchedule[day].items.push({ start: "", end: "", totalHours: 0 });
+      setSchedule(updatedSchedule);
+
+      setScheduleChanges({ ...scheduleChanges, [day]: true });
+    }
+  };
+
+  const handleRemoveScheduleRow = (day, index) => {
+    if (index === 0) {
+      return;
+    }
+    const updatedSchedule = { ...schedule };
+    updatedSchedule[day].items.splice(index, 1);
+    setSchedule(updatedSchedule);
+
+    setScheduleChanges({ ...scheduleChanges, [day]: true });
+  };
+
+  useEffect(() => {
+    days.forEach((day) => {
+      if (scheduleChanges[day]) {
+        const updatedSchedule = { ...schedule };
+        updatedSchedule[day].items.forEach((scheduleItem, index) => {
+          const startTime = scheduleItem.start;
+          const endTime = scheduleItem.end;
+
+          if (startTime && endTime) {
+            const startHour = parseInt(startTime.split(":")[0]);
+            const startMinute = parseInt(startTime.split(":")[1]);
+            const endHour = parseInt(endTime.split(":")[0]);
+            const endMinute = parseInt(endTime.split(":")[1]);
+
+            const totalMinutes = endHour * 60 + endMinute - (startHour * 60 + startMinute);
+            updatedSchedule[day].items[index].totalHours = totalMinutes / 60;
+          } else {
+            updatedSchedule[day].items[index].totalHours = 0;
+          }
+        });
+
+        setSchedule(updatedSchedule);
+        setScheduleChanges({ ...scheduleChanges, [day]: false });
+      }
+    });
+  }, [schedule, scheduleChanges, days]);
+
+  const calculateOverallTotalHours = () => {
+    let totalHours = 0;
+    days.forEach((day) => {
+      schedule[day].items.forEach((scheduleItem) => {
+        totalHours += scheduleItem.totalHours;
+      });
+    });
+    return totalHours;
+  };
+
+  const overallHours = calculateOverallTotalHours();
+
+  const handleSubmit = useCallback(async () => {
+    try {
+      // Loop through days and send each day's schedule to the backend
+      days.forEach(async (day) => {
+        if (schedule[day].isBroken) {
+          schedule[day].items.forEach(async (scheduleItem) => {
+            const dayOfWeek = day; // Assuming the day matches your enum
+            const startTime =
+              new Date().toISOString().split("T")[0] + "T" + scheduleItem.start + ":00.000Z";
+            const endTime =
+              new Date().toISOString().split("T")[0] + "T" + scheduleItem.end + ":00.000Z";
+            const brokenSched = true;
+            const totalHours = scheduleItem.totalHours;
+            const semester = getSemesterValue(selectedSem);
+            const schoolYear = selectedSY;
+
+            // Send the schedule data for each row
+            await api.post(`${url}/api/Schedule`, {
+              nasId,
+              dayOfWeek,
+              startTime,
+              endTime,
+              brokenSched,
+              totalHours,
+              semester,
+              schoolYear,
+            });
+          });
+        } else {
+          const scheduleItem = schedule[day].items[0];
+          const dayOfWeek = day; // Assuming the day matches your enum
+          const startTime =
+            new Date().toISOString().split("T")[0] + "T" + scheduleItem.start + ":00.000Z";
+          const endTime =
+            new Date().toISOString().split("T")[0] + "T" + scheduleItem.end + ":00.000Z";
+          const brokenSched = false;
+          const totalHours = scheduleItem.totalHours;
+          const semester = getSemesterValue(selectedSem);
+          const schoolYear = selectedSY;
+
+          // Send the schedule data for the single row
+          await api.post(`${url}/api/Schedule`, {
+            nasId,
+            dayOfWeek,
+            startTime,
+            endTime,
+            brokenSched,
+            totalHours,
+            semester,
+            schoolYear,
+          });
+
+          window.location.reload();
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, [days, schedule, selectedSem, selectedSY, api, nasId, url]);
+  // -------- functions for SetScheduleTable ends here
 
   useEffect(() => {
     const fetchNasData = async () => {
@@ -112,17 +303,37 @@ export const OASSchedule = () => {
     fetchSchoolYearSemesterOptions();
   }, [api]);
 
+  //fetch schedule
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const response = await api.get(
+          `/Schedule/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`
+        );
+        setApiData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchSchedule();
+  }, [nasId, selectedSY, selectedSem, api]);
+
+  //check if there is schedule
+  useEffect(() => {
+    const isDataExist =
+      apiData &&
+      apiData.schedules &&
+      Array.isArray(apiData.schedules) &&
+      apiData.schedules.length > 0;
+
+    setDataExist(isDataExist);
+  }, [apiData]);
+
   //delete schedule
   const deleteSchedule = async (nasId, selectedSY, selectedSem) => {
     try {
       //Make delete request
-      await api.delete(`/Schedule`, {
-        params: {
-          nasId: nasId,
-          year: selectedSY,
-          semester: getSemesterValue(selectedSem),
-        },
-      });
+      await api.delete(`/Schedule/${nasId}/${selectedSY}/${getSemesterValue(selectedSem)}`);
 
       window.location.reload();
     } catch (error) {
@@ -243,17 +454,60 @@ export const OASSchedule = () => {
             </div>
             <div className="flex flex-col justify-center gap-2 md:gap-4">
               <div className="overflow-x-auto">
-                <ViewScheduleTable
-                  nasId={nasId}
-                  schoolYear={selectedSY}
-                  semester={getSemesterValue(selectedSem)}
-                  openModal={openDelSchedModal}
-                />
+                {dataExist ? (
+                  <div>
+                    <ViewScheduleTable
+                      nasId={nasId}
+                      schoolYear={selectedSY}
+                      semester={getSemesterValue(selectedSem)}
+                    />
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <button
+                        className="btn btn-secondary bg-primary text-white min-[450px]:justify-start flex items-center px-3 py-1 md:px-4 md:py-2 rounded-lg md:m-1 text-sm md:text-base hover:bg-secondary hover:text-black font-normal mr-3"
+                        onClick={openDelSchedModal}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="w-5 h-5 mr-2"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                          />
+                        </svg>
+                        <span>Delete schedule</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <ScheduleTable
+                    days={days}
+                    schedule={schedule}
+                    scheduleChanges={scheduleChanges}
+                    handleToggleBrokenSchedule={handleToggleBrokenSchedule}
+                    handleAddScheduleRow={handleAddScheduleRow}
+                    handleRemoveScheduleRow={handleRemoveScheduleRow}
+                    handleStartTimeChange={handleStartTimeChange}
+                    handleEndTimeChange={handleEndTimeChange}
+                    openModal={openSetSchedModal}
+                    overallHours={overallHours}
+                  />
+                )}
               </div>
             </div>
           </div>
         </div>
-        <ConfirmAddScheduleModal //delete schedule
+        <ScheduleModal
+          isOpen={isSchedModalOpen}
+          closeModal={closeSetSchedModal}
+          handleSubmit={handleSubmit}
+        />
+        <ConfirmAddScheduleModal //Confirm Delete schedule
           isOpen={isDelSchedModalOpen}
           closeModal={closeAddSchedModal}
           handleSubmit={handleDelSched}
