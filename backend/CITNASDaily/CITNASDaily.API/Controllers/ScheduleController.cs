@@ -32,7 +32,7 @@ namespace CITNASDaily.API.Controllers
         /// <param name="scheduleCreate">Information of new schedule</param>
         /// <returns>Newly created schedule</returns>
         [HttpPost]
-        [Authorize(Roles = "NAS")]
+        [Authorize(Roles = "NAS, OAS")]
         [ProducesResponseType(typeof(ScheduleDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -159,7 +159,7 @@ namespace CITNASDaily.API.Controllers
         /// <param name="nasId">NAS unique identifier</param>
         /// <returns>Successful deletion message</returns>
         [HttpDelete("{nasId}/{year}/{semester}")]
-        [Authorize(Roles = "OAS, NAS")]
+        [Authorize(Roles = "OAS")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
