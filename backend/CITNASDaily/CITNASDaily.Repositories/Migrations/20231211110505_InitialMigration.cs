@@ -79,6 +79,7 @@ namespace CITNASDaily.Repositories.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OfficeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SuperiorFirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SuperiorMiddleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SuperiorLastName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

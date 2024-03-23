@@ -6,6 +6,7 @@ export const AddSuperiorForm = () => {
   const [offices, setOffices] = useState([]);
   const lastnameRef = useRef();
   const firstnameRef = useRef();
+  const middlenameRef = useRef();
   const officeRef = useRef();
   const [submitted, setSubmitted] = useState(false);
   const [isSnackbarVisible, setIsSnackbarVisible] = useState(false);
@@ -30,7 +31,8 @@ export const AddSuperiorForm = () => {
       try {
         const response = await api.get(`/Offices`);
         const filteredData = response.data.filter(
-          (office) => !office.superiorFirstName && !office.superiorLastName
+          (office) =>
+            !office.superiorFirstName && !office.superiorMiddleName && !office.superiorLastName
         );
         setOffices(filteredData);
       } catch (error) {
@@ -57,6 +59,7 @@ export const AddSuperiorForm = () => {
 
     const lastname = lastnameRef.current.value;
     const firstname = firstnameRef.current.value;
+    const middlename = middlenameRef.current.value;
     const officeId = officeRef.current.value;
     const username = `${lastname}${firstname}`.toLowerCase().replace(/[^a-z0-9]/g, "");
 
@@ -89,6 +92,7 @@ export const AddSuperiorForm = () => {
     try {
       const registersuperior = await api.post(`/Superiors`, {
         firstName: firstname,
+        middleName: middlename,
         lastName: lastname,
         username: username,
       });
@@ -101,6 +105,7 @@ export const AddSuperiorForm = () => {
     const officeData = {
       id: officeId,
       superiorFirstName: firstname,
+      superiorMiddleName: middlename,
       superiorLastName: lastname,
     };
 
@@ -110,6 +115,7 @@ export const AddSuperiorForm = () => {
       setIsSnackbarVisible(true);
       setSnackbarMsg("Superior added successfully!");
       firstnameRef.current.value = "";
+      middlenameRef.current.value = "";
       lastnameRef.current.value = "";
       officeRef.current.value = "Select office";
     } else {
@@ -125,7 +131,7 @@ export const AddSuperiorForm = () => {
         <div className="max-w-full mb-10 overflow-x-auto">
           <h2 className="mb-4 text-xl font-bold text-black">Add a Superior</h2>
           <form action="#">
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-4 gap-6">
               <div className="w-full">
                 <label htmlFor="lastname" className="block mb-2 text-sm font-medium text-gray-900">
                   Last Name
@@ -152,6 +158,24 @@ export const AddSuperiorForm = () => {
                   id="firstname"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="First name"
+                  required=""
+                  onChange={updateGenError}
+                />
+              </div>
+              <div className="w-full">
+                <label
+                  htmlFor="middlename"
+                  className="block mb-2 text-sm font-medium text-gray-900"
+                >
+                  Middle Name
+                </label>
+                <input
+                  ref={middlenameRef}
+                  type="text"
+                  name="middlename"
+                  id="middlename"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  placeholder="Middle name (Optional)"
                   required=""
                   onChange={updateGenError}
                 />
