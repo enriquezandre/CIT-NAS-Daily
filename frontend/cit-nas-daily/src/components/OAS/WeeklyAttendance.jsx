@@ -7,6 +7,7 @@ export const WeeklyAttendance = ({
   firstName,
   lastName,
   middleName,
+  dateStarted,
   selectedMonth,
   selectedSem,
   selectedSY,
@@ -38,6 +39,12 @@ export const WeeklyAttendance = ({
     return null;
   };
 
+  const getDate = (dateTimeString) => {
+    // Split the date and time parts
+    const [datePart] = dateTimeString.split("T");
+    return datePart;
+  };
+
   const getSemesterValue = useMemo(() => {
     return (sem) => {
       switch (sem) {
@@ -63,7 +70,7 @@ export const WeeklyAttendance = ({
         );
         const dtrdata = dtrresponse.data.dailyTimeRecords;
 
-        const startDate = new Date("2021-01-01");
+        const startDate = new Date(getDate(dateStarted));
         const endDate = new Date();
         endDate.setHours(23, 59, 59, 999);
         const dateRange = [];
@@ -157,6 +164,7 @@ export const WeeklyAttendance = ({
     api,
     firstName,
     middleName,
+    dateStarted,
     lastName,
     getSemesterValue,
   ]);

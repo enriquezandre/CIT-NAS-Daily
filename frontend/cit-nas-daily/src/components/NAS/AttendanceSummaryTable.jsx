@@ -17,6 +17,7 @@ export const AttendanceSummaryTable = ({
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [dateStarted, setDateStarted] = useState("");
   const [validationData, setValidationData] = useState([]);
   const url = import.meta.env.VITE_APP_API_URL;
 
@@ -70,6 +71,12 @@ export const AttendanceSummaryTable = ({
     },
     []
   );
+
+  const getDate = (dateTimeString) => {
+    // Split the date and time parts
+    const [datePart] = dateTimeString.split("T");
+    return datePart;
+  };
 
   const getValidationStatus = useMemo(
     () => (validationStatus) => {
@@ -131,6 +138,7 @@ export const AttendanceSummaryTable = ({
         if (nasData.middleName === null) {
           setMiddleName(null);
         }
+        setDateStarted(nasData.dateStarted);
 
         const dtrresponse = await api.get(
           `DTR/${selectedSY}/${getSemesterValue(
@@ -139,7 +147,7 @@ export const AttendanceSummaryTable = ({
         );
         const dtrdata = dtrresponse.data.dailyTimeRecords;
 
-        const startDate = new Date("2021-01-01");
+        const startDate = new Date(getDate(dateStarted));
         const endDate = new Date();
         endDate.setHours(23, 59, 59, 999);
         const dateRange = [];
