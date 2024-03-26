@@ -20,6 +20,7 @@ export const OASAttendance = () => {
   const [lastName, setLastname] = useState("");
   const [middleName, setMiddlename] = useState("");
   const [office, setOffice] = useState("");
+  const [dateStarted, setDateStarted] = useState("");
   const [timekeepingSummaries, setTimekeepingSummaries] = useState([]);
   const [nasArray, setNasArray] = useState([]);
   const [searchInput, setSearchInput] = useState("");
@@ -76,6 +77,7 @@ export const OASAttendance = () => {
         setMiddlename(response.data[currentIndex].middleName);
         setLastname(response.data[currentIndex].lastName);
         setOffice(response.data[currentIndex].officeName);
+        setDateStarted(response.data[currentIndex].dateStarted);
         setMaxNasId(response.data.length - 1);
       } catch (error) {
         console.error(error);
@@ -86,6 +88,7 @@ export const OASAttendance = () => {
           setMiddlename(null);
           setLastname(null);
           setOffice(null);
+          setDateStarted(null);
         }
       }
     };
@@ -287,7 +290,7 @@ export const OASAttendance = () => {
               )}
             </div>
           </ul>
-          <div className="px-5 md:px-9 py-4">
+          <div className="px-5 md:px-9 py-4 overflow-y-scroll">
             <div className="flex gap-10 mb-7 text-xs md:text-base lg:text-lg overflow-x-auto">
               <div className="font-bold" style={{ textTransform: "uppercase" }}>
                 NAS NAME: {lastName}, {firstName} {middleName}
@@ -314,6 +317,7 @@ export const OASAttendance = () => {
                   firstName={firstName}
                   lastName={lastName}
                   middleName={middleName}
+                  dateStarted={dateStarted}
                   selectedMonth={selectedMonthIndex}
                   selectedSem={selectedSem}
                   selectedSY={selectedSY}

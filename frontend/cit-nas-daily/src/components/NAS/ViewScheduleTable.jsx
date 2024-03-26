@@ -1,20 +1,19 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import axios from "axios";
 
-export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semester }) => {
-  const { nasId } = useParams();
+export const ViewScheduleTable = ({ nasId, schoolYear, semester }) => {
   const [totalHours, setTotalHours] = useState(0);
   const [schedule, setSchedule] = useState({
-    Monday: [],
-    Tuesday: [],
-    Wednesday: [],
-    Thursday: [],
-    Friday: [],
-    Saturday: [],
+    Monday: { items: [], hasSchedule: false },
+    Tuesday: { items: [], hasSchedule: false },
+    Wednesday: { items: [], hasSchedule: false },
+    Thursday: { items: [], hasSchedule: false },
+    Friday: { items: [], hasSchedule: false },
+    Saturday: { items: [], hasSchedule: false },
+    Sunday: { items: [], hasSchedule: false },
   });
-  const startOfSy = ["January", "June", "August"];
+
   const url = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
@@ -31,16 +30,15 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
         const nasData = response.data;
 
         // Update the schedule state with the fetched data
-        // Check if nasData.schedules is an array
         if (Array.isArray(nasData.schedules)) {
-          // Update the schedule state with the fetched data
           const updatedSchedule = {
-            Monday: [],
-            Tuesday: [],
-            Wednesday: [],
-            Thursday: [],
-            Friday: [],
-            Saturday: [],
+            Monday: { items: [], hasSchedule: false },
+            Tuesday: { items: [], hasSchedule: false },
+            Wednesday: { items: [], hasSchedule: false },
+            Thursday: { items: [], hasSchedule: false },
+            Friday: { items: [], hasSchedule: false },
+            Saturday: { items: [], hasSchedule: false },
+            Sunday: { items: [], hasSchedule: false },
           };
 
           nasData.schedules.forEach((item) => {
@@ -48,7 +46,8 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
             const dayName = getDayName(dayOfWeek);
 
             if (updatedSchedule[dayName]) {
-              updatedSchedule[dayName].push(item);
+              updatedSchedule[dayName].hasSchedule = true;
+              updatedSchedule[dayName].items.push(item);
             } else {
               console.error(`Invalid day of the week: ${dayOfWeek}`);
             }
@@ -67,12 +66,26 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
   }, [nasId, schoolYear, semester, url]);
 
   useEffect(() => {
-    // Calculate the total hours when the schedule updates
-    const total = Object.values(schedule).reduce((acc, daySchedule) => {
-      return acc + calculateNumOfHours(daySchedule);
-    }, 0);
-    setTotalHours(total);
+    calculateOverallTotal();
   }, [schedule]);
+
+  const calculateOverallTotal = () => {
+    let total = 0;
+    Object.values(schedule).forEach((daySchedule) => {
+      total += calculateNumOfHours(daySchedule.items);
+    });
+    setTotalHours(total);
+  };
+
+  const calculateNumOfHours = (items) => {
+    let total = 0;
+    if (Array.isArray(items)) {
+      items.forEach((item) => {
+        total += item.totalHours;
+      });
+    }
+    return total;
+  };
 
   const getDayName = (dayOfWeek) => {
     switch (dayOfWeek) {
@@ -88,6 +101,8 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
         return "Friday";
       case 5:
         return "Saturday";
+      case 6:
+        return "Sunday";
       default:
         return "Unknown";
     }
@@ -99,8 +114,7 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
     const hours = date.getHours();
     const minutes = date.getMinutes();
     const ampm = hours >= 12 ? "PM" : "AM";
-    const formattedHours = hours % 12 || 12; // Convert to 12-hour format
-
+    const formattedHours = hours % 12 || 12;
     return `${formattedHours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")} ${ampm}`;
@@ -114,27 +128,9 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
     return items.length > 1 ? timeSlots.join("; ") : timeSlots[0];
   };
 
-  // calculate overall total number of hours
-  const calculateNumOfHours = (items) => {
-    let total = 0;
-    items.forEach((item) => {
-      total += item.totalHours;
-    });
-    return total;
-  };
-
-  //check if end of school year
-  const isStartOfSy = (currentMonth) => {
-    if (startOfSy.includes(currentMonth)) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   return (
     <div>
-      <div className="pb-3 flex justify-center">
+      <div className="pb-5 flex justify-center">
         <table className="md:w-10/12 border-collapse border">
           <thead>
             <tr className="bg-primary text-white">
@@ -153,20 +149,16 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
               <tr key={day}>
                 <td className="border p-2 text-center align-middle">{day}</td>
                 <td className="border p-2 text-center align-middle">
-                  {formatTimeSlots(schedule[day])}
+                  {schedule[day].hasSchedule ? formatTimeSlots(schedule[day].items) : "NO DUTY"}
                 </td>
                 <td className="border p-2 text-center align-middle">
-                  {schedule[day].length > 0
-                    ? schedule[day][0].brokenSched
-                      ? calculateNumOfHours(schedule[day])
-                      : schedule[day][0].totalHours
-                    : ""}
+                  {schedule[day].hasSchedule ? calculateNumOfHours(schedule[day].items) : ""}
                 </td>
               </tr>
             ))}
             <tr>
               <td className="text-right font-bold p-2" colSpan="2">
-                Number of hours:{" "}
+                Total no. of hours:
               </td>
               <td className="text-center font-bold p-2" colSpan="1">
                 {totalHours}
@@ -175,38 +167,13 @@ export const ViewScheduleTable = ({ openModal, currentMonth, schoolYear, semeste
           </tbody>
         </table>
       </div>
-      <div style={{ display: "flex", justifyContent: "center", paddingTop: "1.5em" }}>
-        <button
-          className={`py-2 px-3 rounded-lg flex justify-center items-center ${
-            isStartOfSy(currentMonth) ? "hover: font-semibold" : ""
-          }`}
-          style={{
-            backgroundColor: isStartOfSy(currentMonth) ? "#88333a" : "#c5c5c5",
-            color: "white",
-            width: "12em",
-          }}
-          onClick={isStartOfSy(currentMonth) ? openModal : undefined}
-          disabled={!isStartOfSy(currentMonth)}
-        >
-          <svg
-            className="w-4 h-4 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-          </svg>
-          Add new schedule
-        </button>
-      </div>
     </div>
   );
 };
 
 ViewScheduleTable.propTypes = {
-  openModal: PropTypes.func.isRequired,
   currentMonth: PropTypes.string.isRequired,
   schoolYear: PropTypes.string.isRequired,
   semester: PropTypes.string.isRequired,
+  nasId: PropTypes.string.isRequired,
 };

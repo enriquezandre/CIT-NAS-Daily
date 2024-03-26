@@ -23,20 +23,14 @@ export const ConfirmAddScheduleModal = ({ isOpen, closeModal, handleSubmit }) =>
           }}
         ></div>
       )}
-      <Modal
-        show={isOpen}
-        className="rounded-2xl p-0 z-[1000] w-full"
-      >
+      <Modal show={isOpen} className="rounded-2xl p-0 z-[1000] w-full">
         <Modal.Body>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <div>
               <img src={icon} alt="infoicon" style={{ width: "35px", height: "35px" }} />
             </div>
             <div className="text-center pt-3">
-              <p className="font-semibold text-lg">
-                Adding a new schedule will replace your schedule from the previous school year. Do
-                you want to proceed?
-              </p>
+              <p className="font-semibold text-lg">Do you want to delete this schedule?</p>
             </div>
           </div>
         </Modal.Body>
@@ -62,7 +56,7 @@ export const ConfirmAddScheduleModal = ({ isOpen, closeModal, handleSubmit }) =>
                 className="bg-primary text-white py-2 px-6 rounded-full hover:bg-secondary hover:text-primary"
                 onClick={handleConfirm}
               >
-                Yes
+                Confirm
               </button>
             </div>
           </div>

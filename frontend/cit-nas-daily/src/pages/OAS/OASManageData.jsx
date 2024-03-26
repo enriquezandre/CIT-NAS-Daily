@@ -175,7 +175,7 @@ export const OASManageData = () => {
       const attendanceSummaries = dtrdata.dailyTimeRecords.map((attendance) => {
         const attendanceDate = new Date(attendance.date);
 
-        //Adjust dayOfWeek calculation for Monday - Saturday
+        //Adjust dayOfWeek calculation for Monday - Sunday
         const dayOfWeek = (attendanceDate.getDay() + 6) % 7;
         let schedule1 = null;
         let schedule2 = "No record";
