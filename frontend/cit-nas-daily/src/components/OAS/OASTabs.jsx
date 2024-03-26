@@ -1,18 +1,15 @@
-"use client";
 import { useState } from "react";
 import { OASOffices } from "../../pages/OAS/OASOffices";
 import { OASAttendance } from "../../pages/OAS/OASAttendance";
+import { OASSchedule } from "../../pages/OAS/OASSchedule";
 import { OASEvaluation } from "../../pages/OAS/OASEvaluation";
 import { OASStatus } from "../../pages/OAS/OASStatus";
 import { OASMasterlist } from "../../pages/OAS/OASMasterlist";
 import { OASValidation } from "../../pages/OAS/OASValidation";
 import { OASManageData } from "../../pages/OAS/OASManageData";
+
 export const OASTabs = () => {
   const [activeTab, setActiveTab] = useState(1);
-
-  const handleTabClick = (tabNumber) => {
-    setActiveTab(tabNumber);
-  };
 
   return (
     <div className="bg-gray-2000 w-full">
@@ -22,7 +19,7 @@ export const OASTabs = () => {
             className={`${
               activeTab === 1 ? "font-bold bg-primary text-white" : "bg-secondary"
             } px-4 py-2 rounded-tl-lg w-full rounded-lg text-xs sm:text-sm hover:bg-primary hover:text-white`}
-            onClick={() => handleTabClick(1)}
+            onClick={() => setActiveTab(1)}
           >
             Offices
           </button>
@@ -30,7 +27,7 @@ export const OASTabs = () => {
             className={`${
               activeTab === 2 ? "font-bold bg-primary text-white" : "bg-secondary"
             } px-4 py-2 w-full rounded-lg text-xs sm:text-sm hover:bg-primary hover:text-white`}
-            onClick={() => handleTabClick(2)}
+            onClick={() => setActiveTab(2)}
           >
             Attendance
           </button>
@@ -38,39 +35,47 @@ export const OASTabs = () => {
             className={`${
               activeTab === 3 ? "font-bold bg-primary text-white" : "bg-secondary"
             } px-4 py-2 w-full rounded-lg text-xs sm:text-sm hover:bg-primary hover:text-white`}
-            onClick={() => handleTabClick(3)}
+            onClick={() => setActiveTab(3)}
           >
-            Evaluation
+            Schedule
           </button>
           <button
             className={`${
               activeTab === 4 ? "font-bold bg-primary text-white" : "bg-secondary"
             } px-4 py-2 w-full rounded-lg text-xs sm:text-sm hover:bg-primary hover:text-white`}
-            onClick={() => handleTabClick(4)}
+            onClick={() => setActiveTab(4)}
+          >
+            Evaluation
+          </button>
+          <button
+            className={`${
+              activeTab === 5 ? "font-bold bg-primary text-white" : "bg-secondary"
+            } px-4 py-2 w-full rounded-lg text-xs sm:text-sm hover:bg-primary hover:text-white`}
+            onClick={() => setActiveTab(5)}
           >
             NAS Status
           </button>
           <button
             className={`${
-              activeTab === 5 ? "font-bold bg-primary text-white" : "bg-secondary"
+              activeTab === 6 ? "font-bold bg-primary text-white" : "bg-secondary"
             } px-4 py-2 rounded-tr-lg w-full rounded-lg text-xs sm:text-sm hover:bg-primary hover:text-white`}
-            onClick={() => handleTabClick(5)}
+            onClick={() => setActiveTab(6)}
           >
             Validation
           </button>
           <button
             className={`${
-              activeTab === 6 ? "font-bold bg-primary text-white" : "bg-secondary"
+              activeTab === 7 ? "font-bold bg-primary text-white" : "bg-secondary"
             } px-4 py-2 rounded-tr-lg w-full rounded-lg text-xs sm:text-sm hover:bg-primary hover:text-white`}
-            onClick={() => handleTabClick(6)}
+            onClick={() => setActiveTab(7)}
           >
             NAS Masterlist
           </button>
           <button
             className={`${
-              activeTab === 7 ? "font-bold bg-primary text-white" : "bg-secondary"
+              activeTab === 8 ? "font-bold bg-primary text-white" : "bg-secondary"
             } px-4 py-2 rounded-tr-lg w-full rounded-lg text-xs sm:text-sm hover:bg-primary hover:text-white`}
-            onClick={() => handleTabClick(7)}
+            onClick={() => setActiveTab(8)}
           >
             Manage Data
           </button>
@@ -89,25 +94,30 @@ export const OASTabs = () => {
           )}
           {activeTab === 3 && (
             <div>
-              <OASEvaluation />
+              <OASSchedule />
             </div>
           )}
           {activeTab === 4 && (
             <div>
-              <OASStatus />
+              <OASEvaluation />
             </div>
           )}
           {activeTab === 5 && (
             <div>
-              <OASValidation />
+              <OASStatus />
             </div>
           )}
           {activeTab === 6 && (
             <div>
-              <OASMasterlist />
+              <OASValidation />
             </div>
           )}
           {activeTab === 7 && (
+            <div>
+              <OASMasterlist />
+            </div>
+          )}
+          {activeTab === 8 && (
             <div>
               <OASManageData />
             </div>

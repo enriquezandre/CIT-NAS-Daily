@@ -3,17 +3,14 @@ import { useParams } from "react-router-dom";
 import { ScheduleTable } from "../../components/NAS/SetScheduleTable.jsx";
 import { ScheduleModal } from "../../components/NAS/ConfirmScheduleModal.jsx";
 import { ViewScheduleTable } from "../../components/NAS/ViewScheduleTable.jsx";
-import { ConfirmAddScheduleModal } from "../../components/NAS/ConfirmAddScheduleModal.jsx";
-import { getCurrentMonth, calculateSchoolYear } from "../../components/SySemUtils.js";
+import { calculateSchoolYear } from "../../components/SySemUtils.js";
 import axios from "axios";
 
 export const NASSchedule = () => {
   const { nasId } = useParams();
   const [selectedSem, setSelectedSem] = useState(0);
   const [isSchedModalOpen, setSchedModalOpen] = useState(false);
-  const [isAddSchedModalOpen, setAddSchedModalOpen] = useState(false);
   const [apiData, setApiData] = useState(null);
-  const [currentMonth, setCurrentMonth] = useState(null);
   const [currentYear, setCurrentYear] = useState(null);
   const [dataExist, setDataExist] = useState(false);
   const url = import.meta.env.VITE_APP_API_URL;
@@ -26,31 +23,21 @@ export const NASSchedule = () => {
     setSchedModalOpen(false);
   };
 
-  const openAddSchedModal = () => {
-    setAddSchedModalOpen(true);
-  };
-
-  const closeAddSchedModal = () => {
-    setAddSchedModalOpen(false);
-  };
-
   const handleSelectedSem = (event) => {
     const value = event.target.value;
     setSelectedSem(value);
   };
 
   useEffect(() => {
-    const currentMonthValue = getCurrentMonth();
     const currentYearValue = calculateSchoolYear();
 
     // Set the values to state
-    setCurrentMonth(currentMonthValue);
     setCurrentYear(currentYearValue);
   }, []);
 
   // ------------ functions for SetScheduleTable starts here
   const days = useMemo(
-    () => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    () => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
     []
   );
 
@@ -61,6 +48,7 @@ export const NASSchedule = () => {
     Thursday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
     Friday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
     Saturday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
+    Sunday: { isBroken: false, items: [{ start: "", end: "", totalHours: 0 }] },
   });
 
   const [scheduleChanges, setScheduleChanges] = useState({
@@ -70,6 +58,7 @@ export const NASSchedule = () => {
     Thursday: false,
     Friday: false,
     Saturday: false,
+    Sunday: false,
   });
 
   const handleStartTimeChange = useCallback(
@@ -256,28 +245,8 @@ export const NASSchedule = () => {
     setDataExist(isDataExist);
   }, [apiData]);
 
-  //delete schedule
-  const deleteSchedule = async (nasId) => {
-    try {
-      //Make delete request
-      await api.delete(`/Schedule`, {
-        params: {
-          nasId: nasId,
-        },
-      });
-
-      window.location.reload();
-    } catch (error) {
-      console.error("Error deleting schedule:", error);
-    }
-  };
-
-  const handleAddSched = () => {
-    deleteSchedule(nasId);
-  };
-
   return (
-    <div className="justify-center w-full h-full items-center border border-solid rounded-lg">
+    <div className="justify-center w-full h-full ite  ms-center border border-solid rounded-lg">
       <div className="m-3">
         <div className="md:m-2">
           <div className="flex flex-row justify-center md:justify-start items-center gap-8 md:gap-10 mt-6 mb-6">
@@ -303,13 +272,7 @@ export const NASSchedule = () => {
           </div>
           <div className="pt-1">
             {dataExist ? (
-              <ViewScheduleTable
-                apiData={apiData}
-                openModal={openAddSchedModal}
-                currentMonth={currentMonth}
-                schoolYear={currentYear}
-                semester={selectedSem}
-              />
+              <ViewScheduleTable nasId={nasId} schoolYear={currentYear} semester={selectedSem} />
             ) : (
               <ScheduleTable
                 days={days}
@@ -331,11 +294,6 @@ export const NASSchedule = () => {
         isOpen={isSchedModalOpen}
         closeModal={closeSetSchedModal}
         handleSubmit={handleSubmit}
-      />
-      <ConfirmAddScheduleModal
-        isOpen={isAddSchedModalOpen}
-        closeModal={closeAddSchedModal}
-        handleSubmit={handleAddSched}
       />
     </div>
   );
